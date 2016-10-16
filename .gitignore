@@ -1,0 +1,52 @@
+#
+# Project specific
+#
+/build
+/project
+/obj
+/doc
+!easybuild.sh
+!easybuild.bat
+/Makefile
+/*.make
+CMakeLists.txt.user
+etmain/ui/git_version.h
+
+#
+# OS specific
+#
+
+# Linux/KDE
+*~
+*.sh
+/.directory
+*.kdev4
+
+# Mac
+.DS_STORE
+
+# Windows
+Thumbs.db
+win_resource.aps
+
+#
+# Editor specific
+#
+*.bak
+
+# Eclipse
+/.project
+/.settings
+
+# CDT-specific
+/.cproject
+
+# CTags
+.tags*
+
+# SublimeText
+*.sublime-workspace
+*.sublime-project
+
+# Clion
+.idea/
