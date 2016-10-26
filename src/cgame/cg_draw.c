@@ -206,9 +206,9 @@ void CG_Text_Paint(float x, float y, float scale, vec4_t color, const char *text
 }
 
 /*
-================
+=======================================================================================================================================
 CG_DrawTeamBackground
-================
+=======================================================================================================================================
 */
 void CG_DrawTeamBackground(int x, int y, int w, int h, float alpha, int team) {
 	vec4_t hcolor;
@@ -283,7 +283,6 @@ static void CG_DrawTeamInfo(void) {
 			} else if (alphapercent < 0) {
 				alphapercent = 0.f;
 			}
-
 			// chatter team instead
 			if (cgs.teamChatMsgTeams[i % chatHeight] == TEAM_AXIS) {
 				hcolor[0] = 1;
@@ -352,12 +351,12 @@ CENTER PRINTING
 */
 
 /*
-==============
+=======================================================================================================================================
 CG_CenterPrint
 
 Called for important messages that should stay in the center of the screen
 for a few moments
-==============
+=======================================================================================================================================
 */
 #define CP_LINEWIDTH (int)(Ccg_WideX(56))
 
@@ -410,12 +409,12 @@ void CG_CenterPrint(const char *str, int y, float fontScale) {
 }
 
 /*
-==============
+=======================================================================================================================================
 CG_PriorityCenterPrint
 
 Called for important messages that should stay in the center of the screen
 for a few moments
-==============
+=======================================================================================================================================
 */
 void CG_PriorityCenterPrint(const char *str, int y, float fontScale, int priority) {
 	char *s;
@@ -536,9 +535,9 @@ CROSSHAIRS
 */
 
 /*
-==============
+=======================================================================================================================================
 CG_DrawWeapReticle
-==============
+=======================================================================================================================================
 */
 static void CG_DrawWeapReticle(void) {
 	qboolean fg, garand, k43;
@@ -606,9 +605,9 @@ static void CG_DrawWeapReticle(void) {
 }
 
 /*
-==============
+=======================================================================================================================================
 CG_DrawMortarReticle
-==============
+=======================================================================================================================================
 */
 static void CG_DrawMortarReticle(void) {
 	vec4_t color = {1.f, 1.f, 1.f, .5f};
@@ -873,9 +872,9 @@ static void CG_DrawMortarReticle(void) {
 }
 
 /*
-==============
+=======================================================================================================================================
 CG_DrawBinocReticle
-==============
+=======================================================================================================================================
 */
 static void CG_DrawBinocReticle(void) {
 	if (cgs.media.binocShaderSimple) {
@@ -1030,8 +1029,8 @@ static void CG_DrawNoShootIcon(void) {
 		trap_R_SetColor(colorRed);
 	} else if (cg.crosshairClientNoShoot
 	         // don't shoot friend or civilian
-	         || cg.snap->ps.serverCursorHint == HINT_PLYR_NEUTRAL
-	         || cg.snap->ps.serverCursorHint == HINT_PLYR_FRIEND) {
+	 || cg.snap->ps.serverCursorHint == HINT_PLYR_NEUTRAL
+	 || cg.snap->ps.serverCursorHint == HINT_PLYR_FRIEND) {
 		float *color = CG_FadeColor(cg.crosshairClientTime, 1000);
 
 		if (!color) {
@@ -1186,10 +1185,10 @@ static float CG_ScanForCrosshairEntity(float *zChange, qboolean *hitClient) {
 }
 
 /*
-==============
+=======================================================================================================================================
 CG_CheckForCursorHints
     concept in progress...
-==============
+=======================================================================================================================================
 */
 void CG_CheckForCursorHints(void) {
 	trace_t trace;
@@ -1271,21 +1270,21 @@ void CG_CheckForCursorHints(void) {
 }
 
 /*
-=====================
+=======================================================================================================================================
 CG_DrawCrosshairNames
-=====================
+=======================================================================================================================================
 */
 static void CG_DrawCrosshairNames(void) {
 	float *color;
 	float w;
 	const char *s;
 	int playerHealth = 0;
-	qboolean   drawStuff = qfalse;
-	qboolean   isTank = qfalse;
+	qboolean drawStuff = qfalse;
+	qboolean isTank = qfalse;
 	int maxHealth = 1;
 	float dist; // Distance to the entity under the crosshair
 	float zChange;
-	qboolean   hitClient = qfalse;
+	qboolean hitClient = qfalse;
 	float middle = 320 + cgs.wideXoffset;
 	float fontScale = cg_fontScaleCN.value;
 
@@ -1529,7 +1528,7 @@ static void CG_DrawCrosshairNames(void) {
 		}
 	}
 	// draw the health bar
-	//  if ( isTank || (cg.crosshairClientNum == cg.snap->ps.identifyClient && drawStuff && cgs.clientinfo[cg.snap->ps.clientNum].team != TEAM_SPECTATOR ) ) {
+	//  if (isTank || (cg.crosshairClientNum == cg.snap->ps.identifyClient && drawStuff && cgs.clientinfo[cg.snap->ps.clientNum].team != TEAM_SPECTATOR)) {
 		vec4_t bgcolor, c;
 		float barFrac = (float)playerHealth / maxHealth;
 
@@ -2351,7 +2350,7 @@ CG_DrawFlashFade
 */
 static void CG_DrawFlashFade(void) {
 	static int lastTime;
-	qboolean   fBlackout = (int_ui_blackout.integer > 0);
+	qboolean fBlackout = (int_ui_blackout.integer > 0);
 
 	if (cgs.fadeStartTime + cgs.fadeDuration < cg.time) {
 		cgs.fadeAlphaCurrent = cgs.fadeAlpha;
@@ -2388,9 +2387,9 @@ static void CG_DrawFlashFade(void) {
 		}
 	} else if (cg.snap->ps.powerups[PW_BLACKOUT] == 0
 #ifdef FEATURE_MULTIVIEW
-	         || cg.mvTotalClients > 0
+	 || cg.mvTotalClients > 0
 #endif
-	         ) {
+	        ) {
 		trap_Cvar_Set("ui_blackout", "0");
 	}
 	// now draw the fade
@@ -2422,12 +2421,12 @@ static void CG_DrawFlashFade(void) {
 }
 
 /*
-==============
+=======================================================================================================================================
 CG_DrawFlashZoomTransition
     hide the snap transition from regular view to/from zoomed
 
   FIXME: TODO: use cg_fade?
-==============
+=======================================================================================================================================
 */
 static void CG_DrawFlashZoomTransition(void) {
 	float frac;
@@ -2544,10 +2543,10 @@ static void CG_DrawFlashFire(void) {
 }
 
 /*
-==============
+=======================================================================================================================================
 CG_DrawFlashBlendBehindHUD
     screen flash stuff drawn first (on top of world, behind HUD)
-==============
+=======================================================================================================================================
 */
 static void CG_DrawFlashBlendBehindHUD(void) {
 	CG_DrawFlashZoomTransition();
@@ -2784,10 +2783,10 @@ void CG_Fade(int r, int g, int b, int a, int time, int duration) {
 	    cg.fadeTime = cg.time + time;
 	}
 
-	cg.fadeColor2[0] = ( float )r / 255.0f;
-	cg.fadeColor2[1] = ( float )g / 255.0f;
-	cg.fadeColor2[2] = ( float )b / 255.0f;
-	cg.fadeColor2[3] = ( float )a / 255.0f;
+	cg.fadeColor2[0] = (float)r / 255.0f;
+	cg.fadeColor2[1] = (float)g / 255.0f;
+	cg.fadeColor2[2] = (float)b / 255.0f;
+	cg.fadeColor2[3] = (float)a / 255.0f;
 	*/
 }
 
@@ -2820,7 +2819,7 @@ static void CG_ScreenFade(void) {
 
 	} else {
 		vec4_t color;
-		float t = ( float )msec * cg.fadeRate;
+		float t = (float)msec * cg.fadeRate;
 		float invt = 1.0f - t;
 		int i;
 

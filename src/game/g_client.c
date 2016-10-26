@@ -2482,9 +2482,9 @@ void ClientSpawn(gentity_t *ent, qboolean revived, qboolean teamChange, qboolean
 
         if (clientMismatchedVersion) {
             trap_DropClient(ent - g_entities, va("Client / Server game mismatch: '%s / %s'", clientMismatchedVersion, GAME_VERSION_DATED));
-    } else {
+   } else {
             client->sess.versionOK = qtrue;
-    }
+   }
 }
 #endif*/
 

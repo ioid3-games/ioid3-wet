@@ -76,11 +76,11 @@ void CG_LoadingString(const char *s) {
 }
 
 /*
-====================
+=======================================================================================================================================
 CG_DrawInformation
 
 Draw all the status / pacifier stuff during level loading
-====================
+=======================================================================================================================================
 */
 void CG_DrawInformation(qboolean forcerefresh) {
 	static int lastcalled = 0;
@@ -115,10 +115,10 @@ void CG_DrawInformation(qboolean forcerefresh) {
 	// TODO: dynamic game server MOTD window
 	/*  if(cg.motdWindow == NULL) {
 	        CG_createMOTDWindow();
-	  }
+	 }
 	    if(cg.motdWindow != NULL) {
 	        CG_windowDraw();
-	  }
+	 }
 
 	*/
 }
@@ -402,10 +402,10 @@ void CG_DemoClick(int key, qboolean down) {
 	                                cgs.thirdpersonUpdate = milli + DEMO_THIRDPERSONUPDATE;
 	                                if(angle >= 360.0f) angle -= 360.0f;
 	                                trap_Cvar_Set("cg_thirdPersonAngle", va("%f", angle));
-	                      }
-	              } else {
+	                     }
+	             } else {
 	                        etpro_RunBinding(key, down);
-	              }
+	             }
 	                return;
 	*/
 	// Timescale controls
@@ -861,8 +861,8 @@ void CG_GameStatsDraw(void) {
 		         4 + 2 * tSpacing +                                 // Skill columns
 		         1 +                                                // Skillz
 		         tSpacing * ((gs->cSkills > 0) ? gs->cSkills : 1)
-		     )
-		    ) +
+		    )
+		   ) +
 		    5;
 
 		// Fade-in effects
@@ -1633,7 +1633,7 @@ void CG_DemoHelpDraw(void) {
 #else
 			                ARRAY_LEN(help)
 #endif
-			                );
+			               );
 		} else //if(menuLevel == ML_EDV) {
 			h = tSpacing + 9 +
 			    tSpacing * (2 +
@@ -1642,7 +1642,7 @@ void CG_DemoHelpDraw(void) {
 #else
 			                ARRAY_LEN(edvhelp)
 #endif
-			                );
+			               );
 		}
 
 #else
@@ -1660,7 +1660,7 @@ void CG_DemoHelpDraw(void) {
 #else
 		                ARRAY_LEN(help)
 #endif
-		                );
+		               );
 
 #endif
 
@@ -1796,14 +1796,14 @@ void CG_SpecHelpDraw(void) {
 	} else {
 		const helpType_t help[] =
 		{
-			{"+zoom",    "hold for pointer" },
+			{"+zoom",    "hold for pointer"},
 			{"+attack",  "window move/resize"},
-			{"+sprint",  "hold to resize"   },
-			{"weapnext", "window on/off"    },
-			{"weapprev", "swap w/main view" },
-			{NULL,       NULL               },
-			{"weapalt",  "swingcam toggle"  },
-			{"spechelp", "help on/off"      }
+			{"+sprint",  "hold to resize"  },
+			{"weapnext", "window on/off"   },
+			{"weapprev", "swap w/main view"},
+			{NULL,       NULL              },
+			{"weapalt",  "swingcam toggle" },
+			{"spechelp", "help on/off"     }
 		};
 
 		unsigned int i;

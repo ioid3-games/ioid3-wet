@@ -194,6 +194,7 @@ void Con_CheckResize(void) {
 	int i, width;
 	MAC_STATIC int tbuf[CON_TEXTSIZE];
 	MAC_STATIC byte tbuff[CON_TEXTSIZE];
+
 	// wasn't allowing for larger consoles
 	// width = (SCREEN_WIDTH / SMALLCHAR_WIDTH) - 2;
 	width = (cls.glconfig.vidWidth / SMALLCHAR_WIDTH) - 2;

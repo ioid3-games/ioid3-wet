@@ -278,9 +278,9 @@ static void CG_OffsetFreeCamView(void) {
 #endif
 
 /*
-===============
+=======================================================================================================================================
 CG_OffsetThirdPersonView
-===============
+=======================================================================================================================================
 */
 #define FOCUS_DISTANCE  400 //800   //512
 void CG_OffsetThirdPersonView(void) {
@@ -377,9 +377,9 @@ static void CG_StepOffset(void) {
 }
 
 /*
-================
+=======================================================================================================================================
 CG_KickAngles
-================
+=======================================================================================================================================
 */
 void CG_KickAngles(void) {
 	const vec3_t centerSpeed = {2400, 2400, 2400};
@@ -480,11 +480,11 @@ void CG_KickAngles(void) {
 }
 
 /*
-==============
+=======================================================================================================================================
 CG_ZoomSway
     sway for scoped weapons.
     this takes aimspread into account so the view settles after a bit
-==============
+=======================================================================================================================================
 */
 static void CG_ZoomSway(void) {
 	float spreadfrac;
@@ -510,9 +510,9 @@ static void CG_ZoomSway(void) {
 }
 
 /*
-===============
+=======================================================================================================================================
 CG_OffsetFirstPersonView
-===============
+=======================================================================================================================================
 */
 static void CG_OffsetFirstPersonView(void) {
 	float *origin;
@@ -793,9 +793,9 @@ void CG_ZoomOut_f(void) {
 }
 
 /*
-==============
+=======================================================================================================================================
 CG_Zoom
-==============
+=======================================================================================================================================
 */
 void CG_Zoom(void) {
 	// fix for demo playback
@@ -866,11 +866,11 @@ void CG_Zoom(void) {
 }
 
 /*
-====================
+=======================================================================================================================================
 CG_CalcFov
 
 Fixed fov at intermissions, otherwise account for fov variable and zooms.
-====================
+=======================================================================================================================================
 */
 #define WAVE_AMPLITUDE  1
 #define WAVE_FREQUENCY  0.4
@@ -926,7 +926,6 @@ static int CG_CalcFov(void) {
 			} else {
 				zoomFov = lastfov;
 			}
-
 			// do smooth transitions for the binocs
 			if (cg.zoomedBinoc)         // binoc zooming in
 			{
@@ -991,7 +990,7 @@ static int CG_CalcFov(void) {
 	//fov_y = fov_x / cgs.glconfig.windowAspect;
 
 	// warp if underwater
-	//if ( cg_pmove.waterlevel == 3 ) {
+	//if (cg_pmove.waterlevel == 3) {
 	contents = CG_PointContents(cg.refdef.vieworg, -1);
 
 	if (contents & (CONTENTS_WATER | CONTENTS_SLIME | CONTENTS_LAVA)) {
@@ -1011,9 +1010,9 @@ static int CG_CalcFov(void) {
 	cg.refdef_current->fov_y = fov_y;
 
 	/*
-	    if( cg.predictedPlayerState.eFlags & EF_PRONE ) {
+	    if(cg.predictedPlayerState.eFlags & EF_PRONE) {
 	        cg.zoomSensitivity = cg.refdef.fov_y / 500.0;
-	  } else
+	 } else
 	*/
 	// allow freelook when dead until we tap out into limbo
 	if (cg.snap->ps.pm_type == PM_FREEZE || (cg.snap->ps.pm_type == PM_DEAD && (cg.snap->ps.pm_flags & PMF_LIMBO)) || (cg.snap->ps.pm_flags & PMF_TIME_LOCKPLAYER)) {
@@ -1034,9 +1033,9 @@ static int CG_CalcFov(void) {
 }
 
 /*
-==============
+=======================================================================================================================================
 CG_UnderwaterSounds
-==============
+=======================================================================================================================================
 */
 #define UNDERWATER_BIT 16
 static void CG_UnderwaterSounds(void) {
@@ -1044,15 +1043,15 @@ static void CG_UnderwaterSounds(void) {
 }
 
 /*
-===============
+=======================================================================================================================================
 CG_DamageBlendBlob
-===============
+=======================================================================================================================================
 */
 static void CG_DamageBlendBlob(void) {
 	int t, i;
 	int maxTime;
 	refEntity_t ent;
-	qboolean     pointDamage;
+	qboolean pointDamage;
 	viewDamage_t *vd;
 
 	// no damage blend blobs if in limbo or spectator, and in the limbo menu
@@ -1104,11 +1103,11 @@ static void CG_DamageBlendBlob(void) {
 }
 
 /*
-===============
+=======================================================================================================================================
 CG_CalcViewValues
 
 Sets cg.refdef view values
-===============
+=======================================================================================================================================
 */
 int CG_CalcViewValues(void) {
 	playerState_t *ps;
@@ -1364,9 +1363,9 @@ void CG_ParseSkyBox(void) {
 }
 
 /*
-==============
+=======================================================================================================================================
 CG_ParseTagConnects
-==============
+=======================================================================================================================================
 */
 
 void CG_ParseTagConnects(void) {
@@ -1406,9 +1405,9 @@ void CG_ParseTagConnect(int tagNum) {
 }
 
 /*
-==============
+=======================================================================================================================================
 CG_DrawSkyBoxPortal
-==============
+=======================================================================================================================================
 */
 void CG_DrawSkyBoxPortal(qboolean fLocalView) {
 	refdef_t rd;
@@ -1442,7 +1441,6 @@ void CG_DrawSkyBoxPortal(qboolean fLocalView) {
 			} else if (fov_x > 160) {
 				fov_x = 160;
 			}
-
 			// account for zooms
 			if (cg.zoomval) {
 				zoomFov = cg.zoomval; // use user scrolled amount
@@ -1454,7 +1452,6 @@ void CG_DrawSkyBoxPortal(qboolean fLocalView) {
 			} else {
 				zoomFov = lastfov;
 			}
-
 			// do smooth transitions for the binocs
 			if (cg.zoomedBinoc)            // binoc zooming in
 			{
@@ -1475,7 +1472,7 @@ void CG_DrawSkyBoxPortal(qboolean fLocalView) {
 		rd.rdflags &= ~RDF_SNOOPERVIEW;
 
 		if (BG_PlayerMounted(cg.snap->ps.eFlags)
-		    || cg.predictedPlayerState.weapon == WP_MOBILE_MG42_SET || cg.predictedPlayerState.weapon == WP_MOBILE_BROWNING_SET) {
+		 || cg.predictedPlayerState.weapon == WP_MOBILE_MG42_SET || cg.predictedPlayerState.weapon == WP_MOBILE_BROWNING_SET) {
 			fov_x = 55;
 		}
 		// automatic fov adjustment for wide screens

@@ -97,6 +97,11 @@ void SCR_DrawPic(float x, float y, float width, float height, qhandle_t hShader)
 	re.DrawStretchPic(x, y, width, height, 0, 0, 1, 1, hShader);
 }
 
+/*
+=======================================================================================================================================
+SRC_DrawSingleChar
+=======================================================================================================================================
+*/
 static void SRC_DrawSingleChar(int x, int y, int w, int h, int ch) {
 	int row, col;
 	float frow, fcol;
@@ -206,8 +211,6 @@ void SCR_DrawStringExt(int x, int y, float w, float h, const char *string, float
 	re.SetColor(NULL);
 }
 
-// ===============================================================================
-
 /*
 =======================================================================================================================================
 SCR_DrawDemoRecording
@@ -299,7 +302,7 @@ void SCR_DrawScreenField(stereoFrame_t stereoFrame) {
 	            re.SetColor(g_color_table[0]);
 	            re.DrawStretchPic(0, 0, cls.glconfig.vidWidth, cls.glconfig.vidHeight, 0, 0, 0, 0, cls.whiteShader);
 	            re.SetColor(NULL);
-	    }
+	   }
 	}*/
 
 	if (!uivm) {
@@ -309,46 +312,46 @@ void SCR_DrawScreenField(stereoFrame_t stereoFrame) {
 	// if the menu is going to cover the entire screen, we don't need to render anything under it
 	if (!VM_Call(uivm, UI_IS_FULLSCREEN)) {
 		switch (cls.state) {
-		default:
-			Com_Error(ERR_FATAL, "SCR_DrawScreenField: bad cls.state");
-			break;
-		case CA_CINEMATIC:
-			SCR_DrawCinematic();
-			break;
-		case CA_DISCONNECTED:
-			// force menu up
-			S_StopAllSounds();
-			VM_Call(uivm, UI_SET_ACTIVE_MENU, UIMENU_MAIN);
-			break;
-		case CA_CONNECTING:
-		case CA_CHALLENGING:
-		case CA_CONNECTED:
+			default:
+				Com_Error(ERR_FATAL, "SCR_DrawScreenField: bad cls.state");
+				break;
+			case CA_CINEMATIC:
+				SCR_DrawCinematic();
+				break;
+			case CA_DISCONNECTED:
+				// force menu up
+				S_StopAllSounds();
+				VM_Call(uivm, UI_SET_ACTIVE_MENU, UIMENU_MAIN);
+				break;
+			case CA_CONNECTING:
+			case CA_CHALLENGING:
+			case CA_CONNECTED:
+				// connecting clients will only show the connection dialog
+				// refresh to update the time
+				VM_Call(uivm, UI_REFRESH, cls.realtime);
+				VM_Call(uivm, UI_DRAW_CONNECT_SCREEN, qfalse);
+				break;
+			// if the cgame is valid, fall through to there
+			// if (!cls.cgameStarted || !com_sv_running->integer) {
 			// connecting clients will only show the connection dialog
-			// refresh to update the time
-			VM_Call(uivm, UI_REFRESH, cls.realtime);
-			VM_Call(uivm, UI_DRAW_CONNECT_SCREEN, qfalse);
-			break;
-		// if the cgame is valid, fall through to there
-		// if (!cls.cgameStarted || !com_sv_running->integer) {
-		// connecting clients will only show the connection dialog
-		// VM_Call(uivm, UI_DRAW_CONNECT_SCREEN, qfalse);
-		// break;
-		//}
+			// VM_Call(uivm, UI_DRAW_CONNECT_SCREEN, qfalse);
+			// break;
+			//}
 
-		case CA_LOADING:
-		case CA_PRIMED:
-			// draw the game information screen and loading progress
-			CL_CGameRendering(stereoFrame);
-			// also draw the connection information, so it doesn't
-			// flash away too briefly on local or lan games
-			// if (!com_sv_running->value || Cvar_VariableIntegerValue("sv_cheats")) // don't draw useless text if not in dev mode
-			VM_Call(uivm, UI_REFRESH, cls.realtime);
-			VM_Call(uivm, UI_DRAW_CONNECT_SCREEN, qtrue);
-			break;
-		case CA_ACTIVE:
-			CL_CGameRendering(stereoFrame);
-			SCR_DrawDemoRecording();
-			break;
+			case CA_LOADING:
+			case CA_PRIMED:
+				// draw the game information screen and loading progress
+				CL_CGameRendering(stereoFrame);
+				// also draw the connection information, so it doesn't
+				// flash away too briefly on local or lan games
+				// if (!com_sv_running->value || Cvar_VariableIntegerValue("sv_cheats")) // don't draw useless text if not in dev mode
+				VM_Call(uivm, UI_REFRESH, cls.realtime);
+				VM_Call(uivm, UI_DRAW_CONNECT_SCREEN, qtrue);
+				break;
+			case CA_ACTIVE:
+				CL_CGameRendering(stereoFrame);
+				SCR_DrawDemoRecording();
+				break;
 		}
 	}
 	// the menu draws next

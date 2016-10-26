@@ -579,7 +579,7 @@ qboolean BG_LoadTraceMap(char *rawmapname, vec2_t world_mins, vec2_t world_maxs)
 			            case 3: trap_FS_Read(&skyground_max, sizeof(skyground_max), f); break;
 			            case 4: trap_FS_Read(&sky_min, sizeof(sky_min), f); break;
 			            case 5: trap_FS_Read(&sky_max, sizeof(sky_max), f); break;
-			    }
+			   }
 			        tracemap.sky[TRACEMAP_SIZE - 1 - i][j] = MAX_WORLD_HEIGHT;
 			        tracemap.skyground[TRACEMAP_SIZE - 1 - i][j] = MAX_WORLD_HEIGHT;
 			        tracemap.ground[TRACEMAP_SIZE - 1 - i][j] = MIN_WORLD_HEIGHT;

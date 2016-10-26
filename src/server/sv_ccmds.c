@@ -56,6 +56,7 @@ static client_t *SV_GetPlayerByName(void) {
 	int i;
 	char *s;
 	char cleanName[64];
+
 	// make sure server is running
 	if (!com_sv_running->integer) {
 		return NULL;
@@ -197,7 +198,14 @@ static qboolean SV_TransitionGameState(gamestate_t new_gs, gamestate_t old_gs, i
 
 void MSG_PrioritiseEntitystateFields(void);
 void MSG_PrioritisePlayerStateFields(void);
+
+/*
+=======================================================================================================================================
+SV_FieldInfo_f
+=======================================================================================================================================
+*/
 static void SV_FieldInfo_f(void) {
+
 	MSG_PrioritiseEntitystateFields();
 	MSG_PrioritisePlayerStateFields();
 }
@@ -216,6 +224,7 @@ static void SV_MapRestart_f(void) {
 	qboolean isBot;
 	int delay = 0;
 	gamestate_t new_gs, old_gs;
+
 	// make sure we aren't restarting twice in the same frame
 	if (com_frameTime == sv.serverId) {
 		return;
@@ -330,8 +339,6 @@ static void SV_MapRestart_f(void) {
 	}
 }
 
-// ===============================================================
-
 /*
 =======================================================================================================================================
 SV_TempBanNetAddress
@@ -361,6 +368,11 @@ void SV_TempBanNetAddress(netadr_t address, int length) {
 	svs.tempBanAddresses[oldest].endtime = svs.time + length;
 }
 
+/*
+=======================================================================================================================================
+SV_TempBanIsBanned
+=======================================================================================================================================
+*/
 qboolean SV_TempBanIsBanned(netadr_t address) {
 	int i;
 
@@ -455,6 +467,7 @@ SV_ConSay_f
 static void SV_ConSay_f(void) {
 	char *p;
 	char text[1024];
+
 	// make sure server is running
 	if (!com_sv_running->integer) {
 		Com_Printf("Server is not running.\n");
@@ -497,6 +510,7 @@ Examine the serverinfo string.
 =======================================================================================================================================
 */
 static void SV_Serverinfo_f(void) {
+
 	// make sure server is running
 	if (!com_sv_running->integer) {
 		Com_Printf("Server is not running.\n");
@@ -528,6 +542,7 @@ Examine all a users info strings FIXME: move to game
 */
 static void SV_DumpUser_f(void) {
 	client_t *cl;
+
 	// make sure server is running
 	if (!com_sv_running->integer) {
 		Com_Printf("Server is not running.\n");
@@ -580,6 +595,11 @@ void SV_GameCompleteStatus_f(void) {
 	SV_MasterGameCompleteStatus();
 }
 
+/*
+=======================================================================================================================================
+SV_UptimeReset
+=======================================================================================================================================
+*/
 void SV_UptimeReset(void) {
 	uptimeSince = time(NULL);
 }
@@ -621,12 +641,10 @@ void SV_AddOperatorCommands(void) {
 	Cmd_AddCommand("fieldinfo", SV_FieldInfo_f);
 	Cmd_AddCommand("sectorlist", SV_SectorList_f);
 	Cmd_AddCommand("gameCompleteStatus", SV_GameCompleteStatus_f);
-
 	Cmd_AddCommand("map", SV_Map_f);
 	Cmd_SetCommandCompletionFunc("map", SV_CompleteMapName);
 	Cmd_AddCommand("devmap", SV_Map_f);
 	Cmd_SetCommandCompletionFunc("devmap", SV_CompleteMapName);
-
 	Cmd_AddCommand("killserver", SV_KillServer_f);
 
 	if (com_dedicated->integer) {

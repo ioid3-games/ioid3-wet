@@ -260,7 +260,7 @@ void CG_demoTimescaleDraw(void) {
 void CG_windowDraw(void) {
 	int h, x, y, i, j, milli, t_offset, tmp;
 	cg_window_t *w;
-	qboolean    fCleanup = qfalse;
+	qboolean fCleanup = qfalse;
 #ifdef FEATURE_MULTIVIEW
 	qboolean fAllowMV = (cg.snap != NULL && cg.snap->ps.pm_type != PM_INTERMISSION && cgs.mvAllowed);
 #endif
@@ -575,8 +575,8 @@ void CG_cursorUpdate(void) {
 	int charWidth = CG_Text_Width_Ext("A", fontScale, 0, &cgs.media.limboFont2);
 	cg_window_t *w;
 	cg_windowHandler_t *wh = &cg.winHandler;
-	qboolean           fFound = qfalse, fUpdateOverlay = qfalse;
-	qboolean           fSelect, fResize;
+	qboolean fFound = qfalse, fUpdateOverlay = qfalse;
+	qboolean fSelect, fResize;
 
 	// Get cursor current position (when connected to a server)
 	// Already updated in the keycatcher
@@ -604,9 +604,9 @@ void CG_cursorUpdate(void) {
 			    (
 			        ((w->mvInfo & MV_SELECTED) && fSelect) ||
 			        (!fSelect && nx >= w->x && nx < w->x + w->w && ny >= w->y && ny < w->y + w->h)
-			    )) {
+			   )) {
 				if (!(w->mvInfo & MV_SELECTED)) {
-					w->mvInfo      |= MV_SELECTED;
+					w->mvInfo |= MV_SELECTED;
 					nSelectedWindow = i;
 				}
 

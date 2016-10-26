@@ -64,7 +64,6 @@ typedef struct {
 
 	//double wantedTime;
 	int snapCount;
-
 	int demoPos;
 	int snapsInDemo;
 
@@ -75,7 +74,6 @@ typedef struct {
 	qboolean seeking;
 
 	double Overf;
-
 	int firstNonDeltaMessageNumWritten;
 } demoInfo_t;
 
@@ -98,9 +96,9 @@ int maxRewindBackups = 0;
 demoPlayInfo_t dpi = {0, 0};
 
 /*
-====================
+=======================================================================================================================================
 CL_WalkDemoExt
-====================
+=======================================================================================================================================
 */
 static int CL_WalkDemoExt(char *arg, char *name, int *demofile) {
 	int i = 0;
@@ -151,7 +149,7 @@ qboolean CL_PeekSnapshot(int snapshotNumber, snapshot_t *snapshot) {
 	qboolean success = qfalse;
 	int r;
 	msg_t buf;
-	byte     bufData[MAX_MSGLEN];
+	byte    bufData[MAX_MSGLEN];
 	int j;
 	int lastPacketTimeOrig;
 	int parseEntitiesNumOrig;
@@ -607,7 +605,7 @@ static void CL_ParseDemo(void) {
 		int r;
 		msg_t buf;
 		msg_t *msg;
-		byte  bufData[MAX_MSGLEN];
+		byte bufData[MAX_MSGLEN];
 		int s;
 		int cmd;
 
@@ -676,7 +674,6 @@ static void CL_ParseDemo(void) {
 			if (cmd == svc_EOF) {
 				break;
 			}
-
 			// other commands
 			switch (cmd) {
 			default:
@@ -814,11 +811,11 @@ CLIENT SIDE DEMO RECORDING
 */
 
 /*
-====================
+=======================================================================================================================================
 CL_WriteDemoMessage
 
 Dumps the current net message, prefixed by the length
-====================
+=======================================================================================================================================
 */
 void CL_WriteDemoMessage(msg_t *msg, int headerBytes) {
 	int len, swlen;
@@ -836,11 +833,11 @@ void CL_WriteDemoMessage(msg_t *msg, int headerBytes) {
 }
 
 /*
-====================
+=======================================================================================================================================
 CL_StopRecording_f
 
 stop recording a demo
-====================
+=======================================================================================================================================
 */
 void CL_StopRecord_f(void) {
 	int len;
@@ -864,9 +861,9 @@ void CL_StopRecord_f(void) {
 }
 
 /*
-==================
+=======================================================================================================================================
 CL_DemoFilename
-==================
+=======================================================================================================================================
 */
 void CL_DemoFilename(int number, char *fileName) {
 	if (number < 0 || number > 9999) {
@@ -878,13 +875,13 @@ void CL_DemoFilename(int number, char *fileName) {
 }
 
 /*
-====================
+=======================================================================================================================================
 CL_Record_f
 
 record <demoname>
 
 Begins recording a demo from the current position
-====================
+=======================================================================================================================================
 */
 
 static char demoName[MAX_OSPATH]; // compiler bug workaround
@@ -933,7 +930,7 @@ void CL_Record_f(void) {
 void CL_Record(const char *name) {
 	int i;
 	msg_t buf;
-	byte          bufData[MAX_MSGLEN];
+	byte         bufData[MAX_MSGLEN];
 	entityState_t *ent;
 	entityState_t nullstate;
 	char *s;
@@ -1140,7 +1137,7 @@ CL_ReadDemoMessage
 void CL_ReadDemoMessage(void) {
 	int r;
 	msg_t buf;
-	byte  bufData[MAX_MSGLEN];
+	byte bufData[MAX_MSGLEN];
 	int s;
 
 	if (!clc.demofile) {
@@ -1153,7 +1150,7 @@ void CL_ReadDemoMessage(void) {
 
 	if (di.snapCount < maxRewindBackups &&
 	    ((!di.gotFirstSnap  &&  !(cls.state >= CA_CONNECTED && cls.state < CA_PRIMED))
-	     || (di.gotFirstSnap  &&  di.numSnaps % (di.snapsInDemo / maxRewindBackups) == 0))) {
+	 || (di.gotFirstSnap  &&  di.numSnaps % (di.snapsInDemo / maxRewindBackups) == 0))) {
 		rewindBackups_t *rb;
 
 		if (!di.skipSnap) {
@@ -1229,9 +1226,9 @@ keep_reading:
 }
 
 /*
-====================
+=======================================================================================================================================
 CL_CompleteDemoName
-====================
+=======================================================================================================================================
 */
 static void CL_CompleteDemoName(char *args, int argNum) {
 	if (argNum == 2) {
@@ -1327,12 +1324,12 @@ void CL_PlayDemo_f(void) {
 }
 
 /*
-==================
+=======================================================================================================================================
 CL_NextDemo
 
 Called when a demo or cinematic finishes
 If the "nextdemo" cvar is set, that command will be issued
-==================
+=======================================================================================================================================
 */
 void CL_NextDemo(void) {
 	char v[MAX_STRING_CHARS];
@@ -1475,7 +1472,7 @@ void CL_SeekEnd_f(void) {
 
 void CL_SeekNext_f(void) {
 	snapshot_t snapshot;
-	qboolean   r;
+	qboolean r;
 	int i;
 
 	if (cl.snap.serverTime == di.lastServerTime) {

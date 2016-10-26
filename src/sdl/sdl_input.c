@@ -96,9 +96,9 @@ char *IN_GetClipboardData(void) {
 }
 
 /*
-==============
+=======================================================================================================================================
 Sys_IsNumLockDown
-==============
+=======================================================================================================================================
 */
 qboolean IN_IsNumLockDown(void) {
 #ifdef _WIN32
@@ -203,9 +203,9 @@ static qboolean IN_IsConsoleKey(keyNum_t key, int character) {
 
 	if (key == K_GRAVE
 #ifdef __APPLE__
-	    || key == 60 // Same as console key
+	 || key == 60 // Same as console key
 #endif
-	    ) {
+	   ) {
 		return qtrue;
 	}
 	// Only parse the variable when it changes
@@ -937,7 +937,7 @@ static void IN_WindowFocusLost() {
     if (cls.rendererStarted && cls.glconfig.isFullscreen)
     {
         Cbuf_ExecuteText(EXEC_NOW, "minimize");
-  }
+ }
 }
 */
 
@@ -1157,7 +1157,7 @@ void IN_Init(void) {
 	int appState;
 
 	if (!SDL_WasInit(SDL_INIT_VIDEO)) {
-		Com_Error(ERR_FATAL, "IN_Init called before SDL_Init( SDL_INIT_VIDEO )");
+		Com_Error(ERR_FATAL, "IN_Init called before SDL_Init(SDL_INIT_VIDEO)");
 		return;
 	}
 

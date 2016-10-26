@@ -320,7 +320,7 @@ void S_DefaultSound(sfx_t *sfx) {
     for (i = 0; i < sfx->soundLength; i++)
     {
         sfx->soundData->sndChunk[i] = i;
-  }
+ }
 }
 */
 
@@ -493,13 +493,13 @@ void S_SpatializeOrigin(vec3_t origin, int master_vol, int *left_vol, int *right
 // =======================================================================
 
 /*
-====================
+=======================================================================================================================================
 S_StartSoundEx
 
 Validates the parms and ques the sound up
 if pos is NULL, the sound will be dynamically sourced from the entity
 Entchannel 0 will never override a playing sound
-====================
+=======================================================================================================================================
 */
 void S_Base_StartSoundEx(vec3_t origin, int entnum, int entchannel, sfxHandle_t sfxHandle, int flags, int volume) {
 	channel_t *ch;
@@ -689,12 +689,12 @@ void S_Base_ClearSounds(qboolean clearStreaming, qboolean clearMusic) {
 }
 
 /*
-==================
+=======================================================================================================================================
 S_ClearSoundBuffer
 
 If we are about to perform file access, clear the buffer
 so sound doesn't stutter.
-==================
+=======================================================================================================================================
 */
 void S_Base_ClearSoundBuffer(qboolean killStreaming) {
 	if (!s_soundStarted) {
@@ -725,12 +725,12 @@ void S_Base_ClearLoopingSounds(void) {
 }
 
 /*
-==================
+=======================================================================================================================================
 S_AddLoopingSound
 
 Called during entity generation for a frame
 Include velocity in case I get around to doing doppler...
-==================
+=======================================================================================================================================
 */
 
 #define UNDERWATER_BIT 16
@@ -927,7 +927,6 @@ void S_AddLoopSounds(void) {
 			} else {
 				S_SpatializeOrigin(loop2->origin, 90, &left, &right, loop->range, qfalse); // sphere
 			}
-
 			// adjust according to volume
 			left = (int)((float)loop2->volume * (float)left / 256.0);
 			right = (int)((float)loop2->volume * (float)right / 256.0);
@@ -1168,7 +1167,7 @@ void S_Base_Respatialize(int entnum, const vec3_t head, vec3_t axis[3], int inwa
 static qboolean S_ScanChannelStarts(void) {
 	channel_t *ch = s_channels;
 	int i;
-	qboolean  newSamples = qfalse;
+	qboolean newSamples = qfalse;
 
 	for (i = 0; i < MAX_CHANNELS; i++, ch++) {
 		if (!ch->thesfx) {
@@ -1610,7 +1609,7 @@ void S_Base_StartBackgroundTrack(const char *intro, const char *loop, int fadeup
 void S_UpdateStreamingSounds(void) {
 	int bufferSamples;
 	int fileSamples;
-	byte             raw[30000]; // just enough to fit in a mac stack frame
+	byte            raw[30000]; // just enough to fit in a mac stack frame
 	int fileBytes;
 	int rs;
 	int i, j;
@@ -1645,7 +1644,6 @@ void S_UpdateStreamingSounds(void) {
 			if (!fileSamples) {
 				break;
 			}
-
 			// our max buffer size
 			fileBytes = fileSamples * (ss->stream->info.width * ss->stream->info.channels);
 
@@ -1653,14 +1651,12 @@ void S_UpdateStreamingSounds(void) {
 				fileBytes = sizeof(raw);
 				fileSamples = fileBytes / (ss->stream->info.width * ss->stream->info.channels);
 			}
-
 			// read stream
 			rs = S_CodecReadStream(ss->stream, fileBytes, raw);
 
 			if (rs < fileBytes) {
 				fileSamples = rs / (ss->stream->info.width * ss->stream->info.channels);
 			}
-
 			// calculate the streaming volume based on stream fade and global fade
 			streamingVol = S_GetStreamingFade(ss);
 			// stop the stream if we had faded out of existence

@@ -162,13 +162,13 @@ void SHA1Input(SHA1Context         *context,
             {
                 /* Message is too long */
                 context->Corrupted = 1;
-        }
-    }
+       }
+   }
 
         if (context->Message_Block_Index == 64)
         {
             SHA1ProcessMessageBlock(context);
-    }
+   }
 
         message_array++;
 }
@@ -318,14 +318,14 @@ void SHA1PadMessage(SHA1Context *context) {
         while (context->Message_Block_Index < 64)
         {
             context->Message_Block[context->Message_Block_Index++] = 0;
-    }
+   }
 
         SHA1ProcessMessageBlock(context);
 
         while (context->Message_Block_Index < 56)
         {
             context->Message_Block[context->Message_Block_Index++] = 0;
-    }
+   }
 }
     else
     {
@@ -333,7 +333,7 @@ void SHA1PadMessage(SHA1Context *context) {
         while (context->Message_Block_Index < 56)
         {
             context->Message_Block[context->Message_Block_Index++] = 0;
-    }
+   }
 }
 
     /*

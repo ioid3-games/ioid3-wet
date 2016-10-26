@@ -79,8 +79,7 @@
 #define TKFL_MORTAR             0x00000004
 
 // movers are things like doors, plats, buttons, etc
-typedef enum
-{
+typedef enum {
 	MOVER_POS1 = 0,
 	MOVER_POS2,
 	MOVER_POS3,
@@ -211,12 +210,10 @@ typedef struct {
 typedef struct {
 	qhandle_t oldFrameModel;
 	qhandle_t frameModel;
-
 	int oldFrame;
 	int oldFrameTime; // time when ->oldFrame was exactly on
 	int oldFrameSnapshotTime;
 	vec3_t oldFramePos;
-
 	int frame;
 	int frameTime; // time when ->frame will be exactly on
 
@@ -224,9 +221,7 @@ typedef struct {
 	int yawing;
 	float pitchAngle;
 	int pitching;
-
 	int moveSpeed;
-
 	int animationNumber; // may include ANIM_TOGGLEBIT
 	int oldAnimationNumber; // may include ANIM_TOGGLEBIT
 	animation_t *animation;
@@ -285,7 +280,6 @@ struct gentity_s {
 	int sound2to3;
 	int sound3to2;
 	int soundPos3;
-
 	int soundSoftopen;
 	int soundSoftendo;
 	int soundSoftclose;
@@ -297,7 +291,6 @@ struct gentity_s {
 	vec3_t pos1, pos2, pos3;
 
 	char *message;
-
 	int timestamp; // body queue sinking, etc
 
 	float angle; // set in editor, -1 = up, -2 = down
@@ -308,16 +301,13 @@ struct gentity_s {
 
 	char *team;
 	gentity_t *target_ent;
-
 	float speed;
 	float closespeed; // for movers that close at a different speed than they open
 	vec3_t movedir;
-
 	int gDuration;
 	int gDurationBack;
 	vec3_t gDelta;
 	vec3_t gDeltaBack;
-
 	int nextthink;
 	void (*free)(gentity_t *self);
 	void (*think)(gentity_t *self);
@@ -327,20 +317,17 @@ struct gentity_s {
 	void (*use)(gentity_t *self, gentity_t *other, gentity_t *activator);
 	void (*pain)(gentity_t *self, gentity_t *attacker, int damage, vec3_t point);
 	void (*die)(gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int damage, int mod);
-
 	int pain_debounce_time;
 	int fly_sound_debounce_time; // wind tunnel
 
 	int health;
 
 	qboolean takedamage;
-
 	int damage;
 	int splashDamage; // quad will increase this without increasing radius
 	int splashRadius;
 	int methodOfDeath;
 	int splashMethodOfDeath;
-
 	int count;
 
 	gentity_t *chain;
@@ -350,10 +337,8 @@ struct gentity_s {
 	gentity_t *teammaster; // master of the team
 
 	meansOfDeath_t deathType;
-
 	int watertype;
 	int waterlevel;
-
 	int noise_index;
 
 	// timing variables
@@ -364,7 +349,6 @@ struct gentity_s {
 	// sniper uses delay, random, radius
 	int radius;
 	float delay;
-
 	int TargetFlag;
 	float duration;
 	vec3_t rotate;
@@ -380,7 +364,6 @@ struct gentity_s {
 	char *dl_stylestring;
 	char *dl_shader;
 	int dl_atten;
-
 	int key; // used by:  target_speaker->nopvs,
 
 	qboolean active;
@@ -388,9 +371,7 @@ struct gentity_s {
 	// mg42
 	float harc;
 	float varc;
-
 	int props_frame_state;
-
 	int missionLevel; // mission we are currently trying to complete
 	// gets reset each new level
 	int start_size;
@@ -401,11 +382,8 @@ struct gentity_s {
 	int mg42BaseEnt;
 
 	char *spawnitem;
-
 	int flameQuota, flameQuotaTime, flameBurnEnt;
-
 	int count2;
-
 	int grenadeExplodeTime; // we've caught a grenade, which was due to explode at this time
 	int grenadeFired; // the grenade entity we last fired
 
@@ -413,19 +391,16 @@ struct gentity_s {
 
 	// entity scripting system
 	char *scriptName;
-
 	int numScriptEvents;
 	g_script_event_t *scriptEvents; // contains a list of actions to perform for each event type
 	g_script_status_t scriptStatus; // current status of scripting
 	// the accumulation buffer
 	int scriptAccumBuffer[G_MAX_SCRIPT_ACCUM_BUFFERS];
-
 	float accuracy;
 
 	char tagName[MAX_QPATH]; // name of the tag we are attached to
 	gentity_t *tagParent;
 	gentity_t *tankLink;
-
 	int lastHintCheckTime;
 	int voiceChatSquelch;
 	int voiceChatPreviousTime;
@@ -438,14 +413,11 @@ struct gentity_s {
 	int conbmodels[MAX_CONSTRUCT_STAGES + 1];
 	int desbmodels[MAX_CONSTRUCT_STAGES];
 	int partofstage;
-
 	int allowteams;
-
 	int spawnTime;
 
 	gentity_t *dmgparent;
 	qboolean dmginloop;
-
 	int tagNumber; // "handle" to a tag header
 
 	int linkTagTime;
@@ -469,7 +441,6 @@ struct gentity_s {
 	qboolean runthisframe;
 
 	g_constructible_stats_t constructibleStats;
-
 	int etpro_misc_1; // bit 0 = it's a planted/ticking dynamite
 	int etpro_misc_2; // the entityNumber of the (last) planted dyna. bit strange it's only 1 dyna..
 
@@ -485,30 +456,26 @@ struct gentity_s {
 #endif
 };
 
-typedef enum
-{
+typedef enum {
 	CON_DISCONNECTED = 0,
 	CON_CONNECTING,
 	CON_CONNECTED
 } clientConnected_t;
 
-typedef enum
-{
+typedef enum {
 	SPECTATOR_NOT = 0,
 	SPECTATOR_FREE,
 	SPECTATOR_FOLLOW
 } spectatorState_t;
 
-typedef enum
-{
+typedef enum {
 	COMBATSTATE_COLD = 0,
 	COMBATSTATE_DAMAGEDEALT,
 	COMBATSTATE_DAMAGERECEIVED,
 	COMBATSTATE_KILLEDPLAYER
 } combatstate_t;
 
-typedef enum
-{
+typedef enum {
 	TEAM_BEGIN = 0,     // Beginning a team game, spawn at base
 	TEAM_ACTIVE     // Now actively playing
 } playerTeamStateState_t;
@@ -638,7 +605,6 @@ typedef struct {
 	char netname[MAX_NETNAME];
 	char client_ip[MAX_IP4_LENGTH]; // ip 'caching' - it won't change
 	char cl_guid[MAX_GUID_LENGTH + 1];
-
 	int autoActivate; // based on cg_autoactivate userinfo        (uses the PICKUP_ values above)
 
 	int maxHealth; // for handicapping
@@ -673,11 +639,9 @@ typedef struct {
 	int autofireteamJoinEndTime;
 
 	playerStats_t playerStats;
-
 	int lastBattleSenseBonusTime;
 	int lastHQMineReportTime;
 	int lastCCPulseTime;
-
 	int lastSpawnTime;
 
 	unsigned int autoaction; // End-of-match auto-requests
@@ -702,7 +666,6 @@ typedef struct {
 	int characterIndex;
 
 	ipFilter_t complaintips[MAX_COMPLAINTIPS];
-
 	int lastkilled_client;
 	int lastrevive_client;
 	int lastkiller_client;
@@ -785,7 +748,6 @@ struct gclient_s {
 	int buttons;
 	int oldbuttons;
 	int latched_buttons;
-
 	int wbuttons;
 	int oldwbuttons;
 	int latched_wbuttons;
@@ -813,15 +775,12 @@ struct gclient_s {
 	int inactivitySecondsLeft; // for displaying a counting-down time on clients (milliseconds before activity kicks in..)
 
 	int airOutTime;
-
 	int lastKillTime; // for multiple kill rewards FIXME: implement this/make available to Lua
 
 	// timeResidual is used to handle events that happen every second
 	// like health / armor countdowns and regeneration
 	int timeResidual;
-
 	float currentAimSpreadScale;
-
 	int dropWeaponTime; // last time a weapon was dropped
 	int limboDropWeapon; // weapon to drop in limbo
 	int lastBurnTime; // last time index for flamethrower burn
@@ -831,14 +790,11 @@ struct gclient_s {
 	gentity_t *touchingTOI; // the trigger_objective_info a player is touching this frame
 
 	int lastConstructibleBlockingWarnTime;
-
 	int landmineSpottedTime;
 	gentity_t *landmineSpotted;
-
 	int speedScale;
 
 	combatstate_t combatState;
-
 	int topMarker;
 	clientMarker_t clientMarkers[MAX_CLIENT_MARKERS];
 	clientMarker_t backupMarker;
@@ -862,7 +818,6 @@ struct gclient_s {
 	// the next 2 are used to play the proper animation on the body
 	int torsoDeathAnim;
 	int legsDeathAnim;
-
 	int lastSpammyCentrePrintTime;
 	pmoveExt_t pmext;
 #ifdef FEATURE_SERVERMDX
@@ -873,11 +828,9 @@ struct gclient_s {
 	int deathTime; // if we are dead, when did we die
 
 	int disguiseClientNum;
-
 	int medals;
 	float acc;
 	float hspct;
-
 	int flametime; // flamethrower exploit fix
 
 	qboolean hasaward;
@@ -944,7 +897,6 @@ typedef struct level_locals_s {
 	struct gclient_s *clients; // [maxclients]
 
 	struct gentity_s *gentities;
-
 	int num_entities; // current number, <= MAX_GENTITIES - this is an index of highest used entity and grows very quickly to MAX_GENTITIES
 
 	int warmupTime; // restart match at this time
@@ -957,7 +909,6 @@ typedef struct level_locals_s {
 
 	// store latched cvars here that we want to get at often
 	int maxclients;
-
 	int framenum;
 	int time; // in msec
 	int overTime; // workaround for dual objective timelimit bug
@@ -1015,38 +966,29 @@ typedef struct level_locals_s {
 	animScriptData_t animScriptData;
 
 	qboolean lastRestartTime;
-
 	int numFinalDead[2]; // unable to respawn and in limbo (per team)
 	int numOidTriggers;
 
 	qboolean latchGametype;
-
 	int globalAccumBuffer[MAX_SCRIPT_ACCUM_BUFFERS];
-
 	int soldierChargeTime[2];
 	int medicChargeTime[2];
 	int engineerChargeTime[2];
 	int fieldopsChargeTime[2];
-
 	int covertopsChargeTime[2];
-
 	int lastMapEntityUpdate;
 	int lastMapSpottedMinesUpdate;
 	int objectiveStatsAllies[MAX_OBJECTIVES];
 	int objectiveStatsAxis[MAX_OBJECTIVES];
-
 	int lastSystemMsgTime[2];
-
 	float soldierChargeTimeModifier[2];
 	float medicChargeTimeModifier[2];
 	float engineerChargeTimeModifier[2];
 	float fieldopsChargeTimeModifier[2];
 	float covertopsChargeTimeModifier[2];
-
 	int firstbloodTeam;
 	int teamEliminateTime;
 	int lmsWinningTeam;
-
 	int campaignCount;
 	int currentCampaign;
 	qboolean newCampaign;
@@ -1061,7 +1003,6 @@ typedef struct level_locals_s {
 	fireteamData_t fireTeams[MAX_FIRETEAMS];
 
 	qboolean ccLayers;
-
 	int dwBlueReinfOffset;
 	int dwRedReinfOffset;
 	qboolean fLocalHost;
@@ -1085,16 +1026,13 @@ typedef struct level_locals_s {
 
 	qboolean disableTankExit;
 	qboolean disableTankEnter;
-
 	int axisBombCounter, alliedBombCounter;
 	int axisArtyCounter, alliedArtyCounter; // arty/airstrike rate limiting
 	int axisAutoSpawn, alliesAutoSpawn;
 
 	limbo_cam_t limboCams[MAX_LIMBO_CAMS];
 	int numLimboCams;
-
 	int numActiveAirstrikes[2];
-
 	float teamXP[SK_NUM_SKILLS][2];
 
 	commanderTeamChat_t commanderSounds[2][MAX_COMMANDER_TEAM_SOUNDS];
@@ -1287,7 +1225,7 @@ typedef struct {
 	// most recent data
 	vec3_t axis[3]; // rotation vectors
 	vec3_t torsoAxis[3]; // rotation vectors for torso section of skeletal animation
-	//	qboolean	nonNormalizedAxes;	// axis are not normalized, i.e. they have scale
+	//	qboolean nonNormalizedAxes;	// axis are not normalized, i.e. they have scale
 	float origin[3];
 	int frame;
 	qhandle_t frameModel;
@@ -1998,7 +1936,6 @@ typedef struct mapEntityData_s {
 	int type;
 	int startTime;
 	int singleClient;
-
 	int entNum;
 	struct mapEntityData_s *next, *prev;
 } mapEntityData_t;
@@ -2045,8 +1982,7 @@ void G_DebugCloseSkillLog(void);
 void G_DebugAddSkillLevel(gentity_t *ent, skillType_t skill);
 void G_DebugAddSkillPoints(gentity_t *ent, skillType_t skill, float points, const char *reason);
 
-typedef enum
-{
+typedef enum {
 	SM_NEED_MEDIC = 0,
 	SM_NEED_ENGINEER,
 	SM_NEED_LT,
@@ -2100,8 +2036,7 @@ void G_PrintClientSpammyCenterPrint(int entityNum, char *text);
 #define AA_STATSTEAM    0x02    // Client AutoAction: Dump TEAM player stats
 
 // "Delayed Print" ent enumerations
-typedef enum
-{
+typedef enum {
 	DP_PAUSEINFO = 0,       // Print current pause info
 	DP_UNPAUSING,       // Print unpause countdown + unpause
 	DP_CONNECTINFO,     // Display info on connect
@@ -2404,8 +2339,7 @@ qboolean G_LandmineSnapshotCallback(int entityNum, int clientNum);
 #define MAPVOTE_NO_RANDOMIZE     8 // unused
 #define MAPVOTE_NEXTMAP_VOTEMAP  16
 
-typedef enum
-{
+typedef enum {
 	F_INT = 0,
 	F_FLOAT,
 	F_LSTRING,          // string on disk, pointer in memory, TAG_LEVEL

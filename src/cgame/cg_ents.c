@@ -363,7 +363,7 @@ static void CG_General(centity_t *cent) {
 		if (cent->currentState.otherEntityNum == cg.snap->ps.clientNum && cg.snap->ps.viewlocked) {
 			AnglesToAxis(cg.predictedPlayerState.viewangles, ent.axis);
 		} else {
-			//AnglesToAxis( cg_entities[cent->currentState.otherEntityNum].lerpAngles, ent.axis );
+			//AnglesToAxis(cg_entities[cent->currentState.otherEntityNum].lerpAngles, ent.axis);
 			AnglesToAxis(cent->lerpAngles, ent.axis);
 		}
 	} else {
@@ -428,7 +428,7 @@ static void CG_General(centity_t *cent) {
 
 			ent.backlerp = cent->lerpFrame.backlerp;
 
-			//CG_Printf( "Gamemodel: oldframe: %i frame: %i lerp: %f\n", ent.oldframe, ent.frame, ent.backlerp );
+			//CG_Printf("Gamemodel: oldframe: %i frame: %i lerp: %f\n", ent.oldframe, ent.frame, ent.backlerp);
 		}
 		// only advance/change frame if the game model has not
 		// been stopped (teamNum != 1)
@@ -591,7 +591,7 @@ static void CG_Item(centity_t *cent) {
 			AnglesToAxis(cent->lerpAngles, stand.axis);
 			VectorCopy(cent->lerpOrigin, stand.origin);
 
-			// scale the stand to match the weapon scale ( the weapon will also be scaled inside CG_PositionEntityOnTag() )
+			// scale the stand to match the weapon scale (the weapon will also be scaled inside CG_PositionEntityOnTag())
 			VectorScale(stand.axis[0], 1.5, stand.axis[0]);
 			VectorScale(stand.axis[1], 1.5, stand.axis[1]);
 			VectorScale(stand.axis[2], 1.5, stand.axis[2]);
@@ -830,9 +830,9 @@ static void CG_Missile(centity_t *cent) {
 	}
 	// add trails
 	if (cent->currentState.eType == ET_FP_PARTS
-	    || cent->currentState.eType == ET_FIRE_COLUMN
-	    || cent->currentState.eType == ET_FIRE_COLUMN_SMOKE
-	    || cent->currentState.eType == ET_RAMJET) {
+	 || cent->currentState.eType == ET_FIRE_COLUMN
+	 || cent->currentState.eType == ET_FIRE_COLUMN_SMOKE
+	 || cent->currentState.eType == ET_RAMJET) {
 		CG_RocketTrail(cent, NULL);
 	} else if (weapon->missileTrailFunc) {
 		weapon->missileTrailFunc(cent, weapon);
@@ -840,7 +840,7 @@ static void CG_Missile(centity_t *cent) {
 	// add dynamic light
 	if (weapon->missileDlight) {
 		//trap_R_AddLightToScene(cent->lerpOrigin, weapon->missileDlight,
-		//weapon->missileDlightColor[0], weapon->missileDlightColor[1], weapon->missileDlightColor[2], 0 );
+		//weapon->missileDlightColor[0], weapon->missileDlightColor[1], weapon->missileDlightColor[2], 0);
 		trap_R_AddLightToScene(cent->lerpOrigin, weapon->missileDlight, 1.0,
 		                       weapon->missileDlightColor[0], weapon->missileDlightColor[1], weapon->missileDlightColor[2], 0, 0);
 	}
@@ -1064,10 +1064,10 @@ static void CG_TrapSetAnim(centity_t *cent, lerpFrame_t *lf, int newAnim) {
 }
 
 /*
-==============
+=======================================================================================================================================
 CG_Trap
     // TODO: change from 'trap' to something else.  'trap' is a misnomer.  it's actually used for other stuff too
-==============
+=======================================================================================================================================
 */
 static void CG_Trap(centity_t *cent) {
 	refEntity_t ent;
@@ -1169,12 +1169,12 @@ static void CG_Corona(centity_t *cent) {
 // func_explosive
 
 /*
-===============
+=======================================================================================================================================
 CG_Explosive
     This is currently almost exactly the same as CG_Mover
     It's split out so that any changes or experiments are
     unattached to anything else.
-===============
+=======================================================================================================================================
 */
 static void CG_Explosive(centity_t *cent) {
 	refEntity_t ent;
@@ -1216,12 +1216,12 @@ static void CG_Constructible(centity_t *cent) {
 	memset(&ent, 0, sizeof(ent));
 	VectorCopy(cent->lerpOrigin, ent.origin);
 	VectorCopy(cent->lerpOrigin, ent.oldorigin);
-	//VectorCopy( ent.origin, cent->lerpOrigin);
+	//VectorCopy(ent.origin, cent->lerpOrigin);
 	AnglesToAxis(cent->lerpAngles, ent.axis);
 
 	ent.renderfx = RF_NOSHADOW;
 
-	//CG_Printf( "Adding constructible: %s\n", CG_ConfigString( CS_OID_NAMES + cent->currentState.otherEntityNum2 ) );
+	//CG_Printf("Adding constructible: %s\n", CG_ConfigString(CS_OID_NAMES + cent->currentState.otherEntityNum2));
 
 	if (s1->modelindex) {
 		ent.hModel = cgs.inlineDrawModel[s1->modelindex];
@@ -1423,7 +1423,7 @@ void CG_Beam_2(centity_t *cent) {
 	VectorCopy(origin, ent.origin);
 	VectorCopy(origin2, ent.oldorigin);
 
-	//CG_Printf( "O: %i %i %i OO: %i %i %i\n", (int)origin[0], (int)origin[1], (int)origin[2], (int)origin2[0], (int)origin2[1], (int)origin2[2] );
+	//CG_Printf("O: %i %i %i OO: %i %i %i\n", (int)origin[0], (int)origin[1], (int)origin[2], (int)origin2[0], (int)origin2[1], (int)origin2[2]);
 	AxisClear(ent.axis);
 	ent.reType = RT_RAIL_CORE;
 	ent.customShader = cgs.gameShaders[s1->modelindex2];
@@ -1665,7 +1665,7 @@ void CG_Cabinet(centity_t *cent, cabinetType_t type) {
 	VectorCopy(cabinet.origin, cabinet.oldorigin);
 	VectorCopy(cabinet.origin, cabinet.lightingOrigin);
 	cabinet.lightingOrigin[2] += 16;
-	cabinet.renderfx          |= RF_MINLIGHT;
+	cabinet.renderfx |= RF_MINLIGHT;
 	AnglesToAxis(cent->lerpAngles, cabinet.axis);
 
 	if (cent->currentState.onFireStart == -9999) {
@@ -1690,9 +1690,9 @@ void CG_Cabinet(centity_t *cent, cabinetType_t type) {
 		trap_R_AddRefEntityToScene(&mini_me);
 	}
 
-	/*  for( k = 0; k < 3; k++ ) {
-	        VectorScale( cabinet.axis[k], 2.f, cabinet.axis[k] );
-	  }
+	/*  for(k = 0; k < 3; k++) {
+	        VectorScale(cabinet.axis[k], 2.f, cabinet.axis[k]);
+	 }
 	    cabinet.nonNormalizedAxes = qtrue;*/
 
 	trap_R_AddRefEntityToScene(&cabinet);
@@ -1788,7 +1788,7 @@ static void CG_InterpolateEntityPosition(centity_t *cent) {
 	if (cg.nextSnap == NULL) {
 		// FIXME? There are some cases when in Limbo mode during a map restart
 		// that were tripping this error.
-		//CG_Error( "CG_InterpolateEntityPosition: cg.nextSnap == NULL" );
+		//CG_Error("CG_InterpolateEntityPosition: cg.nextSnap == NULL");
 		//CG_Printf("CG_InterpolateEntityPosition: cg.nextSnap == NULL");
 		return;
 	}
@@ -1970,7 +1970,7 @@ qboolean CG_AddLinkedEntity(centity_t *cent, qboolean ignoreframe, int atTime) {
 #ifdef FEATURE_MULTIVIEW
 	    && cg.mvTotalClients < 2
 #endif
-	    ) {
+	   ) {
 		// already processed this frame
 		return qtrue;
 	}
@@ -1996,8 +1996,8 @@ qboolean CG_AddLinkedEntity(centity_t *cent, qboolean ignoreframe, int atTime) {
 		cent->processedFrame = cg.clientFrame;
 	}
 	// removed from here:
-	//VectorCopy( cent->lerpAngles, cent->lastLerpAngles );
-	//VectorCopy( cent->lerpOrigin, cent->lastLerpOrigin );
+	//VectorCopy(cent->lerpAngles, cent->lastLerpAngles);
+	//VectorCopy(cent->lerpOrigin, cent->lastLerpOrigin);
 
 	if (!(sParent->eFlags & EF_PATH_LINK)) {
 		if (sParent->pos.trType == TR_LINEAR_PATH) {
@@ -2105,9 +2105,9 @@ qboolean CG_AddLinkedEntity(centity_t *cent, qboolean ignoreframe, int atTime) {
 }
 
 /*
-==================
+=======================================================================================================================================
 CG_AddEntityToTag
-==================
+=======================================================================================================================================
 */
 qboolean CG_AddEntityToTag(centity_t *cent) {
 	centity_t *centParent;
@@ -2122,7 +2122,7 @@ qboolean CG_AddEntityToTag(centity_t *cent) {
 #ifdef FEATURE_MULTIVIEW
 	    && cg.mvTotalClients < 2
 #endif
-	    ) {
+	   ) {
 		// already processed this frame
 		return qtrue;
 	}
@@ -2180,9 +2180,9 @@ qboolean CG_AddEntityToTag(centity_t *cent) {
 }
 
 /*
-===============
+=======================================================================================================================================
 CG_AddPacketEntities
-===============
+=======================================================================================================================================
 */
 
 qboolean CG_AddCEntity_Filter(centity_t *cent) {
@@ -2190,7 +2190,7 @@ qboolean CG_AddCEntity_Filter(centity_t *cent) {
 #ifdef FEATURE_MULTIVIEW
 	    && cg.mvTotalClients < 2
 #endif
-	    ) {
+	   ) {
 		return qtrue;
 	}
 

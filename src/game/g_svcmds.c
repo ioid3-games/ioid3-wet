@@ -196,7 +196,7 @@ void PrintMaxLivesGUID(void) {
 qboolean G_FilterPacket(ipFilterList_t *ipFilterList, char *from) {
 	int i = 0;
 	unsigned in;
-	byte     m[4];
+	byte  m[4];
 	char *p = from;
 
 	while (*p && i < 4) {
@@ -653,29 +653,29 @@ void Svcmd_ForceTeam_f(void) {
  * @brief starts match if in tournament mode
  */
 void Svcmd_StartMatch_f(void) {
-	/*  if ( !g_noTeamSwitching.integer ) {
-	        trap_SendServerCommand( -1, va("print \"g_noTeamSwitching not activated.\n\""));
+	/*  if (!g_noTeamSwitching.integer) {
+	        trap_SendServerCommand(-1, va("print \"g_noTeamSwitching not activated.\n\""));
 	        return;
-	  }
+	 }
 
 	*/
 
 	G_refAllReady_cmd(NULL);
 
 	/*
-	    if ( level.numPlayingClients <= 1 ) {
-	        trap_SendServerCommand( -1, va("print \"Not enough playing clients to start match.\n\""));
+	    if (level.numPlayingClients <= 1) {
+	        trap_SendServerCommand(-1, va("print \"Not enough playing clients to start match.\n\""));
 	        return;
-	  }
+	 }
 
-	    if ( g_gamestate.integer == GS_PLAYING ) {
-	        trap_SendServerCommand( -1, va("print \"Match is already in progress.\n\""));
+	    if (g_gamestate.integer == GS_PLAYING) {
+	        trap_SendServerCommand(-1, va("print \"Match is already in progress.\n\""));
 	        return;
-	  }
+	 }
 
-	    if ( g_gamestate.integer == GS_WARMUP ) {
-	        trap_SendConsoleCommand( EXEC_APPEND, va( "map_restart 0 %i\n", GS_PLAYING ) );
-	  }
+	    if (g_gamestate.integer == GS_WARMUP) {
+	        trap_SendConsoleCommand(EXEC_APPEND, va("map_restart 0 %i\n", GS_PLAYING));
+	 }
 
 	*/
 }
@@ -828,7 +828,7 @@ static void Svcmd_Gib(void) {
 	int pids[MAX_CLIENTS];
 	char name[MAX_NAME_LENGTH], err[MAX_STRING_CHARS];
 	gentity_t *vic;
-	qboolean  doAll = qfalse;
+	qboolean doAll = qfalse;
 
 	// ignore in intermission
 	if (level.intermissiontime) {
@@ -893,7 +893,7 @@ static void Svcmd_Die(void) {
 	int pids[MAX_CLIENTS];
 	char name[MAX_NAME_LENGTH], err[MAX_STRING_CHARS];
 	gentity_t *vic;
-	qboolean  doAll = qfalse;
+	qboolean doAll = qfalse;
 
 	// FIXME: usage
 	//        add reason?
@@ -965,7 +965,7 @@ static void Svcmd_PlayerAnimEvent(void) {
 	int pids[MAX_CLIENTS];
 	char name[MAX_NAME_LENGTH], err[MAX_STRING_CHARS], anim[3];
 	gentity_t *vic;
-	qboolean  doAll = qfalse;
+	qboolean doAll = qfalse;
 
 	// ignore in intermission
 	if (level.intermissiontime) {
@@ -1032,7 +1032,7 @@ static void Svcmd_Freeze(void) {
 	int pids[MAX_CLIENTS];
 	char name[MAX_NAME_LENGTH], err[MAX_STRING_CHARS];
 	gentity_t *vic;
-	qboolean  doAll = qfalse;
+	qboolean doAll = qfalse;
 
 	// FIXME: usage
 	//        make all outputs nice - cp with icon?
@@ -1060,7 +1060,6 @@ static void Svcmd_Freeze(void) {
 			      vic->client->sess.sessionTeam == TEAM_ALLIES)) {
 				continue;
 			}
-
 			// only freeze & count not frozen players :)
 			if (vic->client->freezed == qtrue) {
 				continue;
@@ -1108,7 +1107,7 @@ static void Svcmd_Unfreeze(void) {
 	int pids[MAX_CLIENTS];
 	char name[MAX_NAME_LENGTH], err[MAX_STRING_CHARS];
 	gentity_t *vic;
-	qboolean  doAll = qfalse;
+	qboolean doAll = qfalse;
 
 	// FIXME: usage
 	//        make all outputs nice - cp with icon?
@@ -1130,7 +1129,6 @@ static void Svcmd_Unfreeze(void) {
 			      vic->client->sess.sessionTeam == TEAM_ALLIES)) {
 				continue;
 			}
-
 			// only unfreeze & count not frozen players :)
 			if (vic->client->freezed == qfalse) {
 				continue;
@@ -1179,7 +1177,7 @@ static void Svcmd_Burn(void) {
 	int pids[MAX_CLIENTS];
 	char name[MAX_NAME_LENGTH], err[MAX_STRING_CHARS];
 	gentity_t *vic;
-	qboolean  doAll = qfalse;
+	qboolean doAll = qfalse;
 
 	// FIXME: usage
 	//        make all outputs nice - cp with icon?
@@ -1268,7 +1266,7 @@ static void Svcmd_Pip(void) {
 	int pids[MAX_CLIENTS];
 	char name[MAX_NAME_LENGTH], err[MAX_STRING_CHARS];
 	gentity_t *vic;
-	qboolean  doAll = qfalse;
+	qboolean doAll = qfalse;
 
 	// FIXME: usage
 	//        make all outputs nice - cp with icon?
@@ -1336,7 +1334,7 @@ static void Svcmd_Fling(int flingType) // 0 = fling, 1 = throw, 2 = launch
 	char name[MAX_NAME_LENGTH], err[MAX_STRING_CHARS];
 	char fling[9], pastTense[9];
 	gentity_t *vic;
-	qboolean  doAll = qfalse;
+	qboolean doAll = qfalse;
 
 	switch (flingType) {
 	case 0:
@@ -1441,7 +1439,7 @@ static void Svcmd_Kick_f(void) {
 	}
 
 	trap_Argv(1, name, sizeof(name));
-	cl = G_GetPlayerByName(name); //ClientForString( name );
+	cl = G_GetPlayerByName(name); //ClientForString(name);
 
 	if (!cl) {
 		if (!Q_stricmp(name, "all")) {
@@ -2199,7 +2197,7 @@ qboolean ConsoleCommand(void) {
 			return qtrue;
 		}
 		// everything else will also be printed as a say command
-		//trap_SendServerCommand( -1, va("cpm \"server: %s\n\"", ConcatArgs(0) ) );
+		//trap_SendServerCommand(-1, va("cpm \"server: %s\n\"", ConcatArgs(0)));
 
 		// prints to the console instead now
 		return qfalse;

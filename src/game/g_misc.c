@@ -111,8 +111,8 @@ void TeleportPlayer(gentity_t *player, vec3_t origin, vec3_t angles) {
 	player->client->ps.origin[2] += 1;
 
 	// spit the player out
-	/*  AngleVectors( angles, player->client->ps.velocity, NULL, NULL );
-	    VectorScale( player->client->ps.velocity, 400, player->client->ps.velocity );
+	/*  AngleVectors(angles, player->client->ps.velocity, NULL, NULL);
+	    VectorScale(player->client->ps.velocity, 400, player->client->ps.velocity);
 	    player->client->ps.pm_time = 160; // hold time
 	    player->client->ps.pm_flags |= PMF_TIME_KNOCKBACK;*/
 	// disabling, dont want the bots flying everywhere :)
@@ -236,8 +236,8 @@ void SP_misc_gamemodel(gentity_t *ent) {
 
 		ent->tagNumber = trap_LoadTag(tagname);
 
-		//if( !(ent->tagNumber = trap_LoadTag( tagname )) ) {
-		//  Com_Error( ERR_DROP, "Failed to load Tag File (%s)", tagname );
+		//if(!(ent->tagNumber = trap_LoadTag(tagname))) {
+		//  Com_Error(ERR_DROP, "Failed to load Tag File (%s)", tagname);
 		//}
 	}
 
@@ -558,10 +558,10 @@ Use color picker to set color or key "color".  values are 0.0-1.0 for each color
 */
 
 /*
-==============
+=======================================================================================================================================
 use_corona
     so level designers can toggle them on/off
-==============
+=======================================================================================================================================
 */
 void use_corona(gentity_t *ent, gentity_t *other, gentity_t *activator) {
 	if (ent->r.linked) {
@@ -573,9 +573,9 @@ void use_corona(gentity_t *ent, gentity_t *other, gentity_t *activator) {
 }
 
 /*
-==============
+=======================================================================================================================================
 SP_corona
-==============
+=======================================================================================================================================
 */
 void SP_corona(gentity_t *ent) {
 	float scale;
@@ -611,7 +611,7 @@ void SP_corona(gentity_t *ent) {
 
 // dlights and dlightstyles
 // gcc: lots of braces around scalar initializer
-//char* predef_lightstyles[] = {
+//char *predef_lightstyles[] = {
 //  {"mmnmmommommnonmmonqnmmo"},
 
 char *predef_lightstyles[] = {
@@ -637,11 +637,11 @@ char *predef_lightstyles[] = {
 };
 
 /*
-==============
+=======================================================================================================================================
 dlight_finish_spawning
     All the dlights should call this on the same frame, thereby
     being synched, starting their sequences all at the same time.
-==============
+=======================================================================================================================================
 */
 void dlight_finish_spawning(gentity_t *ent) {
 	G_FindConfigstringIndex(va("%i %s %i %i %i", ent->s.number, ent->dl_stylestring, ent->health, ent->soundLoop, ent->dl_atten), CS_DLIGHTS, MAX_DLIGHT_CONFIGSTRINGS, qtrue);
@@ -685,10 +685,10 @@ styles:
 */
 
 /*
-==============
+=======================================================================================================================================
 shutoff_dlight
     the dlight knew when it was triggered to unlink after going through it's cycle once
-==============
+=======================================================================================================================================
 */
 void shutoff_dlight(gentity_t *ent) {
 	if (!(ent->r.linked)) {
@@ -701,9 +701,9 @@ void shutoff_dlight(gentity_t *ent) {
 }
 
 /*
-==============
+=======================================================================================================================================
 use_dlight
-==============
+=======================================================================================================================================
 */
 void use_dlight(gentity_t *ent, gentity_t *other, gentity_t *activator) {
 	if (ent->r.linked) {
@@ -721,12 +721,12 @@ void use_dlight(gentity_t *ent, gentity_t *other, gentity_t *activator) {
 }
 
 /*
-==============
+=======================================================================================================================================
 SP_dlight
     ent->dl_stylestring contains the lightstyle string
     ent->health tracks current index into style string
     ent->count tracks length of style string
-==============
+=======================================================================================================================================
 */
 void SP_dlight(gentity_t *ent) {
 	char *snd, *shader;
@@ -1025,7 +1025,6 @@ void aagun_think(gentity_t *self) {
 			for (i = 0; i < 3; i++) {
 				dang[i] = SHORT2ANGLE(owner->client->pers.cmd.angles[i]);
 			}
-
 			// now tell the client to lock the view in the direction of the gun
 			owner->client->ps.viewlocked = VIEWLOCK_MG42;
 			owner->client->ps.viewlocked_entNum = self->s.number;
@@ -1090,7 +1089,7 @@ void aagun_fire(gentity_t *other) {
 	BG_AdjustAAGunMuzzleForBarrel(muzzle, forward, right, up, self->s.modelindex2);
 	self->s.modelindex2 = (self->s.modelindex2 + 1) % 4;
 
-	self->s.eFlags  |= EF_AAGUN_ACTIVE;
+	self->s.eFlags |= EF_AAGUN_ACTIVE;
 	other->s.eFlags |= EF_AAGUN_ACTIVE;
 
 	// snap to integer coordinates for more efficient network bandwidth usage
@@ -1205,7 +1204,7 @@ void mg42_fire(gentity_t *other) {
 		VectorMA(muzzle, 16, up, muzzle);
 	}
 
-	self->s.eFlags  |= EF_MG42_ACTIVE;
+	self->s.eFlags |= EF_MG42_ACTIVE;
 	other->s.eFlags |= EF_MG42_ACTIVE;
 
 	// snap to integer coordinates for more efficient network bandwidth usage
@@ -1643,9 +1642,9 @@ void Flak_Animate(gentity_t *ent) {
 	//G_Printf ("frame %i\n", ent->s.frame);
 
 	if (ent->s.frame == GUN1_IDLE
-	    || ent->s.frame == GUN2_IDLE
-	    || ent->s.frame == GUN3_IDLE
-	    || ent->s.frame == GUN4_IDLE) {
+	 || ent->s.frame == GUN2_IDLE
+	 || ent->s.frame == GUN3_IDLE
+	 || ent->s.frame == GUN4_IDLE) {
 		return;
 	}
 
@@ -2144,9 +2143,9 @@ gentity_t *G_IsConstructible(team_t team, gentity_t *toi) {
 }
 
 /*
-==============
+=======================================================================================================================================
 AngleDifference
-==============
+=======================================================================================================================================
 */
 float AngleDifference(float ang1, float ang2) {
 	float diff = ang1 - ang2;
@@ -2165,9 +2164,9 @@ float AngleDifference(float ang1, float ang2) {
 }
 
 /*
-==================
+=======================================================================================================================================
 ClientName
-==================
+=======================================================================================================================================
 */
 char *ClientName(int client, char *name, int size) {
 	char buf[MAX_INFO_STRING];
@@ -2184,9 +2183,9 @@ char *ClientName(int client, char *name, int size) {
 }
 
 /*
-==================
+=======================================================================================================================================
 FindClientByName
-==================
+=======================================================================================================================================
 */
 int FindClientByName(char *name) {
 	int i, j;

@@ -37,10 +37,18 @@
 uiInfo_t uiInfo;
 
 static const char *MonthAbbrev[] = {
-	"Jan", "Feb", "Mar",
-	"Apr", "May", "Jun",
-	"Jul", "Aug", "Sep",
-	"Oct", "Nov", "Dec"
+	"Jan",
+	"Feb",
+	"Mar",
+	"Apr",
+	"May",
+	"Jun",
+	"Jul",
+	"Aug",
+	"Sep",
+	"Oct",
+	"Nov",
+	"Dec"
 };
 
 static const serverFilter_t serverFilters[] = {
@@ -1226,25 +1234,25 @@ void UI_DrawMapPreview(rectDef_t *rect, float scale, vec4_t color, qboolean net)
 	    if (tl[0] < 0)
 	    {
 	        tl[0] = 0;
-	  }
+	 }
 	    br[0] = tl[0] + 650.f;
 	    if (br[0] > 1024.f)
 	    {
 	        br[0] = 1024.f;
 	        tl[0] = br[0] - 650.f;
-	  }
+	 }
 
 	    tl[1] = uiInfo.mapList[map].mappos[1] - .5 * 650.f;
 	    if (tl[1] < 0)
 	    {
 	        tl[1] = 0;
-	  }
+	 }
 	    br[1] = tl[1] + 650.f;
 	    if (br[1] > 1024.f)
 	    {
 	        br[1] = 1024.f;
 	        tl[1] = br[1] - 650.f;
-	  }
+	 }
 
 	    x = rect->x;
 	    y = rect->y;
@@ -1272,13 +1280,13 @@ void UI_DrawMapPreview(rectDef_t *rect, float scale, vec4_t color, qboolean net)
 	        // x - pinhwidth (8) - pin left margin (2) - w - text margin (2) => x - w - 12
 	        UI_FillRect(x - w - 12 + 1, y - 6 + 1, 12 + w, 12, colourFadedBlack);
 	        UI_FillRect(x - w - 12, y - 6, 12 + w, 12, colorBlack);
-	  }
+	 }
 	    else
 	    {
 	        // Width = pinhwidth (8) + pin right margin (0) + w + text margin (2) = 10 + w
 	        UI_FillRect(x + 1, y - 6 + 1, 10 + w, 12, colourFadedBlack);
 	        UI_FillRect(x, y - 6, 10 + w, 12, colorBlack);
-	  }
+	 }
 
 	    UI_DrawHandlePic(x - 8, y - 8, 16, 16, trap_R_RegisterShaderNoMip("gfx/loading/pin_neutral"));
 
@@ -1286,12 +1294,12 @@ void UI_DrawMapPreview(rectDef_t *rect, float scale, vec4_t color, qboolean net)
 	    {
 	        // x - pinhwidth (8) - pin left margin (2) - w => x - w - 10
 	        Text_Paint(x - w - 10, y + 3, scale, colorWhite, uiInfo.mapList[map].mapName, 0, 0, 0);
-	  }
+	 }
 	    else
 	    {
 	        // x + pinhwidth (8) + pin right margin (0) => x + 8
 	        Text_Paint(x + 8, y + 3, scale, colorWhite, uiInfo.mapList[map].mapName, 0, 0, 0);
-	  }
+	 }
 	} else {
 	    UI_DrawHandlePic(rect->x, rect->y, rect->w, rect->h, trap_R_RegisterShaderNoMip("levelshots/unknownmap"));
 	}
@@ -1487,7 +1495,7 @@ void UI_DrawCampaignDescription(rectDef_t *rect, float scale, vec4_t color, floa
 			newLineWidth = textWidth;
 		}
 
-		if ((newLine && textWidth > rect->w) || *p == '\n' || *p == '\0' || *p == '*' /*( *p == '*' && *(p+1) == '*' )*/) {
+		if ((newLine && textWidth > rect->w) || *p == '\n' || *p == '\0' || *p == '*' /*(*p == '*' && *(p+1) == '*')*/) {
 			if (len) {
 				if (align == ITEM_ALIGN_LEFT) {
 					textRect.x = text_x;
@@ -2162,7 +2170,7 @@ static void UI_BuildPlayerList(void) {
 		if (info[0]) {
 			Q_strncpyz(namebuf, Info_ValueForKey(info, "n"), sizeof(namebuf));
 			// dont expand colors twice, so: foo^^xbar -> foo^bar -> fooar
-			//Q_CleanStr( namebuf );
+			//Q_CleanStr(namebuf);
 			Q_strncpyz(uiInfo.playerNames[uiInfo.playerCount], namebuf, sizeof(uiInfo.playerNames[0]));
 			muted = atoi(Info_ValueForKey(info, "mu"));
 
@@ -2179,7 +2187,7 @@ static void UI_BuildPlayerList(void) {
 			if (team2 == team) {
 				Q_strncpyz(namebuf, Info_ValueForKey(info, "n"), sizeof(namebuf));
 				// dont expand colors twice, so: foo^^xbar -> foo^bar -> fooar
-				//Q_CleanStr( namebuf );
+				//Q_CleanStr(namebuf);
 				Q_strncpyz(uiInfo.teamNames[uiInfo.myTeamCount], namebuf, sizeof(uiInfo.teamNames[0]));
 				uiInfo.teamClientNums[uiInfo.myTeamCount] = n;
 
@@ -2291,7 +2299,7 @@ static void UI_DrawServerMOTD(rectDef_t *rect, float scale, vec4_t color) {
 		}
 
 		if (uiInfo.serverStatus.motdOffset && maxX > 0) {
-			// if we have an offset ( we are skipping the first part of the string ) and we fit the string
+			// if we have an offset (we are skipping the first part of the string) and we fit the string
 			if (uiInfo.serverStatus.motdPaintX2 == -1) {
 				uiInfo.serverStatus.motdPaintX2 = rect->x + rect->w - 2;
 			}
@@ -3153,9 +3161,9 @@ static void UI_LoadProfiles(void) {
 }
 
 /*
-===============
+=======================================================================================================================================
 UI_LoadMovies
-===============
+=======================================================================================================================================
 */
 static void UI_LoadMovies(void) {
 	char movielist[4096];
@@ -3186,9 +3194,9 @@ static void UI_LoadMovies(void) {
 }
 
 /*
-===============
+=======================================================================================================================================
 UI_LoadDemos
-===============
+=======================================================================================================================================
 */
 static void UI_LoadDemos(void) {
 	char demolist[30000];
@@ -3252,9 +3260,9 @@ qboolean UI_CheckExecKey(int key) {
 }
 
 /*
-==============
+=======================================================================================================================================
 UI_Update
-==============
+=======================================================================================================================================
 */
 void UI_Update(const char *name) {
 	int val = trap_Cvar_VariableValue(name);
@@ -3338,9 +3346,9 @@ void UI_GLCustom() {
 
 
 /*
-==============
+=======================================================================================================================================
 UI_RunMenuScript
-==============
+=======================================================================================================================================
 */
 void UI_RunMenuScript(char **args) {
 	const char *name, *name2;
@@ -3381,7 +3389,6 @@ void UI_RunMenuScript(char **args) {
 			} else {
 				trap_Cmd_ExecuteText(EXEC_APPEND, va("wait; wait; map %s\n", uiInfo.mapList[ui_currentNetMap.integer].mapLoadName));
 			}
-
 			// set user cvars here
 
 			// set timelimit
@@ -3392,7 +3399,6 @@ void UI_RunMenuScript(char **args) {
 			} else {
 				trap_Cvar_Set("g_userTimelimit", "0");
 			}
-
 			// set axis respawn time
 			val = trap_Cvar_VariableValue("ui_userAxisRespawnTime");
 
@@ -3401,7 +3407,6 @@ void UI_RunMenuScript(char **args) {
 			} else {
 				trap_Cvar_Set("g_userAxisRespawnTime", "0");
 			}
-
 			// set allied respawn time
 			val = trap_Cvar_VariableValue("ui_userAlliedRespawnTime");
 
@@ -4034,7 +4039,6 @@ void UI_RunMenuScript(char **args) {
 				trap_FS_Write(va("\"%s\"", ui_renameprofileto), strlen(ui_renameprofileto) + 2, f);
 				trap_FS_FCloseFile(f);
 			}
-
 			// FIXME: make this copying handle all files in the profiles directory
 			if (Q_stricmp(uiprofile, buff)) {
 				int len;
@@ -4451,9 +4455,9 @@ static void UI_GetTeamColor(vec4_t *color) {
 }
 
 /*
-==================
+=======================================================================================================================================
 UI_MapCountByGameType
-==================
+=======================================================================================================================================
 */
 static int UI_MapCountByGameType(qboolean singlePlayer) {
 	int i;
@@ -4484,9 +4488,9 @@ static int UI_MapCountByGameType(qboolean singlePlayer) {
 }
 
 /*
-==================
+=======================================================================================================================================
 UI_CampaignCount
-==================
+=======================================================================================================================================
 */
 static int UI_CampaignCount(qboolean singlePlayer) {
 	int i, c = 0;
@@ -4505,9 +4509,9 @@ static int UI_CampaignCount(qboolean singlePlayer) {
 }
 
 /*
-==================
+=======================================================================================================================================
 UI_InsertServerIntoDisplayList
-==================
+=======================================================================================================================================
 */
 static void UI_InsertServerIntoDisplayList(int num, int position) {
 	int i;
@@ -4526,9 +4530,9 @@ static void UI_InsertServerIntoDisplayList(int num, int position) {
 }
 
 /*
-==================
+=======================================================================================================================================
 UI_RemoveServerFromDisplayList
-==================
+=======================================================================================================================================
 */
 static void UI_RemoveServerFromDisplayList(int num) {
 	int i, j;
@@ -4547,9 +4551,9 @@ static void UI_RemoveServerFromDisplayList(int num) {
 }
 
 /*
-==================
+=======================================================================================================================================
 UI_BinaryServerInsertion
-==================
+=======================================================================================================================================
 */
 static void UI_BinaryServerInsertion(int num) {
 	// use binary search to insert server
@@ -4587,9 +4591,9 @@ static void UI_BinaryServerInsertion(int num) {
 }
 
 /*
-==================
+=======================================================================================================================================
 UI_BuildServerDisplayList
-==================
+=======================================================================================================================================
 */
 static void UI_BuildServerDisplayList(int force) {
 	int i, count, clients, humans, maxClients, ping, game, len, friendlyFire, maxlives, punkbuster, antilag, password, weaponrestricted, balancedteams;
@@ -4712,7 +4716,6 @@ static void UI_BuildServerDisplayList(int force) {
 					continue;
 				}
 			}
-
 			// don't show PunkBuster servers for ET: Legacy
 			punkbuster = atoi(Info_ValueForKey(info, "punkbuster"));
 
@@ -4907,7 +4910,6 @@ static void UI_BuildServerDisplayList(int force) {
 					continue;
 				}
 			}
-
 			// ET Legacy doesn't display etpro servers :/
 			{
 				const char *gamename = Info_ValueForKey(info, "game");
@@ -4917,7 +4919,6 @@ static void UI_BuildServerDisplayList(int force) {
 					continue;
 				}
 			}
-
 			// make sure we never add a favorite server twice
 			if (ui_netSource.integer == AS_FAVORITES) {
 				UI_RemoveServerFromDisplayList(i);
@@ -4961,21 +4962,21 @@ typedef struct {
 } serverStatusCvar_t;
 
 serverStatusCvar_t serverStatusCvars[] = {
-	{"sv_hostname", "Name"    },
-	{"Address",     ""        },
+	{"sv_hostname", "Name"   },
+	{"Address",     ""       },
 	{"gamename",    "Game name"},
 	{"g_gametype",  "Game type"},
-	{"mapname",     "Map"     },
-	{"version",     ""        },
-	{"protocol",    ""        },
-	{"timelimit",   ""        },
-	{NULL,          NULL      }
+	{"mapname",     "Map"    },
+	{"version",     ""       },
+	{"protocol",    ""       },
+	{"timelimit",   ""       },
+	{NULL,          NULL     }
 };
 
 /*
-==================
+=======================================================================================================================================
 UI_SortServerStatusInfo
-==================
+=======================================================================================================================================
 */
 static void UI_SortServerStatusInfo(serverStatusInfo_t *info) {
 	int i, j, index = 0;
@@ -5009,9 +5010,9 @@ static void UI_SortServerStatusInfo(serverStatusInfo_t *info) {
 }
 
 /*
-==================
+=======================================================================================================================================
 UI_GetServerStatusInfo
-==================
+=======================================================================================================================================
 */
 static int UI_GetServerStatusInfo(const char *serverAddress, serverStatusInfo_t *info) {
 	char *p, *score, *ping, *name, *p_val = NULL, *p_name = NULL;
@@ -5162,9 +5163,9 @@ static int UI_GetServerStatusInfo(const char *serverAddress, serverStatusInfo_t 
 }
 
 /*
-==================
+=======================================================================================================================================
 stristr
-==================
+=======================================================================================================================================
 */
 static char *stristr(char *str, char *charset) {
 	int i;
@@ -5187,9 +5188,9 @@ static char *stristr(char *str, char *charset) {
 }
 
 /*
-==================
+=======================================================================================================================================
 UI_BuildFindPlayerList
-==================
+=======================================================================================================================================
 */
 static void UI_BuildFindPlayerList(qboolean force) {
 	static int numFound, numTimeOuts;
@@ -5325,9 +5326,9 @@ static void UI_BuildFindPlayerList(qboolean force) {
 }
 
 /*
-==================
+=======================================================================================================================================
 UI_BuildServerStatus
-==================
+=======================================================================================================================================
 */
 static void UI_BuildServerStatus(qboolean force) {
 	menuDef_t *menu;
@@ -5379,9 +5380,9 @@ static void UI_BuildServerStatus(qboolean force) {
 }
 
 /*
-==================
+=======================================================================================================================================
 UI_FeederCount
-==================
+=======================================================================================================================================
 */
 static int UI_FeederCount(int feederID) {
 	switch (feederID) {
@@ -5573,7 +5574,7 @@ const char *UI_FeederItemText(int feederID, int index, int column, qhandle_t *ha
 
 			switch (column) {
 			case SORT_HOST:
-				//if( ping < 0 ) {
+				//if(ping < 0) {
 				if (ping <= 0) {
 					return Info_ValueForKey(info, "addr");
 				} else {
@@ -5960,7 +5961,7 @@ static void UI_FeederSelection(int feederID, int index) {
 		} else {
 			ui_currentNetMap.integer = actual;
 			trap_Cvar_Set("ui_currentNetMap", va("%d", actual));
-			//uiInfo.mapList[ui_currentNetMap.integer].cinematic = trap_CIN_PlayCinematic(va("%s.roq", uiInfo.mapList[ui_currentNetMap.integer].mapLoadName), 0, 0, 0, 0, (CIN_loop | CIN_silent) );
+			//uiInfo.mapList[ui_currentNetMap.integer].cinematic = trap_CIN_PlayCinematic(va("%s.roq", uiInfo.mapList[ui_currentNetMap.integer].mapLoadName), 0, 0, 0, 0, (CIN_loop | CIN_silent));
 		}
 
 		break;
@@ -6133,9 +6134,9 @@ static qboolean UI_FeederSelectionClick(itemDef_t *item) {
 }
 
 /*
-==============
+=======================================================================================================================================
 GameType_Parse
-==============
+=======================================================================================================================================
 */
 static qboolean GameType_Parse(char **p, qboolean join) {
 	char *token;
@@ -6482,7 +6483,6 @@ void _UI_KeyEvent(int key, qboolean down) {
 			if (trap_Cvar_VariableValue("cl_bypassMouseInput")) {
 				bypassKeyClear = qtrue;
 			}
-
 			// always have the menus do the proper handling
 			Menu_HandleKey(menu, key, down);
 		} else {
@@ -6685,7 +6685,7 @@ void _UI_SetActiveMenu(uiMenuCommand_t menu) {
 
 		// say, team say, etc
 		case UIMENU_INGAME_MESSAGEMODE:
-			//trap_Cvar_Set( "cl_paused", "1" );
+			//trap_Cvar_Set("cl_paused", "1");
 			trap_Key_SetCatcher(KEYCATCH_UI);
 			Menus_OpenByName("ingame_messagemode");
 			return;
@@ -6747,9 +6747,9 @@ void UI_DrawConnectScreen(qboolean overlay) {
 }
 
 /*
-================
+=======================================================================================================================================
 cvars
-================
+=======================================================================================================================================
 */
 
 typedef struct {
@@ -6828,170 +6828,170 @@ vmCvar_t cg_crosshairSize;
 vmCvar_t cl_bypassMouseInput;
 
 cvarTable_t cvarTable[] = {
-	{NULL,                             "ui_textfield_temp",                   "",                           CVAR_TEMP                    },
-	{&ui_glCustom,                     "ui_glCustom",                         "4",                          CVAR_ARCHIVE                 },
+	{NULL, "ui_textfield_temp", "", CVAR_TEMP},
+	{&ui_glCustom, "ui_glCustom", "4", CVAR_ARCHIVE},
 
-	{&ui_friendlyFire,                 "g_friendlyFire",                      "1",                          CVAR_ARCHIVE                 },
+	{&ui_friendlyFire, "g_friendlyFire", "1", CVAR_ARCHIVE},
 
-	{&ui_userAlliedRespawnTime,        "ui_userAlliedRespawnTime",            "0",                          0                            },
-	{&ui_userAxisRespawnTime,          "ui_userAxisRespawnTime",              "0",                          0                            },
+	{&ui_userAlliedRespawnTime, "ui_userAlliedRespawnTime", "0", 0},
+	{&ui_userAxisRespawnTime, "ui_userAxisRespawnTime", "0", 0},
 
-	{&ui_brassTime,                    "cg_brassTime",                        "2500",                       CVAR_ARCHIVE                 },
-	{&ui_drawCrosshair,                "cg_drawCrosshair",                    "1",                          CVAR_ARCHIVE                 },
-	{&ui_drawCrosshairInfo,            "cg_drawCrosshairInfo",                "3",                          CVAR_ARCHIVE                 },
-	{&ui_drawCrosshairNames,           "cg_drawCrosshairNames",               "1",                          CVAR_ARCHIVE                 },
-	{&ui_drawCrosshairPickups,         "cg_drawCrosshairPickups",             "1",                          CVAR_ARCHIVE                 },
-	{&ui_marks,                        "cg_markTime",                         "20000",                      CVAR_ARCHIVE                 },
-	{&ui_autoactivate,                 "cg_autoactivate",                     "1",                          CVAR_ARCHIVE                 },
+	{&ui_brassTime, "cg_brassTime", "2500", CVAR_ARCHIVE},
+	{&ui_drawCrosshair, "cg_drawCrosshair", "1", CVAR_ARCHIVE},
+	{&ui_drawCrosshairInfo, "cg_drawCrosshairInfo", "3", CVAR_ARCHIVE},
+	{&ui_drawCrosshairNames, "cg_drawCrosshairNames", "1", CVAR_ARCHIVE},
+	{&ui_drawCrosshairPickups, "cg_drawCrosshairPickups", "1", CVAR_ARCHIVE},
+	{&ui_marks, "cg_markTime", "20000", CVAR_ARCHIVE},
+	{&ui_autoactivate, "cg_autoactivate", "1", CVAR_ARCHIVE},
 
-	{&ui_dedicated,                    "ui_dedicated",                        "0",                          CVAR_ARCHIVE                 },
-	{&ui_selectedPlayer,               "cg_selectedPlayer",                   "0",                          CVAR_ARCHIVE                 },
-	{&ui_selectedPlayerName,           "cg_selectedPlayerName",               "",                           CVAR_ARCHIVE                 },
-	{&ui_netSource,                    "ui_netSource",                        "1",                          CVAR_ARCHIVE                 },
-	{&ui_menuFiles,                    "ui_menuFiles",                        "ui/menus.txt",               CVAR_ARCHIVE                 },
-	{&ui_gameType,                     "ui_gametype",                         "3",                          CVAR_ARCHIVE                 },
-	{&ui_joinGameType,                 "ui_joinGametype",                     "-1",                         CVAR_ARCHIVE                 },
-	{&ui_netGameType,                  "ui_netGametype",                      "4",                          CVAR_ARCHIVE                 }, // hardwired for now
+	{&ui_dedicated, "ui_dedicated", "0", CVAR_ARCHIVE},
+	{&ui_selectedPlayer, "cg_selectedPlayer", "0", CVAR_ARCHIVE},
+	{&ui_selectedPlayerName, "cg_selectedPlayerName", "", CVAR_ARCHIVE},
+	{&ui_netSource, "ui_netSource", "1", CVAR_ARCHIVE},
+	{&ui_menuFiles, "ui_menuFiles", "ui/menus.txt", CVAR_ARCHIVE},
+	{&ui_gameType, "ui_gametype", "3", CVAR_ARCHIVE},
+	{&ui_joinGameType, "ui_joinGametype", "-1", CVAR_ARCHIVE},
+	{&ui_netGameType, "ui_netGametype", "4", CVAR_ARCHIVE}, // hardwired for now
 
 	// multiplayer cvars
-	{&ui_mapIndex,                     "ui_mapIndex",                         "0",                          CVAR_ARCHIVE                 },
-	{&ui_currentMap,                   "ui_currentMap",                       "0",                          CVAR_ARCHIVE                 },
-	{&ui_currentNetMap,                "ui_currentNetMap",                    "0",                          CVAR_ARCHIVE                 },
+	{&ui_mapIndex, "ui_mapIndex", "0", CVAR_ARCHIVE},
+	{&ui_currentMap, "ui_currentMap", "0", CVAR_ARCHIVE},
+	{&ui_currentNetMap, "ui_currentNetMap", "0", CVAR_ARCHIVE},
 
-	{&ui_browserShowEmptyOrFull,       "ui_browserShowEmptyOrFull",           "0",                          CVAR_ARCHIVE                 },
-	{&ui_browserShowPasswordProtected, "ui_browserShowPasswordProtected",     "0",                          CVAR_ARCHIVE                 },
-	{&ui_browserShowFriendlyFire,      "ui_browserShowFriendlyFire",          "0",                          CVAR_ARCHIVE                 },
-	{&ui_browserShowMaxlives,          "ui_browserShowMaxlives",              "0",                          CVAR_ARCHIVE                 },
-	{&ui_browserShowAntilag,           "ui_browserShowAntilag",               "0",                          CVAR_ARCHIVE                 },
-	{&ui_browserShowWeaponsRestricted, "ui_browserShowWeaponsRestricted",     "0",                          CVAR_ARCHIVE                 },
-	{&ui_browserShowTeamBalanced,      "ui_browserShowTeamBalanced",          "0",                          CVAR_ARCHIVE                 },
-	{&ui_browserShowBots,              "ui_browserShowBots",                  "0",                          CVAR_ARCHIVE                 },
+	{&ui_browserShowEmptyOrFull, "ui_browserShowEmptyOrFull", "0", CVAR_ARCHIVE},
+	{&ui_browserShowPasswordProtected, "ui_browserShowPasswordProtected", "0", CVAR_ARCHIVE},
+	{&ui_browserShowFriendlyFire, "ui_browserShowFriendlyFire", "0", CVAR_ARCHIVE},
+	{&ui_browserShowMaxlives, "ui_browserShowMaxlives", "0", CVAR_ARCHIVE},
+	{&ui_browserShowAntilag, "ui_browserShowAntilag", "0", CVAR_ARCHIVE},
+	{&ui_browserShowWeaponsRestricted, "ui_browserShowWeaponsRestricted", "0", CVAR_ARCHIVE},
+	{&ui_browserShowTeamBalanced, "ui_browserShowTeamBalanced", "0", CVAR_ARCHIVE},
+	{&ui_browserShowBots, "ui_browserShowBots", "0", CVAR_ARCHIVE},
 
-	{&ui_browserModFilter,             "ui_browserModFilter",                 "0",                          CVAR_ARCHIVE                 },
-	{&ui_browserMapFilter,             "ui_browserMapFilter",                 "",                           CVAR_ARCHIVE                 },
-	{&ui_browserMapFilterCheckBox,     "ui_browserMapFilterCheckBox",         "0",                          CVAR_ARCHIVE                 },
+	{&ui_browserModFilter, "ui_browserModFilter", "0", CVAR_ARCHIVE},
+	{&ui_browserMapFilter, "ui_browserMapFilter", "", CVAR_ARCHIVE},
+	{&ui_browserMapFilterCheckBox, "ui_browserMapFilterCheckBox", "0", CVAR_ARCHIVE},
 
-	{&ui_browserOssFilter,             "ui_browserOssFilter",                 "0",                          CVAR_ARCHIVE                 },
+	{&ui_browserOssFilter, "ui_browserOssFilter", "0", CVAR_ARCHIVE},
 
-	{&ui_serverStatusTimeOut,          "ui_serverStatusTimeOut",              "7000",                       CVAR_ARCHIVE                 },
+	{&ui_serverStatusTimeOut, "ui_serverStatusTimeOut", "7000", CVAR_ARCHIVE},
 
-	{&g_gameType,                      "g_gameType",                          "4",                          CVAR_SERVERINFO | CVAR_LATCH },
-	{NULL,                             "cg_drawBuddies",                      "1",                          CVAR_ARCHIVE                 },
-	{NULL,                             "cg_drawRoundTimer",                   "1",                          CVAR_ARCHIVE                 },
-	{NULL,                             "cg_showblood",                        "1",                          CVAR_ARCHIVE                 },
-	{NULL,                             "cg_bloodFlash",                       "1.0",                        CVAR_ARCHIVE                 },
-	{NULL,                             "cg_autoReload",                       "1",                          CVAR_ARCHIVE                 },
-	{NULL,                             "cg_noAmmoAutoSwitch",                 "1",                          CVAR_ARCHIVE                 },
-	{NULL,                             "cg_useWeapsForZoom",                  "1",                          CVAR_ARCHIVE                 },
-	{NULL,                             "cg_zoomDefaultSniper",                "20",                         CVAR_ARCHIVE                 },
-	{NULL,                             "cg_zoomStepSniper",                   "2",                          CVAR_ARCHIVE                 },
-	{NULL,                             "cg_voiceSpriteTime",                  "6000",                       CVAR_ARCHIVE                 },
-	{NULL,                             "cg_complaintPopUp",                   "1",                          CVAR_ARCHIVE                 },
-	{NULL,                             "cg_printObjectiveInfo",               "1",                          CVAR_ARCHIVE                 },
-	{NULL,                             "cg_useScreenshotJPEG",                "1",                          CVAR_ARCHIVE                 },
-	{NULL,                             "cg_drawGun",                          "1",                          CVAR_ARCHIVE                 },
-	{NULL,                             "cg_drawCompass",                      "1",                          CVAR_ARCHIVE                 },
-	{NULL,                             "cg_drawRoundTimer",                   "1",                          CVAR_ARCHIVE                 },
-	{NULL,                             "cg_drawReinforcementTime",            "1",                          CVAR_ARCHIVE                 },
-	{NULL,                             "cg_cursorHints",                      "1",                          CVAR_ARCHIVE                 },
-	{NULL,                             "cg_crosshairPulse",                   "1",                          CVAR_ARCHIVE                 },
-	{NULL,                             "cg_drawCrosshairInfo",                "3",                          CVAR_ARCHIVE                 },
-	{NULL,                             "cg_drawCrosshairNames",               "1",                          CVAR_ARCHIVE                 },
-	{NULL,                             "cg_crosshairColor",                   "White",                      CVAR_ARCHIVE                 },
-	{NULL,                             "cg_crosshairAlpha",                   "1.0",                        CVAR_ARCHIVE                 },
-	{NULL,                             "cg_crosshairColorAlt",                "White",                      CVAR_ARCHIVE                 },
-	{NULL,                             "cg_coronafardist",                    "1536",                       CVAR_ARCHIVE                 },
-	{NULL,                             "cg_wolfparticles",                    "1",                          CVAR_ARCHIVE                 },
-	{NULL,                             "g_password",                          "none",                       CVAR_USERINFO                },
-	{NULL,                             "g_antilag",                           "1",                          CVAR_SERVERINFO | CVAR_ARCHIVE},
-	{NULL,                             "g_warmup",                            "60",                         CVAR_ARCHIVE                 },
-	{NULL,                             "g_lms_roundlimit",                    "3",                          CVAR_ARCHIVE                 },
-	{NULL,                             "g_lms_matchlimit",                    "2",                          CVAR_ARCHIVE                 },
-	{NULL,                             "g_lms_followTeamOnly",                "1",                          CVAR_ARCHIVE                 },
-	{NULL,                             "g_heavyWeaponRestriction",            "100",                        CVAR_ARCHIVE | CVAR_SERVERINFO},
-	{&cl_profile,                      "cl_profile",                          "",                           CVAR_ROM                     },
-	{&cl_defaultProfile,               "cl_defaultProfile",                   "",                           CVAR_ROM                     },
-	{&ui_profile,                      "ui_profile",                          "",                           CVAR_ROM                     },
-	{&ui_currentCampaign,              "ui_currentCampaign",                  "0",                          CVAR_ARCHIVE                 },
-	{&ui_currentNetCampaign,           "ui_currentNetCampaign",               "0",                          CVAR_ARCHIVE                 },
-	{&ui_campaignIndex,                "ui_campaignIndex",                    "0",                          CVAR_ARCHIVE                 },
-	{&ui_currentCampaignCompleted,     "ui_currentCampaignCompleted",         "0",                          CVAR_ARCHIVE                 },
+	{&g_gameType, "g_gameType", "4", CVAR_SERVERINFO | CVAR_LATCH},
+	{NULL, "cg_drawBuddies", "1", CVAR_ARCHIVE},
+	{NULL, "cg_drawRoundTimer", "1", CVAR_ARCHIVE},
+	{NULL, "cg_showblood", "1", CVAR_ARCHIVE},
+	{NULL, "cg_bloodFlash", "1.0", CVAR_ARCHIVE},
+	{NULL, "cg_autoReload", "1", CVAR_ARCHIVE},
+	{NULL, "cg_noAmmoAutoSwitch", "1", CVAR_ARCHIVE},
+	{NULL, "cg_useWeapsForZoom", "1", CVAR_ARCHIVE},
+	{NULL, "cg_zoomDefaultSniper", "20", CVAR_ARCHIVE},
+	{NULL, "cg_zoomStepSniper", "2", CVAR_ARCHIVE},
+	{NULL, "cg_voiceSpriteTime", "6000", CVAR_ARCHIVE},
+	{NULL, "cg_complaintPopUp", "1", CVAR_ARCHIVE},
+	{NULL, "cg_printObjectiveInfo", "1", CVAR_ARCHIVE},
+	{NULL, "cg_useScreenshotJPEG", "1", CVAR_ARCHIVE},
+	{NULL, "cg_drawGun", "1", CVAR_ARCHIVE},
+	{NULL, "cg_drawCompass", "1", CVAR_ARCHIVE},
+	{NULL, "cg_drawRoundTimer", "1", CVAR_ARCHIVE},
+	{NULL, "cg_drawReinforcementTime", "1", CVAR_ARCHIVE},
+	{NULL, "cg_cursorHints", "1", CVAR_ARCHIVE},
+	{NULL, "cg_crosshairPulse", "1", CVAR_ARCHIVE},
+	{NULL, "cg_drawCrosshairInfo", "3", CVAR_ARCHIVE},
+	{NULL, "cg_drawCrosshairNames", "1", CVAR_ARCHIVE},
+	{NULL, "cg_crosshairColor", "White", CVAR_ARCHIVE},
+	{NULL, "cg_crosshairAlpha", "1.0", CVAR_ARCHIVE},
+	{NULL, "cg_crosshairColorAlt", "White", CVAR_ARCHIVE},
+	{NULL, "cg_coronafardist", "1536", CVAR_ARCHIVE},
+	{NULL, "cg_wolfparticles", "1", CVAR_ARCHIVE},
+	{NULL, "g_password", "none", CVAR_USERINFO},
+	{NULL, "g_antilag", "1", CVAR_SERVERINFO | CVAR_ARCHIVE},
+	{NULL, "g_warmup", "60", CVAR_ARCHIVE},
+	{NULL, "g_lms_roundlimit", "3", CVAR_ARCHIVE},
+	{NULL, "g_lms_matchlimit", "2", CVAR_ARCHIVE},
+	{NULL, "g_lms_followTeamOnly", "1", CVAR_ARCHIVE},
+	{NULL, "g_heavyWeaponRestriction", "100", CVAR_ARCHIVE | CVAR_SERVERINFO},
+	{&cl_profile, "cl_profile", "", CVAR_ROM},
+	{&cl_defaultProfile, "cl_defaultProfile", "", CVAR_ROM},
+	{&ui_profile, "ui_profile", "", CVAR_ROM},
+	{&ui_currentCampaign, "ui_currentCampaign", "0", CVAR_ARCHIVE},
+	{&ui_currentNetCampaign, "ui_currentNetCampaign", "0", CVAR_ARCHIVE},
+	{&ui_campaignIndex, "ui_campaignIndex", "0", CVAR_ARCHIVE},
+	{&ui_currentCampaignCompleted, "ui_currentCampaignCompleted", "0", CVAR_ARCHIVE},
 
 	// cgame mappings
-	{&ui_blackout,                     "ui_blackout",                         "0",                          CVAR_ROM                     },
-	{&cg_crosshairAlpha,               "cg_crosshairAlpha",                   "1.0",                        CVAR_ARCHIVE                 },
-	{&cg_crosshairAlphaAlt,            "cg_crosshairAlphaAlt",                "1.0",                        CVAR_ARCHIVE                 },
-	{&cg_crosshairColor,               "cg_crosshairColor",                   "White",                      CVAR_ARCHIVE                 },
-	{&cg_crosshairColorAlt,            "cg_crosshairColorAlt",                "White",                      CVAR_ARCHIVE                 },
-	{&cg_crosshairSize,                "cg_crosshairSize",                    "48",                         CVAR_ARCHIVE                 },
+	{&ui_blackout, "ui_blackout", "0", CVAR_ROM},
+	{&cg_crosshairAlpha, "cg_crosshairAlpha", "1.0", CVAR_ARCHIVE},
+	{&cg_crosshairAlphaAlt, "cg_crosshairAlphaAlt", "1.0", CVAR_ARCHIVE},
+	{&cg_crosshairColor, "cg_crosshairColor", "White", CVAR_ARCHIVE},
+	{&cg_crosshairColorAlt, "cg_crosshairColorAlt", "White", CVAR_ARCHIVE},
+	{&cg_crosshairSize, "cg_crosshairSize", "48", CVAR_ARCHIVE},
 
-	// game mappings (for create server option) {NULL,                             "g_altStopwatchMode",                  "0",                          CVAR_ARCHIVE                 },
-	{NULL,                             "g_ipcomplaintlimit",                  "3",                          CVAR_ARCHIVE                 },
-	{NULL,                             "g_complaintlimit",                    "6",                          CVAR_ARCHIVE                 },
-	{NULL,                             "g_doWarmup",                          "0",                          CVAR_ARCHIVE                 },
-	{NULL,                             "g_inactivity",                        "0",                          CVAR_ARCHIVE                 },
-	{NULL,                             "g_maxLives",                          "0",                          CVAR_ARCHIVE                 },
-	{NULL,                             "refereePassword",                     "none",                       CVAR_ARCHIVE                 },
-	{NULL,                             "g_teamForceBalance",                  "0",                          CVAR_ARCHIVE                 },
-	{NULL,                             "sv_maxRate",                          "0",                          CVAR_ARCHIVE                 },
-	{NULL,                             "g_spectatorInactivity",               "0",                          CVAR_ARCHIVE                 },
-	{NULL,                             "match_latejoin",                      "1",                          CVAR_ARCHIVE                 },
-	{NULL,                             "match_minplayers",                    MATCH_MINPLAYERS,             CVAR_ARCHIVE                 },
-	{NULL,                             "match_mutespecs",                     "0",                          CVAR_ARCHIVE                 },
-	{NULL,                             "match_readypercent",                  "100",                        CVAR_ARCHIVE                 },
-	{NULL,                             "match_timeoutcount",                  "3",                          CVAR_ARCHIVE                 },
-	{NULL,                             "match_timeoutlength",                 "180",                        CVAR_ARCHIVE                 },
-	{NULL,                             "match_warmupDamage",                  "1",                          CVAR_ARCHIVE                 },
-	{NULL,                             "g_customConfig",                      "",                           CVAR_ARCHIVE                 },
-	{NULL,                             "server_motd0",                        " ^NEnemy Territory ^7MOTD ", CVAR_ARCHIVE                 },
-	{NULL,                             "server_motd1",                        "",                           CVAR_ARCHIVE                 },
-	{NULL,                             "server_motd2",                        "",                           CVAR_ARCHIVE                 },
-	{NULL,                             "server_motd3",                        "",                           CVAR_ARCHIVE                 },
-	{NULL,                             "server_motd4",                        "",                           CVAR_ARCHIVE                 },
-	{NULL,                             "server_motd5",                        "",                           CVAR_ARCHIVE                 },
-	{NULL,                             "team_maxPanzers",                     "-1",                         CVAR_ARCHIVE                 },
-	{NULL,                             "team_maxplayers",                     "0",                          CVAR_ARCHIVE                 },
-	{NULL,                             "team_nocontrols",                     "0",                          CVAR_ARCHIVE                 },
-	{NULL,                             "vote_allow_gametype",                 "1",                          CVAR_ARCHIVE                 },
-	{NULL,                             "vote_allow_kick",                     "1",                          CVAR_ARCHIVE                 },
-	{NULL,                             "vote_allow_map",                      "1",                          CVAR_ARCHIVE                 },
-	{NULL,                             "vote_allow_mutespecs",                "1",                          CVAR_ARCHIVE                 },
-	{NULL,                             "vote_allow_nextmap",                  "1",                          CVAR_ARCHIVE                 },
-	{NULL,                             "vote_allow_config",                   "1",                          CVAR_ARCHIVE                 },
-	{NULL,                             "vote_allow_referee",                  "0",                          CVAR_ARCHIVE                 },
-	{NULL,                             "vote_allow_shuffleteamsxp",           "1",                          CVAR_ARCHIVE                 },
-	{NULL,                             "vote_allow_shuffleteamsxp_norestart", "1",                          CVAR_ARCHIVE                 },
-	{NULL,                             "vote_allow_swapteams",                "1",                          CVAR_ARCHIVE                 },
-	{NULL,                             "vote_allow_friendlyfire",             "1",                          CVAR_ARCHIVE                 },
-	{NULL,                             "vote_allow_timelimit",                "0",                          CVAR_ARCHIVE                 },
-	{NULL,                             "vote_allow_warmupdamage",             "1",                          CVAR_ARCHIVE                 },
-	{NULL,                             "vote_allow_antilag",                  "1",                          CVAR_ARCHIVE                 },
-	{NULL,                             "vote_allow_muting",                   "1",                          CVAR_ARCHIVE                 },
-	{NULL,                             "vote_allow_kick",                     "1",                          CVAR_ARCHIVE                 },
-	{NULL,                             "vote_limit",                          "5",                          CVAR_ARCHIVE                 },
-	{NULL,                             "vote_percent",                        "50",                         CVAR_ARCHIVE                 },
-	{NULL,                             "vote_allow_surrender",                "1",                          CVAR_ARCHIVE                 },
-	{NULL,                             "vote_allow_restartcampaign",          "1",                          CVAR_ARCHIVE                 },
-	{NULL,                             "vote_allow_nextcampaign",             "1",                          CVAR_ARCHIVE                 },
-	{NULL,                             "vote_allow_poll",                     "1",                          CVAR_ARCHIVE                 },
+	// game mappings (for create server option) {NULL, "g_altStopwatchMode", "0", CVAR_ARCHIVE},
+	{NULL, "g_ipcomplaintlimit", "3", CVAR_ARCHIVE},
+	{NULL, "g_complaintlimit", "6", CVAR_ARCHIVE},
+	{NULL, "g_doWarmup", "0", CVAR_ARCHIVE},
+	{NULL, "g_inactivity", "0", CVAR_ARCHIVE},
+	{NULL, "g_maxLives", "0", CVAR_ARCHIVE},
+	{NULL, "refereePassword", "none", CVAR_ARCHIVE},
+	{NULL, "g_teamForceBalance", "0", CVAR_ARCHIVE},
+	{NULL, "sv_maxRate", "0", CVAR_ARCHIVE},
+	{NULL, "g_spectatorInactivity", "0", CVAR_ARCHIVE},
+	{NULL, "match_latejoin", "1", CVAR_ARCHIVE},
+	{NULL, "match_minplayers", MATCH_MINPLAYERS, CVAR_ARCHIVE},
+	{NULL, "match_mutespecs", "0", CVAR_ARCHIVE},
+	{NULL, "match_readypercent", "100", CVAR_ARCHIVE},
+	{NULL, "match_timeoutcount", "3", CVAR_ARCHIVE},
+	{NULL, "match_timeoutlength", "180", CVAR_ARCHIVE},
+	{NULL, "match_warmupDamage", "1", CVAR_ARCHIVE},
+	{NULL, "g_customConfig", "", CVAR_ARCHIVE},
+	{NULL, "server_motd0", " ^NEnemy Territory ^7MOTD ", CVAR_ARCHIVE},
+	{NULL, "server_motd1", "", CVAR_ARCHIVE},
+	{NULL, "server_motd2", "", CVAR_ARCHIVE},
+	{NULL, "server_motd3", "", CVAR_ARCHIVE},
+	{NULL, "server_motd4", "", CVAR_ARCHIVE},
+	{NULL, "server_motd5", "", CVAR_ARCHIVE},
+	{NULL, "team_maxPanzers", "-1", CVAR_ARCHIVE},
+	{NULL, "team_maxplayers", "0", CVAR_ARCHIVE},
+	{NULL, "team_nocontrols", "0", CVAR_ARCHIVE},
+	{NULL, "vote_allow_gametype", "1", CVAR_ARCHIVE},
+	{NULL, "vote_allow_kick", "1", CVAR_ARCHIVE},
+	{NULL, "vote_allow_map", "1", CVAR_ARCHIVE},
+	{NULL, "vote_allow_mutespecs", "1", CVAR_ARCHIVE},
+	{NULL, "vote_allow_nextmap", "1", CVAR_ARCHIVE},
+	{NULL, "vote_allow_config", "1", CVAR_ARCHIVE},
+	{NULL, "vote_allow_referee", "0", CVAR_ARCHIVE},
+	{NULL, "vote_allow_shuffleteamsxp", "1", CVAR_ARCHIVE},
+	{NULL, "vote_allow_shuffleteamsxp_norestart", "1", CVAR_ARCHIVE},
+	{NULL, "vote_allow_swapteams", "1", CVAR_ARCHIVE},
+	{NULL, "vote_allow_friendlyfire", "1", CVAR_ARCHIVE},
+	{NULL, "vote_allow_timelimit", "0", CVAR_ARCHIVE},
+	{NULL, "vote_allow_warmupdamage", "1", CVAR_ARCHIVE},
+	{NULL, "vote_allow_antilag", "1", CVAR_ARCHIVE},
+	{NULL, "vote_allow_muting", "1", CVAR_ARCHIVE},
+	{NULL, "vote_allow_kick", "1", CVAR_ARCHIVE},
+	{NULL, "vote_limit", "5", CVAR_ARCHIVE},
+	{NULL, "vote_percent", "50", CVAR_ARCHIVE},
+	{NULL, "vote_allow_surrender", "1", CVAR_ARCHIVE},
+	{NULL, "vote_allow_restartcampaign", "1", CVAR_ARCHIVE},
+	{NULL, "vote_allow_nextcampaign", "1", CVAR_ARCHIVE},
+	{NULL, "vote_allow_poll", "1", CVAR_ARCHIVE},
 
-	{NULL,                             "ui_r_mode",                           "",                           CVAR_ARCHIVE                 },
-	{NULL,                             "ui_r_gamma",                          "",                           CVAR_ARCHIVE                 },
-	{NULL,                             "ui_r_ext_texture_filter_anisotropic", "",                           CVAR_ARCHIVE                 },
-	{NULL,                             "ui_cg_shadows",                       "",                           CVAR_ARCHIVE                 },
-	{NULL,                             "ui_rate",                             "",                           CVAR_ARCHIVE                 },
-	{NULL,                             "ui_handedness",                       "",                           CVAR_ARCHIVE                 },
-	{NULL,                             "ui_sensitivity",                      "",                           CVAR_ARCHIVE                 },
-	{NULL,                             "ui_profile_mousePitch",               "",                           CVAR_ARCHIVE                 },
+	{NULL, "ui_r_mode", "", CVAR_ARCHIVE},
+	{NULL, "ui_r_gamma", "", CVAR_ARCHIVE},
+	{NULL, "ui_r_ext_texture_filter_anisotropic", "", CVAR_ARCHIVE},
+	{NULL, "ui_cg_shadows", "", CVAR_ARCHIVE},
+	{NULL, "ui_rate", "", CVAR_ARCHIVE},
+	{NULL, "ui_handedness", "", CVAR_ARCHIVE},
+	{NULL, "ui_sensitivity", "", CVAR_ARCHIVE},
+	{NULL, "ui_profile_mousePitch", "", CVAR_ARCHIVE},
 
-	{&cl_bypassMouseInput,             "cl_bypassMouseInput",                 "0",                          CVAR_TEMP                    },
+	{&cl_bypassMouseInput, "cl_bypassMouseInput", "0", CVAR_TEMP},
 
-	{NULL,                             "g_currentCampaign",                   "",                           CVAR_WOLFINFO | CVAR_ROM,    },
-	{NULL,                             "g_currentCampaignMap",                "0",                          CVAR_WOLFINFO | CVAR_ROM,    },
+	{NULL, "g_currentCampaign", "", CVAR_WOLFINFO | CVAR_ROM,},
+	{NULL, "g_currentCampaignMap", "0", CVAR_WOLFINFO | CVAR_ROM,},
 
-	{NULL,                             "ui_showtooltips",                     "1",                          CVAR_ARCHIVE                 },
+	{NULL, "ui_showtooltips", "1", CVAR_ARCHIVE},
 
-	{NULL,                             "cg_locations",                        "3",                          CVAR_ARCHIVE                 },
+	{NULL, "cg_locations", "3", CVAR_ARCHIVE},
 };
 
 int cvarTableSize = sizeof(cvarTable) / sizeof(cvarTable[0]);

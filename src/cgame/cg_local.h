@@ -229,18 +229,14 @@ typedef struct {
 	int oldFrame;
 	int oldFrameTime; // time when ->oldFrame was exactly on
 	qhandle_t oldFrameModel;
-
 	int frame;
 	int frameTime; // time when ->frame will be exactly on
 	qhandle_t frameModel;
-
 	float backlerp;
-
 	float yawAngle;
 	qboolean yawing;
 	float pitchAngle;
 	qboolean pitching;
-
 	int animationNumber; // may include ANIM_TOGGLEBIT
 	int oldAnimationNumber; // may include ANIM_TOGGLEBIT
 	animation_t *animation;
@@ -260,7 +256,6 @@ typedef struct {
 	lerpFrame_t head;
 	lerpFrame_t weap; // autonomous weapon animations
 	lerpFrame_t hudhead;
-
 	int painTime;
 	int painDuration;
 	int painDirection; // flip from 0 to 1
@@ -271,7 +266,6 @@ typedef struct {
 	// so we can do fast tag grabbing
 	refEntity_t bodyRefEnt, headRefEnt, gunRefEnt;
 	int gunRefEntFrame;
-
 	float animSpeed; // for manual adjustment
 
 	int lastFiredWeaponTime;
@@ -304,7 +298,6 @@ typedef struct centity_s {
 	int previousEvent;
 	int previousEventSequence;
 	int teleportFlag;
-
 	int trailTime; // so missile trails can handle dropped initial packets
 	int miscTime;
 	int soundTime; // so looping sounds can start when triggered
@@ -355,7 +348,6 @@ typedef struct centity_s {
 	float backdelta;
 	qboolean back;
 	qboolean moving;
-
 	int tankframe;
 	int tankparent;
 	tag_t mountedMG42Base;
@@ -384,13 +376,11 @@ typedef struct markPoly_s {
 	float color[4];
 	poly_t poly;
 	polyVert_t verts[MAX_VERTS_ON_POLY];
-
 	int duration;
 } markPoly_t;
 
 // moved in from cg_view.c
-typedef enum
-{
+typedef enum {
 	ZOOM_NONE = 0,
 	ZOOM_BINOC,
 	ZOOM_SNIPER,
@@ -400,16 +390,14 @@ typedef enum
 	ZOOM_MAX_ZOOMS
 } EZoom_t;
 
-typedef enum
-{
+typedef enum {
 	ZOOM_OUT = 0, // widest angle
 	ZOOM_IN     // tightest angle (approaching 0)
 } EZoomInOut_t;
 
 extern float zoomTable[ZOOM_MAX_ZOOMS][2];
 
-typedef enum
-{
+typedef enum {
 	LE_MARK = 0,
 	LE_EXPLOSION,
 	LE_SPRITE_EXPLOSION,
@@ -427,8 +415,7 @@ typedef enum
 	LE_EMITTER
 } leType_t;
 
-typedef enum
-{
+typedef enum {
 	LEF_PUFF_DONT_SCALE = 0x0001            // do not scale size over time
 	, LEF_TUMBLE = 0x0002            // tumble over time, used for ejecting shells
 	, LEF_NOFADEALPHA = 0x0004            // sparks
@@ -436,14 +423,12 @@ typedef enum
 	, LEF_TUMBLE_SLOW = 0x0010            // slow down tumble on hitting ground
 } leFlag_t;
 
-typedef enum
-{
+typedef enum {
 	LEMT_NONE = 0,
 	LEMT_BLOOD
 } leMarkType_t; // fragment local entities can leave marks on walls
 
-typedef enum
-{
+typedef enum {
 	LEBS_NONE = 0,
 	LEBS_BLOOD,
 	LEBS_ROCK,
@@ -458,22 +443,17 @@ typedef struct localEntity_s {
 	struct localEntity_s *prev, *next;
 	leType_t leType;
 	int leFlags;
-
 	int startTime;
 	int endTime;
 	int fadeInTime;
-
 	float lifeRate; // 1.0 / (endTime - startTime)
 
 	trajectory_t pos;
 	trajectory_t angles;
-
 	float bounceFactor; // 0.0 = no bounce, 1.0 = perfect
 
 	float color[4];
-
 	float radius;
-
 	float light;
 	vec3_t lightColor;
 
@@ -481,7 +461,6 @@ typedef struct localEntity_s {
 	leBounceSoundType_t leBounceSoundType;
 
 	refEntity_t refEntity;
-
 	int lastTrailTime;
 	int headJuncIndex, headJuncIndex2;
 	float effectWidth;
@@ -489,7 +468,6 @@ typedef struct localEntity_s {
 	struct localEntity_s *chain; // used for grouping entities (like for flamethrower junctions)
 	int onFireStart, onFireEnd;
 	int ownerNum;
-
 	int breakCount; // break-up this many times before we can break no more
 	float sizeScale;
 
@@ -522,13 +500,11 @@ typedef struct {
 // usually as a result of a userinfo (name, model, etc) change
 typedef struct clientInfo_s {
 	qboolean infoValid;
-
 	int clientNum;
 
 	char name[MAX_QPATH];
 	char cleanname[MAX_QPATH];
 	team_t team;
-
 	int botSkill; // OBSOLETE remove!
 	int score; // updated by score servercmds
 	int location[3]; // location in 3d for team mode (was 2d before)
@@ -537,7 +513,6 @@ typedef struct clientInfo_s {
 	int breathPuffTime;
 	int cls;
 	int latchedcls;
-
 	int rank;
 	qboolean ccSelected;
 	int fireteam;
@@ -546,11 +521,9 @@ typedef struct clientInfo_s {
 	int skillpoints[SK_NUM_SKILLS]; // filled OOB by +wstats
 
 	int disguiseClientNum;
-
 	int weapon;
 	int secondaryweapon;
 	int latchedweapon;
-
 	int refStatus;
 
 	bg_character_t *character;
@@ -598,8 +571,7 @@ typedef struct clientInfo_s {
 
 } clientInfo_t;
 
-typedef enum
-{
+typedef enum {
 	W_PART_1 = 0,
 	W_PART_2,
 	W_PART_3,
@@ -610,8 +582,7 @@ typedef enum
 	W_MAX_PARTS
 } barrelType_t;
 
-typedef enum
-{
+typedef enum {
 	W_TP_MODEL = 0,         //  third person model
 	W_FP_MODEL,         //  first person model
 	W_PU_MODEL,         //  pickup model
@@ -706,7 +677,6 @@ typedef struct soundScriptHandle_s {
 
 typedef struct soundScriptSound_s {
 	soundScriptHandle_t sounds[MAX_SOUNDSCRIPT_SOUNDS];
-
 	int numsounds;
 	int lastPlayed;
 
@@ -739,8 +709,7 @@ typedef struct {
 	team_t team;
 } mapEntityData_t;
 
-typedef enum
-{
+typedef enum {
 	SHOW_OFF = 0,
 	SHOW_SHUTDOWN,
 	SHOW_ON
@@ -773,12 +742,10 @@ typedef struct {
 	snapshot_t *snap; // cg.snap->serverTime <= cg.time
 	snapshot_t *nextSnap; // cg.nextSnap->serverTime > cg.time, or NULL
 	snapshot_t activeSnapshots[2];
-
-	float frameInterpolation; // (float)( cg.time - cg.frame->serverTime ) / (cg.nextFrame->serverTime - cg.frame->serverTime)
+	float frameInterpolation; // (float)(cg.time - cg.frame->serverTime) / (cg.nextFrame->serverTime - cg.frame->serverTime)
 
 	qboolean thisFrameTeleport;
 	qboolean nextFrameTeleport;
-
 	int frametime; // cg.time - cg.oldTime
 
 	int time; // this is the time value that the client
@@ -800,16 +767,12 @@ typedef struct {
 	qboolean validPPS; // clear until the first call to CG_PredictPlayerState
 	int predictedErrorTime;
 	vec3_t predictedError;
-
 	int eventSequence;
 	int predictableEvents[MAX_PREDICTED_EVENTS];
-
 	float stepChange; // for stair up smoothing
 	int stepTime;
-
 	float duckChange; // for duck viewheight smoothing
 	int duckTime;
-
 	float landChange; // for landing hard
 	int landTime;
 
@@ -897,15 +860,12 @@ typedef struct {
 	int crosshairVerticalShift;
 	qboolean crosshairClientNoShoot;
 	qboolean crosshairTerrain;
-
 	int teamFirstBlood; // 0: allies 1: axis -1: nobody
 	int teamWonRounds[2];
 
 	qboolean filtercams;
-
 	int crosshairPowerupNum;
 	int crosshairPowerupTime;
-
 	int identifyClientRequest;
 
 	// cursorhints
@@ -933,9 +893,7 @@ typedef struct {
 	float damageTime; // last time any kind of damage was recieved
 	int damageIndex; // slot that was filled in
 	float damageX, damageY, damageValue;
-
 	int grenLastTime;
-
 	int switchbackWeapon;
 	int lastFiredWeapon;
 	int lastFiredWeaponTime;
@@ -981,7 +939,6 @@ typedef struct {
 
 	// Objective info display
 	qboolean limboMenu;
-
 	int oidTeam;
 	int oidPrintTime;
 	int oidPrintCharHeight;
@@ -995,10 +952,8 @@ typedef struct {
 	int voiceChatTime;
 	int voiceChatBufferIn;
 	int voiceChatBufferOut;
-
 	int newCrosshairIndex;
 	qhandle_t crosshairShaderAlt[NUM_CROSSHAIRS];
-
 	int cameraShakeTime;
 	float cameraShakePhase;
 	float cameraShakeScale;
@@ -1018,7 +973,6 @@ typedef struct {
 	vec2_t mapcoordsMaxs;
 	vec2_t mapcoordsScale;
 	qboolean mapcoordsValid;
-
 	int numMiscGameModels;
 	int numCoronas;
 
@@ -1072,11 +1026,9 @@ typedef struct {
 	char thirtySecondSound_a[MAX_QPATH];
 
 	pmoveExt_t pmext;
-
 	int numOIDtriggers2;
 	char oidTriggerInfoAllies[MAX_OID_TRIGGERS][256];
 	char oidTriggerInfoAxis[MAX_OID_TRIGGERS][256];
-
 	int fieldopsChargeTime[2];
 	int soldierChargeTime[2];
 	int engineerChargeTime[2];
@@ -1094,12 +1046,10 @@ typedef struct {
 	char maxPanzers[MAX_QPATH];
 	char maxRiflegrenades[MAX_QPATH];
 	int maxPlayers;
-
 	int binocZoomTime;
 	int limboEndCinematicTime;
 	int proneMovingTime;
 	fireteamData_t fireTeams[32];
-
 	int orderFade;
 	int orderTime;
 
@@ -1139,7 +1089,6 @@ typedef struct {
 	char objMapDescription_Neutral[384];
 	char objDescription_Axis[MAX_OBJECTIVES][256];
 	char objDescription_Allied[MAX_OBJECTIVES][256];
-
 	int waterundertime;
 
 	svCvar_t svCvars[MAX_SVCVARS];
@@ -1718,8 +1667,7 @@ typedef struct oidInfo_s {
 #define LOC_SHOWDISTANCE            32
 #define LOC_DEBUG                   512
 */
-enum
-{
+enum {
 	LOC_FTEAM = BIT(0),
 	LOC_VCHAT = BIT(1),
 	LOC_TCHAT = BIT(1),
@@ -1730,8 +1678,7 @@ enum
 	LOC_DEBUG = BIT(9),
 };
 
-enum
-{
+enum {
 	BAR_LEFT = BIT(0),
 	BAR_CENTER = BIT(1),
 	BAR_VERT = BIT(2),
@@ -1793,20 +1740,16 @@ typedef struct cam_s {
 	vec3_t velocity;
 
 	qboolean startLean;
-
 	int factor;
 	qboolean noclip;
-
 	int commandTime;
-
 	int move;
 	int turn;
 } cam_t;
 
 // ML_ = menu level
 // used in the demo helpmenu
-typedef enum
-{
+typedef enum {
 	ML_MAIN,
 	ML_EDV
 } mlType_t;
@@ -1822,7 +1765,6 @@ typedef struct cgs_s {
 	float screenXScale; // derived from glconfig
 	float screenYScale;
 	float screenXBias;
-
 	int serverCommandSequence; // reliable command stream counter
 	int processedSnapshotNum; // the number of snapshots cgame has requested
 
@@ -1831,19 +1773,16 @@ typedef struct cgs_s {
 	// parsed from serverinfo
 	gametype_t gametype;
 	int antilag;
-
 	float timelimit;
 	int maxclients;
 	char mapname[MAX_QPATH];
 	char rawmapname[MAX_QPATH];
 	float weaponRestrictions;
-
 	int voteTime;
 	int voteYes;
 	int voteNo;
 	qboolean voteModified; // beep whenever changed
 	char voteString[MAX_STRING_TOKENS];
-
 	int levelStartTime;
 	int intermissionStartTime;
 
@@ -1868,7 +1807,6 @@ typedef struct cgs_s {
 	team_t teamChatMsgTeams[TEAMCHAT_HEIGHT];
 	int teamChatPos;
 	int teamLastChatPos;
-
 	int cursorX;
 	int cursorY;
 	int eventHandling;
@@ -1883,14 +1821,12 @@ typedef struct cgs_s {
 
 	// player/AI model scripting (client repository)
 	animScriptData_t animScriptData;
-
 	int currentRound;
 	float nextTimeLimit;
 	int minclients;
 	gamestate_t gamestate;
 	char *currentCampaign;
 	int currentCampaignMap;
-
 	int complaintClient;
 	int complaintEndTime;
 
@@ -1905,27 +1841,20 @@ typedef struct cgs_s {
 	arenaInfo_t arenaData;
 
 	centity_t *gameManager;
-
 	int ccLayers;
 	int ccLayerCeils[MAX_COMMANDMAP_LAYERS];
 	float ccZoomFactor;
-
 	int invitationClient;
 	int invitationEndTime;
-
 	int applicationClient;
 	int applicationEndTime;
-
 	int propositionClient;
 	int propositionClient2;
 	int propositionEndTime;
-
 	int autoFireteamEndTime;
 	int autoFireteamNum;
-
 	int autoFireteamCreateEndTime;
 	int autoFireteamCreateNum;
-
 	int autoFireteamJoinEndTime;
 	int autoFireteamJoinNum;
 
@@ -1960,7 +1889,7 @@ typedef struct cgs_s {
 	int ccSelectedLayer;
 	int ccSelectedObjective;
 	int ccSelectedSpawnPoint;
-	int ccSelectedTeam; // ( 1 = ALLIES, 0 = AXIS )
+	int ccSelectedTeam; // (1 = ALLIES, 0 = AXIS)
 	int ccSelectedWeaponNumber;
 	int ccSelectedClass;
 	int ccSelectedWeapon;
@@ -1974,10 +1903,8 @@ typedef struct cgs_s {
 	int ccCurrentCamObjective;
 	int ccRequestedObjective;
 	int ccLastObjectiveRequestTime;
-
 	int dbSortedClients[MAX_CLIENTS];
 	int dbSelectedClient;
-
 	int dbMode;
 	qboolean dbShowing;
 	qboolean dbAccuraciesRecieved;
@@ -1998,12 +1925,10 @@ typedef struct cgs_s {
 	int dbWeaponListOffset;
 	cg_weaponstats_t dbWeaponStats[WS_MAX];
 	int dbChatMode;
-
 	int tdbAxisMapsXP[SK_NUM_SKILLS][MAX_MAPS_PER_CAMPAIGN];
 	int tdbAlliedMapsXP[SK_NUM_SKILLS][MAX_MAPS_PER_CAMPAIGN];
 	int tdbMapListOffset;
 	int tdbSelectedMap;
-
 	int ftMenuPos;
 	int ftMenuMode;
 	int ftMenuModeEx;
@@ -2041,7 +1966,6 @@ typedef struct cgs_s {
 	int dbMapVotedFor[3];
 	int mapVoteMapX;
 	int mapVoteMapY;
-
 	int fixedphysics;
 	int fixedphysicsfps;
 	int pronedelay;
@@ -2635,11 +2559,11 @@ void CG_AddSmokeSprites(void);
 void CG_ProcessSnapshots(void);
 
 // cg_spawn.c
-qboolean    CG_SpawnString(const char *key, const char *defaultString, char **out);
+qboolean CG_SpawnString(const char *key, const char *defaultString, char **out);
 // spawn string returns a temporary reference, you must CopyString() if you want to keep it
-qboolean    CG_SpawnFloat(const char *key, const char *defaultString, float *out);
-qboolean    CG_SpawnInt(const char *key, const char *defaultString, int *out);
-qboolean    CG_SpawnVector(const char *key, const char *defaultString, float *out);
+qboolean CG_SpawnFloat(const char *key, const char *defaultString, float *out);
+qboolean CG_SpawnInt(const char *key, const char *defaultString, int *out);
+qboolean CG_SpawnVector(const char *key, const char *defaultString, float *out);
 void        CG_ParseEntitiesFromString(void);
 
 // cg_info.c
@@ -2671,8 +2595,7 @@ void CG_LoadRankIcons(void);
 qboolean CG_DrawStatsRanksMedals(void);
 void CG_StatsRanksMedalsClick(int key);
 
-typedef enum
-{
+typedef enum {
 	ANIM_IDLE = 0,
 	ANIM_RAISE,
 } animType_t;
@@ -3333,8 +3256,7 @@ void CG_Fireteams_MenuText_Draw(panel_button_t *button);
 void CG_Fireteams_MenuTitleText_Draw(panel_button_t *button);
 
 // hitsounds flags
-typedef enum
-{
+typedef enum {
 	HITSOUNDS_ON = BIT(0),
 	HITSOUNDS_NOBODYSHOT = BIT(1),
 	HITSOUNDS_NOHEADSHOT = BIT(2),

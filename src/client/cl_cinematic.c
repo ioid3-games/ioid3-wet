@@ -55,23 +55,21 @@ typedef enum {
 	VIDEO_NUM_CODECS
 } cinType_t;
 static videoDecode_t videoDecoders[] = {
-	{"\0", "\0", NULL, NULL, NULL, NULL,  NULL, NULL      },
+	{"\0", "\0", NULL, NULL, NULL, NULL,  NULL, NULL},
 	{"roq", "\0", ROQ_Init, NULL, ROQ_StartRead, ROQ_UpdateCinematic, ROQ_Reset, ROQ_StopVideo},
 #ifdef FEATURE_THEORA
 	{"ogv", "ogm", NULL, NULL, OGV_StartRead, OGV_UpdateCinematic, NULL, OGV_StopVideo},
 #endif
 };
 
-// ============================================================================
-
 static cinematic_t cin_cinematics[MAX_CINEMATICS];
 
 /*
- ==================
- CIN_HandleForCinematic
+=======================================================================================================================================
+CIN_HandleForCinematic
 
- Finds a free cinHandle_t
- ==================
+Finds a free cinHandle_t.
+=======================================================================================================================================
 */
 static cinematic_t *CIN_HandleForCinematic(cinHandle_t *handle) {
 	cinematic_t *cin;
@@ -92,6 +90,11 @@ static cinematic_t *CIN_HandleForCinematic(cinHandle_t *handle) {
 	return cin;
 }
 
+/*
+=======================================================================================================================================
+CIN_HandleValid
+=======================================================================================================================================
+*/
 static qboolean CIN_HandleValid(cinHandle_t handle) {
 
 	if (handle <= 0 || handle > MAX_CINEMATICS) {
@@ -102,11 +105,11 @@ static qboolean CIN_HandleValid(cinHandle_t handle) {
 }
 
 /*
- ==================
- CIN_GetCinematicByHandle
+=======================================================================================================================================
+CIN_GetCinematicByHandle
 
- Returns a cinematic_t for the given cinHandle_t
- ==================
+Returns a cinematic_t for the given cinHandle_t.
+=======================================================================================================================================
 */
 cinematic_t *CIN_GetCinematicByHandle(cinHandle_t handle) {
 	cinematic_t *cin;
@@ -124,6 +127,11 @@ cinematic_t *CIN_GetCinematicByHandle(cinHandle_t handle) {
 	return cin;
 }
 
+/*
+=======================================================================================================================================
+CIN_FreeCinematic
+=======================================================================================================================================
+*/
 static void CIN_FreeCinematic(cinematic_t *cin, qboolean runtime) {
 	// Stop the cinematic
 	if (runtime && cin->flags & CIN_system) {
@@ -159,9 +167,9 @@ static void CIN_FreeCinematic(cinematic_t *cin, qboolean runtime) {
 }
 
 /*
- ==================
- CIN_PlayCinematic_f
- ==================
+=======================================================================================================================================
+CIN_PlayCinematic_f
+=======================================================================================================================================
 */
 static void CIN_PlayCinematic_f(void) {
 	char name[MAX_OSPATH];
@@ -206,9 +214,9 @@ static void CIN_PlayCinematic_f(void) {
 }
 
 /*
- ==================
- CIN_ListCinematics_f
- ==================
+=======================================================================================================================================
+CIN_ListCinematics_f
+=======================================================================================================================================
 */
 static void CIN_ListCinematics_f(void) {
 	cinematic_t *cin;
@@ -227,13 +235,9 @@ static void CIN_ListCinematics_f(void) {
 		bytes += cin->frameWidth * cin->frameHeight * 8;
 
 		Com_Printf("%2i: ", i);
-
 		Com_Printf("%4i %4i ", cin->frameWidth, cin->frameHeight);
-
 		Com_Printf("%5ik ", SIZE_KB(cin->frameWidth * cin->frameHeight * 8));
-
 		Com_Printf("%3i ", cin->frameRate);
-
 		Com_Printf("%s\n", cin->name);
 	}
 
@@ -261,9 +265,9 @@ static void CIN_Completion_VideoName(char *args, int argNum) {
 }
 
 /*
- ==================
- CIN_PlayCinematic
- ==================
+=======================================================================================================================================
+CIN_PlayCinematic
+=======================================================================================================================================
 */
 cinHandle_t CIN_PlayCinematic(const char *name, int x, int y, int w, int h, int flags) {
 	cinematic_t *cin;
@@ -344,12 +348,12 @@ cinHandle_t CIN_PlayCinematic(const char *name, int x, int y, int w, int h, int 
 	}
 
 	Com_Printf("Could not find a codec for the video: %s\n", name);
+
 video_playback_failed:
 	CIN_FreeCinematic(cin, qfalse);
 	return 0;
 
 codec_found_valid:
-
 	if (flags & CIN_system) {
 		Com_Printf("Playing cinematic %s\n", name);
 
@@ -368,9 +372,9 @@ codec_found_valid:
 }
 
 /*
- ==================
- CIN_ResetCinematic
- ==================
+=======================================================================================================================================
+CIN_ResetCinematic
+=======================================================================================================================================
 */
 void CIN_ResetCinematic(cinHandle_t handle) {
 	cinematic_t *cin;
@@ -388,9 +392,9 @@ void CIN_ResetCinematic(cinHandle_t handle) {
 }
 
 /*
- ==================
- CIN_StopCinematic
- ==================
+=======================================================================================================================================
+CIN_StopCinematic
+=======================================================================================================================================
 */
 e_status CIN_StopCinematic(cinHandle_t handle) {
 	cinematic_t *cin;
@@ -421,9 +425,9 @@ e_status CIN_StopCinematic(cinHandle_t handle) {
 }
 
 /*
- ==================
- CIN_Init
- ==================
+=======================================================================================================================================
+CIN_Init
+=======================================================================================================================================
 */
 void CIN_Init(void) {
 	int i;
@@ -442,9 +446,9 @@ void CIN_Init(void) {
 }
 
 /*
- ==================
- CIN_Shutdown
- ==================
+=======================================================================================================================================
+CIN_Shutdown
+=======================================================================================================================================
 */
 void CIN_Shutdown(void) {
 	int i;
@@ -462,7 +466,13 @@ void CIN_Shutdown(void) {
 	}
 }
 
-// Stop all the cinematics
+/*
+=======================================================================================================================================
+CIN_CloseAllVideos
+
+Stop all the cinematics.
+=======================================================================================================================================
+*/
 void CIN_CloseAllVideos(void) {
 	cinematic_t *cin;
 	int i;
@@ -476,6 +486,11 @@ void CIN_CloseAllVideos(void) {
 	Com_Memset(cin_cinematics, 0, sizeof(cin_cinematics));
 }
 
+/*
+=======================================================================================================================================
+CIN_RunCinematic
+=======================================================================================================================================
+*/
 e_status CIN_RunCinematic(int handle) {
 	cinematic_t *data;
 
@@ -500,6 +515,11 @@ e_status CIN_RunCinematic(int handle) {
 	return FMV_PLAY;
 }
 
+/*
+=======================================================================================================================================
+CIN_SetExtents
+=======================================================================================================================================
+*/
 void CIN_SetExtents(int handle, int x, int y, int w, int h) {
 
 	if (CIN_HandleValid(cls.cinematicHandle)) {
@@ -511,6 +531,11 @@ void CIN_SetExtents(int handle, int x, int y, int w, int h) {
 	}
 }
 
+/*
+=======================================================================================================================================
+SCR_StopCinematic
+=======================================================================================================================================
+*/
 void SCR_StopCinematic(void) {
 
 	if (CIN_HandleValid(cls.cinematicHandle)) {
@@ -519,6 +544,11 @@ void SCR_StopCinematic(void) {
 	}
 }
 
+/*
+=======================================================================================================================================
+SCR_RunCinematic
+=======================================================================================================================================
+*/
 void SCR_RunCinematic(void) {
 
 	if (CIN_HandleValid(cls.cinematicHandle)) {
@@ -526,6 +556,11 @@ void SCR_RunCinematic(void) {
 	}
 }
 
+/*
+=======================================================================================================================================
+SCR_DrawCinematic
+=======================================================================================================================================
+*/
 void SCR_DrawCinematic(void) {
 
 	if (CIN_HandleValid(cls.cinematicHandle)) {
@@ -533,6 +568,11 @@ void SCR_DrawCinematic(void) {
 	}
 }
 
+/*
+=======================================================================================================================================
+CIN_DrawCinematic
+=======================================================================================================================================
+*/
 void CIN_DrawCinematic(int handle) {
 	float x, y, w, h;
 	cinematic_t *cin;
@@ -556,6 +596,11 @@ void CIN_DrawCinematic(int handle) {
 	re.DrawStretchRaw(x, y, w, h, cin->currentData.width, cin->currentData.height, cin->currentData.image, handle, cin->currentData.dirty);
 }
 
+/*
+=======================================================================================================================================
+CIN_UploadCinematic
+=======================================================================================================================================
+*/
 void CIN_UploadCinematic(int handle) {
 	cinematic_t *cin;
 

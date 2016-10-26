@@ -218,7 +218,7 @@ static void CG_ClipMoveToEntities_FT(const vec3_t start, const vec3_t mins, cons
         if (ent->number == skipNumber)
         {
             continue;
-    }
+   }
 
         if (ent->solid == SOLID_BMODEL)
         {
@@ -228,7 +228,7 @@ static void CG_ClipMoveToEntities_FT(const vec3_t start, const vec3_t mins, cons
            // VectorCopy(cent->lerpOrigin, origin);
             BG_EvaluateTrajectory(&cent->currentState.apos, cg.physicsTime, angles, qtrue, cent->currentState.effect2Time);
             BG_EvaluateTrajectory(&cent->currentState.pos, cg.physicsTime, origin, qfalse, cent->currentState.effect2Time);
-    }
+   }
         else
         {
            // encoded bbox
@@ -244,42 +244,42 @@ static void CG_ClipMoveToEntities_FT(const vec3_t start, const vec3_t mins, cons
             if (ent->eType == ET_PLAYER && cg.bulletTrace)
             {
                 bmaxs[2] = CG_ClientHitboxMaxZ(ent, zu);
-        }
+       }
             else
             {
                 bmaxs[2] = zu;
-        }
+       }
 
             cmodel = trap_CM_TempCapsuleModel(bmins, bmaxs);
 
             VectorCopy(vec3_origin, angles);
             VectorCopy(cent->lerpOrigin, origin);
-    }
+   }
        // use bbox of capsule
         if (capsule)
         {
             trap_CM_TransformedCapsuleTrace(&trace, start, end, 
                                             mins, maxs, cmodel, mask, origin, angles);
-    }
+   }
         else
         {
             trap_CM_TransformedBoxTrace(&trace, start, end, 
                                         mins, maxs, cmodel, mask, origin, angles);
-    }
+   }
 
         if (trace.allsolid || trace.fraction < tr->fraction)
         {
             trace.entityNum = ent->number;
             *tr = trace;
-    }
+   }
         else if (trace.startsolid)
         {
             tr->startsolid = qtrue;
-    }
+   }
         if (tr->allsolid)
         {
             return;
-    }
+   }
 }
 }
 */

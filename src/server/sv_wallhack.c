@@ -17,8 +17,6 @@
 
 #include "server.h"
 
-// ======================================================================
-
 static vec3_t pred_ppos, pred_opos;
 static trajectory_t traject;
 static vec3_t old_origin[MAX_CLIENTS];

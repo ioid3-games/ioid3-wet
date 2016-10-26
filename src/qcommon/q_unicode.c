@@ -50,7 +50,7 @@ int Q_UTF8_Width(const char *str) {
 		return 0;
 	}
 
-	if    (*s <= 0x7F) {
+	if (*s <= 0x7F) {
 		ewidth = 0;
 	} else if (0xC2 <= *s && *s <= 0xDF) {
 		ewidth = 1;
@@ -297,7 +297,7 @@ char *Q_UTF8_Encode(unsigned long codepoint) {
 	static int index = 0;
 	char *buf = sbuf[index++ & 1];
 
-	if    (codepoint <= 0x007F) {
+	if (codepoint <= 0x007F) {
 		buf[0] = codepoint;
 		buf[1] = 0;
 	} else if (0x0080 <= codepoint && codepoint <= 0x07FF) {

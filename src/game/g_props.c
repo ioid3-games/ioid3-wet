@@ -815,7 +815,7 @@ void SP_Props_Locker_Tall(gentity_t *ent) {
 QUAKED props_chair_chat(.8 .6 .2) (-16 -16 0) (16 16 32)
 point entity
 health = default = 10
-wait = defaults to 5 how many shards to spawn ( try not to exceed 20 )
+wait = defaults to 5 how many shards to spawn (try not to exceed 20)
 
 shard =
     FXTYPE_WOOD = 0,
@@ -828,7 +828,7 @@ shard =
 QUAKED props_chair_chatarm(.8 .6 .2) (-16 -16 0) (16 16 32)
 point entity
 health = default = 10
-wait = defaults to 5 how many shards to spawn ( try not to exceed 20 )
+wait = defaults to 5 how many shards to spawn (try not to exceed 20)
 
 shard =
     FXTYPE_WOOD = 0,
@@ -841,7 +841,7 @@ shard =
 QUAKED props_chair_side (.8 .6 .2) (-16 -16 0) (16 16 32)
 point entity
 health = default = 10
-wait = defaults to 5 how many shards to spawn ( try not to exceed 20 )
+wait = defaults to 5 how many shards to spawn (try not to exceed 20)
 
 shard =
     FXTYPE_WOOD = 0,
@@ -855,7 +855,7 @@ shard =
 QUAKED props_chair_hiback (.8 .6 .2) (-16 -16 0) (16 16 32)
 point entity
 health = default = 10
-wait = defaults to 5 how many shards to spawn ( try not to exceed 20 )
+wait = defaults to 5 how many shards to spawn (try not to exceed 20)
 
 shard =
     FXTYPE_WOOD = 0,
@@ -868,7 +868,7 @@ shard =
 QUAKED props_chair (.8 .6 .2) (-16 -16 0) (16 16 32)
 point entity
 health = default = 10
-wait = defaults to 5 how many shards to spawn ( try not to exceed 20 )
+wait = defaults to 5 how many shards to spawn (try not to exceed 20)
 
 shard =
     FXTYPE_WOOD = 0,
@@ -1261,7 +1261,7 @@ void Props_Chair_Animate(gentity_t *ent) {
 	    (!Q_stricmp(ent->classname, "props_chair_chat")) ||
 	    (!Q_stricmp(ent->classname, "props_chair_chatarm")) ||
 	    (!Q_stricmp(ent->classname, "props_chair_hiback"))
-	    ) {
+	   ) {
 		if (ent->s.frame >= 20) {
 			ent->s.frame = 20;
 			G_UseTargets(ent, NULL);
@@ -1527,9 +1527,9 @@ void SP_Props_ChairSide(gentity_t *ent) {
 
 // can be one of two types, but they have the same animations/etc, so re-use what you can
 /*
-==============
+=======================================================================================================================================
 SP_Props_ChateauChair
-==============
+=======================================================================================================================================
 */
 void SP_Props_ChateauChair(gentity_t *ent) {
 	int mass;
@@ -1576,9 +1576,9 @@ void SP_Props_ChateauChair(gentity_t *ent) {
 }
 
 /*
-==============
+=======================================================================================================================================
 SP_Props_ChairChat
-==============
+=======================================================================================================================================
 */
 void SP_Props_ChairChat(gentity_t *ent) {
 	ent->s.modelindex = G_ModelIndex("models/furniture/chair/chair_chat.md3");
@@ -1586,9 +1586,9 @@ void SP_Props_ChairChat(gentity_t *ent) {
 }
 
 /*
-==============
+=======================================================================================================================================
 SP_Props_ChairChatArm
-==============
+=======================================================================================================================================
 */
 void SP_Props_ChairChatArm(gentity_t *ent) {
 	ent->s.modelindex = G_ModelIndex("models/furniture/chair/chair_chatarm.md3");
@@ -1626,7 +1626,7 @@ void SP_Props_DamageInflictor(gentity_t *ent) {
 /*
 QUAKED props_shard_generator (.8 .5 .1) (-4 -4 -4) (4 4 4)
 
-wait = defaults to 5 how many shards to spawn ( try not to exceed 20 )
+wait = defaults to 5 how many shards to spawn (try not to exceed 20)
 
 shard =
     FXTYPE_WOOD = 0,
@@ -1670,7 +1670,7 @@ void SP_props_shard_generator(gentity_t *ent) {
 QUAKED props_desklamp (.8 .6 .2) (-16 -16 0) (16 16 32)
 point entity
 health = default = 10
-wait = defaults to 5 how many shards to spawn ( try not to exceed 20 )
+wait = defaults to 5 how many shards to spawn (try not to exceed 20)
 
 shard =
     FXTYPE_GLASS = 0,
@@ -1729,7 +1729,7 @@ angle will determine which way the lid will fly off when it explodes
 
 when selecting the OIL spawnflag you have the option of giving it a target
 this will ensure that the oil sprite will show up where you want it
-( be sure to put it on the floor )
+(be sure to put it on the floor)
 the default is in the middle of the barrel on the floor
 */
 void Props_Barrel_Touch(gentity_t *self, gentity_t *other, trace_t *trace) {
@@ -2056,7 +2056,7 @@ QUAKED props_crate_64 (.8 .6 .2) (-32 -32 0) (32 32 64)
 breakable pushable
 
   health = default = 20
-wait = defaults to 10 how many shards to spawn ( try not to exceed 20 )
+wait = defaults to 10 how many shards to spawn (try not to exceed 20)
 
 shard =
     FXTYPE_GLASS = 0,
@@ -2070,7 +2070,7 @@ QUAKED props_crate_32 (.8 .6 .2) (-16 -16 0) (16 16 32)
 breakable pushable
 
   health = default = 20
-wait = defaults to 10 how many shards to spawn ( try not to exceed 20 )
+wait = defaults to 10 how many shards to spawn (try not to exceed 20)
 
 shard =
     FXTYPE_GLASS = 0,
@@ -2087,7 +2087,7 @@ breakable NOT pushable
 brushmodel only
 
   health = default = 20
-wait = defaults to 10 how many shards to spawn ( try not to exceed 20 )
+wait = defaults to 10 how many shards to spawn (try not to exceed 20)
 
 shard =
     FXTYPE_GLASS = 0,
@@ -2449,7 +2449,7 @@ breakable NOT pushable
 brushmodel only
 
   health = default = 10
-wait = defaults to 10 how many shards to spawn ( try not to exceed 20 )
+wait = defaults to 10 how many shards to spawn (try not to exceed 20)
 
 shard =
     FXTYPE_GLASS = 0,
@@ -2505,7 +2505,7 @@ breakable NOT pushable
 brushmodel only
 
   health = default = 20
-wait = defaults to 10 how many shards to spawn ( try not to exceed 20 )
+wait = defaults to 10 how many shards to spawn (try not to exceed 20)
 
 shard =
     FXTYPE_GLASS = 0,
@@ -3361,9 +3361,9 @@ void Spawn_Junk(gentity_t *ent) {
 }
 
 /*
-==============
+=======================================================================================================================================
 props_locker_endrattle
-==============
+=======================================================================================================================================
 */
 void props_locker_endrattle(gentity_t *ent) {
 	ent->s.frame = 0; // idle
@@ -3496,9 +3496,9 @@ model="models/mapobjects/furniture/footlocker.md3"
 */
 
 /*
-==============
+=======================================================================================================================================
 props_locker_death
-==============
+=======================================================================================================================================
 */
 void props_locker_death(gentity_t *ent, gentity_t *inflictor, gentity_t *attacker, int damage, int mod) {
 	ent->takedamage = qfalse;

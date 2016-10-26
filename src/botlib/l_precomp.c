@@ -358,7 +358,7 @@ void PC_PrintDefineHashTable(define_t **definehash) {
         for (d = definehash[i]; d; d = d->hashnext)
         {
             Com_Printf(" %s", d->name);
-    }
+   }
         Com_Printf("\n");
 }
 }
@@ -464,7 +464,7 @@ void PC_AddBuiltinDefines(source_t *source) {
 		{"__LINE__", BUILTIN_LINE},
 	{"__FILE__", BUILTIN_FILE},
 	{"__DATE__", BUILTIN_DATE},
-	{"__TIME__", BUILTIN_TIME}, // { "__STDC__", BUILTIN_STDC}, {NULL, 0        }
+	{"__TIME__", BUILTIN_TIME}, // { "__STDC__", BUILTIN_STDC}, {NULL, 0       }
 	};
 
 	for (i = 0; builtin[i].string; i++) {
@@ -2271,20 +2271,20 @@ int PC_Directive_evalfloat (source_t *source) {
 }
 
 directive_t directives[20] = {
-	{"if", PC_Directive_if    },
-	{"ifdef", PC_Directive_ifdef },
+	{"if", PC_Directive_if   },
+	{"ifdef", PC_Directive_ifdef},
 	{"ifndef", PC_Directive_ifndef},
-	{"elif", PC_Directive_elif  },
-	{"else", PC_Directive_else  },
-	{"endif", PC_Directive_endif },
+	{"elif", PC_Directive_elif },
+	{"else", PC_Directive_else },
+	{"endif", PC_Directive_endif},
 	{"include", PC_Directive_include},
 	{"define", PC_Directive_define},
-	{"undef", PC_Directive_undef },
-	{"line", PC_Directive_line  },
-	{"error", PC_Directive_error },
+	{"undef", PC_Directive_undef},
+	{"line", PC_Directive_line },
+	{"error", PC_Directive_error},
 	{"pragma", PC_Directive_pragma},
-	{"eval", PC_Directive_eval  },
-	{"evalfloat", PC_Directive_evalfloat}, {NULL, NULL               }
+	{"eval", PC_Directive_eval },
+	{"evalfloat", PC_Directive_evalfloat}, {NULL, NULL              }
 };
 
 int PC_ReadDirective(source_t *source) {
@@ -2373,7 +2373,7 @@ int PC_DollarDirective_evalfloat (source_t *source) {
 
 directive_t dollardirectives[20] = {
 	{"evalint", PC_DollarDirective_evalint},
-	{"evalfloat", PC_DollarDirective_evalfloat}, {NULL, NULL                     }
+	{"evalfloat", PC_DollarDirective_evalfloat}, {NULL, NULL                    }
 };
 
 int PC_ReadDollarDirective(source_t *source) {

@@ -57,10 +57,10 @@ void Com_ClearDownload(void) {
 }
 
 /*
-=====================
+=======================================================================================================================================
 CL_ClearStaticDownload
 Clear download information that we keep in cls (disconnected download support)
-=====================
+=======================================================================================================================================
 */
 void Com_ClearStaticDownload(void) {
 	assert(!dld.bWWWDlDisconnected); // reset before calling
@@ -247,9 +247,9 @@ void Com_InitDownloads(void) {
 }
 
 /*
-==================
+=======================================================================================================================================
 Com_WWWDownload
-==================
+=======================================================================================================================================
 */
 void Com_WWWDownload(void) {
 	char *to_ospath;
@@ -334,13 +334,13 @@ void Com_WWWDownload(void) {
 }
 
 /*
-==================
+=======================================================================================================================================
 Com_WWWBadChecksum
 
 FS code calls this when doing FS_ComparePaks
 we can detect files that we got from a www dl redirect with a wrong checksum
 this indicates that the redirect setup is broken, and next dl attempt should NOT redirect
-==================
+=======================================================================================================================================
 */
 qboolean Com_WWWBadChecksum(const char *pakname) {
 	if (strstr(dld.redirectedList, va("@%s", pakname))) {

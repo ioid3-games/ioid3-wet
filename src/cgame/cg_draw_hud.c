@@ -36,16 +36,14 @@
 
 #include "cg_local.h"
 
-typedef enum
-{
+typedef enum {
 	FLAGS_MOVE_TIMERS = BIT(0),
 	FLAGS_REMOVE_RANKS = BIT(1),
 	FLAGS_MOVE_POPUPS = BIT(2),
 	FLAGS_POPUPS_SHADOW = BIT(3)
 } althud_flags;
 
-typedef enum
-{
+typedef enum {
 	STYLE_NORMAL,
 	STYLE_SIMPLE
 } componentStyle;
@@ -161,11 +159,11 @@ static hudStucture_t *CG_getNextFreeHud() {
         memset(temp, 0, sizeof(hudStucture_t));
         CG_setDefaultHudValues(temp);
         return temp;
-  }
+ }
     else
     {
         return NULL;
-  }
+ }
 }
 */
 
@@ -209,7 +207,7 @@ static void CG_addHudToList(hudStucture_t *hud) {
 static qboolean CG_HUD_ParseError(int handle, char *format, ...) {
 	int line;
 	char filename[MAX_QPATH];
-	va_list     argptr;
+	va_list argptr;
 	static char string[4096];
 
 	va_start(argptr, format);
@@ -583,7 +581,7 @@ static int CG_PlayerAmmoValue(int *ammo, int *clips, int *akimboammo) {
 	centity_t *cent;
 	playerState_t *ps;
 	int weap;
-	qboolean      skipammo = qfalse;
+	qboolean skipammo = qfalse;
 
 	*ammo = *clips = *akimboammo = -1;
 
@@ -1308,9 +1306,9 @@ static void CG_DrawNewCompass(rectDef_t location) {
 
 	if (snap->ps.pm_flags & PMF_LIMBO /*|| snap->ps.persistant[PERS_TEAM] == TEAM_SPECTATOR*/
 #ifdef FEATURE_MULTIVIEW
-	    || cg.mvTotalClients > 0
+	 || cg.mvTotalClients > 0
 #endif
-	    ) {
+	   ) {
 		CG_DrawExpandedAutoMap();
 		return;
 	}
@@ -1352,7 +1350,7 @@ static void CG_DrawNewCompass(rectDef_t location) {
 	lastangle += anglespeed;
 	CG_DrawRotatedPic(basex + 4, basey + 4, basew - 8, baseh - 8, cgs.media.compass2Shader, lastangle);
 
-	//if( !(cgs.ccFilter & CC_FILTER_REQUESTS) ) {
+	//if(!(cgs.ccFilter & CC_FILTER_REQUESTS)) {
 	// draw voice chats
 	{
 		centity_t *cent;
@@ -1363,7 +1361,6 @@ static void CG_DrawNewCompass(rectDef_t location) {
 			if (cg.predictedPlayerState.clientNum == i || !cgs.clientinfo[i].infoValid || cg.predictedPlayerState.persistant[PERS_TEAM] != cgs.clientinfo[i].team) {
 				continue;
 			}
-
 			// also draw revive icons if cent is dead and player is a medic
 			if (cent->voiceChatSpriteTime < cg.time) {
 				continue;
@@ -1380,24 +1377,24 @@ static void CG_DrawNewCompass(rectDef_t location) {
 	}
 	//}
 
-	/*if( !(cgs.ccFilter & CC_FILTER_DESTRUCTIONS) ) {
+	/*if(!(cgs.ccFilter & CC_FILTER_DESTRUCTIONS)) {
 	    // draw explosives if an engineer
-	    if ( cg.predictedPlayerState.stats[ STAT_PLAYER_CLASS ] == PC_ENGINEER ) {
-	        for ( i = 0; i < snap->numEntities; i++ ) {
+	    if (cg.predictedPlayerState.stats[ STAT_PLAYER_CLASS ] == PC_ENGINEER) {
+	        for (i = 0; i < snap->numEntities; i++) {
 	            centity_t *cent = &cg_entities[ snap->entities[ i ].number ];
 
-	            if ( cent->currentState.eType != ET_EXPLOSIVE_INDICATOR ) {
+	            if (cent->currentState.eType != ET_EXPLOSIVE_INDICATOR) {
 	                continue;
-	          }
+	         }
 
-	            if ( cent->currentState.teamNum == 1 && cg.predictedPlayerState.persistant[PERS_TEAM] == TEAM_AXIS )
+	            if (cent->currentState.teamNum == 1 && cg.predictedPlayerState.persistant[PERS_TEAM] == TEAM_AXIS)
 	                continue;
-	            else if ( cent->currentState.teamNum == 2 && cg.predictedPlayerState.persistant[PERS_TEAM] == TEAM_ALLIES )
+	            else if (cent->currentState.teamNum == 2 && cg.predictedPlayerState.persistant[PERS_TEAM] == TEAM_ALLIES)
 	                continue;
 
-	            CG_DrawCompassIcon( basex, basey, basew, baseh, cg.predictedPlayerState.origin, cent->lerpOrigin, cgs.media.compassDestroyShader );
-	      }
-	  }
+	            CG_DrawCompassIcon(basex, basey, basew, baseh, cg.predictedPlayerState.origin, cent->lerpOrigin, cgs.media.compassDestroyShader);
+	     }
+	 }
 	}*/
 
 	{
@@ -1430,7 +1427,7 @@ static void CG_DrawNewCompass(rectDef_t location) {
 				continue;
 			}
 
-			CG_DrawCompassIcon(basex, basey, basew, baseh, cg.predictedPlayerState.origin, ent->pos.trBase, cgs.media.buddyShader); //if( !(cgs.ccFilter & CC_FILTER_BUDDIES) ) {
+			CG_DrawCompassIcon(basex, basey, basew, baseh, cg.predictedPlayerState.origin, ent->pos.trBase, cgs.media.buddyShader); //if(!(cgs.ccFilter & CC_FILTER_BUDDIES)) {
 		}
 	}
 }
@@ -1506,9 +1503,9 @@ static void CG_DrawStatsDebug(void) {
 #define UPPERRIGHT_X 634
 #define UPPERRIGHT_W 50
 /*
-==================
+=======================================================================================================================================
 CG_DrawSnapshot
-==================
+=======================================================================================================================================
 */
 static float CG_DrawSnapshot(float y) {
 	char *s = va("t:%i sn:%i cmd:%i", cg.snap->serverTime, cg.latestSnapshotNum, cgs.serverCommandSequence);
@@ -1523,9 +1520,9 @@ static float CG_DrawSnapshot(float y) {
 }
 
 /*
-==================
+=======================================================================================================================================
 CG_DrawFPS
-==================
+=======================================================================================================================================
 */
 #define MAX_FPS_FRAMES  500
 
@@ -1861,7 +1858,7 @@ static float CG_DrawDisconnect(float y) {
 	trap_GetUserCmd(cmdNum, &cmd);
 
 	if (cmd.serverTime <= cg.snap->ps.commandTime
-	    || cmd.serverTime > cg.time)        // special check for map_restart
+	 || cmd.serverTime > cg.time)        // special check for map_restart
 	{
 		return y + w2 + 13;
 	}
@@ -2023,9 +2020,9 @@ static float CG_DrawLagometer(float y) {
 
 	if (cg_nopredict.integer
 #ifdef ALLOW_GSYNC
-	    || cg_synchronousClients.integer
+	 || cg_synchronousClients.integer
 #endif // ALLOW_GSYNC
-	    ) {
+	   ) {
 		CG_Text_Paint_Ext(ax, ay, cg_fontScaleTP.value, cg_fontScaleTP.value, colorWhite, "snc", 0, 0, ITEM_TEXTSTYLE_SHADOWED, &cgs.media.limboFont2);
 	}
 	// don't draw if a demo and we're running at a different timescale
@@ -2200,9 +2197,9 @@ static void CG_PrintHud(hudStucture_t *hud) {
 #endif
 
 /*
-=====================
+=======================================================================================================================================
 CG_SetHud
-=====================
+=======================================================================================================================================
 */
 void CG_SetHud(void) {
 	if (cg_altHud.integer && activehud->hudnumber != cg_altHud.integer) {
@@ -2226,9 +2223,9 @@ void CG_SetHud(void) {
 }
 
 /*
-=====================
+=======================================================================================================================================
 CG_DrawActiveHud
-=====================
+=======================================================================================================================================
 */
 void CG_DrawActiveHud(void) {
 	if (cg.snap->ps.stats[STAT_HEALTH] > 0) {
@@ -2255,9 +2252,9 @@ void CG_DrawActiveHud(void) {
 }
 
 /*
-=====================
+=======================================================================================================================================
 CG_DrawGlobalHud
-=====================
+=======================================================================================================================================
 */
 void CG_DrawGlobalHud(void) {
 	if (cg_altHudFlags.integer & FLAGS_MOVE_POPUPS) {
@@ -2274,9 +2271,9 @@ void CG_DrawGlobalHud(void) {
 }
 
 /*
-=====================
+=======================================================================================================================================
 CG_DrawUpperRight
-=====================
+=======================================================================================================================================
 */
 void CG_DrawUpperRight(void) {
 	int y = 152; // 20 + 100 + 32;

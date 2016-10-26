@@ -166,8 +166,7 @@ NET
  */
 #define MAX_RELIABLE_COMMANDS   256
 
-typedef enum
-{
+typedef enum {
 	NA_BAD = 0,                 // an address lookup failed
 	NA_BOT,
 	NA_LOOPBACK,
@@ -178,8 +177,7 @@ typedef enum
 	NA_UNSPEC
 } netadrtype_t;
 
-typedef enum
-{
+typedef enum {
 	NS_CLIENT,
 	NS_SERVER
 } netsrc_t;
@@ -238,7 +236,6 @@ Netchan handles packet fragmentation and out of order / duplicate suppression
 
 typedef struct {
 	netsrc_t sock;
-
 	int dropped; // between last packet and previous
 
 	netadr_t remoteAddress;
@@ -259,7 +256,6 @@ typedef struct {
 	int unsentFragmentStart;
 	int unsentLength;
 	byte unsentBuffer[MAX_MSGLEN];
-
 	int lastSentTime;
 	int lastSentSize;
 } netchan_t;
@@ -314,7 +310,6 @@ typedef struct {
 	qboolean forceUpdate;
 
 	char motdChallenge[MAX_TOKEN_CHARS];
-
 	int masterDataChecked;
 } autoupdate_t;
 
@@ -395,8 +390,7 @@ VIRTUAL MACHINE
 
 typedef struct vm_s vm_t;
 
-typedef enum
-{
+typedef enum {
 	VMI_NATIVE,
 	VMI_BYTECODE,
 	VMI_COMPILED
@@ -413,8 +407,7 @@ typedef enum vmSlots_e
 
 extern const char *vmStrs[MAX_VM];
 
-typedef enum
-{
+typedef enum {
 	TRAP_MEMSET = 100,
 	TRAP_MEMCPY,
 	TRAP_STRNCPY,
@@ -637,7 +630,7 @@ void Cvar_Init(void);
 char *Cvar_InfoString(int bit);
 char *Cvar_InfoString_Big(int bit);
 // returns an info string containing all the cvars that have the given bit set
-// in their flags ( CVAR_USERINFO, CVAR_SERVERINFO, CVAR_SYSTEMINFO, etc )
+// in their flags (CVAR_USERINFO, CVAR_SERVERINFO, CVAR_SYSTEMINFO, etc)
 void Cvar_InfoStringBuffer(int bit, char *buff, int buffsize);
 void Cvar_AssertCvarRange(cvar_t *cv, float minVal, float maxVal, qboolean shouldBeIntegral);
 
@@ -983,8 +976,7 @@ extern qboolean com_errorEntered;
 extern fileHandle_t com_journalFile;
 extern fileHandle_t com_journalDataFile;
 
-typedef enum
-{
+typedef enum {
 	TAG_FREE,
 	TAG_GENERAL,
 	TAG_BOTLIB,
@@ -1034,8 +1026,8 @@ void Hunk_Clear(void);
 void Hunk_ClearToMark(void);
 void Hunk_SetMark(void);
 qboolean Hunk_CheckMark(void);
-//void *Hunk_Alloc( int size );
-// void *Hunk_Alloc( int size, ha_pref preference );
+//void *Hunk_Alloc(int size);
+// void *Hunk_Alloc(int size, ha_pref preference);
 void Hunk_ClearTempMemory(void);
 void *Hunk_AllocateTempMemory(int size);
 void Hunk_FreeTempMemory(void *buf);
@@ -1172,8 +1164,7 @@ NON-PORTABLE SYSTEM SERVICES
 ==============================================================
 */
 
-typedef enum
-{
+typedef enum {
 	AXIS_SIDE,
 	AXIS_FORWARD,
 	AXIS_UP,
@@ -1183,8 +1174,7 @@ typedef enum
 	MAX_JOYSTICK_AXIS
 } joystickAxis_t;
 
-typedef enum
-{
+typedef enum {
 	// make sure SE_NONE is zero
 	SE_NONE = 0,        // evTime is still valid
 	SE_KEY,             // evValue is a key code, evValue2 is the down flag
@@ -1272,16 +1262,14 @@ qboolean Sys_LowPhysicalMemory(void);
 
 void Sys_SetEnv(const char *name, const char *value);
 
-typedef enum
-{
+typedef enum {
 	DR_YES = 0,
 	DR_NO = 1,
 	DR_OK = 0,
 	DR_CANCEL = 1
 } dialogResult_t;
 
-typedef enum
-{
+typedef enum {
 	DT_INFO,
 	DT_WARNING,
 	DT_ERROR,

@@ -192,7 +192,7 @@ void CG_ScoresDown_f(void) {
 #ifdef FEATURE_MULTIVIEW
 		    && cg.mvTotalClients < 1
 #endif
-		    ) {
+		   ) {
 			trap_SendClientCommand("score");
 		}
 		// leave the current scores up if they were already
@@ -204,7 +204,7 @@ void CG_ScoresDown_f(void) {
 #ifdef FEATURE_MULTIVIEW
 			    && cg.mvTotalClients < 1
 #endif
-			    ) {
+			   ) {
 				cg.numScores = 0;
 			}
 		}
@@ -646,7 +646,7 @@ void CG_dumpStats_f(void) {
 #ifdef FEATURE_MULTIVIEW
 			: "statsall"
 #endif
-		    );
+		   );
 	}
 }
 
@@ -660,7 +660,7 @@ void CG_wStatsDown_f(void) {
     {
         Pri("You must be a player or following a player to use +wstats\n");
         return;
-  }
+ }
 
     if (cg.statsRequestTime < cg.time)
     {
@@ -672,7 +672,7 @@ void CG_wStatsDown_f(void) {
 
         cg.statsRequestTime = cg.time + 500;
         trap_SendClientCommand(va("wstats %d", i));
-  }
+ }
 
     cg.showStats = qtrue;
 }
@@ -721,71 +721,71 @@ static void CG_DumpSpeaker_f(void) {
 	    fileHandle_t f;
 
 	        // Check for argument
-	    if( trap_Argc() < 2 || trap_Argc() > 4 )
+	    if(trap_Argc() < 2 || trap_Argc() > 4)
 	    {
-	        CG_Printf( "Usage: dumpspeaker <soundfile> ( <wait=value>|<random=value> )\n" );
+	        CG_Printf("Usage: dumpspeaker <soundfile> (<wait=value>|<random=value>)\n");
 	        return;
-	  }
+	 }
 
 	    wait = random = 0;
 
 	    // parse the other parameters
-	    for( i = 2; i < trap_Argc(); i++ ) {
+	    for(i = 2; i < trap_Argc(); i++) {
 	        char *valueptr = NULL;
 
-	        trap_Argv( i, soundfile, sizeof(soundfile) );
+	        trap_Argv(i, soundfile, sizeof(soundfile));
 
-	        for( buffptr = soundfile; *buffptr; buffptr++ ) {
-	            if( *buffptr == '=' ) {
+	        for(buffptr = soundfile; *buffptr; buffptr++) {
+	            if(*buffptr == '=') {
 	                valueptr = buffptr + 1;
 	                break;
-	          }
-	      }
+	         }
+	     }
 
-	        Q_strncpyz( soundfile, soundfile, buffptr - soundfile + 1 );
+	        Q_strncpyz(soundfile, soundfile, buffptr - soundfile + 1);
 
-	        if( !Q_stricmp( soundfile, "wait" ) )
-	            wait = atoi( valueptr );
-	        else if( !Q_stricmp( soundfile, "random" ) )
-	            random = atoi( valueptr );
-	  }
+	        if(!Q_stricmp(soundfile, "wait"))
+	            wait = atoi(valueptr);
+	        else if(!Q_stricmp(soundfile, "random"))
+	            random = atoi(valueptr);
+	 }
 
 	    // parse soundfile
-	    trap_Argv( 1, soundfile, sizeof(soundfile) );
+	    trap_Argv(1, soundfile, sizeof(soundfile));
 
 	    // Open soundfile
-	    Q_strncpyz( sscrfilename, cgs.mapname, sizeof(sscrfilename) );
-	    extptr = sscrfilename + strlen( sscrfilename ) - 4;
-	    if( extptr < sscrfilename || Q_stricmp( extptr, ".bsp" ) )
+	    Q_strncpyz(sscrfilename, cgs.mapname, sizeof(sscrfilename));
+	    extptr = sscrfilename + strlen(sscrfilename) - 4;
+	    if(extptr < sscrfilename || Q_stricmp(extptr, ".bsp"))
 	    {
-	        CG_Printf( "Unable to dump, unknown map name?\n" );
+	        CG_Printf("Unable to dump, unknown map name?\n");
 	        return;
-	  }
-	    Q_strncpyz( extptr, ".sscr", 5 );
-	    trap_FS_FOpenFile( sscrfilename, &f, FS_APPEND_SYNC );
-	    if( !f )
+	 }
+	    Q_strncpyz(extptr, ".sscr", 5);
+	    trap_FS_FOpenFile(sscrfilename, &f, FS_APPEND_SYNC);
+	    if(!f)
 	    {
-	        CG_Printf( "Failed to open '%s' for writing.\n", sscrfilename );
+	        CG_Printf("Failed to open '%s' for writing.\n", sscrfilename);
 	        return;
-	  }
+	 }
 
 	        // Build the entity definition
-	    Com_sprintf( soundfile, sizeof(soundfile), "{\n\"classname\" \"target_speaker\"\n\"origin\" \"%i %i %i\"\n\"noise\" \"%s\"\n",
-	                                                (int) cg.snap->ps.origin[0], (int) cg.snap->ps.origin[1], (int) cg.snap->ps.origin[2], soundfile );
+	    Com_sprintf(soundfile, sizeof(soundfile), "{\n\"classname\" \"target_speaker\"\n\"origin\" \"%i %i %i\"\n\"noise\" \"%s\"\n",
+	                                                (int) cg.snap->ps.origin[0], (int) cg.snap->ps.origin[1], (int) cg.snap->ps.origin[2], soundfile);
 
-	    if( wait ) {
-	        Q_strcat( soundfile, sizeof(soundfile), va( "\"wait\" \"%i\"\n", wait ) );
-	  }
-	    if( random ) {
-	        Q_strcat( soundfile, sizeof(soundfile), va( "\"random\" \"%i\"\n", random ) );
-	  }
-	    Q_strcat( soundfile, sizeof(soundfile), "}\n\n" );
+	    if(wait) {
+	        Q_strcat(soundfile, sizeof(soundfile), va("\"wait\" \"%i\"\n", wait));
+	 }
+	    if(random) {
+	        Q_strcat(soundfile, sizeof(soundfile), va("\"random\" \"%i\"\n", random));
+	 }
+	    Q_strcat(soundfile, sizeof(soundfile), "}\n\n");
 
 	        // And write out/acknowledge
-	    trap_FS_Write( soundfile, strlen( soundfile ), f );
-	    trap_FS_FCloseFile( f );
-	    CG_Printf( "Entity dumped to '%s' (%i %i %i).\n", sscrfilename,
-	               (int) cg.snap->ps.origin[0], (int) cg.snap->ps.origin[1], (int) cg.snap->ps.origin[2] );*/
+	    trap_FS_Write(soundfile, strlen(soundfile), f);
+	    trap_FS_FCloseFile(f);
+	    CG_Printf("Entity dumped to '%s' (%i %i %i).\n", sscrfilename,
+	               (int) cg.snap->ps.origin[0], (int) cg.snap->ps.origin[1], (int) cg.snap->ps.origin[2]);*/
 	bg_speaker_t speaker;
 	trace_t tr;
 	vec3_t end;
@@ -1226,117 +1226,117 @@ void CG_NoClip_f(void) {
 #endif
 
 static consoleCommand_t commands[] = {
-	{"testgun",             CG_TestGun_f            },
-	{"testmodel",           CG_TestModel_f          },
-	{"nextframe",           CG_TestModelNextFrame_f },
-	{"prevframe",           CG_TestModelPrevFrame_f },
-	{"nextskin",            CG_TestModelNextSkin_f  },
-	{"prevskin",            CG_TestModelPrevSkin_f  },
-	{"viewpos",             CG_Viewpos_f            },
-	{"+scores",             CG_ScoresDown_f         },
-	{"-scores",             CG_ScoresUp_f           },
-	{"zoomin",              CG_ZoomIn_f             },
-	{"zoomout",             CG_ZoomOut_f            },
-	{"weaplastused",        CG_LastWeaponUsed_f     },
-	{"weapnextinbank",      CG_NextWeaponInBank_f   },
-	{"weapprevinbank",      CG_PrevWeaponInBank_f   },
-	{"weapnext",            CG_NextWeapon_f         },
-	{"weapprev",            CG_PrevWeapon_f         },
-	{"weapalt",             CG_AltWeapon_f          },
-	{"weapon",              CG_Weapon_f             },
-	{"weaponbank",          CG_WeaponBank_f         },
-	{"fade",                CG_Fade_f               },
+	{"testgun",             CG_TestGun_f           },
+	{"testmodel",           CG_TestModel_f         },
+	{"nextframe",           CG_TestModelNextFrame_f},
+	{"prevframe",           CG_TestModelPrevFrame_f},
+	{"nextskin",            CG_TestModelNextSkin_f },
+	{"prevskin",            CG_TestModelPrevSkin_f },
+	{"viewpos",             CG_Viewpos_f           },
+	{"+scores",             CG_ScoresDown_f        },
+	{"-scores",             CG_ScoresUp_f          },
+	{"zoomin",              CG_ZoomIn_f            },
+	{"zoomout",             CG_ZoomOut_f           },
+	{"weaplastused",        CG_LastWeaponUsed_f    },
+	{"weapnextinbank",      CG_NextWeaponInBank_f  },
+	{"weapprevinbank",      CG_PrevWeaponInBank_f  },
+	{"weapnext",            CG_NextWeapon_f        },
+	{"weapprev",            CG_PrevWeapon_f        },
+	{"weapalt",             CG_AltWeapon_f         },
+	{"weapon",              CG_Weapon_f            },
+	{"weaponbank",          CG_WeaponBank_f        },
+	{"fade",                CG_Fade_f              },
 
-	{"mp_QuickMessage",     CG_QuickMessage_f       },
-	{"mp_fireteammsg",      CG_QuickFireteams_f     },
-	{"mp_fireteamadmin",    CG_QuickFireteamAdmin_f },
-	{"wm_sayPlayerClass",   CG_SayPlayerClass_f     },
-	{"wm_ftsayPlayerClass", CG_FTSayPlayerClass_f   },
+	{"mp_QuickMessage",     CG_QuickMessage_f      },
+	{"mp_fireteammsg",      CG_QuickFireteams_f    },
+	{"mp_fireteamadmin",    CG_QuickFireteamAdmin_f},
+	{"wm_sayPlayerClass",   CG_SayPlayerClass_f    },
+	{"wm_ftsayPlayerClass", CG_FTSayPlayerClass_f  },
 
 
-	{"VoiceChat",           CG_VoiceChat_f          },
-	{"VoiceTeamChat",       CG_TeamVoiceChat_f      },
+	{"VoiceChat",           CG_VoiceChat_f         },
+	{"VoiceTeamChat",       CG_TeamVoiceChat_f     },
 
 	// say, teamsay, etc
-	{"messageMode",         CG_MessageMode_f        },
-	{"messageMode2",        CG_MessageMode_f        },
-	{"messageMode3",        CG_MessageMode_f        },
-	{"messageSend",         CG_MessageSend_f        },
+	{"messageMode",         CG_MessageMode_f       },
+	{"messageMode2",        CG_MessageMode_f       },
+	{"messageMode3",        CG_MessageMode_f       },
+	{"messageSend",         CG_MessageSend_f       },
 
-	{"SetWeaponCrosshair",  CG_SetWeaponCrosshair_f },
+	{"SetWeaponCrosshair",  CG_SetWeaponCrosshair_f},
 
-	{"VoiceFireTeamChat",   CG_BuddyVoiceChat_f     },
+	{"VoiceFireTeamChat",   CG_BuddyVoiceChat_f    },
 
-	{"openlimbomenu",       CG_LimboMenu_f          },
+	{"openlimbomenu",       CG_LimboMenu_f         },
 
-	{"+stats",              CG_StatsDown_f          },
-	{"-stats",              CG_StatsUp_f            },
-	{"+topshots",           CG_topshotsDown_f       },
-	{"-topshots",           CG_topshotsUp_f         },
-	{"+objectives",         CG_objectivesDown_f     },
-	{"-objectives",         CG_objectivesUp_f       },
+	{"+stats",              CG_StatsDown_f         },
+	{"-stats",              CG_StatsUp_f           },
+	{"+topshots",           CG_topshotsDown_f      },
+	{"-topshots",           CG_topshotsUp_f        },
+	{"+objectives",         CG_objectivesDown_f    },
+	{"-objectives",         CG_objectivesUp_f      },
 
-	{"autoRecord",          CG_autoRecord_f         },
-	{"autoScreenshot",      CG_autoScreenShot_f     },
-	{"currentTime",         CG_currentTime_f        },
-	{"keyoff",              CG_keyOff_f             },
-	{"keyon",               CG_keyOn_f              },
+	{"autoRecord",          CG_autoRecord_f        },
+	{"autoScreenshot",      CG_autoScreenShot_f    },
+	{"currentTime",         CG_currentTime_f       },
+	{"keyoff",              CG_keyOff_f            },
+	{"keyon",               CG_keyOn_f             },
 #ifdef FEATURE_MULTIVIEW
-	{"mvactivate",          CG_mvToggleAll_f        },
-	{"mvdel",               CG_mvDelete_f           },
-	{"mvhide",              CG_mvHideView_f         },
-	{"mvnew",               CG_mvNew_f              },
-	{"mvshow",              CG_mvShowView_f         },
-	{"mvswap",              CG_mvSwapViews_f        },
-	{"mvtoggle",            CG_mvToggleView_f       },
-	{"spechelp",            CG_toggleSpecHelp_f     },
+	{"mvactivate",          CG_mvToggleAll_f       },
+	{"mvdel",               CG_mvDelete_f          },
+	{"mvhide",              CG_mvHideView_f        },
+	{"mvnew",               CG_mvNew_f             },
+	{"mvshow",              CG_mvShowView_f        },
+	{"mvswap",              CG_mvSwapViews_f       },
+	{"mvtoggle",            CG_mvToggleView_f      },
+	{"spechelp",            CG_toggleSpecHelp_f    },
 #endif
-	{"statsdump",           CG_dumpStats_f          },
-	{"+vstr",               CG_vstrDown_f           },
-	{"-vstr",               CG_vstrUp_f             },
+	{"statsdump",           CG_dumpStats_f         },
+	{"+vstr",               CG_vstrDown_f          },
+	{"-vstr",               CG_vstrUp_f            },
 
-	{"selectbuddy",         CG_SelectBuddy_f        },
+	{"selectbuddy",         CG_SelectBuddy_f       },
 
-	{"MapZoomIn",           CG_AutomapZoomIn_f      },
-	{"MapZoomOut",          CG_AutomapZoomOut_f     },
-	{"+mapexpand",          CG_AutomapExpandDown_f  },
-	{"-mapexpand",          CG_AutomapExpandUp_f    },
+	{"MapZoomIn",           CG_AutomapZoomIn_f     },
+	{"MapZoomOut",          CG_AutomapZoomOut_f    },
+	{"+mapexpand",          CG_AutomapExpandDown_f },
+	{"-mapexpand",          CG_AutomapExpandUp_f   },
 
-	{"generateTracemap",    CG_GenerateTracemap     },
+	{"generateTracemap",    CG_GenerateTracemap    },
 
-	{"ToggleAutoMap",       CG_ToggleAutomap_f      }, // toggle automap on/off
+	{"ToggleAutoMap",       CG_ToggleAutomap_f     }, // toggle automap on/off
 
-	{"editSpeakers",        CG_EditSpeakers_f       },
-	{"dumpSpeaker",         CG_DumpSpeaker_f        },
-	{"modifySpeaker",       CG_ModifySpeaker_f      },
-	{"undoSpeaker",         CG_UndoSpeaker_f        },
-	{"cpm",                 CG_CPM_f                },
-	{"forcetapout",         CG_ForceTapOut_f        },
-	{"timerSet",            CG_TimerSet_f           },
-	{"timerReset",          CG_TimerReset_f         },
-	{"resetTimer",          CG_TimerReset_f         }, // keep ETPro compatibility
-	{"class",               CG_Class_f              },
-	{"readhuds",            CG_ReadHuds_f           },
+	{"editSpeakers",        CG_EditSpeakers_f      },
+	{"dumpSpeaker",         CG_DumpSpeaker_f       },
+	{"modifySpeaker",       CG_ModifySpeaker_f     },
+	{"undoSpeaker",         CG_UndoSpeaker_f       },
+	{"cpm",                 CG_CPM_f               },
+	{"forcetapout",         CG_ForceTapOut_f       },
+	{"timerSet",            CG_TimerSet_f          },
+	{"timerReset",          CG_TimerReset_f        },
+	{"resetTimer",          CG_TimerReset_f        }, // keep ETPro compatibility
+	{"class",               CG_Class_f             },
+	{"readhuds",            CG_ReadHuds_f          },
 #ifdef FEATURE_EDV
 	{"+freecam_turnleft",   CG_FreecamTurnLeftDown_f},
-	{"-freecam_turnleft",   CG_FreecamTurnLeftUp_f  },
+	{"-freecam_turnleft",   CG_FreecamTurnLeftUp_f },
 	{"+freecam_turnright",  CG_FreecamTurnRightDown_f},
-	{"-freecam_turnright",  CG_FreecamTurnRightUp_f },
+	{"-freecam_turnright",  CG_FreecamTurnRightUp_f},
 
-	{"+freecam_turnup",     CG_FreecamTurnUpDown_f  },
-	{"-freecam_turnup",     CG_FreecamTurnUpUp_f    },
+	{"+freecam_turnup",     CG_FreecamTurnUpDown_f },
+	{"-freecam_turnup",     CG_FreecamTurnUpUp_f   },
 	{"+freecam_turndown",   CG_FreecamTurnDownDown_f},
-	{"-freecam_turndown",   CG_FreecamTurnDownUp_f  },
+	{"-freecam_turndown",   CG_FreecamTurnDownUp_f },
 
 	{"+freecam_rollleft",   CG_FreecamRollLeftDown_f},
-	{"-freecam_rollleft",   CG_FreecamRollLeftUp_f  },
+	{"-freecam_rollleft",   CG_FreecamRollLeftUp_f },
 	{"+freecam_rollright",  CG_FreecamRollRightDown_f},
-	{"-freecam_rollright",  CG_FreecamRollRightUp_f },
-	{"freecam",             CG_Freecam_f            },
-	{"freecamsetpos",       CG_FreecamSetPos_f      },
-	{"freecamgetpos",       CG_FreecamGetPos_f      },
+	{"-freecam_rollright",  CG_FreecamRollRightUp_f},
+	{"freecam",             CG_Freecam_f           },
+	{"freecamsetpos",       CG_FreecamSetPos_f     },
+	{"freecamgetpos",       CG_FreecamGetPos_f     },
 
-	{"noclip",              CG_NoClip_f             },
+	{"noclip",              CG_NoClip_f            },
 #endif
 };
 

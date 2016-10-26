@@ -62,9 +62,9 @@ void COM_FixPath(char *pathname) {
 }
 
 /*
-============
+=======================================================================================================================================
 COM_SkipPath
-============
+=======================================================================================================================================
 */
 char *COM_SkipPath(char *pathname) {
 	char *last = pathname;
@@ -81,9 +81,9 @@ char *COM_SkipPath(char *pathname) {
 }
 
 /*
-============
+=======================================================================================================================================
 COM_GetExtension
-============
+=======================================================================================================================================
 */
 const char *COM_GetExtension(const char *name) {
 	const char *dot = strrchr(name, '.'), *slash;
@@ -96,9 +96,9 @@ const char *COM_GetExtension(const char *name) {
 }
 
 /*
-============
+=======================================================================================================================================
 COM_StripExtension
-============
+=======================================================================================================================================
 */
 void COM_StripExtension(const char *in, char *out, int destsize) {
 	const char *dot = strrchr(in, '.'), *slash;
@@ -115,11 +115,11 @@ void COM_StripExtension(const char *in, char *out, int destsize) {
 }
 
 /*
-============
+=======================================================================================================================================
 COM_CompareExtension
 
 string compare the end of the strings and return qtrue if strings match
-============
+=======================================================================================================================================
 */
 qboolean COM_CompareExtension(const char *in, const char *ext) {
 	int inlen = strlen(in), extlen = strlen(ext);
@@ -158,9 +158,9 @@ void COM_DefaultExtension(char *path, int maxSize, const char *extension) {
 }
 
 /*
-============
+=======================================================================================================================================
 Com_HashKey
-============
+=======================================================================================================================================
 */
 int Com_HashKey(char *string, int maxlen) {
 	int register hash = 0, i;
@@ -176,11 +176,11 @@ int Com_HashKey(char *string, int maxlen) {
 //============================================================================
 
 /*
-==================
+=======================================================================================================================================
 COM_BitCheck
 
   Allows bit-wise checks on arrays with more than one item (> 32 bits)
-==================
+=======================================================================================================================================
 */
 qboolean COM_BitCheck(const int array[], int bitNum) {
 	int i = 0;
@@ -194,11 +194,11 @@ qboolean COM_BitCheck(const int array[], int bitNum) {
 }
 
 /*
-==================
+=======================================================================================================================================
 COM_BitSet
 
   Allows bit-wise SETS on arrays with more than one item (> 32 bits)
-==================
+=======================================================================================================================================
 */
 void COM_BitSet(int array[], int bitNum) {
 	int i = 0;
@@ -212,11 +212,11 @@ void COM_BitSet(int array[], int bitNum) {
 }
 
 /*
-==================
+=======================================================================================================================================
 COM_BitClear
 
   Allows bit-wise CLEAR on arrays with more than one item (> 32 bits)
-==================
+=======================================================================================================================================
 */
 void COM_BitClear(int array[], int bitNum) {
 	int i = 0;
@@ -315,7 +315,7 @@ char *COM_Parse(char **data_p) {
 }
 
 void COM_ParseError(char *format, ...) {
-	va_list     argptr;
+	va_list argptr;
 	static char string[4096];
 
 	va_start(argptr, format);
@@ -329,7 +329,7 @@ void COM_ParseError(char *format, ...) {
  * @note Unused.
  */
 void COM_ParseWarning(char *format, ...) {
-	va_list     argptr;
+	va_list argptr;
 	static char string[4096];
 
 	va_start(argptr, format);
@@ -340,7 +340,7 @@ void COM_ParseWarning(char *format, ...) {
 }
 
 /*
-==============
+=======================================================================================================================================
 COM_Parse
 
 Parse a token out of a string
@@ -349,7 +349,7 @@ Will never return NULL, just empty strings
 If "allowLineBreaks" is qtrue then an empty
 string will be returned if the next token is
 a newline.
-==============
+=======================================================================================================================================
 */
 static char *SkipWhitespace(char *data, qboolean *hasNewLines) {
 	int c;
@@ -523,7 +523,7 @@ char *COM_ParseExt(char **data_p, qboolean allowLineBreaks) {
 
 					if (!c) {
 						com_token[len] = 0;
-						*data_p = ( char * ) data;
+						*data_p = (char *) data;
 						break;
 					}
 					if ((c == '\\' && *(data) == '\"')) {
@@ -545,7 +545,7 @@ char *COM_ParseExt(char **data_p, qboolean allowLineBreaks) {
 
 			if (c == '\"' || !c) {
 				com_token[len] = 0;
-				*data_p = ( char * ) data;
+				*data_p = (char *) data;
 				return com_token;
 			}
 
@@ -574,7 +574,7 @@ char *COM_ParseExt(char **data_p, qboolean allowLineBreaks) {
 
 	com_token[len] = 0;
 
-	*data_p = ( char * ) data;
+	*data_p = (char *) data;
 	return com_token;
 }
 
@@ -585,7 +585,7 @@ char *COM_Parse2(char **data_p) {
 // *INDENT-OFF*
 char *COM_ParseExt2(char **data_p, qboolean allowLineBreaks) {
 	int c = 0, len;
-	qboolean   hasNewLines = qfalse;
+	qboolean hasNewLines = qfalse;
 	char *data;
 	const char **punc;
 
@@ -809,9 +809,9 @@ char *COM_ParseExt2(char **data_p, qboolean allowLineBreaks) {
 // *INDENT-ON*
 
 /*
-==================
+=======================================================================================================================================
 COM_MatchToken
-==================
+=======================================================================================================================================
 */
 void COM_MatchToken(char **buf_p, char *match) {
 	char *token;
@@ -932,9 +932,9 @@ void Parse3DMatrix(char **buf_p, int z, int y, int x, float *m) {
 }
 
 /*
-===============
+=======================================================================================================================================
 Com_ParseInfos
-===============
+=======================================================================================================================================
 */
 int Com_ParseInfos(char *buf, int max, char infos[][MAX_INFO_STRING]) {
 	const char *token;
@@ -1508,7 +1508,7 @@ int QDECL Com_sprintf(char *dest, int size, const char *fmt, ...) {
  * varargs versions of all text functions.
 
 char *QDECL va(char *format, ...) {
-    va_list     argptr;
+    va_list argptr;
     static char string[2][32000]; // in case va is called by nested functions
     static int index = 0;
     char *buf;
@@ -1525,7 +1525,7 @@ char *QDECL va(char *format, ...) {
  */
 
 /*
-============
+=======================================================================================================================================
 va
 
 does a varargs printf into a temp buffer, so I don't need to have
@@ -1534,10 +1534,10 @@ FIXME: make this buffer size safe someday
 
 - modified this into a circular list, to further prevent stepping on
 previous strings
-============
+=======================================================================================================================================
 */
 char *QDECL va(const char *format, ...) {
-	va_list     argptr;
+	va_list argptr;
 	static char temp_buffer[MAX_VA_STRING];
 	static char string[MAX_VA_STRING]; // in case va is called by nested functions
 	static int index = 0;
@@ -1845,12 +1845,12 @@ void Info_RemoveKey_Big(char *s, const char *key) {
 }
 
 /*
-==================
+=======================================================================================================================================
 Info_Validate
 
 Some characters are illegal in info strings because they
 can mess up the server's parsing
-==================
+=======================================================================================================================================
 */
 qboolean Info_Validate(const char *s) {
 	if (strchr(s, '\"')) {
@@ -1865,11 +1865,11 @@ qboolean Info_Validate(const char *s) {
 }
 
 /*
-==================
+=======================================================================================================================================
 Info_SetValueForKey
 
 Changes or adds a key/value pair
-==================
+=======================================================================================================================================
 */
 void Info_SetValueForKey(char *s, const char *key, const char *value) {
 	char newi[MAX_INFO_STRING];
@@ -1910,11 +1910,11 @@ void Info_SetValueForKey(char *s, const char *key, const char *value) {
 }
 
 /*
-==================
+=======================================================================================================================================
 Info_SetValueForKey_Big
 
 Changes or adds a key/value pair
-==================
+=======================================================================================================================================
 */
 void Info_SetValueForKey_Big(char *s, const char *key, const char *value) {
 	char newi[BIG_INFO_STRING];
@@ -2003,9 +2003,9 @@ char *Q_StrReplace(char *haystack, char *needle, char *newp) {
 //====================================================================
 
 /*
-==================
+=======================================================================================================================================
 Com_CharIsOneOfCharset
-==================
+=======================================================================================================================================
 */
 static qboolean Com_CharIsOneOfCharset(char c, char *set) {
 	int i;
@@ -2020,9 +2020,9 @@ static qboolean Com_CharIsOneOfCharset(char c, char *set) {
 }
 
 /*
-==================
+=======================================================================================================================================
 Com_SkipCharset
-==================
+=======================================================================================================================================
 */
 char *Com_SkipCharset(char *s, char *sep) {
 	char *p = s;
@@ -2039,9 +2039,9 @@ char *Com_SkipCharset(char *s, char *sep) {
 }
 
 /*
-==================
+=======================================================================================================================================
 Com_SkipTokens
-==================
+=======================================================================================================================================
 */
 char *Com_SkipTokens(char *s, int numTokens, char *sep) {
 	int sepCount = 0;

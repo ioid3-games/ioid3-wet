@@ -79,8 +79,7 @@ cvar_t *r_colorbits; // number of desired color bits, only relevant for fullscre
 cvar_t *r_ignorehwgamma;
 cvar_t *r_ext_multisample;
 
-typedef enum
-{
+typedef enum {
 	RSERR_OK,
 
 	RSERR_INVALID_FULLSCREEN,
@@ -92,9 +91,9 @@ typedef enum
 } rserr_t;
 
 /*
-==================
+=======================================================================================================================================
 R_GetModeInfo
-==================
+=======================================================================================================================================
 */
 typedef struct vidmode_s {
 	const char *description;
@@ -366,7 +365,7 @@ static int GLimp_SetMode(glconfig_t *glConfig, int mode, qboolean fullscreen, qb
 #else
 	    0xFF000000, 0x00FF0000, 0x0000FF00, 0x000000FF
 #endif
-	    );
+	   );
 
 	// If a window exists, note its display index
 	if (main_window != NULL) {
@@ -653,7 +652,7 @@ static qboolean GLimp_StartDriverAndSetMode(glconfig_t *glConfig, int mode, qboo
 
 	if (!SDL_WasInit(SDL_INIT_VIDEO)) {
 		if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-			Com_Printf("SDL_Init( SDL_INIT_VIDEO ) FAILED (%s)\n", SDL_GetError());
+			Com_Printf("SDL_Init(SDL_INIT_VIDEO) FAILED (%s)\n", SDL_GetError());
 			return qfalse;
 		}
 
@@ -829,9 +828,9 @@ void GLimp_SetGamma(unsigned char red[256], unsigned char green[256], unsigned c
 	}
 
 	for (i = 0; i < 256; i++) {
-		table[0][i] = ((( Uint16 ) red[i]) << 8) | red[i];
-		table[1][i] = ((( Uint16 ) green[i]) << 8) | green[i];
-		table[2][i] = ((( Uint16 ) blue[i]) << 8) | blue[i];
+		table[0][i] = (((Uint16) red[i]) << 8) | red[i];
+		table[1][i] = (((Uint16) green[i]) << 8) | green[i];
+		table[2][i] = (((Uint16) blue[i]) << 8) | blue[i];
 	}
 
 #ifdef _WIN32

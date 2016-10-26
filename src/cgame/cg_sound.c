@@ -50,11 +50,11 @@ static soundScriptSound_t soundScriptSounds[MAX_SOUND_SCRIPT_SOUNDS];
 int numSoundScriptSounds = 0;
 
 /*
-==============
+=======================================================================================================================================
 CG_SoundScriptPrecache
 
   returns the index+1 of the script in the global list, for fast calling
-==============
+=======================================================================================================================================
 */
 int CG_SoundScriptPrecache(const char *name) {
 	soundScriptSound_t *scriptSound;
@@ -94,9 +94,9 @@ int CG_SoundScriptPrecache(const char *name) {
 }
 
 /*
-==============
+=======================================================================================================================================
 CG_SoundPickOldestRandomSound
-==============
+=======================================================================================================================================
 */
 int CG_SoundPickOldestRandomSound(soundScript_t *sound, vec3_t org, int entnum) {
 	int oldestTime = 0;
@@ -172,11 +172,11 @@ void CG_UpdateBufferedSoundScripts(void) {
 }
 
 /*
-==============
+=======================================================================================================================================
 CG_SoundPlaySoundScript
 
   returns qtrue if a script is found
-==============
+=======================================================================================================================================
 */
 int CG_SoundPlaySoundScript(const char *name, vec3_t org, int entnum, qboolean buffer) {
 	long          hash;
@@ -212,11 +212,11 @@ int CG_SoundPlaySoundScript(const char *name, vec3_t org, int entnum, qboolean b
 }
 
 /*
-==============
+=======================================================================================================================================
 CG_SoundPlayIndexedScript
 
   returns qtrue is a script is found
-==============
+=======================================================================================================================================
 */
 void CG_SoundPlayIndexedScript(int index, vec3_t org, int entnum) {
 	soundScript_t *sound;
@@ -235,16 +235,16 @@ void CG_SoundPlayIndexedScript(int index, vec3_t org, int entnum) {
 }
 
 /*
-===============
+=======================================================================================================================================
 CG_SoundParseSounds
-===============
+=======================================================================================================================================
 */
 static void CG_SoundParseSounds(char *filename, char *buffer) {
 	char *token, **text = &buffer;
 	long               hash;
 	soundScript_t sound; // the current sound being read
 	soundScriptSound_t *scriptSound = NULL;
-	qboolean           inSound = qfalse, wantSoundName = qtrue;
+	qboolean inSound = qfalse, wantSoundName = qtrue;
 
 	while (1) {
 		token = COM_ParseExt(text, qtrue);
@@ -291,7 +291,6 @@ static void CG_SoundParseSounds(char *filename, char *buffer) {
 			if (!inSound) {
 				CG_Error(S_COLOR_RED "CG_SoundParseSounds: '}' unexpected after sound %s, file %s\n", sound.name, filename);
 			}
-
 			// end of a sound, copy it to the global list and stick it in the hashTable
 			hash = generateHashValue(sound.name);
 			sound.nextHash = hashTable[hash];
@@ -390,9 +389,9 @@ static void CG_SoundParseSounds(char *filename, char *buffer) {
 }
 
 /*
-===============
+=======================================================================================================================================
 CG_SoundLoadSoundFiles
-===============
+=======================================================================================================================================
 */
 extern char bigTextBuffer[100000]; // we got it anyway, might as well use it
 
@@ -468,9 +467,9 @@ static void CG_SoundLoadSoundFiles(void) {
 }
 
 /*
-==============
+=======================================================================================================================================
 CG_SoundInit
-==============
+=======================================================================================================================================
 */
 void CG_SoundInit(void) {
 	if (numSoundScripts) {
@@ -496,7 +495,6 @@ void CG_SoundInit(void) {
 typedef struct editHandle_s {
 	vec3_t origin;
 	vec3_t oldOrigin;
-
 	int activeAxis;
 } editHandle_t;
 
@@ -505,7 +503,7 @@ static qhandle_t speakerShaderGrayScale = 0;
 static bg_speaker_t *editSpeaker = NULL;
 static bg_speaker_t undoSpeaker;
 static int undoSpeakerIndex;
-static qboolean     editSpeakerActive = qfalse;
+static qboolean editSpeakerActive = qfalse;
 static editHandle_t editSpeakerHandle;
 static int numSpeakersInPvs;
 
@@ -644,23 +642,23 @@ static void CG_RenderScriptSpeakers(void) {
 	    vec3_t axisOrg, dir;
 
 	    closest = -1;
-	    minDist = Square( 32.f );
+	    minDist = Square(32.f);
 
 	    r = -(cg.refdef_current->fov_x / 90.f) * (float)(cgs.cursorX - 320) / 320;
 	    u = -(cg.refdef_current->fov_y / 90.f) * (float)(cgs.cursorY - 240) / 240;
 
-	    for( i = 0; i < 3; i++ ) {
+	    for(i = 0; i < 3; i++) {
 	        dir[i] = cg.refdef_current->viewaxis[0][i] * 1.f +
 	                 cg.refdef_current->viewaxis[1][i] * r +
 	                 cg.refdef_current->viewaxis[2][i] * u;
-	  }
-	    VectorNormalizeFast( dir );
+	 }
+	    VectorNormalizeFast(dir);
 
-	    VectorMA( cg.refdef_current->vieworg, 512, dir, vec );
-	    //VectorCopy( cg.refdef_current->vieworg, axisOrg );
+	    VectorMA(cg.refdef_current->vieworg, 512, dir, vec);
+	    //VectorCopy(cg.refdef_current->vieworg, axisOrg);
 	    //axisOrg[2]+=.1f;
-	    VectorMA( cg.refdef_current->vieworg, .1f, cg.refdef_current->viewaxis[0], axisOrg );
-	    CG_AddLineToScene( vec, axisOrg, colorOrange );
+	    VectorMA(cg.refdef_current->vieworg, .1f, cg.refdef_current->viewaxis[0], axisOrg);
+	    CG_AddLineToScene(vec, axisOrg, colorOrange);
 
 	}*/
 
@@ -1166,8 +1164,8 @@ qboolean CG_SpeakerEditor_NoiseEdit_KeyDown(panel_button_t *button, int key) {
 						continue;
 					}
 
-					/*if( strlen(fileptr) < strlen(match) ) {
-					    Q_strncpyz( match, fileptr, sizeof(match) );
+					/*if(strlen(fileptr) < strlen(match)) {
+					    Q_strncpyz(match, fileptr, sizeof(match));
 					    noiseMatchIndex++;
 					    continue;
 					}*/

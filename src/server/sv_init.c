@@ -144,16 +144,11 @@ void SV_UpdateConfigStrings(void) {
 					remaining = len;
 
 					while (remaining > 0) {
-						if (sent == 0)
-						{
+						if (sent == 0) {
 							cmd = "bcs0";
-						}
-						else if (remaining < maxChunkSize)
-						{
+						} else if (remaining < maxChunkSize) {
 							cmd = "bcs2";
-						}
-						else
-						{
+						} else {
 							cmd = "bcs1";
 						}
 
@@ -171,8 +166,7 @@ void SV_UpdateConfigStrings(void) {
 			}
 		}
 		// warn admins
-		if (cstotal > MAX_GAMESTATE_CHARS - 800) // 5% of MAX_GAMESTATE_CHARS
-		{
+		if (cstotal > MAX_GAMESTATE_CHARS - 800) { // 5% of MAX_GAMESTATE_CHARS
 			Com_Printf("WARNING: Your clients might be disconnected by configstring limit [%i chars left] - reduce the ammount of maps/pk3s in path.\n", MAX_GAMESTATE_CHARS - cstotal);
 		}
 	}
@@ -207,6 +201,7 @@ void SV_GetConfigstring(int index, char *buffer, int bufferSize) {
  * @param[in] val
  */
 void SV_SetUserinfo(int index, const char *val) {
+
 	if (index < 0 || index >= sv_maxclients->integer) {
 		Com_Error(ERR_DROP, "SV_SetUserinfo: bad index %i", index);
 	}
@@ -217,7 +212,6 @@ void SV_SetUserinfo(int index, const char *val) {
 
 	Q_strncpyz(svs.clients[index].userinfo, val, sizeof(svs.clients[index].userinfo));
 	Q_strncpyz(svs.clients[index].name, Info_ValueForKey(val, "name"), sizeof(svs.clients[index].name));
-
 	// Save userinfo changes to demo (also in SV_UpdateUserinfo_f() in sv_client.c)
 	if (sv.demoState == DS_RECORDING) {
 		SV_DemoWriteClientUserinfo(&svs.clients[index], val);
@@ -231,6 +225,7 @@ void SV_SetUserinfo(int index, const char *val) {
  * @param[in] bufferSize
  */
 void SV_GetUserinfo(int index, char *buffer, int bufferSize) {
+
 	if (bufferSize < 1) {
 		Com_Error(ERR_DROP, "SV_GetUserinfo: bufferSize == %i", bufferSize);
 	}
@@ -356,7 +351,7 @@ void SV_ChangeMaxClients(void) {
 		}
 	}
 	// free old clients arrays
-	//Z_Free( svs.clients );
+	//Z_Free(svs.clients);
 	free(svs.clients); // avoid trying to allocate large chunk on a fragmented zone
 
 	// allocate new clients
@@ -581,7 +576,7 @@ void SV_TouchCGameDLL(void) {
 void SV_SpawnServer(const char *server) {
 	int i;
 	int checksum;
-	qboolean   isBot;
+	qboolean isBot;
 	const char *p;
 
 	// broadcast a level change to all connected clients
@@ -704,7 +699,6 @@ void SV_SpawnServer(const char *server) {
 			} else {
 				isBot = qfalse;
 			}
-
 			// connect the client again
 			denied = VM_ExplicitArgPtr(gvm, VM_Call(gvm, GAME_CLIENT_CONNECT, i, qfalse, isBot)); // firstTime = qfalse
 			if (denied) {
@@ -1049,7 +1043,7 @@ void SV_FinalCommand(const char *cmd, qboolean disconnect) {
 			if (cl->state >= CS_CONNECTED) {
 				// don't send a disconnect to a local client
 				if (cl->netchan.remoteAddress.type != NA_LOOPBACK) {
-					//SV_SendServerCommand( cl, "print \"%s\"", message );
+					//SV_SendServerCommand(cl, "print \"%s\"", message);
 					SV_SendServerCommand(cl, "%s", cmd);
 
 					// added this so map changes can use this functionality
@@ -1100,7 +1094,7 @@ void SV_Shutdown(const char *finalmsg) {
 		for (index = 0; index < sv_maxclients->integer; index++) {
 			SV_Netchan_ClearQueue(&svs.clients[index]);
 		}
-		//Z_Free( svs.clients );
+		//Z_Free(svs.clients);
 		free(svs.clients); // avoid trying to allocate large chunk on a fragmented zone
 	}
 

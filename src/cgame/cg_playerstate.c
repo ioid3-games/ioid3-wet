@@ -40,9 +40,9 @@
 #include "cg_local.h"
 
 /*
-==============
+=======================================================================================================================================
 CG_DamageFeedback
-==============
+=======================================================================================================================================
 */
 void CG_DamageFeedback(int yawByte, int pitchByte, int damage) {
 	float kick;
@@ -159,11 +159,11 @@ void CG_DamageFeedback(int yawByte, int pitchByte, int damage) {
 }
 
 /*
-================
+=======================================================================================================================================
 CG_Respawn
 
 A respawn happened this snapshot
-================
+=======================================================================================================================================
 */
 void CG_Respawn(qboolean revived) {
 	static int oldTeam = -1;
@@ -265,7 +265,7 @@ void CG_CheckPlayerstateEvents(playerState_t *ps, playerState_t *ops) {
 		if (i >= ops->eventSequence
 		    // or the server told us to play another event instead of a predicted event we already issued
 		    // or something the server told us changed our prediction causing a different event
-		    || (i > ops->eventSequence - MAX_EVENTS && ps->events[i & (MAX_EVENTS - 1)] != ops->events[i & (MAX_EVENTS - 1)])) {
+		 || (i > ops->eventSequence - MAX_EVENTS && ps->events[i & (MAX_EVENTS - 1)] != ops->events[i & (MAX_EVENTS - 1)])) {
 			event = ps->events[i & (MAX_EVENTS - 1)];
 			cent->currentState.event = event;
 			cent->currentState.eventParm = ps->eventParms[i & (MAX_EVENTS - 1)];
@@ -292,7 +292,7 @@ void CG_CheckChangedPredictableEvents(playerState_t *ps) {
         if (i >= cg.eventSequence)
         {
             continue;
-      }
+     }
         // if this event is not further back in than the maximum predictable events we remember
         if (i > cg.eventSequence - MAX_PREDICTED_EVENTS)
         {
@@ -309,17 +309,17 @@ void CG_CheckChangedPredictableEvents(playerState_t *ps) {
                 if (cg_showmiss.integer)
                 {
                     CG_Printf("WARNING: changed predicted event\n");
-              }
-          }
-      }
-  }
+             }
+         }
+     }
+ }
 }
 */
 
 /*
-==================
+=======================================================================================================================================
 CG_CheckLocalSounds
-==================
+=======================================================================================================================================
 */
 void CG_CheckLocalSounds(playerState_t *ps, playerState_t *ops) {
 	// health changes of more than -1 should make pain sounds
@@ -416,9 +416,9 @@ void CG_CheckLocalSounds(playerState_t *ps, playerState_t *ops) {
 }
 
 /*
-===============
+=======================================================================================================================================
 CG_TransitionPlayerState
-===============
+=======================================================================================================================================
 */
 void CG_TransitionPlayerState(playerState_t *ps, playerState_t *ops) {
 #ifdef FEATURE_MULTIVIEW
@@ -494,7 +494,7 @@ void CG_TransitionPlayerState(playerState_t *ps, playerState_t *ops) {
 
 		if (!(ops->eFlags & EF_PRONE_MOVING)) {
 			// this screws up auto-switching when dynamite planted or grenade thrown/out of ammo
-			//CG_FinishWeaponChange( cg.weaponSelect, ps->nextWeapon );
+			//CG_FinishWeaponChange(cg.weaponSelect, ps->nextWeapon);
 
 			cg.proneMovingTime = cg.time;
 		}

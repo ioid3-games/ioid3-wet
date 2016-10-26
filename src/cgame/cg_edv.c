@@ -116,7 +116,7 @@ void CG_RunBindingBuf(int key, qboolean down, char *buf) {
 void CG_DrawLine(vec3_t start, vec3_t end, vec4_t color, qhandle_t shader) {
 	polyBuffer_t *pb;
 	int vert;
-	byte         bcolor[4];
+	byte      bcolor[4];
 	vec3_t dir, diff, up;
 
 	pb = CG_PB_FindFreePolyBuffer(shader, 4, 6);
@@ -323,7 +323,7 @@ void CG_EDV_RunInput(void) {
 	// client engine insists on "helping" cgame if PERS_HWEAPON_USE is set.
 	// so we substitute saved cmd from etpro_RunBindingBuf() and tell client to FOAD
 	if (cg.snap->ps.persistant[PERS_HWEAPON_USE] && cgs.demoCamera.renderingFreeCam) {
-		//CG_Printf( "%d %d %d\n", edv_rightmove, edv_forwardmove, edv_upmove );
+		//CG_Printf("%d %d %d\n", edv_rightmove, edv_forwardmove, edv_upmove);
 		// I still don't like this
 		cg_pmove.cmd.forwardmove = (cgs.demoCamera.move & 0x01) ? 127 : 0;
 		cg_pmove.cmd.forwardmove += (cgs.demoCamera.move & 0x02) ? -127 : 0;

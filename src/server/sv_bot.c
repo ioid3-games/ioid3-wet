@@ -146,35 +146,35 @@ static __attribute__((format(printf, 2, 3))) void QDECL BotImport_Print(int type
 	va_end(ap);
 
 	switch (type) {
-	case PRT_MESSAGE: {
-		Com_Printf("%s", str);
-		break;
-	}
+		case PRT_MESSAGE: {
+			Com_Printf("%s", str);
+			break;
+		}
 
-	case PRT_WARNING: {
-		Com_Printf(S_COLOR_YELLOW "Warning: %s", str);
-		break;
-	}
+		case PRT_WARNING: {
+			Com_Printf(S_COLOR_YELLOW "Warning: %s", str);
+			break;
+		}
 
-	case PRT_ERROR: {
-		Com_Printf(S_COLOR_RED "Error: %s", str);
-		break;
-	}
+		case PRT_ERROR: {
+			Com_Printf(S_COLOR_RED "Error: %s", str);
+			break;
+		}
 
-	case PRT_FATAL: {
-		Com_Printf(S_COLOR_RED "Fatal: %s", str);
-		break;
-	}
+		case PRT_FATAL: {
+			Com_Printf(S_COLOR_RED "Fatal: %s", str);
+			break;
+		}
 
-	case PRT_EXIT: {
-		Com_Error(ERR_DROP, S_COLOR_RED "Exit: %s", str);
-		break;
-	}
+		case PRT_EXIT: {
+			Com_Error(ERR_DROP, S_COLOR_RED "Exit: %s", str);
+			break;
+		}
 
-	default: {
-		Com_Printf("unknown print type\n");
-		break;
-	}
+		default: {
+			Com_Printf("unknown print type\n");
+			break;
+		}
 	}
 }
 
@@ -327,6 +327,7 @@ int BotImport_DebugPolygonCreate(int color, int numPoints, vec3_t *points) {
 	poly->inuse = qtrue;
 	poly->color = color;
 	poly->numPoints = numPoints;
+
 	memcpy(poly->points, points, numPoints * sizeof(vec3_t));
 
 	return i;
@@ -360,6 +361,7 @@ void BotImport_DebugPolygonShow(int id, int color, int numPoints, vec3_t *points
 	poly->inuse = qtrue;
 	poly->color = color;
 	poly->numPoints = numPoints;
+
 	memcpy(poly->points, points, numPoints * sizeof(vec3_t));
 }
 

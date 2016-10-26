@@ -172,8 +172,8 @@ static int cur_fetch(lua_State *L) {
             {
               push_column(L, vm, i);
               lua_rawseti(L, 2, ++i);
-        }
-    }
+       }
+   }
       if (strchr(opts, 'a') != NULL)
         {
           /* Copy values to alphanumerical indices */
@@ -184,8 +184,8 @@ static int cur_fetch(lua_State *L) {
               lua_rawgeti(L, -1, i + 1);
               push_column(L, vm, i);
               lua_rawset(L, 2);
-        }
-    }
+       }
+   }
       lua_pushvalue(L, 2);
       return 1; /* return table */
 }
@@ -463,7 +463,7 @@ static int conn_setautocommit(lua_State *L) {
 	  sqlite3_free(errmsg);
 	  lua_concat(L, 2);
 	  lua_error(L);
-    }
+   }
 }
   lua_pushboolean(L, 1);
   return 1;

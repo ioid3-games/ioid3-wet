@@ -69,8 +69,7 @@ typedef struct svEntity_s {
 	int originCluster; // calced upon linking, for origin only bmodel vis checks
 } svEntity_t;
 
-typedef enum
-{
+typedef enum {
 	SS_DEAD,            // no map loaded
 	SS_LOADING,         // spawning level entities
 	SS_GAME             // actively running
@@ -108,17 +107,14 @@ typedef struct {
 	int bpsWindowSteps;
 	int bpsTotalBytes;
 	int bpsMaxBytes;
-
 	int ubpsWindow[MAX_BPS_WINDOW];
 	int ubpsTotalBytes;
 	int ubpsMaxBytes;
-
 	float ucompAve;
 	int ucompNum;
 
 	md3Tag_t tags[MAX_SERVER_TAGS];
 	tagHeaderExt_t tagHeadersExt[MAX_TAG_FILES];
-
 	int num_tagheaders;
 	int num_tags;
 
@@ -146,8 +142,7 @@ typedef struct {
 	int messageSize; // used to rate drop packets
 } clientSnapshot_t;
 
-typedef enum
-{
+typedef enum {
 	CS_FREE = 0,        // can be reused for a new connection
 	CS_ZOMBIE,      // client has been disconnected, but don't reuse connection for a couple seconds
 	CS_CONNECTED,   // has been assigned to a client_t, but no gamestate yet
@@ -172,11 +167,9 @@ typedef struct client_s {
 	int reliableAcknowledge; // last acknowledged reliable message
 	int reliableSent; // last sent reliable message, not necesarily acknowledged yet
 	int messageAcknowledge;
-
 	int binaryMessageLength;
 	char binaryMessage[MAX_BINARY_MESSAGE];
 	qboolean binaryMessageOverflowed;
-
 	int gamestateMessageNum; // netchan->outgoingSequence of gamestate
 	int challenge;
 
@@ -230,9 +223,7 @@ typedef struct client_s {
 	// buffer them into this queue, and hand them out to netchan as needed
 	netchan_buffer_t *netchan_start_queue;
 	netchan_buffer_t **netchan_end_queue;
-
 	int downloadnotify;
-
 	int protocol; // We can access clients protocol any time
 
 	qboolean demoClient; // is this a demoClient?
@@ -248,7 +239,6 @@ typedef struct {
 
 	double latched_active;
 	double latched_idle;
-
 	float cpu;
 	float avg;
 } svstats_t;
@@ -311,7 +301,6 @@ typedef struct {
 	receipt_t infoReceipts[MAX_INFO_RECEIPTS];
 	netadr_t redirectAddress; // for rcon return messages
 	tempBan_t tempBanAddresses[MAX_TEMPBAN_ADDRESSES];
-
 	int sampleTimes[SERVER_PERFORMANCECOUNTER_SAMPLES];
 	int currentSampleIndex;
 	int totalFrameTime;
@@ -443,7 +432,6 @@ struct leakyBucket_s {
 		byte _4[4];
 		byte _6[16];
 	} ipv;
-
 	int lastTime;
 	signed char burst;
 

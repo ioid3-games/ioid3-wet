@@ -289,13 +289,13 @@ typedef struct {
 } spawn_t;
 
 spawn_t spawns[] = {
-	{0,    0                     },
-	{"path_corner_2", SP_path_corner_2      },
+	{0,    0                    },
+	{"path_corner_2", SP_path_corner_2     },
 	{"info_train_spline_main", SP_info_train_spline_main},
-	{"info_train_spline_control", SP_path_corner_2      },
+	{"info_train_spline_control", SP_path_corner_2     },
 	{"trigger_objective_info", SP_trigger_objective_info},
-	{"misc_gamemodel", SP_misc_gamemodel     },
-	{"corona",   CG_corona             },
+	{"misc_gamemodel", SP_misc_gamemodel    },
+	{"corona",   CG_corona            },
 };
 
 #define NUMSPAWNS  (sizeof(spawns) / sizeof(spawn_t))

@@ -41,9 +41,9 @@
 extern const char *cg_skillRewards[SK_NUM_SKILLS][NUM_SKILL_LEVELS - 1];
 
 /*
-================
+=======================================================================================================================================
 CG_EntOnFire
-================
+=======================================================================================================================================
 */
 qboolean CG_EntOnFire(centity_t *cent) {
 	// don't display on respawn
@@ -64,9 +64,9 @@ qboolean CG_EntOnFire(centity_t *cent) {
 }
 
 /*
-================
+=======================================================================================================================================
 CG_IsCrouchingAnim
-================
+=======================================================================================================================================
 */
 qboolean CG_IsCrouchingAnim(animModelInfo_t *animModelInfo, int animNum) {
 	animation_t *anim;
@@ -83,9 +83,9 @@ qboolean CG_IsCrouchingAnim(animModelInfo_t *animModelInfo, int animNum) {
 }
 
 /*
-================
+=======================================================================================================================================
 CG_CustomSound
-================
+=======================================================================================================================================
 */
 sfxHandle_t CG_CustomSound(int clientNum, const char *soundName) {
 	if (soundName[0] != '*') {
@@ -245,7 +245,7 @@ void CG_NewClientInfo(int clientNum) {
 	v = Info_ValueForKey(configstring, "dn");
 	newInfo.disguiseClientNum = atoi(v);
 
-	// weapon and latchedweapon ( FIXME: make these more secure )
+	// weapon and latchedweapon (FIXME: make these more secure)
 	v = Info_ValueForKey(configstring, "w");
 	newInfo.weapon = atoi(v);
 
@@ -396,11 +396,11 @@ bg_playerclass_t *CG_PlayerClassForClientinfo(clientInfo_t *ci, centity_t *cent)
 }
 
 /*
-===============
+=======================================================================================================================================
 CG_SetLerpFrameAnimation
 
 may include ANIM_TOGGLEBIT
-===============
+=======================================================================================================================================
 */
 static void CG_SetLerpFrameAnimation(centity_t *cent, clientInfo_t *ci, lerpFrame_t *lf, int newAnimation) {
 	animation_t *anim;
@@ -431,12 +431,12 @@ static void CG_SetLerpFrameAnimation(centity_t *cent, clientInfo_t *ci, lerpFram
 }
 
 /*
-===============
+=======================================================================================================================================
 CG_RunLerpFrame
 
 Sets cg.snap, cg.oldFrame, and cg.backlerp
 cg.time should be between oldFrameTime and frameTime after exit
-===============
+=======================================================================================================================================
 */
 void CG_RunLerpFrame(centity_t *cent, clientInfo_t *ci, lerpFrame_t *lf, int newAnimation, float speedScale) {
 	// debugging tool to get no animations
@@ -516,9 +516,9 @@ void CG_RunLerpFrame(centity_t *cent, clientInfo_t *ci, lerpFrame_t *lf, int new
 }
 
 /*
-===============
+=======================================================================================================================================
 CG_ClearLerpFrame
-===============
+=======================================================================================================================================
 */
 static void CG_ClearLerpFrame(centity_t *cent, clientInfo_t *ci, lerpFrame_t *lf, int animationNumber) {
 	lf->frameTime = lf->oldFrameTime = cg.time;
@@ -531,11 +531,11 @@ static void CG_ClearLerpFrame(centity_t *cent, clientInfo_t *ci, lerpFrame_t *lf
 }
 
 /*
-===============
+=======================================================================================================================================
 CG_SetLerpFrameAnimationRate
 
 may include ANIM_TOGGLEBIT
-===============
+=======================================================================================================================================
 */
 void CG_SetLerpFrameAnimationRate(centity_t *cent, clientInfo_t *ci, lerpFrame_t *lf, int newAnimation) {
 	animation_t *anim, *oldanim;
@@ -623,12 +623,12 @@ void CG_SetLerpFrameAnimationRate(centity_t *cent, clientInfo_t *ci, lerpFrame_t
 #define ANIM_SPEEDMAX_HIGH  20
 
 /*
-===============
+=======================================================================================================================================
 CG_RunLerpFrameRate
 
 Sets cg.snap, cg.oldFrame, and cg.backlerp
 cg.time should be between oldFrameTime and frameTime after exit
-===============
+=======================================================================================================================================
 */
 void CG_RunLerpFrameRate(clientInfo_t *ci, lerpFrame_t *lf, int newAnimation, centity_t *cent, int recursion) {
 	animation_t *anim, *oldAnim;
@@ -682,7 +682,6 @@ void CG_RunLerpFrameRate(clientInfo_t *ci, lerpFrame_t *lf, int newAnimation, ce
 				}
 				moveSpeed = Distance(cent->lerpOrigin, lf->oldFramePos) / ((float)(cg.time - lf->oldFrameTime) / 1000.0);
 			}
-
 			// convert it to a factor of this animation's movespeed
 			lf->animSpeedScale = moveSpeed / (float)anim->moveSpeed;
 			lf->oldFrameSnapshotTime = cg.latestSnapshotTime;
@@ -779,7 +778,6 @@ void CG_RunLerpFrameRate(clientInfo_t *ci, lerpFrame_t *lf, int newAnimation, ce
 			if (lf->frameTime < cg.time) {
 				lf->frameTime = cg.time;
 			}
-
 			// check for skipping frames (eg. death anims play in slo-mo if low framerate)
 			if (anim->flags & ANIMFL_REVERSED) {
 				if (cg.time > lf->frameTime && !anim->moveSpeed) {
@@ -799,7 +797,7 @@ void CG_RunLerpFrameRate(clientInfo_t *ci, lerpFrame_t *lf, int newAnimation, ce
 				f = 0;
 			}
 		}
-		//f = ( lf->frameTime - lf->animationTime ) / anim->frameLerp;
+		//f = (lf->frameTime - lf->animationTime) / anim->frameLerp;
 
 		if (f >= anim->numFrames) {
 			f -= anim->numFrames;
@@ -856,9 +854,9 @@ void CG_RunLerpFrameRate(clientInfo_t *ci, lerpFrame_t *lf, int newAnimation, ce
 }
 
 /*
-===============
+=======================================================================================================================================
 CG_ClearLerpFrameRate
-===============
+=======================================================================================================================================
 */
 void CG_ClearLerpFrameRate(centity_t *cent, clientInfo_t *ci, lerpFrame_t *lf, int animationNumber) {
 	lf->frameTime = lf->oldFrameTime = cg.time;
@@ -1012,9 +1010,9 @@ void CG_RunLerpFrameRateCorpse(clientInfo_t *ci, lerpFrame_t *lf, int newAnimati
 
 
 /*
-===============
+=======================================================================================================================================
 CG_PlayerAnimation
-===============
+=======================================================================================================================================
 */
 static void CG_PlayerAnimation(centity_t *cent, refEntity_t *body) {
 	int clientNum = cent->currentState.clientNum;
@@ -1039,7 +1037,7 @@ static void CG_PlayerAnimation(centity_t *cent, refEntity_t *body) {
 
 	// do the shuffle turn frames locally
 	if (!(cent->currentState.eFlags & EF_DEAD) && cent->pe.legs.yawing) {
-		//CG_Printf("turn: %i\n", cg.time );
+		//CG_Printf("turn: %i\n", cg.time);
 		int tempIndex;
 
 		tempIndex = BG_GetAnimScriptAnimation(clientNum, character->animModelInfo, cent->currentState.aiState, (cent->pe.legs.yawing == SWING_RIGHT ? ANIM_MT_TURNRIGHT : ANIM_MT_TURNLEFT));
@@ -1081,9 +1079,9 @@ PLAYER ANGLES
 */
 
 /*
-==================
+=======================================================================================================================================
 CG_SwingAngles
-==================
+=======================================================================================================================================
 */
 static void CG_SwingAngles(float destination, float swingTolerance, float clampTolerance,
                            float speed, float *angle, qboolean *swinging) {
@@ -1367,7 +1365,7 @@ static void CG_PlayerAngles(centity_t *cent, vec3_t legs[3], vec3_t torso[3], ve
 	// allow yaw to drift a bit, unless these conditions don't allow them
 	if (!(BG_GetConditionBitFlag(cent->currentState.clientNum, ANIM_COND_MOVETYPE, ANIM_MT_IDLE) ||
 	      BG_GetConditionBitFlag(cent->currentState.clientNum, ANIM_COND_MOVETYPE, ANIM_MT_IDLECR))/*
-	    ||   (BG_GetConditionValue( cent->currentState.clientNum, ANIM_COND_MOVETYPE, qfalse ) & ((1<<ANIM_MT_STRAFELEFT) | (1<<ANIM_MT_STRAFERIGHT)) )*/) {
+	 ||   (BG_GetConditionValue(cent->currentState.clientNum, ANIM_COND_MOVETYPE, qfalse) & ((1<<ANIM_MT_STRAFELEFT) | (1<<ANIM_MT_STRAFERIGHT)))*/) {
 
 		// always point all in the same direction
 		cent->pe.torso.yawing = qtrue; // always center
@@ -1412,7 +1410,7 @@ static void CG_PlayerAngles(centity_t *cent, vec3_t legs[3], vec3_t torso[3], ve
 			CG_SwingAngles(legsAngles[YAW], 20, clampTolerance, 0.5 * cg_swingSpeed.value, &cent->pe.legs.yawAngle, &cent->pe.legs.yawing);
 		} else if (strstr(BG_GetAnimString(character->animModelInfo, legsSet), "strafe")) {
 			// FIXME: what is this strstr hack??
-			//if    ( BG_GetConditionValue( ci->clientNum, ANIM_COND_MOVETYPE, qfalse ) & ((1<<ANIM_MT_STRAFERIGHT)|(1<<ANIM_MT_STRAFELEFT)) )
+			//if (BG_GetConditionValue(ci->clientNum, ANIM_COND_MOVETYPE, qfalse) & ((1<<ANIM_MT_STRAFERIGHT)|(1<<ANIM_MT_STRAFELEFT)))
 			cent->pe.legs.yawing = qfalse; // set it if they really need to swing
 			legsAngles[YAW] = headAngles[YAW];
 			CG_SwingAngles(legsAngles[YAW], 0, clampTolerance, cg_swingSpeed.value, &cent->pe.legs.yawAngle, &cent->pe.legs.yawing);
@@ -1433,7 +1431,7 @@ static void CG_PlayerAngles(centity_t *cent, vec3_t legs[3], vec3_t torso[3], ve
 	} else {
 		dest = headAngles[PITCH] * 0.75;
 	}
-	//CG_SwingAngles( dest, 15, 30, 0.1, &cent->pe.torso.pitchAngle, &cent->pe.torso.pitching );
+	//CG_SwingAngles(dest, 15, 30, 0.1, &cent->pe.torso.pitchAngle, &cent->pe.torso.pitching);
 	//torsoAngles[PITCH] = cent->pe.torso.pitchAngle;
 
 	if (cent->currentState.eFlags & EF_PRONE) {
@@ -1480,9 +1478,9 @@ static void CG_PlayerAngles(centity_t *cent, vec3_t legs[3], vec3_t torso[3], ve
 }
 
 /*
-==============
+=======================================================================================================================================
 CG_BreathPuffs
-==============
+=======================================================================================================================================
 */
 static void CG_BreathPuffs(centity_t *cent, refEntity_t *head) {
 	clientInfo_t *ci = &cgs.clientinfo[cent->currentState.number];
@@ -1531,11 +1529,11 @@ static void CG_BreathPuffs(centity_t *cent, refEntity_t *head) {
 }
 
 /*
-===============
+=======================================================================================================================================
 CG_PlayerFloatSprite
 
 Float a sprite over the player's head added height parameter
-===============
+=======================================================================================================================================
 */
 static void CG_PlayerFloatSprite(centity_t *cent, qhandle_t shader, int height, int off) {
 	int rf;
@@ -1594,12 +1592,12 @@ static void CG_PlayerFloatSprite(centity_t *cent, qhandle_t shader, int height, 
 }
 
 /*
-===============
+=======================================================================================================================================
 CG_PlayerFloatSprite
 
 Float a sprite over the player's head
 added height parameter
-===============
+=======================================================================================================================================
 */
 
 qboolean CG_WorldCoordToScreenCoordFloat(vec3_t point, float *x, float *y) {
@@ -1697,11 +1695,11 @@ static void CG_PlayerFloatText(centity_t *cent, const char *text, int height) {
 }
 
 /*
-===============
+=======================================================================================================================================
 CG_PlayerSprites
 
 Float sprites over the player's head
-===============
+=======================================================================================================================================
 */
 static void CG_PlayerSprites(centity_t *cent) {
 	int team;
@@ -1805,13 +1803,13 @@ static void CG_PlayerSprites(centity_t *cent) {
 }
 
 /*
-===============
+=======================================================================================================================================
 CG_PlayerShadow
 
 Returns the Z component of the surface being shadowed
 
   should it return a full plane instead of a Z?
-===============
+=======================================================================================================================================
 */
 #define SHADOW_DISTANCE     64
 #define ZOFS    6.0
@@ -1859,7 +1857,7 @@ static qboolean CG_PlayerShadow(centity_t *cent, float *shadowPlane) {
 	trap_CM_BoxTrace(&trace, cent->lerpOrigin, end, NULL, NULL, 0, MASK_PLAYERSOLID);
 
 	// no shadow if too high
-	//if ( trace.fraction == 1.0 || trace.fraction == 0.0f ) {
+	//if (trace.fraction == 1.0 || trace.fraction == 0.0f) {
 	//  return qfalse;
 	//}
 
@@ -1878,7 +1876,7 @@ static qboolean CG_PlayerShadow(centity_t *cent, float *shadowPlane) {
 
 	// add the mark as a temporary, so it goes directly to the renderer
 	// without taking a spot in the cg_marks array
-	dist = VectorDistance(cent->lerpOrigin, cg.refdef_current->vieworg); //% cg.snap->ps.origin );
+	dist = VectorDistance(cent->lerpOrigin, cg.refdef_current->vieworg); //% cg.snap->ps.origin);
 	distFade = 1.0f;
 
 	if (!(cent->currentState.eFlags & EF_ZOOMING) && (dist > SHADOW_MIN_DIST)) {
@@ -1909,8 +1907,8 @@ static qboolean CG_PlayerShadow(centity_t *cent, float *shadowPlane) {
 		//alpha *= distFade;
 
 		// decal remix
-		//CG_ImpactMark( cgs.media.shadowTorsoShader, trace.endpos, trace.plane.normal,
-		//  0, alpha,alpha,alpha,1, qfalse, 16, qtrue, -1 );
+		//CG_ImpactMark(cgs.media.shadowTorsoShader, trace.endpos, trace.plane.normal,
+		//  0, alpha,alpha,alpha,1, qfalse, 16, qtrue, -1);
 		CG_ImpactMark(cgs.media.shadowTorsoShader, origin, projection, 18.0f,
 		              cent->lerpAngles[YAW], distFade, distFade, distFade, distFade, -1);
 		return qtrue;
@@ -1950,11 +1948,11 @@ static qboolean CG_PlayerShadow(centity_t *cent, float *shadowPlane) {
 				AxisToAngles(axis, angles);
 
 				// decal remix
-				//CG_ImpactMark( shadowParts[tagIndex].shader, origin, trace.plane.normal,
-				//  angles[YAW]/*cent->pe.legs.yawAngle*/, alpha,alpha,alpha,1, qfalse, shadowParts[tagIndex].size, qtrue, -1 );
+				//CG_ImpactMark(shadowParts[tagIndex].shader, origin, trace.plane.normal,
+				//  angles[YAW]/*cent->pe.legs.yawAngle*/, alpha,alpha,alpha,1, qfalse, shadowParts[tagIndex].size, qtrue, -1);
 
-				//CG_ImpactMark( shadowParts[ tagIndex ].shader, origin, up,
-				//  cent->lerpAngles[ YAW ], 1.0f, 1.0f, 1.0f, 1.0f, qfalse, shadowParts[ tagIndex ].size, qtrue, -1 );
+				//CG_ImpactMark(shadowParts[ tagIndex ].shader, origin, up,
+				//  cent->lerpAngles[ YAW ], 1.0f, 1.0f, 1.0f, 1.0f, qfalse, shadowParts[ tagIndex ].size, qtrue, -1);
 				CG_ImpactMark(shadowParts[tagIndex].shader, origin, projection, shadowParts[tagIndex].size,
 				              angles[YAW], distFade, distFade, distFade, distFade, -1);
 			}
@@ -1965,11 +1963,11 @@ static qboolean CG_PlayerShadow(centity_t *cent, float *shadowPlane) {
 }
 
 /*
-===============
+=======================================================================================================================================
 CG_PlayerSplash
 
 Draw a mark at the water surface
-===============
+=======================================================================================================================================
 */
 static void CG_PlayerSplash(centity_t *cent) {
 	vec3_t start, end;
@@ -2054,12 +2052,12 @@ static void CG_PlayerSplash(centity_t *cent) {
 //==========================================================================
 
 /*
-===============
+=======================================================================================================================================
 CG_AddRefEntityWithPowerups
 
 Adds a piece with modifications or duplications for powerups
 Also called by CG_Missile for quad rockets, but nobody can tell...
-===============
+=======================================================================================================================================
 */
 void CG_AddRefEntityWithPowerups(refEntity_t *ent, int powerups, int team, entityState_t *es, const vec3_t fireRiseDir) {
 	refEntity_t backupRefEnt; //, parentEnt;
@@ -2070,7 +2068,7 @@ void CG_AddRefEntityWithPowerups(refEntity_t *ent, int powerups, int team, entit
 
 	/*  if (cent->pe.forceLOD) {
 	        ent->reFlags |= REFLAG_FORCE_LOD;
-	  }*/
+	 }*/
 
 	backupRefEnt = *ent;
 
@@ -2109,7 +2107,7 @@ void CG_AddRefEntityWithPowerups(refEntity_t *ent, int powerups, int team, entit
 			alpha = 0.0;
 		}
 
-		ent->shaderRGBA[3] = ( unsigned char )(255.0 * alpha);
+		ent->shaderRGBA[3] = (unsigned char)(255.0 * alpha);
 		VectorCopy(fireRiseDir, ent->fireRiseDir);
 
 		if (VectorCompare(ent->fireRiseDir, vec3_origin)) {
@@ -2127,11 +2125,11 @@ void CG_AddRefEntityWithPowerups(refEntity_t *ent, int powerups, int team, entit
 }
 
 /*
-===============
+=======================================================================================================================================
 CG_AnimPlayerConditions
 
     predict, or calculate condition for this entity, if it is not the local client
-===============
+=======================================================================================================================================
 */
 void CG_AnimPlayerConditions(bg_character_t *character, centity_t *cent) {
 	entityState_t *es;
@@ -2184,9 +2182,9 @@ void CG_AnimPlayerConditions(bg_character_t *character, centity_t *cent) {
 }
 
 /*
-===============
+=======================================================================================================================================
 CG_Player
-===============
+=======================================================================================================================================
 */
 void CG_Player(centity_t *cent) {
 	clientInfo_t *ci;
@@ -2329,8 +2327,7 @@ void CG_Player(centity_t *cent) {
 			} else {
 				hilightIntensity = 1.f * (distSquared / Square(768.f));
 			}
-
-			//CG_Printf( "%f\n", hilightIntensity );
+			//CG_Printf("%f\n", hilightIntensity);
 		}
 	}
 
@@ -2378,7 +2375,7 @@ void CG_Player(centity_t *cent) {
 		for (y = 0; y < 40; y++) {
 			body.origin[0] += 1;
 			//body.origin[ 0 ] += 36;
-			//body.origin[ 2 ] = BG_GetGroundHeightAtPoint( body.origin ) + (oldOrigin[2] - BG_GetGroundHeightAtPoint( oldOrigin ));
+			//body.origin[ 2 ] = BG_GetGroundHeightAtPoint(body.origin) + (oldOrigin[2] - BG_GetGroundHeightAtPoint(oldOrigin));
 			body.frame += (y & 1) ? 1 : -1;
 			body.oldframe += (y & 1) ? -1 : 1;
 			CG_AddRefEntityWithPowerups(&body, cent->currentState.powerups, ci->team, &cent->currentState, cent->fireRiseDir);
@@ -2620,11 +2617,11 @@ void CG_Player(centity_t *cent) {
 //=====================================================================
 
 /*
-===============
+=======================================================================================================================================
 CG_ResetPlayerEntity
 
 A player just came into view or teleported, so reset all animation info
-===============
+=======================================================================================================================================
 */
 void CG_ResetPlayerEntity(centity_t *cent) {
 	if (!(cent->currentState.eFlags & EF_DEAD)) {
@@ -2707,9 +2704,9 @@ void CG_GetBleedOrigin(vec3_t head_origin, vec3_t body_origin, int fleshEntityNu
 }
 
 /*
-===============
+=======================================================================================================================================
 CG_GetTag
-===============
+=======================================================================================================================================
 */
 qboolean CG_GetTag(int clientNum, char *tagname, orientation_t *or) {
 	clientInfo_t *ci = &cgs.clientinfo[clientNum];
@@ -2751,9 +2748,9 @@ qboolean CG_GetTag(int clientNum, char *tagname, orientation_t *or) {
 }
 
 /*
-===============
+=======================================================================================================================================
 CG_GetWeaponTag
-===============
+=======================================================================================================================================
 */
 qboolean CG_GetWeaponTag(int clientNum, char *tagname, orientation_t *or) {
 	clientInfo_t *ci = &cgs.clientinfo[clientNum];

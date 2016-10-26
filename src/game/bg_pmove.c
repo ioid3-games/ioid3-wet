@@ -45,19 +45,17 @@
 #include "bg_local.h"
 
 #ifdef CGAMEDLL
-#define PM_FIXEDPHYSICS         cgs.fixedphysics
-#define PM_FIXEDPHYSICSFPS      cgs.fixedphysicsfps
-#define PM_PRONEDELAY           cgs.pronedelay
-
+#define PM_FIXEDPHYSICS cgs.fixedphysics
+#define PM_FIXEDPHYSICSFPS cgs.fixedphysicsfps
+#define PM_PRONEDELAY cgs.pronedelay
 #elif GAMEDLL
 extern vmCvar_t g_fixedphysics;
 extern vmCvar_t g_fixedphysicsfps;
 extern vmCvar_t g_pronedelay;
 
-#define PM_FIXEDPHYSICS         g_fixedphysics.integer
-#define PM_FIXEDPHYSICSFPS      g_fixedphysicsfps.integer
-#define PM_PRONEDELAY           g_pronedelay.integer
-
+#define PM_FIXEDPHYSICS g_fixedphysics.integer
+#define PM_FIXEDPHYSICSFPS g_fixedphysicsfps.integer
+#define PM_PRONEDELAY g_pronedelay.integer
 #endif
 
 #define AIMSPREAD_MAXSPREAD 255
@@ -73,7 +71,6 @@ float pm_waterSwimScale = 0.5;
 float pm_waterWadeScale = 0.70;
 float pm_slagSwimScale = 0.30;
 float pm_slagWadeScale = 0.70;
-
 float pm_proneSpeedScale = 0.21; // was: 0.18 (too slow) then: 0.24 (too fast)
 
 float pm_accelerate = 10;
@@ -92,129 +89,187 @@ float pm_spectatorfriction = 5.0f;
 int c_pmove = 0;
 
 #ifdef GAMEDLL
-
-// In just the GAME DLL, we want to store the groundtrace surface stuff,
-// so we don't have to keep tracing.
+// In just the GAME DLL, we want to store the groundtrace surface stuff, so we don't have to keep tracing.
 void ClientStoreSurfaceFlags(int clientNum, int surfaceFlags);
-
 #endif
-
+/*
+=======================================================================================================================================
+PM_AddEvent
+=======================================================================================================================================
+*/
 void PM_AddEvent(int newEvent) {
 	BG_AddPredictableEventToPlayerstate(newEvent, 0, pm->ps);
 }
 
+/*
+=======================================================================================================================================
+PM_AddEventExt
+=======================================================================================================================================
+*/
 void PM_AddEventExt(int newEvent, int eventParm) {
 	BG_AddPredictableEventToPlayerstate(newEvent, eventParm, pm->ps);
 }
 
+/*
+=======================================================================================================================================
+PM_IdleAnimForWeapon
+=======================================================================================================================================
+*/
 int PM_IdleAnimForWeapon(int weapon) {
-	switch (weapon) {
-	case WP_GPG40:
-	case WP_M7:
-	case WP_SATCHEL_DET:
-	case WP_MORTAR_SET:
-	case WP_MORTAR2_SET:
-	case WP_MEDIC_ADRENALINE:
-	case WP_MOBILE_MG42_SET:
-	case WP_MOBILE_BROWNING_SET:
-		return WEAP_IDLE2;
-	default:
-		return WEAP_IDLE1;
-	}
-}
 
-int PM_AltSwitchFromForWeapon(int weapon) {
-	return WEAP_ALTSWITCHFROM;
-}
-
-int PM_AltSwitchToForWeapon(int weapon) {
-	switch (weapon) {
-	case WP_GPG40:
-	case WP_M7:
-	case WP_MORTAR:
-	case WP_MORTAR2:
-	case WP_MOBILE_MG42:
-	case WP_MOBILE_BROWNING:
-		return WEAP_ALTSWITCHFROM;
-	default:
-		return WEAP_ALTSWITCHTO;
-	}
-}
-
-int PM_AttackAnimForWeapon(int weapon) {
-	switch (weapon) {
-	case WP_GPG40:
-	case WP_M7:
-	case WP_SATCHEL_DET:
-	case WP_MEDIC_ADRENALINE:
-	case WP_MOBILE_MG42_SET:
-	case WP_MOBILE_BROWNING_SET:
-		return WEAP_ATTACK2;
-	default:
-		return WEAP_ATTACK1;
-	}
-}
-
-int PM_LastAttackAnimForWeapon(int weapon) {
-	switch (weapon) {
-	case WP_GPG40:
-	case WP_M7:
-	case WP_MOBILE_MG42_SET:
-	case WP_MOBILE_BROWNING_SET:
-		return WEAP_ATTACK2;
-	case WP_MORTAR_SET:
-	case WP_MORTAR2_SET:
-		return WEAP_ATTACK1;
-	default:
-		return WEAP_ATTACK_LASTSHOT;
-	}
-}
-
-int PM_ReloadAnimForWeapon(int weapon) {
-	switch (weapon) {
-	case WP_GPG40:
-	case WP_M7:
-		return WEAP_RELOAD2;
-	case WP_MOBILE_MG42_SET:
-	case WP_MOBILE_BROWNING_SET:
-		return WEAP_RELOAD3;
-	default:
-		// IS_VALID_WEAPON(weapon) ?
-		if (pm->skill[SK_LIGHT_WEAPONS] >= 2 && weaponTable[weapon].isLightWeaponSupportingFastReload) {
-			return WEAP_RELOAD2; // faster reload
-		} else {
-			return WEAP_RELOAD1;
+		switch (weapon) {
+		case WP_GPG40:
+		case WP_M7:
+		case WP_SATCHEL_DET:
+		case WP_MORTAR_SET:
+		case WP_MORTAR2_SET:
+		case WP_MEDIC_ADRENALINE:
+		case WP_MOBILE_MG42_SET:
+		case WP_MOBILE_BROWNING_SET:
+			return WEAP_IDLE2;
+		default:
+			return WEAP_IDLE1;
 		}
-	}
 }
 
+/*
+=======================================================================================================================================
+PM_AltSwitchFromForWeapon
+=======================================================================================================================================
+*/
+int PM_AltSwitchFromForWeapon(int weapon) {
+		return WEAP_ALTSWITCHFROM;
+}
+
+/*
+=======================================================================================================================================
+PM_AltSwitchToForWeapon
+=======================================================================================================================================
+*/
+int PM_AltSwitchToForWeapon(int weapon) {
+
+		switch (weapon) {
+		case WP_GPG40:
+		case WP_M7:
+		case WP_MORTAR:
+		case WP_MORTAR2:
+		case WP_MOBILE_MG42:
+		case WP_MOBILE_BROWNING:
+			return WEAP_ALTSWITCHFROM;
+		default:
+			return WEAP_ALTSWITCHTO;
+		}
+}
+
+/*
+=======================================================================================================================================
+PM_AttackAnimForWeapon
+=======================================================================================================================================
+*/
+int PM_AttackAnimForWeapon(int weapon) {
+
+		switch (weapon) {
+		case WP_GPG40:
+		case WP_M7:
+		case WP_SATCHEL_DET:
+		case WP_MEDIC_ADRENALINE:
+		case WP_MOBILE_MG42_SET:
+		case WP_MOBILE_BROWNING_SET:
+			return WEAP_ATTACK2;
+		default:
+			return WEAP_ATTACK1;
+		}
+}
+
+/*
+=======================================================================================================================================
+PM_LastAttackAnimForWeapon
+=======================================================================================================================================
+*/
+int PM_LastAttackAnimForWeapon(int weapon) {
+
+		switch (weapon) {
+		case WP_GPG40:
+		case WP_M7:
+		case WP_MOBILE_MG42_SET:
+		case WP_MOBILE_BROWNING_SET:
+			return WEAP_ATTACK2;
+		case WP_MORTAR_SET:
+		case WP_MORTAR2_SET:
+			return WEAP_ATTACK1;
+		default:
+			return WEAP_ATTACK_LASTSHOT;
+		}
+}
+
+/*
+=======================================================================================================================================
+PM_ReloadAnimForWeapon
+=======================================================================================================================================
+*/
+int PM_ReloadAnimForWeapon(int weapon) {
+
+		switch (weapon) {
+		case WP_GPG40:
+		case WP_M7:
+			return WEAP_RELOAD2;
+		case WP_MOBILE_MG42_SET:
+		case WP_MOBILE_BROWNING_SET:
+			return WEAP_RELOAD3;
+		default:
+			// IS_VALID_WEAPON(weapon) ?
+			if (pm->skill[SK_LIGHT_WEAPONS] >= 2 && weaponTable[weapon].isLightWeaponSupportingFastReload) {
+					return WEAP_RELOAD2; // faster reload
+			} else {
+					return WEAP_RELOAD1;
+			}
+		}
+}
+
+/*
+=======================================================================================================================================
+PM_RaiseAnimForWeapon
+=======================================================================================================================================
+*/
 int PM_RaiseAnimForWeapon(int weapon) {
+
 	switch (weapon) {
-	case WP_GPG40:
-	case WP_M7:
-		return WEAP_RELOAD3;
-	case WP_MOBILE_MG42_SET:
-	case WP_MOBILE_BROWNING_SET:
-		return WEAP_DROP2;
-	case WP_SATCHEL_DET:
-		return WEAP_RELOAD2;
-	default:
-		return WEAP_RAISE;
+		case WP_GPG40:
+		case WP_M7:
+			return WEAP_RELOAD3;
+		case WP_MOBILE_MG42_SET:
+		case WP_MOBILE_BROWNING_SET:
+			return WEAP_DROP2;
+		case WP_SATCHEL_DET:
+			return WEAP_RELOAD2;
+		default:
+			return WEAP_RAISE;
 	}
 }
 
+/*
+=======================================================================================================================================
+PM_DropAnimForWeapon
+=======================================================================================================================================
+*/
 int PM_DropAnimForWeapon(int weapon) {
+
 	switch (weapon) {
-	case WP_GPG40:
-	case WP_M7:
-		return WEAP_DROP2;
-	case WP_SATCHEL_DET:
-		return WEAP_RELOAD1;
-	default:
-		return WEAP_DROP;
+		case WP_GPG40:
+		case WP_M7:
+			return WEAP_DROP2;
+		case WP_SATCHEL_DET:
+			return WEAP_RELOAD1;
+		default:
+			return WEAP_DROP;
 	}
 }
 
+/*
+=======================================================================================================================================
+PM_AddTouchEnt
+=======================================================================================================================================
+*/
 void PM_AddTouchEnt(int entityNum) {
 	int i;
 
@@ -236,6 +291,11 @@ void PM_AddTouchEnt(int entityNum) {
 	pm->numtouch++;
 }
 
+/*
+=======================================================================================================================================
+PM_StartWeaponAnim
+=======================================================================================================================================
+*/
 static void PM_StartWeaponAnim(int anim) {
 	if (pm->ps->pm_type >= PM_DEAD) {
 		return;
@@ -252,6 +312,11 @@ static void PM_StartWeaponAnim(int anim) {
 	pm->ps->weapAnim = ((pm->ps->weapAnim & ANIM_TOGGLEBIT) ^ ANIM_TOGGLEBIT) | anim;
 }
 
+/*
+=======================================================================================================================================
+PM_ContinueWeaponAnim
+=======================================================================================================================================
+*/
 void PM_ContinueWeaponAnim(int anim) {
 	if (pm->cmd.weapon == WP_NONE) {
 		return;
@@ -315,8 +380,7 @@ void PM_TraceLegs(trace_t *trace, float *legsOffset, vec3_t start, vec3_t end, t
 	VectorAdd(end, ofs, point);
 	tracefunc(trace, org, playerlegsProneMins, playerlegsProneMaxs, point, ignoreent, tracemask);
 
-	if (!bodytrace || trace->fraction < bodytrace->fraction ||
-	    trace->allsolid) {
+	if (!bodytrace || trace->fraction < bodytrace->fraction || trace->allsolid) {
 		trace_t steptrace;
 
 		// legs are clipping sooner than body
@@ -329,8 +393,7 @@ void PM_TraceLegs(trace_t *trace, float *legsOffset, vec3_t start, vec3_t end, t
 		VectorAdd(end, ofs, point);
 		tracefunc(&steptrace, org, playerlegsProneMins, playerlegsProneMaxs, point, ignoreent, tracemask);
 
-		if (!steptrace.allsolid && !steptrace.startsolid &&
-		    steptrace.fraction > trace->fraction) {
+		if (!steptrace.allsolid && !steptrace.startsolid && steptrace.fraction > trace->fraction) {
 			// the step trace did better -- use it instead
 			*trace = steptrace;
 
@@ -352,16 +415,12 @@ void PM_TraceLegs(trace_t *trace, float *legsOffset, vec3_t start, vec3_t end, t
 	}
 }
 
-void PM_TraceHead(trace_t *trace, vec3_t start, vec3_t end, trace_t *bodytrace, vec3_t viewangles,
-                  void(tracefunc) (trace_t * results,
-                                   const vec3_t start,
-                                   const vec3_t mins,
-                                   const vec3_t maxs,
-                                   const vec3_t end,
-                                   int passEntityNum,
-                                   int contentMask),
-                  int ignoreent,
-                  int tracemask) {
+/*
+=======================================================================================================================================
+PM_TraceHead
+=======================================================================================================================================
+*/
+void PM_TraceHead(trace_t *trace, vec3_t start, vec3_t end, trace_t *bodytrace, vec3_t viewangles, void(tracefunc) (trace_t * results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int passEntityNum, int contentMask), int ignoreent, int tracemask) {
 	vec3_t ofs;
 	vec3_t flatforward;
 	vec3_t point;
@@ -396,32 +455,23 @@ void PM_TraceAllParts(trace_t *trace, float *legsOffset, vec3_t start, vec3_t en
 	pm->trace(trace, start, pm->mins, pm->maxs, end, pm->ps->clientNum, pm->tracemask);
 
 	// legs and head
-	if ((pm->ps->eFlags & EF_PRONE) ||
-	    (pm->ps->eFlags & EF_DEAD)) {
+	if ((pm->ps->eFlags & EF_PRONE) || (pm->ps->eFlags & EF_DEAD)) {
 
 		trace_t legtrace;
 		trace_t headtrace;
 		qboolean adjust = qfalse;
 
-		PM_TraceLegs(&legtrace, legsOffset, start, end, trace,
-		             pm->ps->viewangles, pm->trace, pm->ps->clientNum,
-		             pm->tracemask);
+		PM_TraceLegs(&legtrace, legsOffset, start, end, trace, pm->ps->viewangles, pm->trace, pm->ps->clientNum, pm->tracemask);
 
-		if (legtrace.fraction < trace->fraction ||
-		    legtrace.startsolid ||
-		    legtrace.allsolid) {
+		if (legtrace.fraction < trace->fraction || legtrace.startsolid || legtrace.allsolid) {
 
 			*trace = legtrace;
 			adjust = qtrue;
 		}
 
-		PM_TraceHead(&headtrace, start, end, trace,
-		             pm->ps->viewangles, pm->trace, pm->ps->clientNum,
-		             pm->tracemask);
+		PM_TraceHead(&headtrace, start, end, trace, pm->ps->viewangles, pm->trace, pm->ps->clientNum, pm->tracemask);
 
-		if (headtrace.fraction < trace->fraction ||
-		    headtrace.startsolid ||
-		    headtrace.allsolid) {
+		if (headtrace.fraction < trace->fraction || headtrace.startsolid || headtrace.allsolid) {
 
 			*trace = headtrace;
 			adjust = qtrue;
@@ -429,8 +479,7 @@ void PM_TraceAllParts(trace_t *trace, float *legsOffset, vec3_t start, vec3_t en
 
 		if (adjust) {
 			VectorSubtract(end, start, trace->endpos);
-			VectorMA(start, trace->fraction, trace->endpos,
-			         trace->endpos);
+			VectorMA(start, trace->fraction, trace->endpos, trace->endpos);
 		}
 	}
 }
@@ -478,8 +527,7 @@ static void PM_Friction(void) {
 	}
 	// apply water friction even if just wading
 	if (pm->waterlevel) {
-		if (pm->watertype & CONTENTS_SLIME)     // slag
-		{
+		if (pm->watertype & CONTENTS_SLIME) { // slag
 			drop += speed * pm_slagfriction * pm->waterlevel * pml.frametime;
 		} else {
 			drop += speed * pm_waterfriction * pm->waterlevel * pml.frametime;
@@ -549,13 +597,12 @@ static void PM_Accelerate(vec3_t wishdir, float wishspeed, float accel) {
 }
 
 /*
-============
+=======================================================================================================================================
 PM_CmdScale
 
 Returns the scale factor to apply to cmd movements
-This allows the clients to use axial -127 to 127 values for all directions
-without getting a sqrt(2) distortion in speed.
-============
+This allows the clients to use axial -127 to 127 values for all directions without getting a sqrt(2) distortion in speed.
+=======================================================================================================================================
 */
 static float PM_CmdScale(usercmd_t *cmd) {
 	int max;
@@ -595,41 +642,41 @@ static float PM_CmdScale(usercmd_t *cmd) {
 	// back than in carry position) but more fun to play.  If it doesn't play well this way we'll bog down the
 	// player if the own the weapon at all.
 	switch (pm->ps->weapon) {
-	case WP_PANZERFAUST:
-	case WP_BAZOOKA:
-	case WP_MOBILE_MG42:
-	case WP_MOBILE_MG42_SET:
-	case WP_MOBILE_BROWNING:
-	case WP_MOBILE_BROWNING_SET:
-	case WP_MORTAR:
-	case WP_MORTAR2:
-		if (pm->skill[SK_HEAVY_WEAPONS] >= 3) {
-			scale *= 0.75;
-		} else {
-			scale *= 0.5;
-		}
+		case WP_PANZERFAUST:
+		case WP_BAZOOKA:
+		case WP_MOBILE_MG42:
+		case WP_MOBILE_MG42_SET:
+		case WP_MOBILE_BROWNING:
+		case WP_MOBILE_BROWNING_SET:
+		case WP_MORTAR:
+		case WP_MORTAR2:
+			if (pm->skill[SK_HEAVY_WEAPONS] >= 3) {
+				scale *= 0.75;
+			} else {
+				scale *= 0.5;
+			}
 
-		break;
-	case WP_FLAMETHROWER: // trying some different balance for the FT
-		if (!(pm->skill[SK_HEAVY_WEAPONS] >= 3) || (pm->cmd.buttons & BUTTON_ATTACK)) {
-			scale *= 0.7;
-		}
+			break;
+		case WP_FLAMETHROWER: // trying some different balance for the FT
+			if (!(pm->skill[SK_HEAVY_WEAPONS] >= 3) || (pm->cmd.buttons & BUTTON_ATTACK)) {
+				scale *= 0.7;
+			}
 
-		break;
-	default:
-		break;
+			break;
+		default:
+			break;
 	}
 
 	return scale;
 }
 
 /*
-================
+=======================================================================================================================================
 PM_SetMovementDir
 
 Determine the rotation of the legs reletive
 to the facing dir
-================
+=======================================================================================================================================
 */
 static void PM_SetMovementDir(void) {
 	// changed - for more realistic angles (at the cost of more network traffic?)
@@ -638,11 +685,7 @@ static void PM_SetMovementDir(void) {
 
 	VectorSubtract(pm->ps->origin, pml.previous_origin, moved);
 
-	if ((pm->cmd.forwardmove || pm->cmd.rightmove)
-	    &&  (pm->ps->groundEntityNum != ENTITYNUM_NONE)
-	    &&  (speed = VectorLength(moved))
-	    &&  (speed > pml.frametime * 5))          // if moving slower than 20 units per second, just face head angles
-	{
+	if ((pm->cmd.forwardmove || pm->cmd.rightmove) && (pm->ps->groundEntityNum != ENTITYNUM_NONE) && (speed = VectorLength(moved)) && (speed > pml.frametime * 5)) { // if moving slower than 20 units per second, just face head angles
 		vec3_t dir;
 		int moveyaw;
 
@@ -675,6 +718,7 @@ PM_CheckJump
 =======================================================================================================================================
 */
 static qboolean PM_CheckJump(void) {
+
 	// no jumpin when prone
 	if (pm->ps->eFlags & EF_PRONE) {
 		return qfalse;
@@ -689,7 +733,6 @@ static qboolean PM_CheckJump(void) {
 	// don't allow if player tired
 	//if (pm->pmext->sprintTime < 2500) // JPW pulled this per id request; made airborne jumpers wildly inaccurate with gunfire to compensate
 	//    return qfalse;
-
 
 	if (pm->ps->pm_flags & PMF_RESPAWNED) {
 		return qfalse; // don't allow jump until all buttons are up
@@ -709,7 +752,6 @@ static qboolean PM_CheckJump(void) {
 	pml.groundPlane = qfalse; // jumping away
 	pml.walking = qfalse;
 	pm->ps->pm_flags |= PMF_JUMP_HELD;
-
 	pm->ps->groundEntityNum = ENTITYNUM_NONE;
 	pm->ps->velocity[2] = JUMP_VELOCITY;
 
@@ -745,9 +787,10 @@ static qboolean PM_CheckWaterJump(void) {
 	flatforward[0] = pml.forward[0];
 	flatforward[1] = pml.forward[1];
 	flatforward[2] = 0;
-	VectorNormalize(flatforward);
 
+	VectorNormalize(flatforward);
 	VectorMA(pm->ps->origin, 30, flatforward, spot);
+
 	spot[2] += 4;
 	cont = pm->pointcontents(spot, pm->ps->clientNum);
 
@@ -763,8 +806,8 @@ static qboolean PM_CheckWaterJump(void) {
 	}
 	// jump out of water
 	VectorScale(pml.forward, 200, pm->ps->velocity);
-	pm->ps->velocity[2] = 350;
 
+	pm->ps->velocity[2] = 350;
 	pm->ps->pm_flags |= PMF_TIME_WATERJUMP;
 	pm->ps->pm_time = 2000;
 
@@ -772,14 +815,14 @@ static qboolean PM_CheckWaterJump(void) {
 }
 
 /*
-==============
+=======================================================================================================================================
 PM_CheckProne
 
 Sets mins, maxs, and pm->ps->viewheight
-==============
+=======================================================================================================================================
 */
 static qboolean PM_CheckProne(void) {
-	//Com_Printf( "%i: PM_CheckProne\n", pm->cmd.serverTime);
+	//Com_Printf("%i: PM_CheckProne\n", pm->cmd.serverTime);
 	int pronedelay = 750;
 
 	if (PM_PRONEDELAY) {
@@ -808,8 +851,7 @@ static qboolean PM_CheckProne(void) {
 			return qfalse;
 		}
 
-		if ((((pm->ps->pm_flags & PMF_DUCKED) && pm->cmd.doubleTap == DT_FORWARD) ||
-		     (pm->cmd.wbuttons & WBUTTON_PRONE)) && pm->cmd.serverTime - -pm->pmext->proneTime > pronedelay) {
+		if ((((pm->ps->pm_flags & PMF_DUCKED) && pm->cmd.doubleTap == DT_FORWARD) || (pm->cmd.wbuttons & WBUTTON_PRONE)) && pm->cmd.serverTime - -pm->pmext->proneTime > pronedelay) {
 			trace_t trace;
 
 			pm->mins[0] = pm->ps->mins[0];
@@ -832,8 +874,8 @@ static qboolean PM_CheckProne(void) {
 
 			if (trace.fraction == 1.0f) {
 				// go prone
-				pm->ps->pm_flags    |= PMF_DUCKED; // crouched as well
-				pm->ps->eFlags      |= EF_PRONE;
+				pm->ps->pm_flags |= PMF_DUCKED; // crouched as well
+				pm->ps->eFlags |= EF_PRONE;
 				pm->pmext->proneTime = pm->cmd.serverTime; // timestamp 'go prone'
 			}
 		}
@@ -1285,9 +1327,9 @@ static void PM_WalkMove(void) {
 }
 
 /*
-==============
+=======================================================================================================================================
 PM_DeadMove
-==============
+=======================================================================================================================================
 */
 static void PM_DeadMove(void) {
 	float forward;
@@ -1309,9 +1351,9 @@ static void PM_DeadMove(void) {
 }
 
 /*
-===============
+=======================================================================================================================================
 PM_NoclipMove
-===============
+=======================================================================================================================================
 */
 static void PM_NoclipMove(void) {
 	float speed;
@@ -1373,11 +1415,11 @@ static void PM_NoclipMove(void) {
 //============================================================================
 
 /*
-================
+=======================================================================================================================================
 PM_FootstepForSurface
 
 Returns an event number apropriate for the groundsurface
-================
+=======================================================================================================================================
 */
 static int PM_FootstepForSurface(void) {
 #ifdef GAMEDLL
@@ -1725,11 +1767,11 @@ static void PM_SetWaterLevel(void) {
 }
 
 /*
-==============
+=======================================================================================================================================
 PM_CheckDuck
 
 Sets mins, maxs, and pm->ps->viewheight
-==============
+=======================================================================================================================================
 */
 static void PM_CheckDuck(void) {
 	// modified this for configurable bounding boxes
@@ -1777,9 +1819,9 @@ static void PM_CheckDuck(void) {
 //===================================================================
 
 /*
-===============
+=======================================================================================================================================
 PM_Footsteps
-===============
+=======================================================================================================================================
 */
 static void PM_Footsteps(void) {
 	float bobmove;
@@ -1788,7 +1830,7 @@ static void PM_Footsteps(void) {
 	int animResult = -1;
 
 	if (pm->ps->eFlags & EF_DEAD) {
-		//if ( pm->ps->groundEntityNum == ENTITYNUM_NONE )
+		//if (pm->ps->groundEntityNum == ENTITYNUM_NONE)
 		if (pm->ps->pm_flags & PMF_FLAILING) {
 			animResult = BG_AnimScriptAnimation(pm->ps, pm->character->animModelInfo, ANIM_MT_FLAILING, qtrue);
 
@@ -1995,11 +2037,11 @@ static void PM_Footsteps(void) {
 }
 
 /*
-==============
+=======================================================================================================================================
 PM_WaterEvents
 
 Generate sound events for entering and leaving water
-==============
+=======================================================================================================================================
 */
 static void PM_WaterEvents(void) {
 	// if just entered a water volume, play a sound
@@ -2031,9 +2073,9 @@ static void PM_WaterEvents(void) {
 }
 
 /*
-==============
+=======================================================================================================================================
 PM_BeginWeaponReload
-==============
+=======================================================================================================================================
 */
 static void PM_BeginWeaponReload(int weapon) {
 	int reloadTime;
@@ -2111,9 +2153,9 @@ static void PM_BeginWeaponReload(int weapon) {
 static void PM_ReloadClip(int weapon);
 
 /*
-===============
+=======================================================================================================================================
 PM_BeginWeaponChange
-===============
+=======================================================================================================================================
 */
 void PM_BeginWeaponChange(int oldweapon, int newweapon, qboolean reload)        // modified to play 1st person alt-mode transition animations.
 {
@@ -2268,9 +2310,9 @@ void PM_BeginWeaponChange(int oldweapon, int newweapon, qboolean reload)        
 }
 
 /*
-===============
+=======================================================================================================================================
 PM_FinishWeaponChange
-===============
+=======================================================================================================================================
 */
 static void PM_FinishWeaponChange(void) {
 	int oldweapon, newweapon = pm->ps->nextWeapon, switchtime;
@@ -2449,9 +2491,9 @@ static void PM_FinishWeaponChange(void) {
 }
 
 /*
-==============
+=======================================================================================================================================
 PM_ReloadClip
-==============
+=======================================================================================================================================
 */
 static void PM_ReloadClip(int weapon) {
 	int ammoreserve = pm->ps->ammo[BG_FindAmmoForWeapon(weapon)];
@@ -2473,9 +2515,9 @@ static void PM_ReloadClip(int weapon) {
 }
 
 /*
-==============
+=======================================================================================================================================
 PM_FinishWeaponReload
-==============
+=======================================================================================================================================
 */
 static void PM_FinishWeaponReload(void) {
 	PM_ReloadClip(pm->ps->weapon); // move ammo into clip
@@ -2484,9 +2526,9 @@ static void PM_FinishWeaponReload(void) {
 }
 
 /*
-==============
+=======================================================================================================================================
 PM_CheckforReload
-==============
+=======================================================================================================================================
 */
 void PM_CheckForReload(int weapon) {
 	qboolean autoreload;
@@ -2573,9 +2615,9 @@ void PM_CheckForReload(int weapon) {
 }
 
 /*
-==============
+=======================================================================================================================================
 PM_SwitchIfEmpty
-==============
+=======================================================================================================================================
 */
 static void PM_SwitchIfEmpty(void) {
 	// weapon here are thrown explosives or syringe/adrenaline
@@ -2620,10 +2662,10 @@ static void PM_SwitchIfEmpty(void) {
 }
 
 /*
-==============
+=======================================================================================================================================
 PM_WeaponUseAmmo
     accounts for clips being used/not used
-==============
+=======================================================================================================================================
 */
 void PM_WeaponUseAmmo(int wp, int amount) {
 	if (pm->noWeapClips) {
@@ -2644,10 +2686,10 @@ void PM_WeaponUseAmmo(int wp, int amount) {
 }
 
 /*
-==============
+=======================================================================================================================================
 PM_WeaponAmmoAvailable
     accounts for clips being used/not used
-==============
+=======================================================================================================================================
 */
 int PM_WeaponAmmoAvailable(int wp) {
 	if (pm->noWeapClips) {
@@ -2668,10 +2710,10 @@ int PM_WeaponAmmoAvailable(int wp) {
 }
 
 /*
-==============
+=======================================================================================================================================
 PM_WeaponClipEmpty
     accounts for clips being used/not used
-==============
+=======================================================================================================================================
 */
 int PM_WeaponClipEmpty(int wp) {
 	if (pm->noWeapClips) {
@@ -2688,9 +2730,9 @@ int PM_WeaponClipEmpty(int wp) {
 }
 
 /*
-==============
+=======================================================================================================================================
 PM_CoolWeapons
-==============
+=======================================================================================================================================
 */
 void PM_CoolWeapons(void) {
 	int wp, maxHeat;
@@ -2737,9 +2779,9 @@ void PM_CoolWeapons(void) {
 }
 
 /*
-==============
+=======================================================================================================================================
 PM_AdjustAimSpreadScale
-==============
+=======================================================================================================================================
 */
 #define AIMSPREAD_DECREASE_RATE     200.0f      // when I made the increase/decrease floats (so slower weapon recover could happen for scoped weaps) the average rate increased significantly
 #define AIMSPREAD_INCREASE_RATE     800.0f
@@ -2866,11 +2908,11 @@ void PM_AdjustAimSpreadScale(void) {
 #define weaponstateFiring (pm->ps->weaponstate == WEAPON_FIRING || pm->ps->weaponstate == WEAPON_FIRINGALT)
 
 /*
-==============
+=======================================================================================================================================
 PM_Weapon
 
 Generates weapon events and modifes the weapon counter
-==============
+=======================================================================================================================================
 */
 
 // special mounted mg42 handling
@@ -2883,7 +2925,6 @@ static qboolean PM_MountedFire(void) {
 			if (pm->ps->weapHeat[WP_DUMMY_MG42] < 0) {
 				pm->ps->weapHeat[WP_DUMMY_MG42] = 0;
 			}
-
 			// floor() to prevent 8-bit wrap
 			pm->ps->curWeapHeat = floor(((float)pm->ps->weapHeat[WP_DUMMY_MG42] / MAX_MG42_HEAT) * 255.0f);
 		}
@@ -2951,7 +2992,6 @@ static qboolean PM_MountedFire(void) {
 			if (pm->ps->weapHeat[WP_DUMMY_MG42] < 0) {
 				pm->ps->weapHeat[WP_DUMMY_MG42] = 0;
 			}
-
 			// floor() to prevent 8-bit wrap
 			pm->ps->curWeapHeat = floor(((float)pm->ps->weapHeat[WP_DUMMY_MG42] / MAX_MG42_HEAT) * 255.0f);
 		}
@@ -4094,9 +4134,9 @@ static void PM_Weapon(void) {
 }
 
 /*
-================
+=======================================================================================================================================
 PM_DropTimers
-================
+=======================================================================================================================================
 */
 static void PM_DropTimers(void) {
 	// drop misc timing counter
@@ -4139,9 +4179,9 @@ static void PM_DropTimers(void) {
 #define LEAN_TIME_FR    300.0f  // time to get to/from full lean
 
 /*
-==============
+=======================================================================================================================================
 PM_CalcLean
-==============
+=======================================================================================================================================
 */
 void PM_UpdateLean(playerState_t *ps, usercmd_t *cmd, pmove_t *tpm) {
 	vec3_t start;
@@ -4277,14 +4317,14 @@ void PM_UpdateLean(playerState_t *ps, usercmd_t *cmd, pmove_t *tpm) {
 }
 
 /*
-================
+=======================================================================================================================================
 PM_UpdateViewAngles
 
 This can be used as another entry point when only the viewangles
 are being updated isntead of a full move
 
     !! NOTE !! Any changes to mounted/prone view should be duplicated in BotEntityWithinView()
-================
+=======================================================================================================================================
 */
 // take a tracemask as well - we can't use anything out of pm
 void PM_UpdateViewAngles(playerState_t *ps, pmoveExt_t *pmext, usercmd_t *cmd, void(trace) (trace_t * results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int passEntityNum, int contentMask), int tracemask)        //   modified
@@ -4523,28 +4563,28 @@ void PM_UpdateViewAngles(playerState_t *ps, pmoveExt_t *pmext, usercmd_t *cmd, v
 		//yaw = ps->viewangles[YAW];
 
 
-		/*if ( yaw - oldYaw > 180 ) {
+		/*if (yaw - oldYaw > 180) {
 		    yaw -= 360;
 		}
 
-		if ( yaw - oldYaw < -180 ) {
+		if (yaw - oldYaw < -180) {
 		    yaw += 360;
 		}
 
-		if( yaw > oldYaw ) {
-		    if( yaw - oldYaw > degsSec * pml.frametime ) {
+		if(yaw > oldYaw) {
+		    if(yaw - oldYaw > degsSec * pml.frametime) {
 		        ps->viewangles[YAW] = oldYaw + degsSec * pml.frametime;
 
 		        // Set delta_angles properly
 		        newDeltaAngle = ANGLE2SHORT(ps->viewangles[YAW]) - cmd->angles[YAW];
-		  }
-		} else if( oldYaw > yaw ) {
-		    if( oldYaw - yaw > degsSec * pml.frametime ) {
+		 }
+		} else if(oldYaw > yaw) {
+		    if(oldYaw - yaw > degsSec * pml.frametime) {
 		        ps->viewangles[YAW] = oldYaw - degsSec * pml.frametime;
 
 		        // Set delta_angles properly
 		        newDeltaAngle = ANGLE2SHORT(ps->viewangles[YAW]) - cmd->angles[YAW];
-		  }
+		 }
 		}*/
 
 		// Check if we are allowed to rotate to there
@@ -4615,11 +4655,11 @@ void PM_UpdateViewAngles(playerState_t *ps, pmoveExt_t *pmext, usercmd_t *cmd, v
 }
 
 /*
-================
+=======================================================================================================================================
 PM_CheckLadderMove
 
   Checks to see if we are on a ladder
-================
+=======================================================================================================================================
 */
 qboolean ladderforward;
 vec3_t laddervec;
@@ -4716,9 +4756,9 @@ void PM_CheckLadderMove(void) {
 }
 
 /*
-============
+=======================================================================================================================================
 PM_LadderMove
-============
+=======================================================================================================================================
 */
 void PM_LadderMove(void) {
 	float wishspeed, scale;
@@ -4754,7 +4794,7 @@ void PM_LadderMove(void) {
 	if (pm->cmd.forwardmove) {
 		wishvel[2] = 0.9 * upscale * scale * (float)pm->cmd.forwardmove;
 	}
-	//Com_Printf("wishvel[2] = %i, fwdmove = %i\n", (int)wishvel[2], (int)pm->cmd.forwardmove );
+	//Com_Printf("wishvel[2] = %i, fwdmove = %i\n", (int)wishvel[2], (int)pm->cmd.forwardmove);
 
 	if (pm->cmd.rightmove) {
 		// strafe, so we can jump off ladder
@@ -4766,7 +4806,7 @@ void PM_LadderMove(void) {
 		if (DotProduct(laddervec, pml.forward) < 0) {
 			VectorInverse(ladder_right);
 		}
-		//VectorMA( wishvel, 0.5 * scale * (float)pm->cmd.rightmove, pml.right, wishvel );
+		//VectorMA(wishvel, 0.5 * scale * (float)pm->cmd.rightmove, pml.right, wishvel);
 		VectorMA(wishvel, 0.5 * scale * (float)pm->cmd.rightmove, ladder_right, wishvel);
 	}
 	// do strafe friction
@@ -4799,7 +4839,7 @@ void PM_LadderMove(void) {
 			}
 		}
 	}
-	//Com_Printf("vel[2] = %i\n", (int)pm->ps->velocity[2] );
+	//Com_Printf("vel[2] = %i\n", (int)pm->ps->velocity[2]);
 
 	PM_StepSlideMove(qfalse); // no gravity while going up ladder
 
@@ -4808,9 +4848,9 @@ void PM_LadderMove(void) {
 }
 
 /*
-==============
+=======================================================================================================================================
 PM_Sprint
-==============
+=======================================================================================================================================
 */
 void PM_Sprint(void) {
 	if (pm->waterlevel <= 1) // no sprint & no stamina recharge under water
@@ -4879,9 +4919,9 @@ void PM_Sprint(void) {
 }
 
 /*
-================
+=======================================================================================================================================
 PmoveSingle
-================
+=======================================================================================================================================
 */
 void trap_SnapVector(float *v);
 

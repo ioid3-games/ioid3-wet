@@ -52,13 +52,13 @@
 #define WINDOW_MOUSEOVER        0x00000001  // mouse is over it, non exclusive
 #define WINDOW_HASFOCUS         0x00000002  // has cursor focus, exclusive
 #define WINDOW_VISIBLE          0x00000004  // is visible
-#define WINDOW_GREY             0x00000008  // is visible but grey ( non-active )
+#define WINDOW_GREY             0x00000008  // is visible but grey (non-active)
 #define WINDOW_DECORATION       0x00000010  // for decoration only, no mouse, keyboard, etc..
 #define WINDOW_FADINGOUT        0x00000020  // fading out, non-active
 #define WINDOW_FADINGIN         0x00000040  // fading in
 #define WINDOW_MOUSEOVERTEXT    0x00000080  // mouse is over it, non exclusive
 #define WINDOW_INTRANSITION     0x00000100  // window is in transition
-#define WINDOW_FORECOLORSET     0x00000200  // forecolor was explicitly set ( used to color alpha images or not )
+#define WINDOW_FORECOLORSET     0x00000200  // forecolor was explicitly set (used to color alpha images or not)
 #define WINDOW_HORIZONTAL       0x00000400  // for list boxes and sliders, vertical is default this is set of horizontal
 #define WINDOW_LB_LEFTARROW     0x00000800  // mouse is over left/up arrow
 #define WINDOW_LB_RIGHTARROW    0x00001000  // mouse is over right/down arrow
@@ -72,7 +72,7 @@
 #define WINDOW_FORCED           0x00100000  // forced open
 #define WINDOW_POPUP            0x00200000  // popup
 #define WINDOW_BACKCOLORSET     0x00400000  // backcolor was explicitly set
-#define WINDOW_TIMEDVISIBLE     0x00800000  // visibility timing ( NOT implemented )
+#define WINDOW_TIMEDVISIBLE     0x00800000  // visibility timing (NOT implemented)
 #define WINDOW_IGNORE_HUDALPHA  0x01000000  // window will apply cg_hudAlpha value to colors unless this flag is set
 #define WINDOW_DRAWALWAYSONTOP  0x02000000
 #define WINDOW_MODAL            0x04000000 // window is modal, the window to go back to is stored in a stack
@@ -105,18 +105,18 @@
 #define ART_FX_WHITE        "menu/art/fx_white"
 #define ART_FX_YELLOW       "menu/art/fx_yel"
 
-#define ASSET_GRADIENTBAR           "ui/assets/gradientbar2.tga"
-#define ASSET_SCROLLBAR             "ui/assets/scrollbar.tga"
-#define ASSET_SCROLLBAR_ARROWDOWN   "ui/assets/scrollbar_arrow_dwn_a.tga"
-#define ASSET_SCROLLBAR_ARROWUP     "ui/assets/scrollbar_arrow_up_a.tga"
-#define ASSET_SCROLLBAR_ARROWLEFT   "ui/assets/scrollbar_arrow_left.tga"
-#define ASSET_SCROLLBAR_ARROWRIGHT  "ui/assets/scrollbar_arrow_right.tga"
-#define ASSET_SCROLL_THUMB          "ui/assets/scrollbar_thumb.tga"
-#define ASSET_SLIDER_BAR            "ui/assets/slider2.tga"
-#define ASSET_SLIDER_THUMB          "ui/assets/sliderbutt_1.tga"
-#define ASSET_CHECKBOX_CHECK        "ui/assets/check.tga"
-#define ASSET_CHECKBOX_CHECK_NOT    "ui/assets/check_not.tga"
-#define ASSET_CHECKBOX_CHECK_NO     "ui/assets/check_no.tga"
+#define ASSET_GRADIENTBAR "ui/assets/gradientbar2.tga"
+#define ASSET_SCROLLBAR "ui/assets/scrollbar.tga"
+#define ASSET_SCROLLBAR_ARROWDOWN "ui/assets/scrollbar_arrow_dwn_a.tga"
+#define ASSET_SCROLLBAR_ARROWUP "ui/assets/scrollbar_arrow_up_a.tga"
+#define ASSET_SCROLLBAR_ARROWLEFT "ui/assets/scrollbar_arrow_left.tga"
+#define ASSET_SCROLLBAR_ARROWRIGHT "ui/assets/scrollbar_arrow_right.tga"
+#define ASSET_SCROLL_THUMB "ui/assets/scrollbar_thumb.tga"
+#define ASSET_SLIDER_BAR "ui/assets/slider2.tga"
+#define ASSET_SLIDER_THUMB "ui/assets/sliderbutt_1.tga"
+#define ASSET_CHECKBOX_CHECK "ui/assets/check.tga"
+#define ASSET_CHECKBOX_CHECK_NOT "ui/assets/check_not.tga"
+#define ASSET_CHECKBOX_CHECK_NO "ui/assets/check_no.tga"
 
 #define SCROLLBAR_SIZE      16.0
 #define SLIDER_WIDTH        96.0
@@ -220,13 +220,11 @@ typedef struct modelDef_s {
 	float fov_x;
 	float fov_y;
 	int rotationSpeed;
-
 	int animated;
 	int startframe;
 	int numframes;
 	int loopframes;
 	int fps;
-
 	int frame;
 	int oldframe;
 	float backlerp;
@@ -247,15 +245,15 @@ typedef struct modelDef_s {
 
 typedef struct itemDef_s {
 	Window window; // common positional, border, style, layout info
-	rectDef_t textRect; // rectangle the text ( if any ) consumes
+	rectDef_t textRect; // rectangle the text (if any) consumes
 	int type; // text, button, radiobutton, checkbox, textfield, listbox, combo
 	int alignment; // left center right
-	int textalignment; // ( optional ) alignment for text within rect based on text width
-	float textalignx; // ( optional ) text alignment x coord
-	float textaligny; // ( optional ) text alignment x coord
+	int textalignment; // (optional) alignment for text within rect based on text width
+	float textalignx; // (optional) text alignment x coord
+	float textaligny; // (optional) text alignment x coord
 	float textscale; // scale percentage from 72pts
 	int font; //
-	int textStyle; // ( optional ) style, normal and shadowed are it for now
+	int textStyle; // (optional) style, normal and shadowed are it for now
 	const char *text; // display text
 	void *parent; // menu owner
 	qhandle_t asset; // handle to asset
@@ -462,7 +460,6 @@ typedef struct {
 	void (*updateScreen)(void);
 	void (*getHunkData)(int *hunkused, int *hunkexpected);
 	int (*getConfigString)(int index, char *buff, int buffsize);
-
 	float yscale;
 	float xscale;
 	float bias;

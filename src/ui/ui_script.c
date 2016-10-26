@@ -881,49 +881,49 @@ void Script_Skip(itemDef_t *item, qboolean *bAbort, char **args) {
 }
 
 commandDef_t commandList[] = {
-	{"fadein", &Script_FadeIn         }, // group / name
-	{"fadeout", &Script_FadeOut        }, // group / name
-	{"show", &Script_Show           }, // group / name
-	{"hide", &Script_Hide           }, // group / name
-	{"setcolor", &Script_SetColor       }, // works on this
-	{"open", &Script_Open           }, // menu
-	{"fadeinmenu", &Script_FadeInMenu     }, // menu
-	{"fadeoutmenu", &Script_FadeOutMenu    }, // menu
+	{"fadein", &Script_FadeIn        }, // group / name
+	{"fadeout", &Script_FadeOut       }, // group / name
+	{"show", &Script_Show          }, // group / name
+	{"hide", &Script_Hide          }, // group / name
+	{"setcolor", &Script_SetColor      }, // works on this
+	{"open", &Script_Open          }, // menu
+	{"fadeinmenu", &Script_FadeInMenu    }, // menu
+	{"fadeoutmenu", &Script_FadeOutMenu   }, // menu
 
 	{"conditionalopen", &Script_ConditionalOpen}, // cvar menu menu
 	// opens first menu if cvar is true[non-zero], second if false
 	{"conditionalscript", &Script_ConditionalScript}, // as conditonalopen, but then executes scripts
 
-	{"close", &Script_Close          }, // menu
-	{"closeall", &Script_CloseAll       },
+	{"close", &Script_Close         }, // menu
+	{"closeall", &Script_CloseAll      },
 	{"closeallothermenus", &Script_CloseAllOtherMenus},
-	{"setbackground", &Script_SetBackground  }, // works on this
-	{"setitemcolor", &Script_SetItemColor   }, // group / name
+	{"setbackground", &Script_SetBackground }, // works on this
+	{"setitemcolor", &Script_SetItemColor  }, // group / name
 	{"setmenuitemcolor", &Script_SetMenuItemColor}, // group / name
-	{"setteamcolor", &Script_SetTeamColor   }, // sets this background color to team color
-	{"setfocus", &Script_SetFocus       }, // sets this background color to team color
-	{"clearfocus", &Script_ClearFocus     },
-	{"setplayermodel", &Script_SetPlayerModel }, // sets this background color to team color
-	{"setplayerhead", &Script_SetPlayerHead  }, // sets this background color to team color
-	{"transition", &Script_Transition     }, // group / name
-	{"setcvar", &Script_SetCvar        }, // group / name
-	{"clearcvar", &Script_ClearCvar      },
-	{"copycvar", &Script_CopyCvar       },
-	{"exec", &Script_Exec           }, // group / name
-	{"execnow", &Script_ExecNOW        }, // group / name
-	{"play", &Script_Play           }, // group / name
-	{"playlooped", &Script_playLooped     }, // group / name
-	{"orbit", &Script_Orbit          }, // group / name
-	{"addlistitem", &Script_AddListItem    }, // special command to add text items to list box
+	{"setteamcolor", &Script_SetTeamColor  }, // sets this background color to team color
+	{"setfocus", &Script_SetFocus      }, // sets this background color to team color
+	{"clearfocus", &Script_ClearFocus    },
+	{"setplayermodel", &Script_SetPlayerModel}, // sets this background color to team color
+	{"setplayerhead", &Script_SetPlayerHead }, // sets this background color to team color
+	{"transition", &Script_Transition    }, // group / name
+	{"setcvar", &Script_SetCvar       }, // group / name
+	{"clearcvar", &Script_ClearCvar     },
+	{"copycvar", &Script_CopyCvar      },
+	{"exec", &Script_Exec          }, // group / name
+	{"execnow", &Script_ExecNOW       }, // group / name
+	{"play", &Script_Play          }, // group / name
+	{"playlooped", &Script_playLooped    }, // group / name
+	{"orbit", &Script_Orbit         }, // group / name
+	{"addlistitem", &Script_AddListItem   }, // special command to add text items to list box
 	{"checkautoupdate", &Script_CheckAutoUpdate},
-	{"getautoupdate", &Script_GetAutoUpdate  },
-	{"setmenufocus", &Script_SetMenuFocus   }, // focus menu
-	{"execwolfconfig", &Script_ExecWolfConfig }, // executes etconfig.cfg
-	{"setEditFocus", &Script_SetEditFocus   },
-	{"abort", &Script_Abort          },
-	{"getclipboard", &Script_GetClipboard   },
-	{"togglecvarbit", &Script_ToggleCvarBit  },
-	{"none", &Script_Skip           }, // skip execution(used as a placeholder)
+	{"getautoupdate", &Script_GetAutoUpdate },
+	{"setmenufocus", &Script_SetMenuFocus  }, // focus menu
+	{"execwolfconfig", &Script_ExecWolfConfig}, // executes etconfig.cfg
+	{"setEditFocus", &Script_SetEditFocus  },
+	{"abort", &Script_Abort         },
+	{"getclipboard", &Script_GetClipboard  },
+	{"togglecvarbit", &Script_ToggleCvarBit },
+	{"none", &Script_Skip          }, // skip execution(used as a placeholder)
 };
 
 int scriptCommandCount = sizeof(commandList) / sizeof(commandDef_t);

@@ -245,7 +245,7 @@ static ID_INLINE float idSqrt(float x) {
     if (Q_fabs(x) == 0.0)
     {
         return x;
-  }
+ }
     B = x;
 
 #ifdef __GNUC__
@@ -442,16 +442,14 @@ typedef int clipHandle_t;
 
 #define MAX_VA_STRING       32000
 
-typedef enum
-{
+typedef enum {
 	MESSAGE_EMPTY = 0,
 	MESSAGE_WAITING,            // rate/packet limited
 	MESSAGE_WAITING_OVERFLOW,   // packet too large with message
 } messageStatus_t;
 
 // paramters for command buffer stuffing
-typedef enum
-{
+typedef enum {
 	EXEC_NOW,           // don't return until completed, a VM should NEVER use this,
 	                    // because some commands might cause the VM to be unloaded...
 	EXEC_INSERT,        // insert at current position, but don't run yet
@@ -462,8 +460,7 @@ typedef enum
 #define MAX_MAP_AREA_BYTES      32      // bit vector of area visibility
 
 // print levels from renderer (FIXME: set up for game / cgame?)
-typedef enum
-{
+typedef enum {
 	PRINT_ALL,
 	PRINT_DEVELOPER,        // only print when "developer 1"
 	PRINT_WARNING,
@@ -475,8 +472,7 @@ typedef enum
 #endif
 
 // parameters to the main Error routine
-typedef enum
-{
+typedef enum {
 	ERR_FATAL,                  // exit the entire game with a popup window
 	ERR_VID_FATAL,              // exit the entire game with a popup window and doesn't delete profile.pid
 	ERR_DROP,                   // print to console and disconnect from game
@@ -516,8 +512,7 @@ typedef enum
 #define HUNK_DEBUG
 #endif
 
-typedef enum
-{
+typedef enum {
 	h_high,
 	h_low,
 	h_dontcare
@@ -536,8 +531,7 @@ void *Hunk_Alloc(int size, ha_pref preference);
 #define Com_Allocate malloc
 #define Com_Dealloc free
 
-typedef enum
-{
+typedef enum {
 	CIN_system = BIT(0),
 	CIN_loop = BIT(1),
 	CIN_hold = BIT(2),
@@ -627,16 +621,14 @@ char *Com_SkipTokens(char *s, int numTokens, char *sep);
 char *Com_SkipCharset(char *s, char *sep);
 
 // mode parm for FS_FOpenFile
-typedef enum
-{
+typedef enum {
 	FS_READ,
 	FS_WRITE,
 	FS_APPEND,
 	FS_APPEND_SYNC
 } fsMode_t;
 
-typedef enum
-{
+typedef enum {
 	FS_SEEK_CUR,
 	FS_SEEK_END,
 	FS_SEEK_SET
@@ -772,8 +764,8 @@ typedef struct cvar_s {
 	int flags;
 	qboolean modified; // set each time the cvar is changed
 	int modificationCount; // incremented each time the cvar is changed
-	float value; // atof( string )
-	int integer; // atoi( string )
+	float value; // atof(string)
+	int integer; // atoi(string)
 	struct cvar_s *next;
 	struct cvar_s *prev;
 	struct cvar_s *hashNext;
@@ -817,7 +809,7 @@ PlaneTypeForNormal
 =================
 */
 
-//#define PlaneTypeForNormal(x) (x[0] == 1.0 ? PLANE_X : (x[1] == 1.0 ? PLANE_Y : (x[2] == 1.0 ? PLANE_Z : PLANE_NON_AXIAL) ) )
+//#define PlaneTypeForNormal(x) (x[0] == 1.0 ? PLANE_X : (x[1] == 1.0 ? PLANE_Y : (x[2] == 1.0 ? PLANE_Z : PLANE_NON_AXIAL)))
 #define PlaneTypeForNormal(x) (x[0] == 1.0 ? PLANE_X : (x[1] == 1.0 ? PLANE_Y : (x[2] == 1.0 ? PLANE_Z : (x[0] == 0.f && x[1] == 0.f && x[2] == 0.f ? PLANE_NON_PLANAR : PLANE_NON_AXIAL))))
 
 // plane_t structure
@@ -868,8 +860,7 @@ typedef struct {
 // sound channels
 // channel 0 never willingly overrides
 // other channels will allways override a playing sound on that channel
-typedef enum
-{
+typedef enum {
 	CHAN_AUTO,
 	CHAN_LOCAL,         // menu sounds, etc
 	CHAN_WEAPON,
@@ -888,8 +879,8 @@ typedef enum
 */
 #define ANIM_BITS       10
 
-#define ANGLE2SHORT(x)  ((int)((x) * 65536 / 360) & 65535)
-#define SHORT2ANGLE(x)  ((x) * (360.0 / 65536))
+#define ANGLE2SHORT(x) ((int)((x) * 65536 / 360) & 65535)
+#define SHORT2ANGLE(x) ((x) * (360.0 / 65536))
 
 #define SNAPFLAG_RATE_DELAYED   1
 #define SNAPFLAG_NOT_ACTIVE     2   // snapshot used during connection and for zombies
@@ -950,8 +941,7 @@ typedef struct {
 	int dataCount;
 } gameState_t;
 
-typedef enum
-{
+typedef enum {
 	AISTATE_RELAXED,
 	AISTATE_QUERY,
 	AISTATE_ALERT,
@@ -1033,7 +1023,6 @@ typedef struct playerState_s {
 	int externalEvent; // events set on player from another source
 	int externalEventParm;
 	int externalEventTime;
-
 	int clientNum; // ranges from 0 to MAX_CLIENTS-1
 
 	// weapon info
@@ -1050,7 +1039,6 @@ typedef struct playerState_s {
 	int damageYaw;
 	int damagePitch;
 	int damageCount;
-
 	int stats[MAX_STATS];
 	int persistant[MAX_PERSISTANT]; // stats that aren't cleared on death
 	int powerups[MAX_POWERUPS]; // level.time that the powerup runs out
@@ -1070,9 +1058,7 @@ typedef struct playerState_s {
 	// view locking for mg42
 	int viewlocked;
 	int viewlocked_entNum;
-
 	float friction;
-
 	int nextWeapon;
 
 	// player class
@@ -1083,7 +1069,6 @@ typedef struct playerState_s {
 
 	// RF, burning effect is required for view blending effect
 	int onFireStart;
-
 	int serverCursorHint; // what type of cursor hint the server is dictating
 	int serverCursorHintVal; // a value (0-255) associated with the above
 
@@ -1100,7 +1085,6 @@ typedef struct playerState_s {
 	int ping; // server to game info for scoreboard
 	int pmove_framecount;
 	int entityEventSequence;
-
 	int sprintExertTime;
 
 	// value for all multiplayer classes with regenerating "class weapons" -- ie LT artillery, medic medpack, engineer build points, etc
@@ -1110,7 +1094,6 @@ typedef struct playerState_s {
 	int weapAnim; // mask off ANIM_TOGGLEBIT, DOES get send over the network
 
 	qboolean releasedFire;
-
 	float aimSpreadScaleFloat; // the server-side aimspreadscale that lets it track finer changes but still only
 	// transmit the 8bit int to the client
 	int aimSpreadScale; // 0 - 255 increases with angular movement. DOES get send over the network
@@ -1161,8 +1144,7 @@ typedef struct playerState_s {
 // then BUTTON_WALKING should be set
 
 // doubleTap buttons - DT_NUM can be max 8
-typedef enum
-{
+typedef enum {
 	DT_NONE,
 	DT_MOVELEFT,
 	DT_MOVERIGHT,
@@ -1196,14 +1178,13 @@ typedef struct usercmd_s {
 // if entityState->solid == SOLID_BMODEL, modelindex is an inline model number
 #define SOLID_BMODEL    0xffffff
 
-typedef enum
-{
+typedef enum {
 	TR_STATIONARY,
 	TR_INTERPOLATE,             // non-parametric, but interpolate between snapshots
 	TR_LINEAR,
 	TR_LINEAR_STOP,
 	TR_LINEAR_STOP_BACK,        // so reverse movement can be different than forward
-	TR_SINE,                    // value = base + sin( time / duration ) * delta
+	TR_SINE,                    // value = base + sin(time / duration) * delta
 	TR_GRAVITY,
 	TR_GRAVITY_LOW,
 	TR_GRAVITY_FLOAT,           // super low grav with no gravity acceleration (floating feathers/fabric/leaves/...)
@@ -1231,8 +1212,7 @@ typedef struct {
 //
 // NOTE: all fields in here must be 32 bits (or those within sub-structures)
 
-typedef enum
-{
+typedef enum {
 	ET_GENERAL = 0,
 	ET_PLAYER,
 	ET_ITEM,
@@ -1330,10 +1310,8 @@ typedef struct entityState_s {
 	vec3_t origin2;
 	vec3_t angles;
 	vec3_t angles2;
-
 	int otherEntityNum; // shotgun sources, etc
 	int otherEntityNum2;
-
 	int groundEntityNum; // -1 = in air
 
 	int constantLight; // r + (g<<8) + (b<<16) + (intensity<<24)
@@ -1344,13 +1322,11 @@ typedef struct entityState_s {
 	int modelindex2;
 	int clientNum; // 0 to (MAX_CLIENTS - 1), for players and corpses
 	int frame;
-
 	int solid; // for client side prediction, trap_linkentity sets this properly
 
 	// old style events, in for compatibility only
 	int event;
 	int eventParm;
-
 	int eventSequence; // pmove generated events
 	int events[MAX_EVENTS];
 	int eventParms[MAX_EVENTS];
@@ -1368,18 +1344,15 @@ typedef struct entityState_s {
 	int dmgFlags; // to pass along additional information for damage effects for players/ Also used for cursorhints for non-player entities
 
 	int onFireStart, onFireEnd;
-
 	int nextWeapon;
 	int teamNum;
-
 	int effect1Time, effect2Time, effect3Time;
 
 	aistateEnum_t aiState;
 	int animMovetype; // clients can't derive movetype of other clients for anim scripting system
 } entityState_t;
 
-typedef enum
-{
+typedef enum {
 	CA_UNINITIALIZED,   // obsolete; not used anymore
 	CA_DISCONNECTED,    // not talking to a server
 	CA_AUTHORIZING,     // deprecated (cd key check), but ET:L will use it in the future
@@ -1465,8 +1438,7 @@ typedef struct qtime_s {
 #define AS_FAVORITES_ALL -3
 
 // cinematic states
-typedef enum
-{
+typedef enum {
 	FMV_IDLE,
 	FMV_PLAY,       // play
 	FMV_EOF,        // all other conditions, i.e. stop/EOF/abort
@@ -1476,8 +1448,7 @@ typedef enum
 	FMV_ID_WAIT
 } e_status;
 
-typedef enum
-{
+typedef enum {
 	DS_NONE,
 
 	DS_WAITINGPLAYBACK, // demo will play after map_restart)
@@ -1495,8 +1466,7 @@ typedef enum
 #define MAX_SERVERSTATUSREQUESTS    16
 
 // server/game states
-typedef enum
-{
+typedef enum {
 	GS_INITIALIZE = -1,
 	GS_PLAYING,
 	GS_WARMUP_COUNTDOWN,
@@ -1539,7 +1509,7 @@ typedef struct demoPlayInfo_s {
 #define PP_NARG_FAST(...)  EXPAND(PP_NARG_(__VA_ARGS__, PP_RSEQ_N()))
 #define PP_NARG_(...)  EXPAND(PP_ARG_N(__VA_ARGS__))
 
-#define PP_ARG_N( \
+#define PP_ARG_N(\
 	    _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, \
 	    _11, _12, _13, _14, _15, _16, _17, _18, _19, _20, \
 	    _21, _22, _23, _24, _25, _26, _27, _28, _29, _30, \
@@ -1557,7 +1527,7 @@ typedef struct demoPlayInfo_s {
 	19, 18, 17, 16, 15, 14, 13, 12, 11, 10, \
 	9, 8, 7, 6, 5, 4, 3, 2, 1, 0
 #else
-#define NUMARGS(...)  (sizeof((int[]) {0, ## __VA_ARGS__}) / sizeof(int) - 1)
+#define NUMARGS(...) (sizeof((int[]) {0, ## __VA_ARGS__}) / sizeof(int) - 1)
 #endif
 
 typedef int (*cmpFunc_t)(const void *a, const void *b);

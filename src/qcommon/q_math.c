@@ -750,12 +750,12 @@ int BoxOnPlaneSide2(vec3_t emins, vec3_t emaxs, struct cplane_s *p) {
         {
             corners[0][i] = emins[i];
             corners[1][i] = emaxs[i];
-    }
+   }
         else
         {
             corners[1][i] = emins[i];
             corners[0][i] = emaxs[i];
-    }
+   }
 }
     dist1 = DotProduct(p->normal, corners[0]) - p->dist;
     dist2 = DotProduct(p->normal, corners[1]) - p->dist;

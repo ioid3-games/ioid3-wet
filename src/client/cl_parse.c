@@ -207,9 +207,9 @@ void CL_DeltaEntity(msg_t *msg, clSnapshot_t *frame, int newnum, entityState_t *
 }
 
 /*
-==================
+=======================================================================================================================================
 CL_ParsePacketEntities
-==================
+=======================================================================================================================================
 */
 void CL_ParsePacketEntities(msg_t *msg, clSnapshot_t *oldframe, clSnapshot_t *newframe) {
 	int newnum;
@@ -332,7 +332,7 @@ void CL_ParseSnapshot(msg_t *msg) {
 
 	// get the reliable sequence acknowledge number
 	// NOTE: now sent with all server to client messages
-	//clc.reliableAcknowledge = MSG_ReadLong( msg );
+	//clc.reliableAcknowledge = MSG_ReadLong(msg);
 
 	// read in the new snapshot to a temporary buffer
 	// we will only copy to cl.snap if it is valid
@@ -367,10 +367,10 @@ void CL_ParseSnapshot(msg_t *msg) {
 		if (clc.demorecording) {
 			clc.demowaiting = qfalse; // we can start recording now
 			//if(cl_autorecord->integer) {
-			//  Cvar_Set( "g_synchronousClients", "0" );
+			//  Cvar_Set("g_synchronousClients", "0");
 			//}
 		} else {
-			if (cl_autorecord->integer /*&& Cvar_VariableValue( "g_synchronousClients")*/) {
+			if (cl_autorecord->integer /*&& Cvar_VariableValue("g_synchronousClients")*/) {
 				char name[256];
 				char mapname[MAX_QPATH];
 				char *period;
@@ -495,7 +495,7 @@ void CL_SystemInfoChanged(void) {
 	const char *s, *t;
 	char key[BIG_INFO_KEY];
 	char value[BIG_INFO_VALUE];
-	qboolean   gameSet;
+	qboolean gameSet;
 
 	// NOTE: when the serverId changes, any further messages we send to the server will use this new serverId
 	// in some cases, outdated cp commands might get sent with this news serverId
@@ -564,7 +564,7 @@ void CL_SystemInfoChanged(void) {
 		Cvar_Set("fs_game", "");
 	}
 	// big hack to clear the image cache on a pure change
-	//cl_connectedToPureServer = Cvar_VariableValue( "sv_pure" );
+	//cl_connectedToPureServer = Cvar_VariableValue("sv_pure");
 
 	if (Cvar_VariableValue("sv_pure")) {
 		if (!cl_connectedToPureServer && cls.state <= CA_CONNECTED) {
@@ -582,9 +582,9 @@ void CL_SystemInfoChanged(void) {
 }
 
 /*
-==================
+=======================================================================================================================================
 CL_ParseGamestate
-==================
+=======================================================================================================================================
 */
 void CL_ParseGamestate(msg_t *msg) {
 	int i;
@@ -628,7 +628,6 @@ void CL_ParseGamestate(msg_t *msg) {
 			if (len + 1 + cl.gameState.dataCount > MAX_GAMESTATE_CHARS) {
 				Com_Error(ERR_DROP, "MAX_GAMESTATE_CHARS exceeded");
 			}
-
 			// append it to the gameState string buffer
 			cl.gameState.stringOffsets[i] = cl.gameState.dataCount;
 			memcpy(cl.gameState.stringData + cl.gameState.dataCount, s, len + 1);
@@ -744,7 +743,7 @@ void CL_ParseDownload(msg_t *msg) {
 			return;
 		} else {
 			// server keeps sending that message till we acknowledge it, eat and ignore
-			//MSG_ReadLong( msg );
+			//MSG_ReadLong(msg);
 			MSG_ReadString(msg);
 			MSG_ReadLong(msg);
 			MSG_ReadLong(msg);
@@ -827,12 +826,12 @@ void CL_ParseDownload(msg_t *msg) {
 }
 
 /*
-=====================
+=======================================================================================================================================
 CL_ParseCommandString
 
 Command strings are just saved off until cgame asks for them
 when it transitions a snapshot
-=====================
+=======================================================================================================================================
 */
 void CL_ParseCommandString(msg_t *msg) {
 	char *s;
@@ -854,9 +853,9 @@ void CL_ParseCommandString(msg_t *msg) {
 }
 
 /*
-=====================
+=======================================================================================================================================
 CL_ParseBinaryMessage
-=====================
+=======================================================================================================================================
 */
 void CL_ParseBinaryMessage(msg_t *msg) {
 	int size;
@@ -873,9 +872,9 @@ void CL_ParseBinaryMessage(msg_t *msg) {
 }
 
 /*
-=====================
+=======================================================================================================================================
 CL_ParseServerMessage
-=====================
+=======================================================================================================================================
 */
 void CL_ParseServerMessage(msg_t *msg) {
 	int cmd;

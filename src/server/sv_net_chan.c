@@ -223,6 +223,7 @@ static void SV_WriteBinaryMessage(msg_t *msg, client_t *cl) {
 	}
 
 	MSG_WriteData(msg, cl->binaryMessage, cl->binaryMessageLength);
+
 	cl->binaryMessageLength = 0;
 	cl->binaryMessageOverflowed = qfalse;
 }
@@ -237,6 +238,7 @@ then buffer them and make sure they get sent in correct order
 =======================================================================================================================================
 */
 void SV_Netchan_Transmit(client_t *client, msg_t *msg) {
+
 	MSG_WriteByte(msg, svc_EOF);
 	SV_WriteBinaryMessage(msg, client);
 

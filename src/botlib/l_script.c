@@ -683,7 +683,7 @@ int PS_ReadLiteral(script_t *script, token_t *token) {
         if (!PS_ReadEscapeCharacter(script, &token->string[1]))
         {
             return 0;
-    }
+   }
 }
     else
     {
@@ -697,11 +697,11 @@ int PS_ReadLiteral(script_t *script, token_t *token) {
                *script->script_p != '\n')
         {
             script->script_p++;
-    }
+   }
         if (*script->script_p == '\'')
         {
             script->script_p++;
-    }
+   }
 }
    // store the trailing quote
     token->string[2] = *script->script_p++;
@@ -1119,14 +1119,14 @@ int ScriptSkipTo(script_t *script, char *value) {
         if (!PS_ReadWhiteSpace(script))
         {
             return 0;
-    }
+   }
         if (*script->script_p == firstchar)
         {
             if (!strncmp(script->script_p, value, len))
             {
                 return 1;
-        }
-    }
+       }
+   }
         script->script_p++;
 }
     while (1);

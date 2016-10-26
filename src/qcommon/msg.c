@@ -43,7 +43,7 @@
 #include "../game/g_public.h"
 
 static huffman_t msgHuff;
-static qboolean  msgInit = qfalse;
+static qboolean msgInit = qfalse;
 
 int pcount[256];
 int wastedbits = 0;
@@ -691,9 +691,9 @@ usercmd_t communication
 */
 
 /*
-=====================
+=======================================================================================================================================
 MSG_WriteDeltaUsercmdKey
-=====================
+=======================================================================================================================================
 */
 void MSG_WriteDeltaUsercmdKey(msg_t *msg, int key, usercmd_t *from, usercmd_t *to) {
 	if (to->serverTime - from->serverTime < 256) {
@@ -727,9 +727,9 @@ void MSG_WriteDeltaUsercmdKey(msg_t *msg, int key, usercmd_t *from, usercmd_t *t
 }
 
 /*
-=====================
+=======================================================================================================================================
 MSG_ReadDeltaUsercmdKey
-=====================
+=======================================================================================================================================
 */
 void MSG_ReadDeltaUsercmdKey(msg_t *msg, int key, usercmd_t *from, usercmd_t *to) {
 	if (MSG_ReadBits(msg, 1)) {
@@ -928,13 +928,13 @@ void MSG_PrioritiseEntitystateFields(void) {
 	Com_Printf("};\n");
 }
 
-// if (int)f == f and (int)f + ( 1<<(FLOAT_INT_BITS-1) ) < ( 1 << FLOAT_INT_BITS )
+// if (int)f == f and (int)f + (1<<(FLOAT_INT_BITS-1)) < (1 << FLOAT_INT_BITS)
 // the float will be sent with FLOAT_INT_BITS, otherwise all 32 bits will be sent
 #define FLOAT_INT_BITS  13
 #define FLOAT_INT_BIAS  (1 << (FLOAT_INT_BITS - 1))
 
 /*
-==================
+=======================================================================================================================================
 MSG_WriteDeltaEntity
 
 Writes part of a packetentities message, including the entity number.
@@ -942,7 +942,7 @@ Can delta from either a baseline or a previous packet_entity
 If to is NULL, a remove entity update will be sent
 If force is not set, then nothing at all will be generated if the entity is
 identical, under the assumption that the in-order delta code will catch it.
-==================
+=======================================================================================================================================
 */
 void MSG_WriteDeltaEntity(msg_t *msg, struct entityState_s *from, struct entityState_s *to, qboolean force) {
 	int i, lc;
@@ -979,8 +979,8 @@ void MSG_WriteDeltaEntity(msg_t *msg, struct entityState_s *from, struct entityS
 	lc = 0;
 	// build the change vector as bytes so it is endien independent
 	for (i = 0, field = entityStateFields; i < numFields; i++, field++) {
-		fromF = ( int * )((byte *)from + field->offset);
-		toF = ( int * )((byte *)to + field->offset);
+		fromF = (int *)((byte *)from + field->offset);
+		toF = (int *)((byte *)to + field->offset);
 
 		if (*fromF != *toF) {
 			lc = i + 1;
@@ -1009,11 +1009,11 @@ void MSG_WriteDeltaEntity(msg_t *msg, struct entityState_s *from, struct entityS
 
 	oldsize += numFields;
 
-	//Com_Printf( "Delta for ent %i: ", to->number );
+	//Com_Printf("Delta for ent %i: ", to->number);
 
 	for (i = 0, field = entityStateFields; i < lc; i++, field++) {
-		fromF = ( int * )((byte *)from + field->offset);
-		toF = ( int * )((byte *)to + field->offset);
+		fromF = (int *)((byte *)from + field->offset);
+		toF = (int *)((byte *)to + field->offset);
 
 		if (*fromF == *toF) {
 			MSG_WriteBits(msg, 0, 1); // no change
@@ -1042,14 +1042,14 @@ void MSG_WriteDeltaEntity(msg_t *msg, struct entityState_s *from, struct entityS
 					MSG_WriteBits(msg, 0, 1);
 					MSG_WriteBits(msg, trunc + FLOAT_INT_BIAS, FLOAT_INT_BITS);
 					//if (print) {
-					//  Com_Printf( "%s:%i ", field->name, trunc );
+					//  Com_Printf("%s:%i ", field->name, trunc);
 					//}
 				} else {
 					// send as full floating point value
 					MSG_WriteBits(msg, 1, 1);
 					MSG_WriteBits(msg, *toF, 32);
 					//if (print) {
-					//  Com_Printf( "%s:%f ", field->name, *(float *)toF );
+					//  Com_Printf("%s:%f ", field->name, *(float *)toF);
 					//}
 				}
 			}
@@ -1060,31 +1060,31 @@ void MSG_WriteDeltaEntity(msg_t *msg, struct entityState_s *from, struct entityS
 				MSG_WriteBits(msg, 1, 1);
 				// integer
 				MSG_WriteBits(msg, *toF, field->bits);
-				//if ( print ) {
-				//  Com_Printf( "%s:%i ", field->name, *toF );
+				//if (print) {
+				//  Com_Printf("%s:%i ", field->name, *toF);
 				//}
 			}
 		}
 	}
-	//Com_Printf( "\n" );
+	//Com_Printf("\n");
 
 	/*
 	    c = msg->cursize - c;
 
-	    if ( print ) {
-	        if ( msg->bit == 0 ) {
+	    if (print) {
+	        if (msg->bit == 0) {
 	            endBit = msg->cursize * 8 - GENTITYNUM_BITS;
-	      } else {
-	            endBit = ( msg->cursize - 1 ) * 8 + msg->bit - GENTITYNUM_BITS;
-	      }
-	        Com_Printf( " (%i bits)\n", endBit - startBit  );
-	  }
+	     } else {
+	            endBit = (msg->cursize - 1) * 8 + msg->bit - GENTITYNUM_BITS;
+	     }
+	        Com_Printf(" (%i bits)\n", endBit - startBit );
+	 }
 
 	*/
 }
 
 /*
-==================
+=======================================================================================================================================
 MSG_ReadDeltaEntity
 
 The entity number has already been read from the message, which
@@ -1093,7 +1093,7 @@ is how the from state is identified.
 If the delta removes the entity, entityState_t->number will be set to MAX_GENTITIES-1
 
 Can go from either a baseline or a previous packet_entity
-==================
+=======================================================================================================================================
 */
 extern cvar_t *cl_shownet;
 
@@ -1152,8 +1152,8 @@ void MSG_ReadDeltaEntity(msg_t *msg, entityState_t *from, entityState_t *to,
 	to->number = number;
 
 	for (i = 0, field = entityStateFields; i < lc; i++, field++) {
-		fromF = ( int * )((byte *)from + field->offset);
-		toF = ( int * )((byte *)to + field->offset);
+		fromF = (int *)((byte *)from + field->offset);
+		toF = (int *)((byte *)to + field->offset);
 
 		if (!MSG_ReadBits(msg, 1)) {
 			// no change
@@ -1200,8 +1200,8 @@ void MSG_ReadDeltaEntity(msg_t *msg, entityState_t *from, entityState_t *to,
 	}
 
 	for (i = lc, field = &entityStateFields[lc]; i < numFields; i++, field++) {
-		fromF = ( int * )((byte *)from + field->offset);
-		toF = ( int * )((byte *)to + field->offset);
+		fromF = (int *)((byte *)from + field->offset);
+		toF = (int *)((byte *)to + field->offset);
 		// no change
 		*toF = *fromF;
 	}
@@ -1230,7 +1230,7 @@ entityShared_t communication
  * Inefficient algorithm, intended for compile-time constants.
  * Courtesy of Hallvard B Furuseth
  */
-#define LOG2_8BIT(v)  (8 - 90 / (((v) / 4 + 14) | 1) - 2 / ((v) / 2 + 1))
+#define LOG2_8BIT(v) (8 - 90 / (((v) / 4 + 14) | 1) - 2 / ((v) / 2 + 1))
 #define LOG2_16BIT(v) (8 * ((v) > 255) + LOG2_8BIT((v) >> 8 * ((v) > 255)))
 #define LOG2_32BIT(v) \
 	(16 * ((v) > 65535L) + LOG2_16BIT((v) * 1L >> 16 * ((v) > 65535L)))
@@ -1246,42 +1246,42 @@ entityShared_t communication
 #define ESF(x) # x, (size_t)&((entityShared_t *)0)->x
 
 netField_t entitySharedFields[] = {
-	{ESF(linked),           1             },
-	{ESF(linkcount),        8             }, // enough to see whether the linkcount has changed
-	                                           // (assuming it doesn't change 256 times in 1 frame) {ESF(bmodel),           1             },
-	{ESF(svFlags),          12            },
+	{ESF(linked),           1            },
+	{ESF(linkcount),        8            }, // enough to see whether the linkcount has changed
+	                                           // (assuming it doesn't change 256 times in 1 frame) {ESF(bmodel),           1            },
+	{ESF(svFlags),          12           },
 	{ESF(singleClient),     CLIENTNUM_BITS},
-	{ESF(contents),         32            },
+	{ESF(contents),         32           },
 	{ESF(ownerNum),         GENTITYNUM_BITS},
-	{ESF(mins[0]),          0             },
-	{ESF(mins[1]),          0             },
-	{ESF(mins[2]),          0             },
-	{ESF(maxs[0]),          0             },
-	{ESF(maxs[1]),          0             },
-	{ESF(maxs[2]),          0             },
-	{ESF(absmin[0]),        0             },
-	{ESF(absmin[1]),        0             },
-	{ESF(absmin[2]),        0             },
-	{ESF(absmax[0]),        0             },
-	{ESF(absmax[1]),        0             },
-	{ESF(absmax[2]),        0             },
-	{ESF(currentOrigin[0]), 0             },
-	{ESF(currentOrigin[1]), 0             },
-	{ESF(currentOrigin[2]), 0             },
-	{ESF(currentAngles[0]), 0             },
-	{ESF(currentAngles[1]), 0             },
-	{ESF(currentAngles[2]), 0             },
-	{ESF(ownerNum),         32            },
-	{ESF(eventTime),        32            },
-	{ESF(worldflags),       32            },
-	{ESF(snapshotCallback), 1             }
+	{ESF(mins[0]),          0            },
+	{ESF(mins[1]),          0            },
+	{ESF(mins[2]),          0            },
+	{ESF(maxs[0]),          0            },
+	{ESF(maxs[1]),          0            },
+	{ESF(maxs[2]),          0            },
+	{ESF(absmin[0]),        0            },
+	{ESF(absmin[1]),        0            },
+	{ESF(absmin[2]),        0            },
+	{ESF(absmax[0]),        0            },
+	{ESF(absmax[1]),        0            },
+	{ESF(absmax[2]),        0            },
+	{ESF(currentOrigin[0]), 0            },
+	{ESF(currentOrigin[1]), 0            },
+	{ESF(currentOrigin[2]), 0            },
+	{ESF(currentAngles[0]), 0            },
+	{ESF(currentAngles[1]), 0            },
+	{ESF(currentAngles[2]), 0            },
+	{ESF(ownerNum),         32           },
+	{ESF(eventTime),        32           },
+	{ESF(worldflags),       32           },
+	{ESF(snapshotCallback), 1            }
 };
 
 
 /*
-==================
+=======================================================================================================================================
 MSG_WriteDeltaSharedEntity
-==================
+=======================================================================================================================================
 */
 void MSG_WriteDeltaSharedEntity(msg_t *msg, void *from, void *to, qboolean force, int number) {
 	int i, lc;
@@ -1373,9 +1373,9 @@ void MSG_WriteDeltaSharedEntity(msg_t *msg, void *from, void *to, qboolean force
 }
 
 /*
-==================
+=======================================================================================================================================
 MSG_ReadDeltaSharedEntity
-==================
+=======================================================================================================================================
 */
 void MSG_ReadDeltaSharedEntity(msg_t *msg, void *from, void *to, int number) {
 	int i, lc;
@@ -1612,8 +1612,8 @@ void MSG_WriteDeltaPlayerstate(msg_t *msg, struct playerState_s *from, struct pl
 	lc = 0;
 
 	for (i = 0, field = playerStateFields; i < numFields; i++, field++) {
-		fromF = ( int * )((byte *)from + field->offset);
-		toF = ( int * )((byte *)to + field->offset);
+		fromF = (int *)((byte *)from + field->offset);
+		toF = (int *)((byte *)to + field->offset);
 
 		if (*fromF != *toF) {
 			lc = i + 1;
@@ -1627,8 +1627,8 @@ void MSG_WriteDeltaPlayerstate(msg_t *msg, struct playerState_s *from, struct pl
 	oldsize += numFields - lc;
 
 	for (i = 0, field = playerStateFields; i < lc; i++, field++) {
-		fromF = ( int * )((byte *)from + field->offset);
-		toF = ( int * )((byte *)to + field->offset);
+		fromF = (int *)((byte *)from + field->offset);
+		toF = (int *)((byte *)to + field->offset);
 
 		if (*fromF == *toF) {
 			wastedbits++;
@@ -1649,22 +1649,22 @@ void MSG_WriteDeltaPlayerstate(msg_t *msg, struct playerState_s *from, struct pl
 				// send as small integer
 				MSG_WriteBits(msg, 0, 1);
 				MSG_WriteBits(msg, trunc + FLOAT_INT_BIAS, FLOAT_INT_BITS);
-				//if ( print ) {
-				//  Com_Printf( "%s:%i ", field->name, trunc );
+				//if (print) {
+				//  Com_Printf("%s:%i ", field->name, trunc);
 				//}
 			} else {
 				// send as full floating point value
 				MSG_WriteBits(msg, 1, 1);
 				MSG_WriteBits(msg, *toF, 32);
-				//if ( print ) {
-				//  Com_Printf( "%s:%f ", field->name, *(float *)toF );
+				//if (print) {
+				//  Com_Printf("%s:%f ", field->name, *(float *)toF);
 				//}
 			}
 		} else {
 			// integer
 			MSG_WriteBits(msg, *toF, field->bits);
-			//if ( print ) {
-			//  Com_Printf( "%s:%i ", field->name, *toF );
+			//if (print) {
+			//  Com_Printf("%s:%i ", field->name, *toF);
 			//}
 		}
 	}
@@ -1885,8 +1885,8 @@ void MSG_ReadDeltaPlayerstate(msg_t *msg, playerState_t *from, playerState_t *to
 	}
 
 	for (i = 0, field = playerStateFields; i < lc; i++, field++) {
-		fromF = ( int * )((byte *)from + field->offset);
-		toF = ( int * )((byte *)to + field->offset);
+		fromF = (int *)((byte *)from + field->offset);
+		toF = (int *)((byte *)to + field->offset);
 
 		if (!MSG_ReadBits(msg, 1)) {
 			// no change
@@ -1924,8 +1924,8 @@ void MSG_ReadDeltaPlayerstate(msg_t *msg, playerState_t *from, playerState_t *to
 	}
 
 	for (i = lc, field = &playerStateFields[lc]; i < numFields; i++, field++) {
-		fromF = ( int * )((byte *)from + field->offset);
-		toF = ( int * )((byte *)to + field->offset);
+		fromF = (int *)((byte *)from + field->offset);
+		toF = (int *)((byte *)to + field->offset);
 		// no change
 		*toF = *fromF;
 	}

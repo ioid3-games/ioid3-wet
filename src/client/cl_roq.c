@@ -383,7 +383,7 @@ static void CIN_DecodeQuadCodebook(cinematic_t *cin, const byte *data) {
 	int numQuadVecs;
 	int numQuadCels;
 	int i, r, g, b;
-	byte     pixels[4][4];
+	byte  pixels[4][4];
 
 	if (!chunkHeader->args) {
 		numQuadVecs = 256;

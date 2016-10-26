@@ -769,21 +769,21 @@ panel_button_t mapVoteButton3 = {
 };
 
 panel_button_t mapVoteBorder1 = {
-	NULL, NULL, {DB_MAPVOTE_X2 - 10, DB_MAPVOTE_Y - 12, 620 - DB_MAPVOTE_X2 + 10, DB_MAPVOTE_Y2 - DB_MAPVOTE_Y - 4}, {1,  255,         255,  255, 40, 1, 0, 0             }, NULL, /* font       */
+	NULL, NULL, {DB_MAPVOTE_X2 - 10, DB_MAPVOTE_Y - 12, 620 - DB_MAPVOTE_X2 + 10, DB_MAPVOTE_Y2 - DB_MAPVOTE_Y - 4}, {1,  255,         255,  255, 40, 1, 0, 0            }, NULL, /* font       */
 	NULL, /* keyDown    */
 	NULL, /* keyUp  */
 	BG_PanelButtonsRender_Img, NULL,
 };
 
 panel_button_t mapVoteBorder2 = {
-	NULL, NULL, {DB_MAPVOTE_X2 - 10, DB_MAPVOTE_Y2 - 10 + 2, 620 - DB_MAPVOTE_X2 + 10, 370 - DB_MAPVOTE_Y2 - 2 - 10}, {1,  255,              255,  255, 40, 1, 0, 0         }, NULL, /* font       */
+	NULL, NULL, {DB_MAPVOTE_X2 - 10, DB_MAPVOTE_Y2 - 10 + 2, 620 - DB_MAPVOTE_X2 + 10, 370 - DB_MAPVOTE_Y2 - 2 - 10}, {1,  255,              255,  255, 40, 1, 0, 0        }, NULL, /* font       */
 	NULL, /* keyDown    */
 	NULL, /* keyUp  */
 	BG_PanelButtonsRender_Img, NULL,
 };
 
 panel_button_t mapVoteBorder3 = {
-	NULL, NULL, {20, DB_MAPVOTE_Y - 12, DB_MAPVOTE_X2 - 40 + 2, 370 - DB_MAPVOTE_Y - 10 + 2}, {1,  255,  255,   255, 40, 1, 0, 0        }, NULL, /* font       */
+	NULL, NULL, {20, DB_MAPVOTE_Y - 12, DB_MAPVOTE_X2 - 40 + 2, 370 - DB_MAPVOTE_Y - 10 + 2}, {1,  255,  255,   255, 40, 1, 0, 0       }, NULL, /* font       */
 	NULL, /* keyDown    */
 	NULL, /* keyUp  */
 	BG_PanelButtonsRender_Img, NULL,
@@ -2496,17 +2496,17 @@ team_t CG_Debriefing_FindWinningTeamForPos(int pos) {
 			} else if (alliedwins > axiswins) {
 				return TEAM_ALLIES;
 			}
-			/*      } else {
+			/*     } else {
 			                const char *s = CG_ConfigString(CS_MULTI_MAPWINNER);
 			                const char *buf = Info_ValueForKey(s, "w");
 
 			                if (atoi(buf) == -1) {
-			            } else if (atoi(buf)) {
+			           } else if (atoi(buf)) {
 			                    return TEAM_ALLIES;
-			            } else {
+			           } else {
 			                    return TEAM_AXIS;
-			            }
-			        }*/
+			           }
+			       }*/
 		} else {
 			if (cg.teamWonRounds[1] & (1 << (pos - 1))) {
 				return TEAM_AXIS;

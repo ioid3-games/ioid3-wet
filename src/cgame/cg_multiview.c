@@ -773,12 +773,12 @@ void CG_mvOverlayClientUpdate(int pID, int index) {
 		                                    strClassHighlights[cg.mvOverlay[index].classID * 2],
 		                                    (w == cg.mvCurrentMainview) ? "*" : "",
 		                                    pID)
-		       );
+		      );
 	} else {
 		strcpy(cg.mvOverlay[index].info, va("%s%2d",
 		                                    strClassHighlights[(cg.mvOverlay[index].classID * 2) + 1],
 		                                    pID)
-		       );
+		      );
 	}
 
 	cg.mvOverlay[index].width = CG_Text_Width_Ext(cg.mvOverlay[index].info, cg_fontScaleSP.value, 0, &cgs.media.limboFont2);
@@ -858,7 +858,6 @@ void CG_mvOverlayDisplay(void) {
 				CG_DrawPic(x - 18, y - charHeight * 2.0f - 12, 18, 12, flag_used);
 				CG_DrawRect_FixedBorder(x - 19, y - charHeight * 2.0f - 13, 20, 14, 1, HUD_Border);
 			}
-
 			// Update team list info for mouse detection
 			cg.mvTeamList[j][(cg.mvTotalTeam[j])] = i;
 			cg.mvTotalTeam[j]++;

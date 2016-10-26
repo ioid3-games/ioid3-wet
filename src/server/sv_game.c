@@ -380,229 +380,228 @@ SV_GameSystemCalls
 The module is making a system call.
 =======================================================================================================================================
 */
-
 extern int S_RegisterSound(const char *name, qboolean compressed);
 extern int S_GetSoundLength(sfxHandle_t sfxHandle);
 intptr_t SV_GameSystemCalls(intptr_t *args) {
 	switch (args[0]) {
-	case G_PRINT:
-		Com_Printf("%s", (char *)VMA(1));
-		return 0;
-	case G_ERROR:
-		Com_Error(ERR_DROP, "%s", (char *)VMA(1));
-		return 0;
-	case G_MILLISECONDS:
-		return Sys_Milliseconds();
-	case G_CVAR_REGISTER:
-		Cvar_Register(VMA(1), VMA(2), VMA(3), args[4]);
-		return 0;
-	case G_CVAR_UPDATE:
-		Cvar_Update(VMA(1));
-		return 0;
-	case G_CVAR_SET:
-		Cvar_SetSafe((const char *)VMA(1), (const char *)VMA(2));
-		return 0;
-	case G_CVAR_VARIABLE_INTEGER_VALUE:
-		return Cvar_VariableIntegerValue((const char *)VMA(1));
-	case G_CVAR_VARIABLE_STRING_BUFFER:
-		Cvar_VariableStringBuffer(VMA(1), VMA(2), args[3]);
-		return 0;
-	case G_CVAR_LATCHEDVARIABLESTRINGBUFFER:
-		Cvar_LatchedVariableStringBuffer(VMA(1), VMA(2), args[3]);
-		return 0;
-	case G_ARGC:
-		return Cmd_Argc();
-	case G_ARGV:
-		Cmd_ArgvBuffer(args[1], VMA(2), args[3]);
-		return 0;
-	case G_SEND_CONSOLE_COMMAND:
-		Cbuf_ExecuteText(args[1], VMA(2));
-		return 0;
-	case G_FS_FOPEN_FILE:
-		return FS_FOpenFileByMode(VMA(1), VMA(2), args[3]);
-	case G_FS_READ:
-		FS_Read(VMA(1), args[2], args[3]);
-		return 0;
-	case G_FS_WRITE:
-		return FS_Write(VMA(1), args[2], args[3]);
-	case G_FS_RENAME:
-		FS_Rename(VMA(1), VMA(2));
-		return 0;
-	case G_FS_FCLOSE_FILE:
-		FS_FCloseFile(args[1]);
-		return 0;
-	case G_FS_GETFILELIST:
-		return FS_GetFileList(VMA(1), VMA(2), VMA(3), args[4]);
-	case G_LOCATE_GAME_DATA:
-		SV_LocateGameData(VMA(1), args[2], args[3], VMA(4), args[5]);
-		return 0;
-	case G_DROP_CLIENT:
-		SV_GameDropClient(args[1], VMA(2), args[3]);
-		return 0;
-	case G_SEND_SERVER_COMMAND:
+		case G_PRINT:
+			Com_Printf("%s", (char *)VMA(1));
+			return 0;
+		case G_ERROR:
+			Com_Error(ERR_DROP, "%s", (char *)VMA(1));
+			return 0;
+		case G_MILLISECONDS:
+			return Sys_Milliseconds();
+		case G_CVAR_REGISTER:
+			Cvar_Register(VMA(1), VMA(2), VMA(3), args[4]);
+			return 0;
+		case G_CVAR_UPDATE:
+			Cvar_Update(VMA(1));
+			return 0;
+		case G_CVAR_SET:
+			Cvar_SetSafe((const char *)VMA(1), (const char *)VMA(2));
+			return 0;
+		case G_CVAR_VARIABLE_INTEGER_VALUE:
+			return Cvar_VariableIntegerValue((const char *)VMA(1));
+		case G_CVAR_VARIABLE_STRING_BUFFER:
+			Cvar_VariableStringBuffer(VMA(1), VMA(2), args[3]);
+			return 0;
+		case G_CVAR_LATCHEDVARIABLESTRINGBUFFER:
+			Cvar_LatchedVariableStringBuffer(VMA(1), VMA(2), args[3]);
+			return 0;
+		case G_ARGC:
+			return Cmd_Argc();
+		case G_ARGV:
+			Cmd_ArgvBuffer(args[1], VMA(2), args[3]);
+			return 0;
+		case G_SEND_CONSOLE_COMMAND:
+			Cbuf_ExecuteText(args[1], VMA(2));
+			return 0;
+		case G_FS_FOPEN_FILE:
+			return FS_FOpenFileByMode(VMA(1), VMA(2), args[3]);
+		case G_FS_READ:
+			FS_Read(VMA(1), args[2], args[3]);
+			return 0;
+		case G_FS_WRITE:
+			return FS_Write(VMA(1), args[2], args[3]);
+		case G_FS_RENAME:
+			FS_Rename(VMA(1), VMA(2));
+			return 0;
+		case G_FS_FCLOSE_FILE:
+			FS_FCloseFile(args[1]);
+			return 0;
+		case G_FS_GETFILELIST:
+			return FS_GetFileList(VMA(1), VMA(2), VMA(3), args[4]);
+		case G_LOCATE_GAME_DATA:
+			SV_LocateGameData(VMA(1), args[2], args[3], VMA(4), args[5]);
+			return 0;
+		case G_DROP_CLIENT:
+			SV_GameDropClient(args[1], VMA(2), args[3]);
+			return 0;
+		case G_SEND_SERVER_COMMAND:
 #ifdef FEATURE_TRACKER
-		if (!Tracker_catchServerCommand(args[1], VMA(2)))
+			if (!Tracker_catchServerCommand(args[1], VMA(2)))
 #endif
+			{
+					SV_GameSendServerCommand(args[1], VMA(2));
+			}
+
+			return 0;
+		case G_LINKENTITY:
+			SV_LinkEntity(VMA(1));
+			return 0;
+		case G_UNLINKENTITY:
+			SV_UnlinkEntity(VMA(1));
+			return 0;
+		case G_ENTITIES_IN_BOX:
+			return SV_AreaEntities(VMA(1), VMA(2), VMA(3), args[4]);
+		case G_ENTITY_CONTACT:
+			return SV_EntityContact(VMA(1), VMA(2), VMA(3), /* int capsule */ qfalse);
+		case G_ENTITY_CONTACTCAPSULE:
+			return SV_EntityContact(VMA(1), VMA(2), VMA(3), /* int capsule */ qtrue);
+		case G_TRACE:
+			SV_Trace(VMA(1), VMA(2), VMA(3), VMA(4), VMA(5), args[6], args[7], /* int capsule */ qfalse);
+			return 0;
+		case G_TRACECAPSULE:
+			SV_Trace(VMA(1), VMA(2), VMA(3), VMA(4), VMA(5), args[6], args[7], /* int capsule */ qtrue);
+			return 0;
+		case G_POINT_CONTENTS:
+			return SV_PointContents(VMA(1), args[2]);
+		case G_SET_BRUSH_MODEL:
+			SV_SetBrushModel(VMA(1), VMA(2));
+			return 0;
+		case G_IN_PVS:
+			return SV_inPVS(VMA(1), VMA(2));
+		case G_IN_PVS_IGNORE_PORTALS:
+			return SV_inPVSIgnorePortals(VMA(1), VMA(2));
+		case G_SET_CONFIGSTRING:
+			// Don't allow the game to overwrite demo configstrings(unless it modifies the normal spectator clients configstrings, this exception allows for player connecting during a demo playback to be correctly rendered, else they will get an empty configstring so no icon, no name, nothing...)
+			// ATTENTION: sv.demoState check must be placed LAST!Else, it will short - circuit and prevent normal players configstrings from being set!
+			if ((sv_democlients->integer > 0 && args[1] >= CS_PLAYERS + sv_democlients->integer && args[1] < CS_PLAYERS + sv_maxclients->integer) || sv.demoState != DS_PLAYBACK) {
+				SV_SetConfigstring(args[1], VMA(2));
+			}
+
+			return 0;
+		case G_GET_CONFIGSTRING:
+			SV_GetConfigstring(args[1], VMA(2), args[3]);
+			return 0;
+		case G_SET_USERINFO:
+			SV_SetUserinfo(args[1], VMA(2));
+			return 0;
+		case G_GET_USERINFO:
+			SV_GetUserinfo(args[1], VMA(2), args[3]);
+			return 0;
+		case G_GET_SERVERINFO:
+			SV_GetServerinfo(VMA(1), args[2]);
+			return 0;
+		case G_ADJUST_AREA_PORTAL_STATE:
+			SV_AdjustAreaPortalState(VMA(1), args[2]);
+			return 0;
+		case G_AREAS_CONNECTED:
+			return CM_AreasConnected(args[1], args[2]);
+		case G_BOT_ALLOCATE_CLIENT:
+			return SV_BotAllocateClient(args[1]);
+		case G_GET_USERCMD:
+			SV_GetUsercmd(args[1], VMA(2));
+			return 0;
+		case G_GET_ENTITY_TOKEN:
 		{
-			SV_GameSendServerCommand(args[1], VMA(2));
+			const char *s;
+
+			s = COM_Parse(&sv.entityParsePoint);
+			Q_strncpyz(VMA(1), s, args[2]);
+
+			if (!sv.entityParsePoint && !s[0]) {
+				return qfalse;
+			} else {
+				return qtrue;
+			}
 		}
 
-		return 0;
-	case G_LINKENTITY:
-		SV_LinkEntity(VMA(1));
-		return 0;
-	case G_UNLINKENTITY:
-		SV_UnlinkEntity(VMA(1));
-		return 0;
-	case G_ENTITIES_IN_BOX:
-		return SV_AreaEntities(VMA(1), VMA(2), VMA(3), args[4]);
-	case G_ENTITY_CONTACT:
-		return SV_EntityContact(VMA(1), VMA(2), VMA(3), /* int capsule */ qfalse);
-	case G_ENTITY_CONTACTCAPSULE:
-		return SV_EntityContact(VMA(1), VMA(2), VMA(3), /* int capsule */ qtrue);
-	case G_TRACE:
-		SV_Trace(VMA(1), VMA(2), VMA(3), VMA(4), VMA(5), args[6], args[7], /* int capsule */ qfalse);
-		return 0;
-	case G_TRACECAPSULE:
-		SV_Trace(VMA(1), VMA(2), VMA(3), VMA(4), VMA(5), args[6], args[7], /* int capsule */ qtrue);
-		return 0;
-	case G_POINT_CONTENTS:
-		return SV_PointContents(VMA(1), args[2]);
-	case G_SET_BRUSH_MODEL:
-		SV_SetBrushModel(VMA(1), VMA(2));
-		return 0;
-	case G_IN_PVS:
-		return SV_inPVS(VMA(1), VMA(2));
-	case G_IN_PVS_IGNORE_PORTALS:
-		return SV_inPVSIgnorePortals(VMA(1), VMA(2));
-	case G_SET_CONFIGSTRING:
-		// Don't allow the game to overwrite demo configstrings(unless it modifies the normal spectator clients configstrings, this exception allows for player connecting during a demo playback to be correctly rendered, else they will get an empty configstring so no icon, no name, nothing...)
-		// ATTENTION: sv.demoState check must be placed LAST!Else, it will short - circuit and prevent normal players configstrings from being set!
-		if ((sv_democlients->integer > 0 && args[1] >= CS_PLAYERS + sv_democlients->integer && args[1] < CS_PLAYERS + sv_maxclients->integer) || sv.demoState != DS_PLAYBACK) {
-			SV_SetConfigstring(args[1], VMA(2));
-		}
-
-		return 0;
-	case G_GET_CONFIGSTRING:
-		SV_GetConfigstring(args[1], VMA(2), args[3]);
-		return 0;
-	case G_SET_USERINFO:
-		SV_SetUserinfo(args[1], VMA(2));
-		return 0;
-	case G_GET_USERINFO:
-		SV_GetUserinfo(args[1], VMA(2), args[3]);
-		return 0;
-	case G_GET_SERVERINFO:
-		SV_GetServerinfo(VMA(1), args[2]);
-		return 0;
-	case G_ADJUST_AREA_PORTAL_STATE:
-		SV_AdjustAreaPortalState(VMA(1), args[2]);
-		return 0;
-	case G_AREAS_CONNECTED:
-		return CM_AreasConnected(args[1], args[2]);
-	case G_BOT_ALLOCATE_CLIENT:
-		return SV_BotAllocateClient(args[1]);
-	case G_GET_USERCMD:
-		SV_GetUsercmd(args[1], VMA(2));
-		return 0;
-	case G_GET_ENTITY_TOKEN:
-	{
-		const char *s;
-
-		s = COM_Parse(&sv.entityParsePoint);
-		Q_strncpyz(VMA(1), s, args[2]);
-
-		if (!sv.entityParsePoint && !s[0]) {
-			return qfalse;
-		} else {
-			return qtrue;
-		}
-	}
-
-	case G_DEBUG_POLYGON_CREATE:
-		return BotImport_DebugPolygonCreate(args[1], args[2], VMA(3));
-	case G_DEBUG_POLYGON_DELETE:
-		BotImport_DebugPolygonDelete(args[1]);
-		return 0;
-	case G_REAL_TIME:
-		return Com_RealTime(VMA(1));
-	case G_SNAPVECTOR:
-		Sys_SnapVector(VMA(1));
-		return 0;
-	case G_GETTAG:
-		return SV_GetTag(args[1], args[2], VMA(3), VMA(4));
-	case G_REGISTERTAG:
-		return SV_LoadTag(VMA(1));
-	case G_REGISTERSOUND:
-		return S_RegisterSound(VMA(1), args[2]);
-	case G_GET_SOUND_LENGTH:
-		return S_GetSoundLength(args[1]);
-	case BOTLIB_SETUP:
-		return 0;
-	case BOTLIB_SHUTDOWN:
-		return -1;
-	case BOTLIB_LIBVAR_SET:
-		return 0;
-	case BOTLIB_LIBVAR_GET:
-		return 0;
-	case BOTLIB_PC_LOAD_SOURCE:
-		return botlib_export->PC_LoadSourceHandle(VMA(1));
-	case BOTLIB_PC_FREE_SOURCE:
-		return botlib_export->PC_FreeSourceHandle(args[1]);
-	case BOTLIB_PC_READ_TOKEN:
-		return botlib_export->PC_ReadTokenHandle(args[1], VMA(2));
-	case BOTLIB_PC_SOURCE_FILE_AND_LINE:
-		return botlib_export->PC_SourceFileAndLine(args[1], VMA(2), VMA(3));
-	case BOTLIB_PC_UNREAD_TOKEN:
-		botlib_export->PC_UnreadLastTokenHandle(args[1]);
-		return 0;
-	case BOTLIB_GET_CONSOLE_MESSAGE:
-		return SV_BotGetConsoleMessage(args[1], VMA(2), args[3]);
-	case BOTLIB_USER_COMMAND:
-		SV_ClientThink(&svs.clients[args[1]], VMA(2));
-		return 0;
-	case BOTLIB_EA_COMMAND:
-		SV_ExecuteClientCommand(&svs.clients[args[1]], VMA(2), qtrue, qfalse);
-		return 0;
-	case TRAP_MEMSET:
-		memset(VMA(1), args[2], args[3]);
-		return 0;
-	case TRAP_MEMCPY:
-		memcpy(VMA(1), VMA(2), args[3]);
-		return 0;
-	case TRAP_STRNCPY:
-		return (intptr_t)strncpy(VMA(1), VMA(2), args[3]);
-	case TRAP_SIN:
-		return FloatAsInt(sin(VMF(1)));
-	case TRAP_COS:
-		return FloatAsInt(cos(VMF(1)));
-	case TRAP_ATAN2:
-		return FloatAsInt(atan2(VMF(1), VMF(2)));
-	case TRAP_SQRT:
-		return FloatAsInt(sqrt(VMF(1)));
-	case TRAP_MATRIXMULTIPLY: // never called for real
-		_MatrixMultiply(VMA(1), VMA(2), VMA(3));
-		return 0;
-	case TRAP_ANGLEVECTORS:
-		angles_vectors(VMA(1), VMA(2), VMA(3), VMA(4));
-		return 0;
-	case TRAP_PERPENDICULARVECTOR:
-		PerpendicularVector(VMA(1), VMA(2));
-		return 0;
-	case TRAP_FLOOR:
-		return FloatAsInt(floor(VMF(1)));
-	case TRAP_CEIL:
-		return FloatAsInt(ceil(VMF(1)));
-	case PB_STAT_REPORT:
-		return 0;
-	case G_SENDMESSAGE:
-		SV_SendBinaryMessage(args[1], VMA(2), args[3]);
-		return 0;
-	case G_MESSAGESTATUS:
-		return SV_BinaryMessageStatus(args[1]);
-	default:
-		Com_Error(ERR_DROP, "Bad game system trap: %ld", (long int)args[0]);
-		break;
+		case G_DEBUG_POLYGON_CREATE:
+			return BotImport_DebugPolygonCreate(args[1], args[2], VMA(3));
+		case G_DEBUG_POLYGON_DELETE:
+			BotImport_DebugPolygonDelete(args[1]);
+			return 0;
+		case G_REAL_TIME:
+			return Com_RealTime(VMA(1));
+		case G_SNAPVECTOR:
+			Sys_SnapVector(VMA(1));
+			return 0;
+		case G_GETTAG:
+			return SV_GetTag(args[1], args[2], VMA(3), VMA(4));
+		case G_REGISTERTAG:
+			return SV_LoadTag(VMA(1));
+		case G_REGISTERSOUND:
+			return S_RegisterSound(VMA(1), args[2]);
+		case G_GET_SOUND_LENGTH:
+			return S_GetSoundLength(args[1]);
+		case BOTLIB_SETUP:
+			return 0;
+		case BOTLIB_SHUTDOWN:
+			return -1;
+		case BOTLIB_LIBVAR_SET:
+			return 0;
+		case BOTLIB_LIBVAR_GET:
+			return 0;
+		case BOTLIB_PC_LOAD_SOURCE:
+			return botlib_export->PC_LoadSourceHandle(VMA(1));
+		case BOTLIB_PC_FREE_SOURCE:
+			return botlib_export->PC_FreeSourceHandle(args[1]);
+		case BOTLIB_PC_READ_TOKEN:
+			return botlib_export->PC_ReadTokenHandle(args[1], VMA(2));
+		case BOTLIB_PC_SOURCE_FILE_AND_LINE:
+			return botlib_export->PC_SourceFileAndLine(args[1], VMA(2), VMA(3));
+		case BOTLIB_PC_UNREAD_TOKEN:
+			botlib_export->PC_UnreadLastTokenHandle(args[1]);
+			return 0;
+		case BOTLIB_GET_CONSOLE_MESSAGE:
+			return SV_BotGetConsoleMessage(args[1], VMA(2), args[3]);
+		case BOTLIB_USER_COMMAND:
+			SV_ClientThink(&svs.clients[args[1]], VMA(2));
+			return 0;
+		case BOTLIB_EA_COMMAND:
+			SV_ExecuteClientCommand(&svs.clients[args[1]], VMA(2), qtrue, qfalse);
+			return 0;
+		case TRAP_MEMSET:
+			memset(VMA(1), args[2], args[3]);
+			return 0;
+		case TRAP_MEMCPY:
+			memcpy(VMA(1), VMA(2), args[3]);
+			return 0;
+		case TRAP_STRNCPY:
+			return (intptr_t)strncpy(VMA(1), VMA(2), args[3]);
+		case TRAP_SIN:
+			return FloatAsInt(sin(VMF(1)));
+		case TRAP_COS:
+			return FloatAsInt(cos(VMF(1)));
+		case TRAP_ATAN2:
+			return FloatAsInt(atan2(VMF(1), VMF(2)));
+		case TRAP_SQRT:
+			return FloatAsInt(sqrt(VMF(1)));
+		case TRAP_MATRIXMULTIPLY: // never called for real
+			_MatrixMultiply(VMA(1), VMA(2), VMA(3));
+			return 0;
+		case TRAP_ANGLEVECTORS:
+			angles_vectors(VMA(1), VMA(2), VMA(3), VMA(4));
+			return 0;
+		case TRAP_PERPENDICULARVECTOR:
+			PerpendicularVector(VMA(1), VMA(2));
+			return 0;
+		case TRAP_FLOOR:
+			return FloatAsInt(floor(VMF(1)));
+		case TRAP_CEIL:
+			return FloatAsInt(ceil(VMF(1)));
+		case PB_STAT_REPORT:
+			return 0;
+		case G_SENDMESSAGE:
+			SV_SendBinaryMessage(args[1], VMA(2), args[3]);
+			return 0;
+		case G_MESSAGESTATUS:
+			return SV_BinaryMessageStatus(args[1]);
+		default:
+			Com_Error(ERR_DROP, "Bad game system trap: %ld", (long int)args[0]);
+			break;
 	}
 
 	return -1;

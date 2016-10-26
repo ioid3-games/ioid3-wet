@@ -209,7 +209,7 @@ static int OGV_FindSizeShift(int x, int y) {
         if (x == (y >> i))
         {
             return i;
-    }
+   }
 }
 
     return -1;

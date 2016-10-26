@@ -39,9 +39,9 @@
 static qboolean oldValid[MAX_GENTITIES];
 
 /*
-==================
+=======================================================================================================================================
 CG_ResetEntity
-==================
+=======================================================================================================================================
 */
 static void CG_ResetEntity(centity_t *cent) {
 	// if an event is set, assume it is new enough to use
@@ -79,11 +79,11 @@ static void CG_ResetEntity(centity_t *cent) {
 }
 
 /*
-===============
+=======================================================================================================================================
 CG_TransitionEntity
 
 cent->nextState is moved to cent->currentState and events are fired
-===============
+=======================================================================================================================================
 */
 static void CG_TransitionEntity(centity_t *cent) {
 	// update the fireDir if it's on fire
@@ -126,7 +126,7 @@ static void CG_TransitionEntity(centity_t *cent) {
 }
 
 /*
-==================
+=======================================================================================================================================
 CG_SetInitialSnapshot
 
 This will only happen on the very first snapshot, or
@@ -134,7 +134,7 @@ on tourney restarts.  All other times will use
 CG_TransitionSnapshot instead.
 
 FIXME: Also called by map_restart?
-==================
+=======================================================================================================================================
 */
 void CG_SetInitialSnapshot(snapshot_t *snap) {
 	int i;
@@ -144,7 +144,7 @@ void CG_SetInitialSnapshot(snapshot_t *snap) {
 
 	cg.snap = snap;
 
-	//  trap_S_ClearSounds( qtrue );
+	//  trap_S_ClearSounds(qtrue);
 
 	BG_PlayerStateToEntityState(&snap->ps, &cg_entities[snap->ps.clientNum].currentState, cg.time, qfalse);
 
@@ -319,11 +319,11 @@ static void CG_TransitionSnapshot(void) {
 		// if we are not doing client side movement prediction for any
 		// reason, then the client events and view changes will be issued now
 		if (cg.demoPlayback || (cg.snap->ps.pm_flags & PMF_FOLLOW)
-		    || cg_nopredict.integer
+		 || cg_nopredict.integer
 #ifdef ALLOW_GSYNC
-		    || cg_synchronousClients.integer
+		 || cg_synchronousClients.integer
 #endif // ALLOW_GSYNC
-		    ) {
+		   ) {
 			CG_TransitionPlayerState(ps, ops);
 		}
 	}
@@ -392,7 +392,7 @@ valid snapshot.
 ========================
 */
 static snapshot_t *CG_ReadNextSnapshot(void) {
-	qboolean   r;
+	qboolean r;
 	snapshot_t *dest;
 
 	if (cg.latestSnapshotNum > cgs.processedSnapshotNum + 1000) {
@@ -449,7 +449,7 @@ static snapshot_t *CG_ReadNextSnapshot(void) {
 }
 
 /*
-============
+=======================================================================================================================================
 CG_ProcessSnapshots
 
 We are trying to set up a renderable view, so determine
@@ -465,7 +465,7 @@ Even if cg.snap is valid, cg.nextSnap may not be, if the snapshot
 hasn't arrived yet (it becomes an extrapolating situation instead
 of an interpolating one)
 
-============
+=======================================================================================================================================
 */
 void CG_ProcessSnapshots(void) {
 	snapshot_t *snap;

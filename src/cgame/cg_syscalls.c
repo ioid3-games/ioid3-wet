@@ -443,7 +443,7 @@ void trap_GetGameState(gameState_t *gamestate) {
 static snapshot_t snaps[MAX_SNAPSHOT_BACKUP];
 static int curSnapshotNumber;
 int snapshotDelayTime;
-static qboolean   skiponeget;
+static qboolean skiponeget;
 #endif // FAKELAG
 #endif // LEGACY_DEBUG
 
@@ -675,7 +675,7 @@ qboolean trap_GetEntityToken(char *buffer, int bufferSize) {
 	return syscall(CG_GET_ENTITY_TOKEN, buffer, bufferSize);
 }
 
-//void trap_UI_Popup( const char *arg0) {
+//void trap_UI_Popup(const char *arg0) {
 void trap_UI_Popup(int arg0) {
 	syscall(CG_INGAME_POPUP, arg0);
 }

@@ -73,13 +73,13 @@ pmListItemBig_t *cg_pmWaitingListBig;
 pmListItemBig_t cg_pmStackBig[NUM_PM_STACK_ITEMS_BIG];
 
 const char *cg_skillRewards[SK_NUM_SKILLS][NUM_SKILL_LEVELS - 1] = {
-	{"Binoculars for any Class",   "Improved Physical Fitness",   "Improved Health",   "Trap Awareness"       }, // battle sense
-	{"Improved use of Explosive Ammunition", "Improved Dexterity", "Improved Construction and Destruction", "a Flak Jacket"        }, // explosives & construction
-	{"Medic Ammo",        "Improved First Aid Resources", "Full Revive",    "Adrenalin Self"       }, // first aid
-	{"Improved Ammo Resources", "Improved Signals",   "Improved Air and Ground Support", "Enemy Recognition"    }, // signals
-	{"Improved use of Light Weapon Ammunition", "Faster Reload",      "Improved Light Weapon Handling", "Dual - Wield Pistols"   }, // light weapons
+	{"Binoculars for any Class",   "Improved Physical Fitness",   "Improved Health",   "Trap Awareness"      }, // battle sense
+	{"Improved use of Explosive Ammunition", "Improved Dexterity", "Improved Construction and Destruction", "a Flak Jacket"       }, // explosives & construction
+	{"Medic Ammo",        "Improved First Aid Resources", "Full Revive",    "Adrenalin Self"      }, // first aid
+	{"Improved Ammo Resources", "Improved Signals",   "Improved Air and Ground Support", "Enemy Recognition"   }, // signals
+	{"Improved use of Light Weapon Ammunition", "Faster Reload",      "Improved Light Weapon Handling", "Dual - Wield Pistols"  }, // light weapons
 	{"Improved Projectile Resources", "Heavy Weapon Proficiency", "Improved Dexterity",   "Improved Weapon Handling"}, // heavy weapons
-	{"Improved use of Scoped Weapon Ammunition", "Improved use of Sabotage and Misdirection", "Breath Control", "Assassin"             } // scoped weapons & military intelligence
+	{"Improved use of Scoped Weapon Ammunition", "Improved use of Sabotage and Misdirection", "Breath Control", "Assassin"            } // scoped weapons & military intelligence
 };
 
 void CG_PMItemBigSound(pmListItemBig_t *item);

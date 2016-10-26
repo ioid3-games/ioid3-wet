@@ -36,7 +36,7 @@
 
 static mapEntityData_t mapEntities[MAX_GENTITIES];
 static int mapEntityCount = 0;
-static qboolean        expanded = qfalse;
+static qboolean expanded = qfalse;
 
 qboolean ccInitial = qtrue;
 
@@ -81,9 +81,9 @@ int CG_CurLayerForZ(int z) {
 static qboolean CG_ScissorEntIsCulled(mapEntityData_t *mEnt, mapScissor_t *scissor) {
 	if (!scissor->circular) {
 		if (mEnt->automapTransformed[0] < scissor->tl[0]
-		    || mEnt->automapTransformed[0] > scissor->br[0]
-		    || mEnt->automapTransformed[1] < scissor->tl[1]
-		    || mEnt->automapTransformed[1] > scissor->br[1]) {
+		 || mEnt->automapTransformed[0] > scissor->br[0]
+		 || mEnt->automapTransformed[1] < scissor->tl[1]
+		 || mEnt->automapTransformed[1] > scissor->br[1]) {
 			return qtrue;
 		}
 	} else {
@@ -111,9 +111,9 @@ static qboolean CG_ScissorEntIsCulled(mapEntityData_t *mEnt, mapScissor_t *sciss
 static qboolean CG_ScissorPointIsCulled(vec2_t vec, mapScissor_t *scissor) {
 	if (!scissor->circular) {
 		if (vec[0] < scissor->tl[0]
-		    || vec[0] > scissor->br[0]
-		    || vec[1] < scissor->tl[1]
-		    || vec[1] > scissor->br[1]) {
+		 || vec[0] > scissor->br[0]
+		 || vec[1] < scissor->tl[1]
+		 || vec[1] > scissor->br[1]) {
 			return qtrue;
 		}
 	} else {
@@ -731,21 +731,21 @@ void CG_DrawMapEntity(mapEntityData_t *mEnt, float x, float y, float w, float h,
             if (mEntFilter & CC_FILTER_CONSTRUCTIONS)
             {
                 return;
-          }
+         }
             pic = mEnt->team == TEAM_AXIS ? cgs.media.ccConstructIcon[0] : cgs.media.ccConstructIcon[1];
             break;
         case ME_TANK:
             if (mEntFilter & CC_FILTER_OBJECTIVES)
             {
                 return;
-          }
+         }
             pic = cgs.media.ccTankIcon;
             break;
         case ME_TANK_DEAD:
             if (mEntFilter & CC_FILTER_OBJECTIVES)
             {
                 return;
-          }
+         }
             pic = cgs.media.ccTankIcon;
             trap_R_SetColor(colorRed);
             break;
@@ -759,10 +759,10 @@ void CG_DrawMapEntity(mapEntityData_t *mEnt, float x, float y, float w, float h,
             if (mEntFilter & CC_FILTER_DESTRUCTIONS)
             {
                 return;
-          }
+         }
             pic = mEnt->team == TEAM_AXIS ? cgs.media.ccDestructIcon[cent->currentState.effect1Time][0] : cgs.media.ccDestructIcon[cent->currentState.effect1Time][1];
             break;
-      }
+     }
 
         {
             int info = 0;
@@ -770,50 +770,50 @@ void CG_DrawMapEntity(mapEntityData_t *mEnt, float x, float y, float w, float h,
             if (oidInfo)
             {
                 info = oidInfo->spawnflags;
-          }
+         }
 
             if (info & (1 << 4))
             {
                 if (mEntFilter & CC_FILTER_OBJECTIVES)
                 {
                     return;
-              }
-          }
+             }
+         }
             if (info & (1 << 5))
             {
                 if (mEntFilter & CC_FILTER_HACABINETS)
                 {
                     return;
-              }
-          }
+             }
+         }
             if (info & (1 << 6))
             {
                 if (mEnt->type == ME_DESTRUCT_2)
                 {
                     pic = mEnt->team == TEAM_AXIS ? cgs.media.ccCmdPost[0] : cgs.media.ccCmdPost[1];
-              }
+             }
                 if (mEntFilter & CC_FILTER_CMDPOST)
                 {
                     return;
-              }
-          }
-      }
+             }
+         }
+     }
 
         if (customimage)
         {
             pic = customimage;
-      }
+     }
 
         if (scissor)
         {
             icon_pos[0] = mEnt->automapTransformed[0] - scissor->tl[0] + x;
             icon_pos[1] = mEnt->automapTransformed[1] - scissor->tl[1] + y;
-      }
+     }
         else
         {
             icon_pos[0] = x + mEnt->transformed[0];
             icon_pos[1] = y + mEnt->transformed[1];
-      }
+     }
 
 #define CONST_ICON_NORMAL_SIZE 32.f
 #define CONST_ICON_EXPANDED_SIZE 48.f
@@ -896,7 +896,7 @@ void CG_DrawMapEntity(mapEntityData_t *mEnt, float x, float y, float w, float h,
 	case ME_LANDMINE:
 		/*          if(mEntFilter & CC_FILTER_LANDMINES) {
 		            continue;
-		      }*/
+		     }*/
 
 		// now check to see if the entity is within our clip region
 		if (scissor && CG_ScissorEntIsCulled(mEnt, scissor)) {
@@ -1087,8 +1087,8 @@ CG_DrawMap_draw:
 		CG_DrawMapEntity(mEnt, x, y, w, h, mEntFilter, scissor, interactive, snap, icon_size);
 	}
 	// entnfo2 data, draw non-players & non-tanks
-	//for(i = 0, mEnt = &mapEntities2[0]; i < mapEntityCount2; ++i, ++mEnt ) {
-	//  CG_DrawMapEntity( mEnt, x, y, w, h, mEntFilter, scissor, interactive, snap, icon_size );
+	//for(i = 0, mEnt = &mapEntities2[0]; i < mapEntityCount2; ++i, ++mEnt) {
+	//  CG_DrawMapEntity(mEnt, x, y, w, h, mEntFilter, scissor, interactive, snap, icon_size);
 	//}
 
 	CG_DrawSpawnPointInfo(x, y, w, h, qtrue, scissor, exspawn);
@@ -1530,7 +1530,6 @@ void CG_DrawMortarMarker(int px, int py, int pw, int ph, qboolean draw, mapSciss
 				point[0] = px + (((cg.mortarImpactPos[0] - cg.mapcoordsMins[0]) * cg.mapcoordsScale[0]) * pw);
 				point[1] = py + (((cg.mortarImpactPos[1] - cg.mapcoordsMins[1]) * cg.mapcoordsScale[1]) * ph);
 			}
-
 			// don't return if the marker is culled, just don't draw it
 			if (!(scissor && CG_ScissorPointIsCulled(point, scissor))) {
 				if (scissor) {

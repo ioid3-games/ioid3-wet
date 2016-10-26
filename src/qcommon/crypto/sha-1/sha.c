@@ -80,7 +80,7 @@ int main(int argc, char *argv[]) {
         if (i == 0)
         {
             i++;
-    }
+   }
 
         if (argc == 1 || !strcmp(argv[i], " - "))
         {
@@ -89,7 +89,7 @@ int main(int argc, char *argv[]) {
 #endif
             fp = stdin;
             reading_stdin = 1;
-    }
+   }
         else
         {
             if (!(fp = fopen(argv[i], "rb")))
@@ -98,9 +98,9 @@ int main(int argc, char *argv[]) {
                         "sha: unable to open file %s\n", 
                         argv[i]);
                 return 2;
-        }
+       }
             reading_stdin = 0;
-    }
+   }
 
         /*
      * We do not want to read STDIN multiple times
@@ -110,10 +110,10 @@ int main(int argc, char *argv[]) {
             if (read_stdin)
             {
                 continue;
-        }
+       }
 
             read_stdin = 1;
-    }
+   }
 
         /*
      * Reset the SHA - 1 context and process input
@@ -125,19 +125,19 @@ int main(int argc, char *argv[]) {
         {
             SHA1Input(&sha, &c, 1);
             c = fgetc(fp);
-    }
+   }
 
         if (!reading_stdin)
         {
             fclose(fp);
-    }
+   }
 
         if (!SHA1Result(&sha))
         {
             fprintf(stderr, 
                     "sha: could not compute message digest for %s\n", 
                     reading_stdin?"STDIN":argv[i]);
-    }
+   }
         else
         {
             printf("%08X %08X %08X %08X %08X - %s\n", 
@@ -147,7 +147,7 @@ int main(int argc, char *argv[]) {
                     sha.Message_Digest[3], 
                     sha.Message_Digest[4], 
                     reading_stdin?"STDIN":argv[i]);
-    }
+   }
 }
 
     return 0;

@@ -342,9 +342,9 @@ typedef struct {
 static acc_t cg_accessories[] = {
 	{"md3_beltr", ACC_BELT_LEFT},
 	{"md3_beltl", ACC_BELT_RIGHT},
-	{"md3_belt", ACC_BELT   },
-	{"md3_back", ACC_BACK   },
-	{"md3_weapon", ACC_WEAPON },
+	{"md3_belt", ACC_BELT  },
+	{"md3_back", ACC_BACK  },
+	{"md3_weapon", ACC_WEAPON},
 	{"md3_weapon2", ACC_WEAPON2},
 };
 

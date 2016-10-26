@@ -46,7 +46,7 @@ qboolean snd_inited = qfalse;
 cvar_t *s_bits; // before rc2 -> *s_sdlBits;
 cvar_t *s_khz; // before rc2 -> *s_sdlSpeed
 cvar_t *s_device;
-cvar_t *s_sdlChannels; // external s_channels (GPL: cvar_t s_numchannels )
+cvar_t *s_sdlChannels; // external s_channels (GPL: cvar_t s_numchannels)
 cvar_t *s_sdlDevSamps;
 cvar_t *s_sdlMixSamps;
 
@@ -55,9 +55,9 @@ static int dmapos = 0;
 static int dmasize = 0;
 static SDL_AudioDeviceID device_id = 0;
 /*
-===============
+=======================================================================================================================================
 SNDDMA_AudioCallback
-===============
+=======================================================================================================================================
 */
 static void SNDDMA_AudioCallback(void *userdata, Uint8 *stream, int len) {
 	int pos = (dmapos * (dma.samplebits / 8));
@@ -100,8 +100,8 @@ static struct {
 	Uint16 enumFormat;
 	char *stringFormat;
 } formatToStringTable[] = {
-	{AUDIO_U8,     "AUDIO_U8"   },
-	{AUDIO_S8,     "AUDIO_S8"   },
+	{AUDIO_U8,     "AUDIO_U8"  },
+	{AUDIO_S8,     "AUDIO_S8"  },
 	{AUDIO_U16LSB, "AUDIO_U16LSB"},
 	{AUDIO_S16LSB, "AUDIO_S16LSB"},
 	{AUDIO_U16MSB, "AUDIO_U16MSB"},
@@ -111,9 +111,9 @@ static struct {
 static int formatToStringTableSize = ARRAY_LEN(formatToStringTable);
 
 /*
-===============
+=======================================================================================================================================
 SNDDMA_PrintAudiospec
-===============
+=======================================================================================================================================
 */
 static void SNDDMA_PrintAudiospec(const char *str, const SDL_AudioSpec *spec) {
 	int i;
@@ -151,9 +151,9 @@ static void SND_DeviceList(void) {
 }
 
 /*
-===============
+=======================================================================================================================================
 SNDDMA_Init
-===============
+=======================================================================================================================================
 */
 qboolean SNDDMA_Init(void) {
 	SDL_AudioSpec desired;
@@ -180,7 +180,7 @@ qboolean SNDDMA_Init(void) {
 	s_sdlMixSamps = Cvar_Get("s_sdlMixSamps", "0", CVAR_LATCH | CVAR_ARCHIVE);
 	s_device = Cvar_Get("s_device", "-1", CVAR_LATCH | CVAR_ARCHIVE);
 
-	Com_Printf("SDL_Init( SDL_INIT_AUDIO )... ");
+	Com_Printf("SDL_Init(SDL_INIT_AUDIO)... ");
 
 	if (!SDL_WasInit(SDL_INIT_AUDIO)) {
 		if (SDL_Init(SDL_INIT_AUDIO) < 0) {
@@ -315,18 +315,18 @@ qboolean SNDDMA_Init(void) {
 }
 
 /*
-===============
+=======================================================================================================================================
 SNDDMA_GetDMAPos
-===============
+=======================================================================================================================================
 */
 int SNDDMA_GetDMAPos(void) {
 	return dmapos;
 }
 
 /*
-===============
+=======================================================================================================================================
 SNDDMA_Shutdown
-===============
+=======================================================================================================================================
 */
 void SNDDMA_Shutdown(void) {
 	Com_Printf("Closing SDL audio device...\n");
@@ -344,20 +344,20 @@ void SNDDMA_Shutdown(void) {
 }
 
 /*
-===============
+=======================================================================================================================================
 SNDDMA_Submit
 
 Send sound to device if buffer isn't really the dma buffer
-===============
+=======================================================================================================================================
 */
 void SNDDMA_Submit(void) {
 	SDL_UnlockAudioDevice(device_id);
 }
 
 /*
-===============
+=======================================================================================================================================
 SNDDMA_BeginPainting
-===============
+=======================================================================================================================================
 */
 void SNDDMA_BeginPainting(void) {
 	SDL_LockAudioDevice(device_id);

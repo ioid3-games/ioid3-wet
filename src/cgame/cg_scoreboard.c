@@ -409,9 +409,9 @@ static void WM_DrawClientScore(int x, int y, score_t *score, float *color, float
 	// allow MV clients see the class of its merged client's on the scoreboard
 	else if (cg.snap->ps.persistant[PERS_TEAM] == ci->team || cg.snap->ps.persistant[PERS_TEAM] == TEAM_SPECTATOR || cg.snap->ps.pm_type == PM_INTERMISSION
 #ifdef FEATURE_MULTIVIEW
-	         || CG_mvMergedClientLocate(score->client)
+	 || CG_mvMergedClientLocate(score->client)
 #endif
-	         ) {
+	        ) {
 		CG_DrawPic(tempx - 3, y - 12, 14, 14, cgs.media.skillPics[SkillNumForClass(ci->cls)]);
 
 		if (cgs.clientinfo[ci->clientNum].rank > 0) {
@@ -677,7 +677,7 @@ static int WM_TeamScoreboard(int x, int y, team_t team, float fade, int maxrows,
 	int i;
 	int count = 0;
 	int width = INFO_TOTAL_WIDTH;
-	qboolean   use_mini_chars = qfalse, livesleft = qfalse;
+	qboolean use_mini_chars = qfalse, livesleft = qfalse;
 	const char *buffer = CG_ConfigString(CS_SERVERINFO);
 	const char *str = Info_ValueForKey(buffer, "g_maxlives");
 

@@ -167,7 +167,7 @@ static int _et_G_LogPrint(lua_State *L) {
         if (g_logOptions.integer & LOGOPTS_REALTIME)
         {
             Com_sprintf(string, sizeof(string), "%s %s", G_GetRealTime(), text);
-    }
+   }
         else*/{
 			int min, tens, sec;
 
@@ -1434,70 +1434,70 @@ static int _et_G_SetGlobalFog(lua_State *L) {
 // et library initialisation array
 static const luaL_Reg etlib[] = {
 	// ET Library Calls
-	{"RegisterModname", _et_RegisterModname     },
-	{"FindSelf", _et_FindSelf            },
-	{"FindMod",  _et_FindMod             },
-	{"IPCSend",  _et_IPCSend             }, // Printing
+	{"RegisterModname", _et_RegisterModname    },
+	{"FindSelf", _et_FindSelf           },
+	{"FindMod",  _et_FindMod            },
+	{"IPCSend",  _et_IPCSend            }, // Printing
 	{"G_Print",  _et_G_Print},
 	{"G_LogPrint",  _et_G_LogPrint}, // Argument Handling
-	{"ConcatArgs",  _et_ConcatArgs          },
-	{"trap_Argc",   _et_trap_Argc           },
-	{"trap_Argv",   _et_trap_Argv           }, // Cvars
-	{"trap_Cvar_Get", _et_trap_Cvar_Get       },
-	{"trap_Cvar_Set", _et_trap_Cvar_Set       }, // Config Strings
+	{"ConcatArgs",  _et_ConcatArgs         },
+	{"trap_Argc",   _et_trap_Argc          },
+	{"trap_Argv",   _et_trap_Argv          }, // Cvars
+	{"trap_Cvar_Get", _et_trap_Cvar_Get      },
+	{"trap_Cvar_Set", _et_trap_Cvar_Set      }, // Config Strings
 	{"trap_GetConfigstring", _et_trap_GetConfigstring},
 	{"trap_SetConfigstring", _et_trap_SetConfigstring}, // Server
 	{"trap_SendConsoleCommand", _et_trap_SendConsoleCommand}, // Clients
 	{"trap_SendServerCommand", _et_trap_SendServerCommand},
-	{"trap_DropClient", _et_trap_DropClient     },
+	{"trap_DropClient", _et_trap_DropClient    },
 	{"ClientNumberFromString", _et_ClientNumberFromString}, // 	{"trap_SendMessage", _et_trap_SendMessage}, // 	{"trap_MessageStatus", _et_trap_MessageStatus},
-	{"G_Say", _et_G_Say               },
-	{"MutePlayer",  _et_MutePlayer          },
-	{"UnmutePlayer", _et_UnmutePlayer        }, // Userinfo
-	{"trap_GetUserinfo", _et_trap_GetUserinfo    },
-	{"trap_SetUserinfo", _et_trap_SetUserinfo    },
+	{"G_Say", _et_G_Say              },
+	{"MutePlayer",  _et_MutePlayer         },
+	{"UnmutePlayer", _et_UnmutePlayer       }, // Userinfo
+	{"trap_GetUserinfo", _et_trap_GetUserinfo   },
+	{"trap_SetUserinfo", _et_trap_SetUserinfo   },
 	{"ClientUserinfoChanged", _et_ClientUserinfoChanged}, // String Utility
-	{"Info_RemoveKey", _et_Info_RemoveKey      },
-	{"Info_SetValueForKey", _et_Info_SetValueForKey },
-	{"Info_ValueForKey", _et_Info_ValueForKey    },
-	{"Q_CleanStr",  _et_Q_CleanStr          }, // ET Filesystem
-	{"trap_FS_FOpenFile", _et_trap_FS_FOpenFile   },
-	{"trap_FS_Read", _et_trap_FS_Read        },
-	{"trap_FS_Write", _et_trap_FS_Write       },
-	{"trap_FS_Rename", _et_trap_FS_Rename      },
-	{"trap_FS_FCloseFile", _et_trap_FS_FCloseFile  },
-	{"trap_FS_GetFileList", _et_trap_FS_GetFileList }, // Indexes
-	{"G_SoundIndex", _et_G_SoundIndex        },
-	{"G_ModelIndex", _et_G_ModelIndex        }, // Sound
-	{"G_globalSound", _et_G_globalSound       },
-	{"G_Sound",  _et_G_Sound             },
-	{"G_ClientSound", _et_G_ClientSound       }, // Miscellaneous
-	{"trap_Milliseconds", _et_trap_Milliseconds   },
-	{"isBitSet", _et_isBitSet            },
-	{"G_Damage", _et_G_Damage            },
-	{"G_AddSkillPoints", _et_G_AddSkillPoints    },
-	{"G_LoseSkillPoints", _et_G_LoseSkillPoints   },
-	{"G_XP_Set", _et_G_XP_Set            },
-	{"G_ResetXP",   _et_G_ResetXP           },
-	{"AddWeaponToPlayer", _et_AddWeaponToPlayer   },
+	{"Info_RemoveKey", _et_Info_RemoveKey     },
+	{"Info_SetValueForKey", _et_Info_SetValueForKey},
+	{"Info_ValueForKey", _et_Info_ValueForKey   },
+	{"Q_CleanStr",  _et_Q_CleanStr         }, // ET Filesystem
+	{"trap_FS_FOpenFile", _et_trap_FS_FOpenFile  },
+	{"trap_FS_Read", _et_trap_FS_Read       },
+	{"trap_FS_Write", _et_trap_FS_Write      },
+	{"trap_FS_Rename", _et_trap_FS_Rename     },
+	{"trap_FS_FCloseFile", _et_trap_FS_FCloseFile },
+	{"trap_FS_GetFileList", _et_trap_FS_GetFileList}, // Indexes
+	{"G_SoundIndex", _et_G_SoundIndex       },
+	{"G_ModelIndex", _et_G_ModelIndex       }, // Sound
+	{"G_globalSound", _et_G_globalSound      },
+	{"G_Sound",  _et_G_Sound            },
+	{"G_ClientSound", _et_G_ClientSound      }, // Miscellaneous
+	{"trap_Milliseconds", _et_trap_Milliseconds  },
+	{"isBitSet", _et_isBitSet           },
+	{"G_Damage", _et_G_Damage           },
+	{"G_AddSkillPoints", _et_G_AddSkillPoints   },
+	{"G_LoseSkillPoints", _et_G_LoseSkillPoints  },
+	{"G_XP_Set", _et_G_XP_Set           },
+	{"G_ResetXP",   _et_G_ResetXP          },
+	{"AddWeaponToPlayer", _et_AddWeaponToPlayer  },
 	{"RemoveWeaponFromPlayer", _et_RemoveWeaponFromPlayer}, // Entities
-	{"G_CreateEntity", _et_G_Lua_CreateEntity  },
-	{"G_DeleteEntity", _et_G_Lua_DeleteEntity  },
-	{"G_TempEntity", _et_G_TempEntity        },
-	{"G_FreeEntity", _et_G_FreeEntity        },
-	{"G_EntitiesFree", _et_G_EntitiesFree      },
-	{"G_SetEntState", _et_G_SetEntState       },
-	{"trap_LinkEntity", _et_trap_LinkEntity     },
-	{"trap_UnlinkEntity", _et_trap_UnlinkEntity   },
-	{"G_GetSpawnVar", _et_G_GetSpawnVar       },
-	{"G_SetSpawnVar", _et_G_SetSpawnVar       },
-	{"gentity_get", _et_gentity_get         },
-	{"gentity_set", _et_gentity_set         },
+	{"G_CreateEntity", _et_G_Lua_CreateEntity },
+	{"G_DeleteEntity", _et_G_Lua_DeleteEntity },
+	{"G_TempEntity", _et_G_TempEntity       },
+	{"G_FreeEntity", _et_G_FreeEntity       },
+	{"G_EntitiesFree", _et_G_EntitiesFree     },
+	{"G_SetEntState", _et_G_SetEntState      },
+	{"trap_LinkEntity", _et_trap_LinkEntity    },
+	{"trap_UnlinkEntity", _et_trap_UnlinkEntity  },
+	{"G_GetSpawnVar", _et_G_GetSpawnVar      },
+	{"G_SetSpawnVar", _et_G_SetSpawnVar      },
+	{"gentity_get", _et_gentity_get        },
+	{"gentity_set", _et_gentity_set        },
 	{"G_AddEvent",  _et_G_AddEvent}, // Shaders
-	{"G_ShaderRemap", _et_G_ShaderRemap       },
+	{"G_ShaderRemap", _et_G_ShaderRemap      },
 	{"G_ResetRemappedShaders", _et_G_ResetRemappedShaders},
-	{"G_ShaderRemapFlush", _et_G_ShaderRemapFlush  },
-	{"G_SetGlobalFog", _et_G_SetGlobalFog      }, {NULL},
+	{"G_ShaderRemapFlush", _et_G_ShaderRemapFlush },
+	{"G_SetGlobalFog", _et_G_SetGlobalFog     }, {NULL},
 };
 
 /*************/

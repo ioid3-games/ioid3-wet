@@ -372,10 +372,10 @@ void G_InitWorldSession(void) {
         if (p && *p) {
             Q_strncpyz(level.fireTeams[i].name, p, 32);
             level.fireTeams[i].inuse = qtrue;
-    } else {
+   } else {
             *level.fireTeams[i].name = '\0';
             level.fireTeams[i].inuse = qfalse;
-    }*/
+   }*/
 
         p = Info_ValueForKey(s, "id");
         j = atoi(p);

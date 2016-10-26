@@ -55,8 +55,7 @@
 
 #define ATMOSPHERIC_PARTICLE_OFFSET 10
 
-typedef enum
-{
+typedef enum {
 	ATM_NONE = 0,
 	ATM_RAIN,
 	ATM_SNOW
@@ -117,29 +116,29 @@ qboolean CG_AtmosphericKludge(void) {
     {
     case 10: // rain
         // easy rain
-        CG_EffectParse( "T=RAIN,B=5 10,C=0.5,G=0.5 2,BV=50 50,GV=200 200,W=1 2,D=1000" );
+        CG_EffectParse("T=RAIN,B=5 10,C=0.5,G=0.5 2,BV=50 50,GV=200 200,W=1 2,D=1000");
         return (kludgeResult = qtrue);
     case 11:
-        CG_EffectParse( "T=RAIN,B=5 10,C=0.5 2,G=0.5 2,BV=30 100,GV=20 80,W=1 2,D=1000 1000" );
+        CG_EffectParse("T=RAIN,B=5 10,C=0.5 2,G=0.5 2,BV=30 100,GV=20 80,W=1 2,D=1000 1000");
         return (kludgeResult = qtrue);
     case 20: // snow
-        //CG_EffectParse( "T=RAIN,B=5 10,C=0.5 2,G=0.5 2,BV=30 100,GV=20 80,W=1 2,D=1000 1000" );
-        //CG_EffectParse( "T=SNOW,B=5 10,C=0.5,G=0.3 2,BV=50 50,GV=30 80,W=1 2,D=5000" );
+        //CG_EffectParse("T=RAIN,B=5 10,C=0.5 2,G=0.5 2,BV=30 100,GV=20 80,W=1 2,D=1000 1000");
+        //CG_EffectParse("T=SNOW,B=5 10,C=0.5,G=0.3 2,BV=50 50,GV=30 80,W=1 2,D=5000");
 
         // snow storm, quite horizontally
-        //CG_EffectParse( "T=SNOW,B=20 30,C=0.8,G=0.5 8,BV=100 100,GV=70 150,W=3 5,D=5000" );
+        //CG_EffectParse("T=SNOW,B=20 30,C=0.8,G=0.5 8,BV=100 100,GV=70 150,W=3 5,D=5000");
 
         // mild snow storm, quite vertically - likely go for this
-        //CG_EffectParse( "T=SNOW,B=5 10,C=0.5,G=0.3 2,BV=20 30,GV=25 40,W=3 5,D=5000" );
+        //CG_EffectParse("T=SNOW,B=5 10,C=0.5,G=0.3 2,BV=20 30,GV=25 40,W=3 5,D=5000");
         CG_EffectParse("T=SNOW,B=5 10,C=0.5,G=0.3 2,BV=20 30,GV=25 40,W=3 5,D=2000");
 
         // cpu-cheap press event effect
-        //CG_EffectParse( "T=SNOW,B=5 10,C=0.5,G=0.3 2,BV=20 30,GV=25 40,W=3 5,D=500" );
-        //CG_EffectParse( "T=SNOW,B=5 10,C=0.5,G=0.3 2,BV=20 30,GV=25 40,W=3 5,D=750" );
+        //CG_EffectParse("T=SNOW,B=5 10,C=0.5,G=0.3 2,BV=20 30,GV=25 40,W=3 5,D=500");
+        //CG_EffectParse("T=SNOW,B=5 10,C=0.5,G=0.3 2,BV=20 30,GV=25 40,W=3 5,D=750");
         return (kludgeResult = qtrue);
     case 21:
-        //CG_EffectParse( "T=SNOW,B=5 7,C=0.2,G=0.1 5,BV=15 25,GV=25 40,W=3 5,D=400" );
-        CG_EffectParse( "T=SNOW,B=5 7,C=0.2,G=0.1 5,BV=15 25,GV=25 40,W=3 5,H=512,D=2000");
+        //CG_EffectParse("T=SNOW,B=5 7,C=0.2,G=0.1 5,BV=15 25,GV=25 40,W=3 5,D=400");
+        CG_EffectParse("T=SNOW,B=5 7,C=0.2,G=0.1 5,BV=15 25,GV=25 40,W=3 5,H=512,D=2000");
         return (kludgeResult = qtrue);
     case 22:
         //T=SNOW,B=5 10,C=0.5,G=0.3 2,BV=20 30,GV=25 40,W=3 5,H=608,D=2000
@@ -148,13 +147,12 @@ qboolean CG_AtmosphericKludge(void) {
         return (kludgeResult = qtrue);
     default:
         break;
-  }
+ }
 */
 	return (kludgeResult = qfalse);
 }
 
-typedef enum
-{
+typedef enum {
 	ACT_NOT = 0,
 	ACT_FALLING
 } active_t;
@@ -184,7 +182,6 @@ typedef struct cg_atmosphericEffect_s {
 	qboolean (*ParticleCheckVisible)(cg_atmosphericParticle_t *particle);
 	qboolean (*ParticleGenerate)(cg_atmosphericParticle_t *particle, vec3_t currvec, float currweight);
 	void (*ParticleRender)(cg_atmosphericParticle_t *particle);
-
 	int dropsActive, oldDropsActive;
 	int dropsCreated;
 } cg_atmosphericEffect_t;
@@ -424,7 +421,7 @@ static qboolean CG_SnowParticleGenerate(cg_atmosphericParticle_t *particle, vec3
 	particle->effectshader = &cg_atmFx.effectshaders[ATM_SNOW];
 	
 	// try to make this work and test it - note: exclude effectshaders[0] 
-	//particle->effectshader = &cg_atmFx.effectshaders[ (int) (random() * ( cg_atmFx.numEffectShaders - 1 )) ];
+	//particle->effectshader = &cg_atmFx.effectshaders[ (int) (random() * (cg_atmFx.numEffectShaders - 1)) ];
 	return qtrue;
 }
 
@@ -688,7 +685,7 @@ void CG_EffectParse(const char *effectstr) {
 	// parse the parameter string
 	Q_strncpyz(workbuff, effectstr, sizeof(workbuff));
 
-	for (startptr = workbuff; *startptr; ) {
+	for (startptr = workbuff; *startptr;) {
 		for (eqptr = startptr; *eqptr && *eqptr != '=' && *eqptr != ','; eqptr++);
 
 		if (!*eqptr) {

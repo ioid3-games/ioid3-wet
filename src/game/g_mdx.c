@@ -62,7 +62,7 @@ static hit_t *hits = NULL;
 static int mdx_bones_max = 0;
 static vec3_t *mdx_bones = NULL;
 
-#define INDEXTOQHANDLE(idx)  (qhandle_t)((idx) + 1)
+#define INDEXTOQHANDLE(idx) (qhandle_t)((idx) + 1)
 // Index may be NULL sometimes, so just default to the first model(FIXME: This is a HACK.)
 #define QHANDLETOINDEX(qh) ((qh >= 1) ? ((int)(qh) - 1) : 0)
 #define QHANDLETOINDEX_SAFE(qh, old) ((qh >= 1) ? (int)(qh) - 1 : QHANDLETOINDEX(old))

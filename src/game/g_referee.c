@@ -463,7 +463,7 @@ void G_PlayerBan() {
 	bannum = G_refClientnumForName(NULL, cmd);
 
 	if (bannum != MAX_CLIENTS) {
-		//if( level.clients[bannum].sess.referee != RL_RCON ) {
+		//if(level.clients[bannum].sess.referee != RL_RCON) {
 		const char *value;
 		char userinfo[MAX_INFO_STRING];
 

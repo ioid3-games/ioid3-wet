@@ -39,16 +39,16 @@ vec3_t ejectBrassCasingOrigin;
 
 // the new loadout for WolfXP
 int weapBanksMultiPlayer[MAX_WEAP_BANKS_MP][MAX_WEAPS_IN_BANK_MP] = {
-	{0,                   0,                    0,               0,               0,              0,                0,                      0,                       0,       0,      0,              0,                  0,         0,          0,          0,        0   }, // empty bank '0'
-	{WP_KNIFE,            WP_KNIFE_KABAR,       0,               0,               0,              0,                0,                      0,                       0,       0,      0,              0,                  0,         0,          0,          0,        0   },
-	{WP_LUGER,            WP_COLT,              WP_AKIMBO_COLT,  WP_AKIMBO_LUGER, WP_SILENCER,    WP_SILENCED_COLT, WP_AKIMBO_SILENCEDCOLT, WP_AKIMBO_SILENCEDLUGER, 0,       0,      0,              0,                  0,         0,          0,          0,        0   },
+	{0,                   0,                    0,               0,               0,              0,                0,                      0,                       0,       0,      0,              0,                  0,         0,          0,          0,        0  }, // empty bank '0'
+	{WP_KNIFE,            WP_KNIFE_KABAR,       0,               0,               0,              0,                0,                      0,                       0,       0,      0,              0,                  0,         0,          0,          0,        0  },
+	{WP_LUGER,            WP_COLT,              WP_AKIMBO_COLT,  WP_AKIMBO_LUGER, WP_SILENCER,    WP_SILENCED_COLT, WP_AKIMBO_SILENCEDCOLT, WP_AKIMBO_SILENCEDLUGER, 0,       0,      0,              0,                  0,         0,          0,          0,        0  },
 	{WP_MP40,             WP_THOMPSON,          WP_STEN,         WP_GARAND,       WP_PANZERFAUST, WP_FLAMETHROWER,  WP_KAR98,               WP_CARBINE,              WP_FG42, WP_K43, WP_MOBILE_MG42, WP_MOBILE_BROWNING, WP_MORTAR, WP_MORTAR2, WP_BAZOOKA, WP_GPG40, WP_M7},
-	{WP_GRENADE_LAUNCHER, WP_GRENADE_PINEAPPLE, 0,               0,               0,              0,                0,                      0,                       0,       0,      0,              0,                  0,         0,          0,          0,        0   },
-	{WP_MEDIC_SYRINGE,    WP_PLIERS,            WP_SMOKE_MARKER, WP_SMOKE_BOMB,   0,              0,                0,                      0,                       0,       0,      0,              0,                  0,         0,          0,          0,        0   },
-	{WP_DYNAMITE,         WP_MEDKIT,            WP_AMMO,         WP_SATCHEL,      WP_SATCHEL_DET, 0,                0,                      0,                       0,       0,      0,              0,                  0,         0,          0,          0,        0   },
-	{WP_LANDMINE,         WP_MEDIC_ADRENALINE,  0,               0,               0,              0,                0,                      0,                       0,       0,      0,              0,                  0,         0,          0,          0,        0   },
-	{WP_BINOCULARS,       0,                    0,               0,               0,              0,                0,                      0,                       0,       0,      0,              0,                  0,         0,          0,          0,        0   },
-	{0,                   0,                    0,               0,               0,              0,                0,                      0,                       0,       0,      0,              0,                  0,         0,          0,          0,        0   },
+	{WP_GRENADE_LAUNCHER, WP_GRENADE_PINEAPPLE, 0,               0,               0,              0,                0,                      0,                       0,       0,      0,              0,                  0,         0,          0,          0,        0  },
+	{WP_MEDIC_SYRINGE,    WP_PLIERS,            WP_SMOKE_MARKER, WP_SMOKE_BOMB,   0,              0,                0,                      0,                       0,       0,      0,              0,                  0,         0,          0,          0,        0  },
+	{WP_DYNAMITE,         WP_MEDKIT,            WP_AMMO,         WP_SATCHEL,      WP_SATCHEL_DET, 0,                0,                      0,                       0,       0,      0,              0,                  0,         0,          0,          0,        0  },
+	{WP_LANDMINE,         WP_MEDIC_ADRENALINE,  0,               0,               0,              0,                0,                      0,                       0,       0,      0,              0,                  0,         0,          0,          0,        0  },
+	{WP_BINOCULARS,       0,                    0,               0,               0,              0,                0,                      0,                       0,       0,      0,              0,                  0,         0,          0,          0,        0  },
+	{0,                   0,                    0,               0,               0,              0,                0,                      0,                       0,       0,      0,              0,                  0,         0,          0,          0,        0  },
 };
 
 /**
@@ -395,25 +395,25 @@ static void CG_PanzerFaustEjectBrass(centity_t *cent) {
  * @param wi
  * @todo TODO: Unused
  */
-/*void CG_SpearTrail(centity_t *ent, const weaponInfo_t *wi ) {
+/*void CG_SpearTrail(centity_t *ent, const weaponInfo_t *wi) {
     int contents, lastContents;
     vec3_t origin, lastPos;
     entityState_t *es;
 
     es = &ent->currentState;
-    BG_EvaluateTrajectory( &es->pos, cg.time, origin );
-    contents = CG_PointContents( origin, -1 );
+    BG_EvaluateTrajectory(&es->pos, cg.time, origin);
+    contents = CG_PointContents(origin, -1);
 
-    BG_EvaluateTrajectory( &es->pos, ent->trailTime, lastPos );
-    lastContents = CG_PointContents( lastPos, -1 );
+    BG_EvaluateTrajectory(&es->pos, ent->trailTime, lastPos);
+    lastContents = CG_PointContents(lastPos, -1);
 
     ent->trailTime = cg.time;
 
-    if ( contents & ( CONTENTS_WATER | CONTENTS_SLIME | CONTENTS_LAVA ) ) {
-        if ( contents & lastContents & CONTENTS_WATER ) {
-            CG_BubbleTrail( lastPos, origin, 1, 8 );
-      }
-  }
+    if (contents & (CONTENTS_WATER | CONTENTS_SLIME | CONTENTS_LAVA)) {
+        if (contents & lastContents & CONTENTS_WATER) {
+            CG_BubbleTrail(lastPos, origin, 1, 8);
+     }
+ }
 }
 */
 
@@ -484,7 +484,7 @@ void CG_PyroSmokeTrail(centity_t *ent, const weaponInfo_t *wi) {
 	ent->trailTime = cg.time;
 
 	/* smoke pyro works fine in water (well, it's dye in real life, might wanna change this in-game)
-	    if ( contents & ( CONTENTS_WATER | CONTENTS_SLIME | CONTENTS_LAVA ) )
+	    if (contents & (CONTENTS_WATER | CONTENTS_SLIME | CONTENTS_LAVA))
 	        return;
 	*/
 
@@ -664,7 +664,7 @@ void CG_RocketTrail(centity_t *ent, const weaponInfo_t *wi) {
 
 		break;
 		default:
-			//CG_ParticleExplosion( "twiltb", lastPos, vec3_origin, 300+(int)(rnd*100), 4, 14+(int)(rnd*8) ); // fire
+			//CG_ParticleExplosion("twiltb", lastPos, vec3_origin, 300+(int)(rnd*100), 4, 14+(int)(rnd*8)); // fire
 			CG_ParticleExplosion("blacksmokeanim", lastPos, vec3_origin, 800 + (int)(rnd * 1500), 5, 12 + (int)(rnd * 30), qfalse); // smoke
 			break;
 		}
@@ -672,13 +672,13 @@ void CG_RocketTrail(centity_t *ent, const weaponInfo_t *wi) {
 	/*
 	    // spawn a smoke junction
 	    if ((cg.time - ent->lastTrailTime) >= 50 + rand()%50) {
-	        ent->headJuncIndex = CG_AddSmokeJunc( ent->headJuncIndex,
+	        ent->headJuncIndex = CG_AddSmokeJunc(ent->headJuncIndex,
 	                                                ent, // rain - zinx's trail fix
 	                                                cgs.media.smokeTrailShader,
 	                                                origin,
-	                                                4500, 0.4, 20, 80 );
+	                                                4500, 0.4, 20, 80);
 	        ent->lastTrailTime = cg.time;
-	  }
+	 }
 
 	*/
 }
@@ -855,7 +855,7 @@ static qboolean CG_ParseWeaponConfig(const char *filename, weaponInfo_t *wi) {
 	int i;
 	float fps;
 	char *token;
-	qboolean     newfmt = qfalse;
+	qboolean newfmt = qfalse;
 	char text[20000];
 	fileHandle_t f;
 
@@ -891,9 +891,9 @@ static qboolean CG_ParseWeaponConfig(const char *filename, weaponInfo_t *wi) {
 		{
 			break;
 		}
-		//if ( !Q_stricmp( token, "whatever_variable" ) )
+		//if (!Q_stricmp(token, "whatever_variable"))
 		//{
-		//  token = COM_Parse( &text_p ); // get the value
+		//  token = COM_Parse(&text_p); // get the value
 		//  if (!token[0])
 		//  {
 		//    break;
@@ -1004,7 +1004,7 @@ static qboolean CG_ParseWeaponConfig(const char *filename, weaponInfo_t *wi) {
 static qboolean CG_RW_ParseError(int handle, char *format, ...) {
 	int line;
 	char filename[MAX_QPATH];
-	va_list     argptr;
+	va_list argptr;
 	static char string[4096];
 
 	va_start(argptr, format);
@@ -1278,7 +1278,7 @@ static qboolean CG_RW_ParseClient(int handle, weaponInfo_t *weaponInfo) {
 			if (!PC_String_ParseNoAlloc(handle, filename, sizeof(filename))) {
 				return CG_RW_ParseError(handle, "expected pickupSound filename");
 			} else {
-				//weaponInfo->pickupSound = trap_S_RegisterSound( filename, qfalse );
+				//weaponInfo->pickupSound = trap_S_RegisterSound(filename, qfalse);
 			}
 		} else if (!Q_stricmp(token.string, "weaponConfig")) {
 			if (!PC_String_ParseNoAlloc(handle, filename, sizeof(filename))) {
@@ -1549,15 +1549,15 @@ void CG_RegisterWeapon(int weaponNum, qboolean force) {
 	memset(weaponInfo, 0, sizeof(*weaponInfo));
 	weaponInfo->registered = qtrue;
 
-	/*for( item = bg_itemlist + 1; item->classname; item++ ) {
-	    if( item->giType == IT_WEAPON && item->giTag == weaponNum ) {
+	/*for(item = bg_itemlist + 1; item->classname; item++) {
+	    if(item->giType == IT_WEAPON && item->giTag == weaponNum) {
 	        weaponInfo->item = item;
 	        break;
-	  }
+	 }
 	}
 
-	if( !item->classname ) {
-	    CG_Error( "Couldn't find weapon %i", weaponNum );
+	if(!item->classname) {
+	    CG_Error("Couldn't find weapon %i", weaponNum);
 	}*/
 
 	switch (weaponNum) {
@@ -2132,10 +2132,10 @@ void CG_AddPlayerWeapon(refEntity_t *parent, playerState_t *ps, centity_t *cent)
 	weapon_t weaponNum = cent->currentState.weapon;
 	weaponInfo_t *weapon;
 	centity_t *nonPredictedCent;
-	qboolean     firing;
-	qboolean     akimboFire = qfalse;
-	qboolean     drawpart;
-	qboolean     isPlayer = (qboolean)(cent->currentState.clientNum == cg.snap->ps.clientNum); // might as well have this check consistant throughout the routine
+	qboolean firing;
+	qboolean akimboFire = qfalse;
+	qboolean drawpart;
+	qboolean isPlayer = (qboolean)(cent->currentState.clientNum == cg.snap->ps.clientNum); // might as well have this check consistant throughout the routine
 
 	// don't draw any weapons when the binocs are up
 	if (cent->currentState.eFlags & EF_ZOOMING) {
@@ -2294,11 +2294,11 @@ void CG_AddPlayerWeapon(refEntity_t *parent, playerState_t *ps, centity_t *cent)
 	} else {
 		CG_PositionEntityOnTag(&gun, parent, "tag_weapon", 0, NULL);
 	}
-	//qboolean    playerScaled = (qboolean)(cgs.clientinfo[ cent->currentState.clientNum ].playermodelScale[0] != 0);
+	//qboolean playerScaled = (qboolean)(cgs.clientinfo[ cent->currentState.clientNum ].playermodelScale[0] != 0);
 	//if(!ps && playerScaled) {  // don't "un-scale" weap up in 1st person
 	// for(i=0;i<3;i++) { // scale weapon back up so it doesn't pick up the adjusted scale of the character models.
 	//   // this will affect any parts attached to the gun as well (barrel/bolt/flash/brass/etc.)
-	//   VectorScale( gun.axis[i], 1.0/(cgs.clientinfo[ cent->currentState.clientNum ].playermodelScale[i]), gun.axis[i]);
+	//   VectorScale(gun.axis[i], 1.0/(cgs.clientinfo[ cent->currentState.clientNum ].playermodelScale[i]), gun.axis[i]);
 	//}
 	//}
 
@@ -2339,8 +2339,8 @@ void CG_AddPlayerWeapon(refEntity_t *parent, playerState_t *ps, centity_t *cent)
 		CG_AddWeaponWithPowerups(&gun, cent->currentState.powerups, ps, cent);
 	}
 	// test hack
-	//if( weaponNum == WP_KNIFE )
-	//  trap_R_AddLightToScene( gun.origin, 512, 1.5, 1.0, 1.0, 1.0, 0, 0 );
+	//if(weaponNum == WP_KNIFE)
+	//  trap_R_AddLightToScene(gun.origin, 512, 1.5, 1.0, 1.0, 1.0, 0, 0);
 
 	if (isPlayer) {
 		refEntity_t brass;
@@ -2441,7 +2441,7 @@ void CG_AddPlayerWeapon(refEntity_t *parent, playerState_t *ps, centity_t *cent)
 
 					if (weaponNum == WP_SATCHEL_DET && i == W_PART_1) {
 						float rangeSquared;
-						qboolean    inRange;
+						qboolean inRange;
 						refEntity_t satchelDetPart;
 
 						if (cg.satchelCharge)
@@ -2533,9 +2533,9 @@ void CG_AddPlayerWeapon(refEntity_t *parent, playerState_t *ps, centity_t *cent)
                     {
                         CG_PositionEntityOnTag(&barrel, parent, "tag_scope", 0, NULL);
                         CG_AddWeaponWithPowerups(&barrel, cent->currentState.powerups, ps, cent);
-                  }
-              }
-          }
+                 }
+             }
+         }
             break;
         case WP_GARAND:
             barrel.hModel = weapon->modModels[0];
@@ -2543,7 +2543,7 @@ void CG_AddPlayerWeapon(refEntity_t *parent, playerState_t *ps, centity_t *cent)
             {
                 CG_PositionEntityOnTag(&barrel, &gun, "tag_scope2", 0, NULL);
                 CG_AddWeaponWithPowerups(&barrel, cent->currentState.powerups, ps, cent);
-          }
+         }
 
             barrel.hModel = weapon->modModels[1];
             //if(barrel.hModel) {
@@ -2557,7 +2557,7 @@ void CG_AddPlayerWeapon(refEntity_t *parent, playerState_t *ps, centity_t *cent)
             {
                 CG_PositionEntityOnTag(&barrel, &gun, "tag_scope", 0, NULL);
                 CG_AddWeaponWithPowerups(&barrel, cent->currentState.powerups, ps, cent);
-          }
+         }
 
             barrel.hModel = weapon->modModels[1];
             //if(barrel.hModel) {
@@ -2568,7 +2568,7 @@ void CG_AddPlayerWeapon(refEntity_t *parent, playerState_t *ps, centity_t *cent)
 			break;
         default:
             break;
-      }
+     }
 	}
 	// 3rd person attachements
 	else {
@@ -2582,13 +2582,13 @@ void CG_AddPlayerWeapon(refEntity_t *parent, playerState_t *ps, centity_t *cent)
             CG_AddWeaponWithPowerups(&barrel, cent->currentState.powerups, ps, cent);
 
             // the grenade - have to always enabled it, no means of telling if another person has a grenade loaded or not atm :/
-            //if( cg.snap->ps.weaponstate != WEAPON_FIRING && cg.snap->ps.weaponstate != WEAPON_RELOADING ) {
+            //if(cg.snap->ps.weaponstate != WEAPON_FIRING && cg.snap->ps.weaponstate != WEAPON_RELOADING) {
             if (weaponNum == WP_M7 /*|| weaponNum == WP_CARBINE*/)
             {
                 barrel.hModel = weapon->missileModel;
                 CG_PositionEntityOnTag(&barrel, &barrel, "tag_prj", 0, NULL);
                 CG_AddWeaponWithPowerups(&barrel, cent->currentState.powerups, ps, cent);
-          }
+         }
             break;
         case WP_GARAND:
         case WP_GARAND_SCOPE:
@@ -2615,7 +2615,7 @@ void CG_AddPlayerWeapon(refEntity_t *parent, playerState_t *ps, centity_t *cent)
             break;
         default:
             break;
-      }
+     }
 	}
 	// make sure we aren't looking at cg.predictedPlayerEntity for LG
 	nonPredictedCent = &cg_entities[cent->currentState.clientNum];
@@ -3072,7 +3072,6 @@ int CG_WeaponIndex(int weapnum, int *bank, int *cycle) {
 			if (!weapBanksMultiPlayer[bnk][cyc]) {
 				break;
 			}
-
 			// found the current weapon
 			if (weapBanksMultiPlayer[bnk][cyc] == weapnum) {
 				if (bank) {
@@ -3512,9 +3511,9 @@ void CG_AltWeapon_f(void) {
 	// Overload for spec mode when following
 	if (((cg.snap->ps.pm_flags & PMF_FOLLOW) || cg.snap->ps.persistant[PERS_TEAM] == TEAM_SPECTATOR)
 #ifdef FEATURE_MULTIVIEW
-	    || cg.mvTotalClients > 0
+	 || cg.mvTotalClients > 0
 #endif
-	    ) {
+	   ) {
 		trap_SendConsoleCommand("followprev");
 		return;
 	}
@@ -3576,9 +3575,9 @@ void CG_AltWeapon_f(void) {
 
 	if (original == WP_BINOCULARS) {
 		/*if(cg.snap->ps.eFlags & EF_ZOOMING) {
-		    trap_SendConsoleCommand( "-zoom\n" );
+		    trap_SendConsoleCommand("-zoom\n");
 		} else {
-		    trap_SendConsoleCommand( "+zoom\n" );
+		    trap_SendConsoleCommand("+zoom\n");
 		}*/
 		if (cg.snap->ps.eFlags & EF_ZOOMING) {
 			trap_SendConsoleCommand("-zoom\n");
@@ -3607,7 +3606,7 @@ void CG_AltWeapon_f(void) {
             return;
         default:
             break;
-      }
+     }
 
         switch (num)
         {
@@ -3624,8 +3623,8 @@ void CG_AltWeapon_f(void) {
             return;
         default:
             break;
-      }
-  }
+     }
+ }
 
 	if (CG_WeaponSelectable(num))        // new weapon is valid
 	{
@@ -3754,7 +3753,6 @@ void CG_NextWeap(qboolean switchBanks) {
 			if (num == 0) {
 				continue;
 			}
-
 			//if(num == WP_BINOCULARS) {
 			//  continue;
 			//}
@@ -3898,7 +3896,6 @@ void CG_PrevWeap(qboolean switchBanks) {
 					return;
 				}
 			}
-
 			//if(num == WP_BINOCULARS) {
 			//  continue;
 			//}
@@ -4329,7 +4326,7 @@ void CG_WeaponBank_f(void) {
             return;
         default:
             break;
-      }
+     }
 
         switch (num)
         {
@@ -4346,8 +4343,8 @@ void CG_WeaponBank_f(void) {
             return;
         default:
             break;
-      }
-  }
+     }
+ }
 
 	CG_FinishWeaponChange(curweap, num);
 }
@@ -4545,7 +4542,7 @@ void CG_OutOfAmmoChange(qboolean allowforceswitch) {
 	        cg.weaponSelect = equiv;
 	        CG_FinishWeaponChange(cg.predictedPlayerState.weapon, cg.weaponSelect);
 	        return;
-	  }
+	 }
 	}
 	// still nothing available, just go to the next
 	// available weap using the regular selection scheme
@@ -4779,7 +4776,7 @@ void CG_FireWeapon(centity_t *cent) {
         if (cent->pe.lightningFiring)
         {
             return;
-      }
+     }
         break;
     case WP_GRENADE_LAUNCHER:
     case WP_GRENADE_PINEAPPLE:
@@ -4791,25 +4788,25 @@ void CG_FireWeapon(centity_t *cent) {
         if (ent->apos.trBase[0] > 0)     // underhand
         {
             return;
-      }
+     }
         break;
     case WP_GPG40:
 
         if (ent->clientNum == cg.snap->ps.clientNum)
         {
             cg.weaponSelect = WP_KAR98;
-      }
+     }
         break;
     case WP_M7:
 
         if (ent->clientNum == cg.snap->ps.clientNum)
         {
             cg.weaponSelect = WP_CARBINE;
-      }
+     }
         break;
     default:
         break;
-  }
+ }
 
 	if ((cent->currentState.event & ~EV_EVENT_BITS) == EV_FIRE_WEAPON_LASTSHOT) {
 		firesound = &weap->lastShotSound[0];
@@ -4964,7 +4961,7 @@ void CG_AddDirtBulletParticles(vec3_t origin, vec3_t dir, int speed, int duratio
 	VectorSet(velocity, 0, 0, (float)speed);
 	VectorCopy(origin, pos);
 
-	CG_ParticleDirtBulletDebris_Core(pos, velocity, duration, width, height, alpha, shader); //600 + rand()%300 ); // keep central one
+	CG_ParticleDirtBulletDebris_Core(pos, velocity, duration, width, height, alpha, shader); //600 + rand()%300); // keep central one
 	for (i = 0; i < count; i++) {
 		VectorSet(velocity, dir[0] * crandom() * speed * randScale, dir[1] * crandom() * speed * randScale, dir[2] * random() * speed);
 		CG_ParticleDirtBulletDebris_Core(pos, velocity, duration + (rand() % (duration >> 1)), width, height, alpha, shader);
@@ -5097,7 +5094,6 @@ void CG_AddDebris(vec3_t origin, vec3_t dir, int speed, int duration, int count,
 			if (trace->surfaceFlags & SURF_CERAMIC) {
 			    CG_Printf("ON CERAMIC\n");
 			}
-
 			// ---
 
 			if (trace->surfaceFlags & SURF_GLASS) {
@@ -5115,7 +5111,6 @@ void CG_AddDebris(vec3_t origin, vec3_t dir, int speed, int duration, int count,
 			if (trace->surfaceFlags & SURF_CARPET) {
 			    CG_Printf("ON CARPET\n");
 			}
-
 			// --
 
 			if (trace->contents & CONTENTS_WATER) {
@@ -5184,7 +5179,7 @@ void CG_MissileHitWall(int weapon, int clientNum, vec3_t origin, vec3_t dir, int
 {
 	qhandle_t mod = 0, mark = 0, shader = 0;
 	sfxHandle_t sfx = 0, sfx2 = 0;
-	qboolean    isSprite = qfalse;
+	qboolean isSprite = qfalse;
 	int duration = 600, i, j, markDuration = -1, volume = 127; // keep -1 markDuration for temporary marks
 	trace_t trace;
 	vec3_t lightColor = {1, 1, 0}, tmpv, tmpv2, sprOrg, sprVel;
@@ -6139,8 +6134,8 @@ void CG_Bullet(vec3_t end, int sourceEntityNum, qboolean flesh, int fleshEntityN
 				trap_CM_BoxTrace(&trace, end, trend, NULL, NULL, 0, MASK_SHOT & ~CONTENTS_BODY);
 
 				if (trace.fraction < 1) {
-					//CG_ImpactMark( cgs.media.bloodDotShaders[rand()%5], trace.endpos, trace.plane.normal, random()*360,
-					//  1,1,1,1, qtrue, 15+random()*20, qfalse, cg_bloodTime.integer * 1000 );
+					//CG_ImpactMark(cgs.media.bloodDotShaders[rand()%5], trace.endpos, trace.plane.normal, random()*360,
+					//  1,1,1,1, qtrue, 15+random()*20, qfalse, cg_bloodTime.integer * 1000);
 #if 0
 					VectorSubtract(vec3_origin, dir, projection);
 					projection[3] = 64;
@@ -6162,8 +6157,8 @@ void CG_Bullet(vec3_t end, int sourceEntityNum, qboolean flesh, int fleshEntityN
 					trap_CM_BoxTrace(&trace, end, trend, NULL, NULL, 0, MASK_SHOT & ~CONTENTS_BODY);
 
 					if (trace.fraction < 1) {
-						//CG_ImpactMark( cgs.media.bloodDotShaders[rand()%5], trace.endpos, trace.plane.normal, random()*360,
-						//  1,1,1,1, qtrue, 15+random()*10, qfalse, cg_bloodTime.integer * 1000 );
+						//CG_ImpactMark(cgs.media.bloodDotShaders[rand()%5], trace.endpos, trace.plane.normal, random()*360,
+						//  1,1,1,1, qtrue, 15+random()*10, qfalse, cg_bloodTime.integer * 1000);
 #if 0
 						VectorSubtract(vec3_origin, dir, projection);
 						projection[3] = 64;
@@ -6220,7 +6215,7 @@ void CG_Bullet(vec3_t end, int sourceEntityNum, qboolean flesh, int fleshEntityN
 				cg.bulletTrace = qfalse;
 
 				if (trace.fraction != trace2.fraction) {
-					//trap_CM_BoxTrace( &trace2, start, end, NULL, NULL, -1, MASK_WATER );
+					//trap_CM_BoxTrace(&trace2, start, end, NULL, NULL, -1, MASK_WATER);
 
 					trap_S_StartSound(end, -1, CHAN_AUTO, cgs.media.sfx_bullet_waterhit[rand() % 5]);
 

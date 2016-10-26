@@ -172,9 +172,9 @@ void CG_FitTextToWidth_SingleLine(char *instr, float scale, float w, int size) {
 }
 
 /*
-==============
+=======================================================================================================================================
 CG_DrawPlayerWeaponIcon
-==============
+=======================================================================================================================================
 */
 void CG_DrawPlayerWeaponIcon(rectDef_t *rect, qboolean drawHighlighted, int align, vec4_t *refcolor) {
 	int realweap;
@@ -278,7 +278,7 @@ void CG_DrawPlayerWeaponIcon(rectDef_t *rect, qboolean drawHighlighted, int alig
 #define CURSORHINT_SCALE    10
 
 /*
-==============
+=======================================================================================================================================
 CG_DrawCursorHints
 
   cg_cursorHints.integer ==
@@ -288,7 +288,7 @@ CG_DrawCursorHints
     3:  alpha pulse
     4+: static image
 
-==============
+=======================================================================================================================================
 */
 void CG_DrawCursorhint(rectDef_t *rect) {
 	float *color;
@@ -485,12 +485,12 @@ qboolean CG_OwnerDrawVisible(int flags) {
 }
 
 /*
-==============
+=======================================================================================================================================
 CG_DrawWeapStability
     draw a bar showing current stability level (0-255), max at current weapon/ability, and 'perfect' reference mark
 
     probably only drawn for scoped weapons
-==============
+=======================================================================================================================================
 */
 void CG_DrawWeapStability(rectDef_t *rect) {
 	static vec4_t goodColor = {0, 1, 0, 0.5f}, badColor = {1, 0, 0, 0.5f};
@@ -520,9 +520,9 @@ void CG_DrawWeapStability(rectDef_t *rect) {
 }
 
 /*
-==============
+=======================================================================================================================================
 CG_DrawWeapHeat
-==============
+=======================================================================================================================================
 */
 void CG_DrawWeapHeat(rectDef_t *rect, int align) {
 	static vec4_t color = {1, 0, 0, 0.2f}, color2 = {1, 0, 0, 0.5f};
@@ -570,28 +570,28 @@ void CG_MouseEvent(int x, int y) {
             if (cgs.cursorX < 0)
             {
                 cgs.cursorX = 0;
-          }
+         }
             else if (cgs.cursorX > SCREEN_WIDTH_SAFE)
             {
                 cgs.cursorX = SCREEN_WIDTH_SAFE;
-          }
+         }
 
             cgs.cursorY += y;
             if (cgs.cursorY < 0)
             {
                 cgs.cursorY = 0;
-          }
+         }
             else if (cgs.cursorY > SCREEN_HEIGHT_SAFE)
             {
                 cgs.cursorY = SCREEN_HEIGHT_SAFE;
-          }
+         }
 
             if (cgs.eventHandling == CGAME_EVENT_SPEAKEREDITOR)
             {
                 CG_SpeakerEditorMouseMove_Handling(x, y);
-          }
+         }
 #ifdef FEATURE_EDV
-      }
+     }
         else
         {
             // mousemovement *should* feel the same as ingame
@@ -605,7 +605,7 @@ void CG_MouseEvent(int x, int y) {
             if (demo_lookat.integer != -1)
             {
                 return;
-          }
+         }
 
             mx += x;
             my += y;
@@ -626,12 +626,12 @@ void CG_MouseEvent(int x, int y) {
             {
                 mouse_x_pos = (mx + old_mouse_x_pos) * 0.5;
                 mouse_y_pos = (my + old_mouse_y_pos) * 0.5;
-          }
+         }
             else
             {
                 mouse_x_pos = mx;
                 mouse_y_pos = my;
-          }
+         }
 
             old_mouse_x_pos = mx;
             old_mouse_y_pos = my;
@@ -645,13 +645,13 @@ void CG_MouseEvent(int x, int y) {
             if (cg.refdefViewAngles[PITCH] < -90)
             {
                 cg.refdefViewAngles[PITCH] = -90;
-          }
+         }
 
             if (cg.refdefViewAngles[PITCH] > 90)
             {
                 cg.refdefViewAngles[PITCH] = 90;
-          }
-      }
+         }
+     }
 #endif
 		break;
 	default:
@@ -672,9 +672,9 @@ void CG_MouseEvent(int x, int y) {
 }
 
 /*
-==================
+=======================================================================================================================================
 CG_EventHandling
-==================
+=======================================================================================================================================
 */
 void CG_EventHandling(int type, qboolean fForced) {
 	if (cg.demoPlayback && type == CGAME_EVENT_NONE && !fForced) {

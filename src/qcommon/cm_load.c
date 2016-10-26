@@ -61,7 +61,9 @@ void CM_FloodAreaConnections(void);
 
 /*
 =======================================================================================================================================
-                    MAP LOADING
+
+	MAP LOADING
+
 =======================================================================================================================================
 */
 
@@ -136,8 +138,7 @@ void CMod_LoadSubmodels(lump_t *l) {
 	for (i = 0; i < count; i++, in++, out++) {
 		out = &cm.cmodels[i];
 
-		for (j = 0; j < 3; j++) // spread the mins / maxs by a pixel
-		{
+		for (j = 0; j < 3; j++) { // spread the mins/maxs by a pixel
 			out->mins[j] = LittleFloat(in->mins[j]) - 1;
 			out->maxs[j] = LittleFloat(in->maxs[j]) + 1;
 		}
@@ -208,6 +209,7 @@ CM_BoundBrush
 =======================================================================================================================================
 */
 void CM_BoundBrush(cbrush_t *b) {
+
 	b->bounds[0][0] = -b->sides[0].plane->dist;
 	b->bounds[1][0] = b->sides[1].plane->dist;
 
@@ -244,7 +246,6 @@ void CMod_LoadBrushes(lump_t *l) {
 	for (i = 0; i < count; i++, out++, in++) {
 		out->sides = cm.brushsides + LittleLong(in->firstSide);
 		out->numsides = LittleLong(in->numSides);
-
 		out->shaderNum = LittleLong(in->shaderNum);
 
 		if (out->shaderNum < 0 || out->shaderNum >= cm.numShaders) {
@@ -454,8 +455,10 @@ CMod_LoadEntityString
 =======================================================================================================================================
 */
 void CMod_LoadEntityString(lump_t *l) {
+
 	cm.entityString = Hunk_Alloc(l->filelen, h_high);
 	cm.numEntityChars = l->filelen;
+
 	memcpy(cm.entityString, cmod_base + l->fileofs, l->filelen);
 }
 
@@ -464,7 +467,7 @@ void CMod_LoadEntityString(lump_t *l) {
 CMod_LoadVisibility
 =======================================================================================================================================
 */
-#define VIS_HEADER  8
+#define VIS_HEADER 8
 void CMod_LoadVisibility(lump_t *l) {
 	int len = l->filelen;
 	byte *buf;
@@ -482,6 +485,7 @@ void CMod_LoadVisibility(lump_t *l) {
 	cm.visibility = Hunk_Alloc(len, h_high);
 	cm.numClusters = LittleLong(((int *)buf)[0]);
 	cm.clusterBytes = LittleLong(((int *)buf)[1]);
+
 	memcpy(cm.visibility, buf + VIS_HEADER, len - VIS_HEADER);
 }
 
@@ -490,7 +494,7 @@ void CMod_LoadVisibility(lump_t *l) {
 CMod_LoadPatches
 =======================================================================================================================================
 */
-#define MAX_PATCH_VERTS     1024
+#define MAX_PATCH_VERTS 1024
 void CMod_LoadPatches(lump_t *surfs, lump_t *verts) {
 	drawVert_t *dv, *dv_p;
 	dsurface_t *in;
@@ -615,6 +619,7 @@ void CM_LoadMap(const char *name, qboolean clientload, int *checksum) {
 	}
 	// free old stuff
 	Com_Memset(&cm, 0, sizeof(cm));
+
 	CM_ClearLevelPatches();
 
 	if (!name[0]) {
@@ -642,8 +647,7 @@ void CM_LoadMap(const char *name, qboolean clientload, int *checksum) {
 	}
 
 	if (header.version != BSP_VERSION) {
-		Com_Error(ERR_DROP, "CM_LoadMap: %s has wrong version number(%i should be %i)"
-		         , name, header.version, BSP_VERSION);
+		Com_Error(ERR_DROP, "CM_LoadMap: %s has wrong version number(%i should be %i)", name, header.version, BSP_VERSION);
 	}
 
 	cmod_base = (byte *)buf.i;
@@ -678,7 +682,9 @@ CM_ClearMap
 =======================================================================================================================================
 */
 void CM_ClearMap(void) {
+
 	Com_Memset(&cm, 0, sizeof(cm));
+
 	CM_ClearLevelPatches();
 }
 
@@ -779,14 +785,11 @@ int CM_LeafArea(int leafnum) {
 	return cm.leafs[leafnum].area;
 }
 
-// =======================================================================
-
 /*
 =======================================================================================================================================
 CM_InitBoxHull
 
-Set up the planes and nodes so that the six floats of a bounding box
-can just be stored out and get a proper clipping hull structure.
+Set up the planes and nodes so that the six floats of a bounding box can just be stored out and get a proper clipping hull structure.
 =======================================================================================================================================
 */
 void CM_InitBoxHull(void) {
@@ -865,6 +868,11 @@ clipHandle_t CM_TempBoxModel(const vec3_t mins, const vec3_t maxs, int capsule) 
 	return BOX_MODEL_HANDLE;
 }
 
+/*
+=======================================================================================================================================
+CM_SetTempBoxModelContents
+=======================================================================================================================================
+*/
 void CM_SetTempBoxModelContents(int contents) {
 	box_brush->contents = contents;
 }
@@ -878,6 +886,7 @@ void CM_ModelBounds(clipHandle_t model, vec3_t mins, vec3_t maxs) {
 	cmodel_t *cmod;
 
 	cmod = CM_ClipHandleToModel(model);
+
 	VectorCopy(cmod->mins, mins);
 	VectorCopy(cmod->maxs, maxs);
 }

@@ -339,7 +339,7 @@ void CG_FireFlameChunks(centity_t *cent, vec3_t origin, vec3_t angles, float spe
 	            dot -= 0.99;
 	            dot *= (1.0 /  (1.0 - 0.99));
 	            CG_FlameAdjustSpeed(f, 0.5 * frametime * FLAME_FRICTION_PER_SEC * pow(dot, 4));
-	    }
+	   }
 	}
 
 	    f = f->nextFlameChunk;

@@ -155,7 +155,7 @@ char *CG_BuildLocationString(int clientNum, vec3_t origin, int flag) {
 Team_GetLocation
 
 Report a location for the player. Uses placed nearby target_location entities
-============
+=======================================================================================================================================
 */
 #define MAX_BUFFER 32768
 void CG_LoadLocations(void) {
@@ -326,9 +326,9 @@ void CG_InitLocalEntities(void) {
 }
 
 /*
-==================
+=======================================================================================================================================
 CG_FreeLocalEntity
-==================
+=======================================================================================================================================
 */
 void CG_FreeLocalEntity(localEntity_t *le) {
 	if (!le->prev) {
@@ -410,11 +410,11 @@ or generates more localentities along a trail.
 */
 
 /*
-================
+=======================================================================================================================================
 CG_BloodTrail
 
 Leave expanding blood puffs behind gibs
-================
+=======================================================================================================================================
 */
 // use this to change between particle and trail code
 //#define BLOOD_PARTICLE_TRAIL
@@ -480,9 +480,9 @@ void CG_BloodTrail(localEntity_t *le) {
 }
 
 /*
-================
+=======================================================================================================================================
 CG_FragmentBounceMark
-================
+=======================================================================================================================================
 */
 void CG_FragmentBounceMark(localEntity_t *le, trace_t *trace) {
 	if (le->leMarkType == LEMT_BLOOD && cg_bloodTime.integer) {
@@ -492,8 +492,8 @@ void CG_FragmentBounceMark(localEntity_t *le, trace_t *trace) {
 		if (!(lastBloodMark > cg.time || lastBloodMark > cg.time - 100)) {
 			vec4_t projection, color;
 			int radius = 16 + (rand() & 31);
-			//CG_ImpactMark( cgs.media.bloodDotShaders[rand()%5], trace->endpos, trace->plane.normal, random()*360,
-			//  1,1,1,1, qtrue, radius, qfalse, cg_bloodTime.integer * 1000 );
+			//CG_ImpactMark(cgs.media.bloodDotShaders[rand()%5], trace->endpos, trace->plane.normal, random()*360,
+			//  1,1,1,1, qtrue, radius, qfalse, cg_bloodTime.integer * 1000);
 #if 0
 			VectorSubtract(vec3_origin, trace->plane.normal, projection);
 			projection[3] = radius * 2.0f;
@@ -515,9 +515,9 @@ void CG_FragmentBounceMark(localEntity_t *le, trace_t *trace) {
 }
 
 /*
-================
+=======================================================================================================================================
 CG_FragmentBounceSound
-================
+=======================================================================================================================================
 */
 void CG_FragmentBounceSound(localEntity_t *le, trace_t *trace) {
 	switch (le->leBounceSoundType) {
@@ -570,9 +570,9 @@ void CG_FragmentBounceSound(localEntity_t *le, trace_t *trace) {
 }
 
 /*
-================
+=======================================================================================================================================
 CG_ReflectVelocity
-================
+=======================================================================================================================================
 */
 void CG_ReflectVelocity(localEntity_t *le, trace_t *trace) {
 	vec3_t velocity;
@@ -609,9 +609,9 @@ void CG_ReflectVelocity(localEntity_t *le, trace_t *trace) {
 }
 
 /*
-==============
+=======================================================================================================================================
 CG_AddEmitter
-==============
+=======================================================================================================================================
 */
 void CG_AddEmitter(localEntity_t *le) {
 	vec3_t dir;
@@ -630,9 +630,9 @@ void CG_AddEmitter(localEntity_t *le) {
 void CG_Explodef(vec3_t origin, vec3_t dir, int mass, int type, qhandle_t sound, int forceLowGrav, qhandle_t shader);
 
 /*
-================
+=======================================================================================================================================
 CG_AddFragment
-================
+=======================================================================================================================================
 */
 void CG_AddFragment(localEntity_t *le) {
 	vec3_t newOrigin;
@@ -640,7 +640,7 @@ void CG_AddFragment(localEntity_t *le) {
 	refEntity_t *re = &le->refEntity;
 	float flameAlpha = 0.0;
 	vec3_t flameDir;
-	qboolean    hasFlame = qfalse;
+	qboolean hasFlame = qfalse;
 
 	if (!re->fadeStartTime || re->fadeEndTime < le->endTime) {
 		if (le->endTime - cg.time > 5000) {
@@ -690,7 +690,7 @@ void CG_AddFragment(localEntity_t *le) {
 			VectorClear(flameDir);
 			flameDir[2] = 1;
 
-			le->refEntity.shaderRGBA[3] = ( unsigned char )(255.0 * flameAlpha);
+			le->refEntity.shaderRGBA[3] = (unsigned char)(255.0 * flameAlpha);
 			VectorCopy(flameDir, le->refEntity.fireRiseDir);
 			le->refEntity.customShader = cgs.media.onFireShader;
 			trap_R_AddRefEntityToScene(&le->refEntity);
@@ -711,7 +711,7 @@ void CG_AddFragment(localEntity_t *le) {
 			VectorClear(flameDir);
 			flameDir[2] = 1;
 
-			le->refEntity.shaderRGBA[3] = ( unsigned char )(255.0 * flameAlpha);
+			le->refEntity.shaderRGBA[3] = (unsigned char)(255.0 * flameAlpha);
 			VectorCopy(flameDir, le->refEntity.fireRiseDir);
 			le->refEntity.customShader = cgs.media.onFireShader;
 			trap_R_AddRefEntityToScene(&le->refEntity);
@@ -789,7 +789,7 @@ void CG_AddFragment(localEntity_t *le) {
 		if (hasFlame) {
 			refEntity_t backupEnt = le->refEntity;
 
-			le->refEntity.shaderRGBA[3] = ( unsigned char )(255.0 * flameAlpha);
+			le->refEntity.shaderRGBA[3] = (unsigned char)(255.0 * flameAlpha);
 			VectorCopy(flameDir, le->refEntity.fireRiseDir);
 			le->refEntity.customShader = cgs.media.onFireShader;
 			trap_R_AddRefEntityToScene(&le->refEntity);
@@ -835,7 +835,6 @@ void CG_AddFragment(localEntity_t *le) {
 			if (sizeScale < 0.7) {
 				sizeScale = 0.7;
 			}
-
 			// move us a bit
 			VectorNormalize2(le->pos.trDelta, dir);
 			VectorMA(trace.endpos, 4.0 * sizeScale, dir, org);
@@ -905,7 +904,7 @@ void CG_AddFragment(localEntity_t *le) {
 	if (hasFlame) {
 		refEntity_t backupEnt = le->refEntity;
 
-		le->refEntity.shaderRGBA[3] = ( unsigned char )(255.0 * flameAlpha);
+		le->refEntity.shaderRGBA[3] = (unsigned char)(255.0 * flameAlpha);
 		VectorCopy(flameDir, le->refEntity.fireRiseDir);
 		le->refEntity.customShader = cgs.media.onFireShader;
 		trap_R_AddRefEntityToScene(&le->refEntity);
@@ -919,9 +918,9 @@ void CG_AddFragment(localEntity_t *le) {
 }
 
 /*
-================
+=======================================================================================================================================
 CG_AddMovingTracer
-================
+=======================================================================================================================================
 */
 void CG_AddMovingTracer(localEntity_t *le) {
 	vec3_t start, end, dir;
@@ -934,9 +933,9 @@ void CG_AddMovingTracer(localEntity_t *le) {
 }
 
 /*
-================
+=======================================================================================================================================
 CG_AddSparkElements
-================
+=======================================================================================================================================
 */
 void CG_AddSparkElements(localEntity_t *le) {
 	vec3_t newOrigin;
@@ -964,7 +963,7 @@ void CG_AddSparkElements(localEntity_t *le) {
 
 		//} else
 		//{  // just move it there
-		// VectorCopy( newOrigin, le->refEntity.origin );
+		// VectorCopy(newOrigin, le->refEntity.origin);
 		// trace.fraction = 1.0;
 		//}
 
@@ -988,8 +987,8 @@ void CG_AddSparkElements(localEntity_t *le) {
 		// and floating levels
 
 		// for some reason SFM1.BSP is one big NODROP zone
-		//if ( CG_PointContents( le->refEntity.origin, 0 ) & CONTENTS_NODROP ) {
-		// CG_FreeLocalEntity( le );
+		//if (CG_PointContents(le->refEntity.origin, 0) & CONTENTS_NODROP) {
+		// CG_FreeLocalEntity(le);
 		//return;
 		//}
 
@@ -999,7 +998,7 @@ void CG_AddSparkElements(localEntity_t *le) {
 			return;
 			/*
 			            // reflect the velocity on the trace plane
-			            CG_ReflectVelocity( le, &trace );
+			            CG_ReflectVelocity(le, &trace);
 			            // the intersection is a fraction of the frametime
 			            le->pos.trTime = (int)time;
 			*/
@@ -1012,9 +1011,9 @@ void CG_AddSparkElements(localEntity_t *le) {
 }
 
 /*
-================
+=======================================================================================================================================
 CG_AddFuseSparkElements
-================
+=======================================================================================================================================
 */
 void CG_AddFuseSparkElements(localEntity_t *le) {
 	float FUSE_SPARK_WIDTH = 1.0;
@@ -1043,9 +1042,9 @@ void CG_AddFuseSparkElements(localEntity_t *le) {
 }
 
 /*
-================
+=======================================================================================================================================
 CG_AddBloodElements
-================
+=======================================================================================================================================
 */
 void CG_AddBloodElements(localEntity_t *le) {
 	vec3_t newOrigin;
@@ -1101,9 +1100,9 @@ void CG_AddBloodElements(localEntity_t *le) {
 }
 
 /*
-================
+=======================================================================================================================================
 CG_AddDebrisElements
-================
+=======================================================================================================================================
 */
 void CG_AddDebrisElements(localEntity_t *le) {
 	vec3_t newOrigin;
@@ -1158,8 +1157,8 @@ void CG_AddDebrisElements(localEntity_t *le) {
 		// if it is in a nodrop zone, remove it
 		// this keeps gibs from waiting at the bottom of pits of death
 		// and floating levels
-		//if ( CG_PointContents( trace.endpos, 0 ) & CONTENTS_NODROP ) {
-		//CG_FreeLocalEntity( le );
+		//if (CG_PointContents(trace.endpos, 0) & CONTENTS_NODROP) {
+		//CG_FreeLocalEntity(le);
 		//return;
 		//}
 
@@ -1193,7 +1192,7 @@ void CG_AddDebrisElementsExtended(localEntity_t *le) {
 			// lighting would be lost as soon as the origin went
 			// into the ground
 			VectorCopy(le->refEntity.origin, le->refEntity.lightingOrigin);
-			le->refEntity.renderfx  |= RF_LIGHTING_ORIGIN;
+			le->refEntity.renderfx |= RF_LIGHTING_ORIGIN;
 			oldZ = le->refEntity.origin[2];
 			le->refEntity.origin[2] -= 16 * (1.0 - (float)t / SINK_TIME);
 			trap_R_AddRefEntityToScene(&le->refEntity);
@@ -1250,9 +1249,9 @@ These only do simple scaling or modulation before passing to the renderer
 */
 
 /*
-====================
+=======================================================================================================================================
 CG_AddFadeRGB
-====================
+=======================================================================================================================================
 */
 void CG_AddFadeRGB(localEntity_t *le) {
 	refEntity_t *re = &le->refEntity;
@@ -1280,9 +1279,9 @@ void CG_AddConstRGB(localEntity_t *le) {
 }
 
 /*
-==================
+=======================================================================================================================================
 CG_AddMoveScaleFade
-==================
+=======================================================================================================================================
 */
 static void CG_AddMoveScaleFade(localEntity_t *le) {
 	refEntity_t *re = &le->refEntity;
@@ -1392,9 +1391,9 @@ static void CG_AddFallScaleFade(localEntity_t *le) {
 }
 
 /*
-================
+=======================================================================================================================================
 CG_AddExplosion
-================
+=======================================================================================================================================
 */
 static void CG_AddExplosion(localEntity_t *ex) {
 	refEntity_t *ent = &ex->refEntity;
@@ -1421,13 +1420,13 @@ static void CG_AddExplosion(localEntity_t *ex) {
 }
 
 /*
-================
+=======================================================================================================================================
 CG_AddSpriteExplosion
-================
+=======================================================================================================================================
 */
 static void CG_AddSpriteExplosion(localEntity_t *le) {
 	refEntity_t re = le->refEntity;
-	float c = (le->endTime - cg.time) / ( float ) (le->endTime - le->startTime);
+	float c = (le->endTime - cg.time) / (float) (le->endTime - le->startTime);
 
 	if (c > 1) {
 		c = 1.0; // can happen during connection problems

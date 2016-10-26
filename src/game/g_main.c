@@ -1605,7 +1605,7 @@ void G_UpdateCvars(void) {
 					trap_SetConfigstring(CS_LEGACYINFO, cs);
 				}
 				// Update vote info for clients, if necessary
-				if (cv->vmCvar == &vote_allow_kick || cv->vmCvar == &vote_allow_map   || cv->vmCvar == &vote_allow_matchreset || cv->vmCvar == &vote_allow_gametype || cv->vmCvar == &vote_allow_mutespecs || cv->vmCvar == &vote_allow_nextmap || cv->vmCvar == &vote_allow_config || cv->vmCvar == &vote_allow_referee || cv->vmCvar == &vote_allow_shuffleteamsxp || cv->vmCvar == &vote_allow_shuffleteamsxp_norestart || cv->vmCvar == &vote_allow_swapteams || cv->vmCvar == &vote_allow_friendlyfire || cv->vmCvar == &vote_allow_timelimit || cv->vmCvar == &vote_allow_warmupdamage || cv->vmCvar == &vote_allow_antilag || cv->vmCvar == &vote_allow_balancedteams || cv->vmCvar == &vote_allow_muting || cv->vmCvar == &vote_allow_surrender || cv->vmCvar == &vote_allow_restartcampaign || cv->vmCvar == &vote_allow_nextcampaign || cv->vmCvar == &vote_allow_poll
+				if (cv->vmCvar == &vote_allow_kick || cv->vmCvar == &vote_allow_map || cv->vmCvar == &vote_allow_matchreset || cv->vmCvar == &vote_allow_gametype || cv->vmCvar == &vote_allow_mutespecs || cv->vmCvar == &vote_allow_nextmap || cv->vmCvar == &vote_allow_config || cv->vmCvar == &vote_allow_referee || cv->vmCvar == &vote_allow_shuffleteamsxp || cv->vmCvar == &vote_allow_shuffleteamsxp_norestart || cv->vmCvar == &vote_allow_swapteams || cv->vmCvar == &vote_allow_friendlyfire || cv->vmCvar == &vote_allow_timelimit || cv->vmCvar == &vote_allow_warmupdamage || cv->vmCvar == &vote_allow_antilag || cv->vmCvar == &vote_allow_balancedteams || cv->vmCvar == &vote_allow_muting || cv->vmCvar == &vote_allow_surrender || cv->vmCvar == &vote_allow_restartcampaign || cv->vmCvar == &vote_allow_nextcampaign || cv->vmCvar == &vote_allow_poll
 			) {
 					fVoteFlags = qtrue;
 				} else {
@@ -2815,7 +2815,7 @@ void ExitLevel(void) {
             trap_Cvar_Set("g_currentCampaignMap", va("%i", campaign->current + 1));
 
             trap_SendConsoleCommand(EXEC_APPEND, va("map %s\n", campaign->mapnames[campaign->current + 1]));
-    }
+   }
         else
         {
             char s[MAX_STRING_CHARS];
@@ -2824,29 +2824,29 @@ void ExitLevel(void) {
             if (*s)
             {
                 trap_SendConsoleCommand(EXEC_APPEND, "vstr nextcampaign\n");
-        }
+       }
             else
             {
                // restart the campaign
                 trap_Cvar_Set("g_currentCampaignMap", "0");
 
                 trap_SendConsoleCommand(EXEC_APPEND, va("map %s\n", campaign->mapnames[0]));
-        }
+       }
 
            // FIXME: do we want to do something here?
            // trap_SendConsoleCommand(EXEC_APPEND, "vstr nextmap\n");
-    }
+   }
         break;
 }
     case GT_WOLF_LMS:
         if (level.lmsDoNextMap)
         {
             trap_SendConsoleCommand(EXEC_APPEND, "vstr nextmap\n");
-    }
+   }
         else
         {
             trap_SendConsoleCommand(EXEC_APPEND, "map_restart 0\n");
-    }
+   }
         break;
 
    // MAPVOTE
@@ -2857,24 +2857,24 @@ void ExitLevel(void) {
         if (g_resetXPMapCount.integer)
         {
             level.mapsSinceLastXPReset++;
-    }
+   }
         maxMaps = g_maxMapsVotedFor.integer;
         if (maxMaps > level.mapVoteNumMaps)
         {
             maxMaps = level.mapVoteNumMaps;
-    }
+   }
         for (i = 0; i < maxMaps; i++)
         {
             if (level.mapvoteinfo[level.sortedMaps[i]].lastPlayed != -1)
             {
                 level.mapvoteinfo[level.sortedMaps[i]].lastPlayed++;
-        }
+       }
             curMapVotes = level.mapvoteinfo[level.sortedMaps[i]].numVotes;
             curMapAge = level.mapvoteinfo[level.sortedMaps[i]].lastPlayed;
             if (curMapAge == -1)
             {
                 curMapAge = 9999; // - 1 means never, so set suitably high
-        }
+       }
 
             if (curMapVotes > highMapVote ||
                (curMapVotes == highMapVote && curMapVotes > 0 &&
@@ -2884,16 +2884,16 @@ void ExitLevel(void) {
                 nextMap = level.sortedMaps[i];
                 highMapVote = curMapVotes;
                 highMapAge = curMapAge;
-        }
-    }
+       }
+   }
         if (highMapVote > 0 && level.mapvoteinfo[nextMap].bspName[0])
         {
             trap_SendConsoleCommand(EXEC_APPEND, va("map %s; set nextmap %s\n", level.mapvoteinfo[nextMap].bspName, g_nextmap.string));
-    }
+   }
         else
         {
             trap_SendConsoleCommand(EXEC_APPEND, "vstr nextmap\n");
-    }
+   }
         break;
 }
     default:

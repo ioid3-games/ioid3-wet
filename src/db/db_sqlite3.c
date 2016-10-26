@@ -87,7 +87,6 @@ int DB_Init() {
 				(void) sqlite3_close(db);
 				return 1;
 			}
-
 			// load from disk into memory
 			result = DB_LoadOrSaveDb(db, to_ospath, 0);
 

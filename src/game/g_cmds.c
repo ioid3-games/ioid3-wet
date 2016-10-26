@@ -81,14 +81,14 @@ qboolean G_MatchOnePlayer(int *plist, char *err, int len) {
 }
 
 /*
-==================
+=======================================================================================================================================
 ClientNumbersFromString
 
 Sets plist to an array of integers that represent client numbers that have
 names that are a partial match for s. List is terminated by a -1.
 
 Returns number of matching clientids.
-==================
+=======================================================================================================================================
 */
 int ClientNumbersFromString(char *s, int *plist) {
 	gclient_t *p;
@@ -160,8 +160,8 @@ void G_TeamDamageStats(gentity_t *ent) {
             ent->client->sess.hits,
             teamHitPct,
             g_teamDamageRestriction.integer
-            ));
-  }
+           ));
+ }
     return;
 }
 */
@@ -232,7 +232,7 @@ static void G_SendSkillRating(gentity_t *ent) {
 #endif
 
 /*
-==================
+=======================================================================================================================================
 G_SendScore_Add
 
     Add score with clientNum at index i of level.sortedClients[] to the string buf.
@@ -241,7 +241,7 @@ G_SendScore_Add
 
     FIXME: FEATURE_MULTIVIEW might be buggy -> powerups var is used to store player class/type (differs from GPL Code)
            playerClass is no longer sent!
-==================
+=======================================================================================================================================
 */
 qboolean G_SendScore_Add(gentity_t *ent, int i, char *buf, int bufsize) {
 	gclient_t *cl = &level.clients[level.sortedClients[i]];
@@ -294,7 +294,7 @@ qboolean G_SendScore_Add(gentity_t *ent, int i, char *buf, int bufsize) {
 	            g_entities[level.sortedClients[i]].s.powerups,
 	            miscFlags,
 	            respawnsLeft
-	            );
+	           );
 
 	if ((strlen(buf) + strlen(entry) + 1) > bufsize) {
 		return qfalse;
@@ -306,11 +306,11 @@ qboolean G_SendScore_Add(gentity_t *ent, int i, char *buf, int bufsize) {
 }
 
 /*
-==================
+=======================================================================================================================================
 G_SendScore
 
 Sends current scoreboard information
-==================
+=======================================================================================================================================
 */
 void G_SendScore(gentity_t *ent) {
 	int i = 0;
@@ -383,21 +383,21 @@ void G_SendScore(gentity_t *ent) {
 }
 
 /*
-==================
+=======================================================================================================================================
 Cmd_Score_f
 
 Request current scoreboard information
-==================
+=======================================================================================================================================
 */
 void Cmd_Score_f(gentity_t *ent) {
 	ent->client->wantsscore = qtrue;
-	//G_SendScore( ent );
+	//G_SendScore(ent);
 }
 
 /*
-==================
+=======================================================================================================================================
 CheatsOk
-==================
+=======================================================================================================================================
 */
 qboolean CheatsOk(gentity_t *ent) {
 	if (!g_cheats.integer) {
@@ -448,11 +448,11 @@ char *ConcatArgs(int start) {
 }
 
 /*
-==================
+=======================================================================================================================================
 SanitizeString
 
 Remove case and control characters
-==================
+=======================================================================================================================================
 */
 void SanitizeString(char *in, char *out, qboolean fToLower) {
 	while (*in) {
@@ -477,19 +477,19 @@ void SanitizeString(char *in, char *out, qboolean fToLower) {
 }
 
 /*
-==================
+=======================================================================================================================================
 ClientNumberFromString
 
 Returns a player number for either a number or name string
 Returns -1 if invalid
-==================
+=======================================================================================================================================
 */
 int ClientNumberFromString(gentity_t *to, char *s) {
 	gclient_t *cl;
 	int idnum;
 	char s2[MAX_STRING_CHARS];
 	char n2[MAX_STRING_CHARS];
-	qboolean  fIsNumber = qtrue;
+	qboolean fIsNumber = qtrue;
 
 	// See if its a number or string
 	for (idnum = 0; idnum < (int)strlen(s) && s[idnum] != 0; idnum++) {
@@ -551,11 +551,11 @@ int GetSkillPointUntilLevelUp(gentity_t *ent, int skill) {
 }
 
 /*
-==================
+=======================================================================================================================================
 Cmd_Give_f
 
 Give items to a client
-==================
+=======================================================================================================================================
 */
 void Cmd_Give_f(gentity_t *ent) {
 	char *name, *amt;
@@ -644,19 +644,19 @@ void Cmd_Give_f(gentity_t *ent) {
 		}
 	}
 
-	/*if ( Q_stricmpn( name, "damage", 6) == 0) {
+	/*if (Q_stricmpn(name, "damage", 6) == 0) {
 	    if(amount) {
-	        name = ConcatArgs( 3 );
+	        name = ConcatArgs(3);
 
-	        if( *name ) {
-	            int client = ClientNumberFromString( ent, name );
-	            if( client >= 0 ) {
-	                G_Damage( &g_entities[client], ent, ent, NULL, NULL, amount, DAMAGE_NO_PROTECTION, MOD_UNKNOWN );
-	          }
-	      } else {
-	            G_Damage( ent, ent, ent, NULL, NULL, amount, DAMAGE_NO_PROTECTION, MOD_UNKNOWN );
-	      }
-	  }
+	        if(*name) {
+	            int client = ClientNumberFromString(ent, name);
+	            if(client >= 0) {
+	                G_Damage(&g_entities[client], ent, ent, NULL, NULL, amount, DAMAGE_NO_PROTECTION, MOD_UNKNOWN);
+	         }
+	     } else {
+	            G_Damage(ent, ent, ent, NULL, NULL, amount, DAMAGE_NO_PROTECTION, MOD_UNKNOWN);
+	     }
+	 }
 
 	    return;
 	}*/
@@ -675,7 +675,7 @@ void Cmd_Give_f(gentity_t *ent) {
 		if (amount) {
 			if (ent->client->ps.weapon
 			    && ent->client->ps.weapon != WP_SATCHEL && ent->client->ps.weapon != WP_SATCHEL_DET
-			    ) {
+			   ) {
 				Add_Ammo(ent, ent->client->ps.weapon, amount, qtrue);
 			}
 		} else {
@@ -709,35 +709,35 @@ void Cmd_Give_f(gentity_t *ent) {
 		}
 	}
 	// spawn a specific item right on the player
-	/*if ( !give_all ) {
+	/*if (!give_all) {
 	    it = BG_FindItem (name);
 	    if (!it) {
 	        return;
-	  }
+	 }
 
 	    it_ent = G_Spawn();
-	    VectorCopy( ent->r.currentOrigin, it_ent->s.origin );
+	    VectorCopy(ent->r.currentOrigin, it_ent->s.origin);
 	    it_ent->classname = it->classname;
 	    G_SpawnItem (it_ent, it);
-	    FinishSpawningItem(it_ent );
-	    memset( &trace, 0, sizeof( trace ) );
+	    FinishSpawningItem(it_ent);
+	    memset(&trace, 0, sizeof(trace));
 	    it_ent->active = qtrue;
 	    Touch_Item (it_ent, ent, &trace);
 	    it_ent->active = qfalse;
 	    if (it_ent->inuse) {
-	        G_FreeEntity( it_ent );
-	  }
+	        G_FreeEntity(it_ent);
+	 }
 	}*/
 }
 
 /*
-==================
+=======================================================================================================================================
 Cmd_God_f
 
 Sets client to godmode
 
 argv(0) god
-==================
+=======================================================================================================================================
 */
 void Cmd_God_f(gentity_t *ent) {
 	char *msg;
@@ -757,7 +757,7 @@ void Cmd_God_f(gentity_t *ent) {
 	// can only use this cheat in single player
 	if (godAll && g_gametype.integer == GT_SINGLE_PLAYER) {
 		int j;
-		qboolean  settingFlag = qtrue;
+		qboolean settingFlag = qtrue;
 		gentity_t *other;
 
 		// are we turning it on or off?
@@ -803,13 +803,13 @@ void Cmd_God_f(gentity_t *ent) {
 }
 
 /*
-==================
+=======================================================================================================================================
 Cmd_Nofatigue_f
 
 Sets client to nofatigue
 
 argv(0) nofatigue
-==================
+=======================================================================================================================================
 */
 void Cmd_Nofatigue_f(gentity_t *ent) {
 	char *msg;
@@ -837,13 +837,13 @@ void Cmd_Nofatigue_f(gentity_t *ent) {
 }
 
 /*
-==================
+=======================================================================================================================================
 Cmd_Notarget_f
 
 Sets client to notarget
 
 argv(0) notarget
-==================
+=======================================================================================================================================
 */
 void Cmd_Notarget_f(gentity_t *ent) {
 	char *msg;
@@ -864,11 +864,11 @@ void Cmd_Notarget_f(gentity_t *ent) {
 }
 
 /*
-==================
+=======================================================================================================================================
 Cmd_Noclip_f
 
 argv(0) noclip
-==================
+=======================================================================================================================================
 */
 void Cmd_Noclip_f(gentity_t *ent) {
 	char *msg;
@@ -1069,7 +1069,6 @@ qboolean SetTeam(gentity_t *ent, char *s, qboolean force, weapon_t w1, weapon_t 
 				CP("cp \"The Allies have too many players.\n\"");
 				return qfalse; // ignore the request
 			}
-
 			// It's ok, the team we are switching to has less or same number of players
 		}
 	}
@@ -1310,20 +1309,20 @@ int G_NumPlayersWithWeapon(weapon_t weap, team_t team) {
         if (level.clients[j].sess.playerType != PC_SOLDIER)
         {
             continue;
-      }
+     }
 
         if (level.clients[j].sess.sessionTeam != team)
         {
             continue;
-      }
+     }
 
         if (level.clients[j].sess.latchPlayerWeapon != weap && level.clients[j].sess.playerWeapon != weap)
         {
             continue;
-      }
+     }
 
         cnt++;
-  }
+ }
 
     return cnt;
 }
@@ -1934,7 +1933,7 @@ void Cmd_Team_f(gentity_t *ent, unsigned int dwCommand, qboolean fValue) {
 	team_t team;
 	spectatorState_t specState;
 	int specClient;
-	qboolean         classChange;
+	qboolean classChange;
 
 	if (trap_Argc() < 2) {
 		char *pszTeamName;
@@ -2296,9 +2295,9 @@ void G_HQSay(gentity_t *other, int color, const char *name, const char *message)
 }
 
 /*
-==================
+=======================================================================================================================================
 G_Say
-==================
+=======================================================================================================================================
 */
 #define MAX_SAY_TEXT    150
 
@@ -2423,9 +2422,9 @@ void G_Say(gentity_t *ent, gentity_t *target, int mode, const char *chatText) {
 }
 
 /*
-==================
+=======================================================================================================================================
 Cmd_Say_f
-==================
+=======================================================================================================================================
 */
 void Cmd_Say_f(gentity_t *ent, int mode, qboolean arg0) {
 	if (trap_Argc() < 2 && !arg0) {
@@ -2456,7 +2455,7 @@ void G_VoiceTo(gentity_t *ent, gentity_t *other, int mode, const char *id, qbool
 		if (ent->client->sess.playerType == PC_COVERTOPS &&
 		    ent->client->ps.powerups[PW_OPS_DISGUISED] &&
 		    (!Q_stricmp(id, "Medic") || !Q_stricmp(id, "NeedAmmo") || !Q_stricmp(id, "FTHealMe") || !Q_stricmp(id, "FTResupplyMe"))
-		    ) {
+		   ) {
 			disguise = qtrue;
 		} else {
 			return;
@@ -2603,9 +2602,9 @@ void G_Voice(gentity_t *ent, gentity_t *target, int mode, const char *id, qboole
 }
 
 /*
-==================
+=======================================================================================================================================
 Cmd_Voice_f
-==================
+=======================================================================================================================================
 */
 static void Cmd_Voice_f(gentity_t *ent, int mode, qboolean arg0, qboolean voiceonly) {
 	if (mode != SAY_BUDDY) {
@@ -2634,18 +2633,18 @@ static void Cmd_Voice_f(gentity_t *ent, int mode, qboolean arg0, qboolean voiceo
 }
 
 /*
-==================
+=======================================================================================================================================
 Cmd_Where_f
-==================
+=======================================================================================================================================
 */
 void Cmd_Where_f(gentity_t *ent) {
 	trap_SendServerCommand(ent - g_entities, va("print \"%s\n\"", vtos(ent->r.currentOrigin)));
 }
 
 /*
-==================
+=======================================================================================================================================
 Cmd_CallVote_f
-==================
+=======================================================================================================================================
 */
 qboolean Cmd_CallVote_f(gentity_t *ent, unsigned int dwCommand, qboolean fRefCommand) {
 	int i;
@@ -2670,7 +2669,7 @@ qboolean Cmd_CallVote_f(gentity_t *ent, unsigned int dwCommand, qboolean fRefCom
 			CP("cp \"Cannot callvote during intermission.\"");
 			return qfalse;
 		} else if (!ent->client->sess.referee) {
-			qboolean sbfNoVoteLimit = qfalse; //G_shrubbot_permission( ent, SBF_NO_VOTE_LIMIT ); // FIXME this is Lua/game manager stuff
+			qboolean sbfNoVoteLimit = qfalse; //G_shrubbot_permission(ent, SBF_NO_VOTE_LIMIT); // FIXME this is Lua/game manager stuff
 
 			if (voteFlags.integer == VOTING_DISABLED && !sbfNoVoteLimit) {
 				CP("cp \"Voting not enabled on this server.\"");
@@ -2684,7 +2683,7 @@ qboolean Cmd_CallVote_f(gentity_t *ent, unsigned int dwCommand, qboolean fRefCom
 				return qfalse;
 			}
 			// flag to control vote permissions
-			//else if ( !sbfNoVoteLimit && G_shrubbot_permission(ent, SBF_NOVOTE) ) {
+			//else if (!sbfNoVoteLimit && G_shrubbot_permission(ent, SBF_NOVOTE)) {
 			//	CP("cp \"Your adminlevel isn't allowed to call votes.\"");
 			//	return qfalse;
 			//}
@@ -2812,9 +2811,9 @@ qboolean G_FindFreeComplainIP(gclient_t *cl, ipFilter_t *ip) {
 }
 
 /*
-==================
+=======================================================================================================================================
 Cmd_Vote_f
-==================
+=======================================================================================================================================
 */
 void Cmd_Vote_f(gentity_t *ent) {
 	char msg[64];
@@ -3168,9 +3167,9 @@ qboolean G_TankIsMountable(gentity_t *ent, gentity_t *other) {
 }
 
 /*
-==================
+=======================================================================================================================================
 Cmd_Activate_f
-==================
+=======================================================================================================================================
 */
 qboolean Do_Activate2_f(gentity_t *ent, gentity_t *traceEnt) {
 	qboolean found = qfalse;
@@ -3185,7 +3184,7 @@ qboolean Do_Activate2_f(gentity_t *ent, gentity_t *traceEnt) {
 					if (BODY_VALUE(traceEnt) >= 250) {
 						traceEnt->nextthink = traceEnt->timestamp + BODY_TIME(BODY_TEAM(traceEnt));
 
-						//BG_AnimScriptEvent( &ent->client->ps, ent->client->pers.character->animModelInfo, ANIM_ET_PICKUPGRENADE, qfalse, qtrue );
+						//BG_AnimScriptEvent(&ent->client->ps, ent->client->pers.character->animModelInfo, ANIM_ET_PICKUPGRENADE, qfalse, qtrue);
 						//ent->client->ps.pm_flags |= PMF_TIME_LOCKPLAYER;
 						//ent->client->ps.pm_time = 2100;
 
@@ -3196,7 +3195,7 @@ qboolean Do_Activate2_f(gentity_t *ent, gentity_t *traceEnt) {
 
 						BODY_TEAM(traceEnt) += 4;
 						traceEnt->activator = ent;
-						traceEnt->s.eFlags  |= EF_HEADSHOT; // remove hat
+						traceEnt->s.eFlags |= EF_HEADSHOT; // remove hat
 
 						traceEnt->s.time2 = 1;
 
@@ -3419,8 +3418,8 @@ void Cmd_Activate_f(gentity_t *ent) {
 	vec3_t end;
 	gentity_t *traceEnt;
 	vec3_t forward, right, up, offset;
-	qboolean  found;
-	qboolean  pass2 = qfalse;
+	qboolean found;
+	qboolean pass2 = qfalse;
 
 	if (ent->health <= 0) {
 		return;
@@ -3477,7 +3476,7 @@ void Cmd_Activate_f(gentity_t *ent) {
 	if (ent->client->ps.leanf) {
 		VectorMA(offset, ent->client->ps.leanf, right, offset);
 	}
-	//VectorMA( offset, 256, forward, end );
+	//VectorMA(offset, 256, forward, end);
 	VectorMA(offset, 96, forward, end);
 
 	trap_Trace(&tr, offset, NULL, NULL, end, ent->s.number, (CONTENTS_SOLID | CONTENTS_MISSILECLIP | CONTENTS_BODY | CONTENTS_CORPSE));
@@ -3548,7 +3547,7 @@ qboolean G_PushPlayer(gentity_t *ent, gentity_t *victim) {
 		if (g_misc.integer & G_MISC_SHOVE_NOZ) {
 			push[2] = 64;
 		} else {
-			push[2] = dir[2] * g_shove.integer * 4; // like in etpro, shoving up gives only 350 speed ( jump gives 270 )
+			push[2] = dir[2] * g_shove.integer * 4; // like in etpro, shoving up gives only 350 speed (jump gives 270)
 		}
 	} else {
 		// give them a little hop
@@ -3576,8 +3575,8 @@ void Cmd_Activate2_f(gentity_t *ent) {
 	vec3_t end;
 	gentity_t *traceEnt;
 	vec3_t forward, right, up, offset;
-	qboolean  found;
-	qboolean  pass2 = qfalse;
+	qboolean found;
+	qboolean pass2 = qfalse;
 
 	if (ent->health <= 0)  // uch
 	{
@@ -3683,9 +3682,9 @@ void G_UpdateSpawnCounts(void) {
 }
 
 /*
-============
+=======================================================================================================================================
 Cmd_SetSpawnPoint_f
-============
+=======================================================================================================================================
 */
 void SetPlayerSpawn(gentity_t *ent, int spawn, qboolean update) {
 	ent->client->sess.spawnObjectiveIndex = spawn;
@@ -3777,7 +3776,7 @@ void Cmd_IntermissionWeaponStats_f(gentity_t *ent) {
 
 void G_MakeReady(gentity_t *ent) {
 	ent->client->ps.eFlags |= EF_READY;
-	ent->s.eFlags          |= EF_READY;
+	ent->s.eFlags |= EF_READY;
 	ent->client->pers.ready = qtrue;
 }
 

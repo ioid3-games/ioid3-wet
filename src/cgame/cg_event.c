@@ -700,19 +700,19 @@ typedef struct fxSound_s {
 
 static fxSound_t fxSounds[FXTYPE_MAX] = {
 	// wood
-	{1, {-1, -1, -1}, {"sound/world/boardbreak.wav",  NULL,                          NULL                        }},
+	{1, {-1, -1, -1}, {"sound/world/boardbreak.wav",  NULL,                          NULL                       }},
 	// glass
 	{3, {-1, -1, -1}, {"sound/world/glassbreak1.wav", "sound/world/glassbreak2.wav", "sound/world/glassbreak3.wav"}},
 	// metal
-	{1, {-1, -1, -1}, {"sound/world/metalbreak.wav",  NULL,                          NULL                        }},
+	{1, {-1, -1, -1}, {"sound/world/metalbreak.wav",  NULL,                          NULL                       }},
 	// gibs
-	{1, {-1, -1, -1}, {"sound/player/gib.wav",        NULL,                          NULL                        }}, // "sound/world/gibsplit1.wav"
+	{1, {-1, -1, -1}, {"sound/player/gib.wav",        NULL,                          NULL                       }}, // "sound/world/gibsplit1.wav"
 	// brick
-	{1, {-1, -1, -1}, {"sound/world/debris1.wav",     NULL,                          NULL                        }},
+	{1, {-1, -1, -1}, {"sound/world/debris1.wav",     NULL,                          NULL                       }},
 	// stone
-	{1, {-1, -1, -1}, {"sound/world/stonefall.wav",   NULL,                          NULL                        }},
+	{1, {-1, -1, -1}, {"sound/world/stonefall.wav",   NULL,                          NULL                       }},
 	// fabric
-	{1, {-1, -1, -1}, {"sound/world/fabricbreak.wav", NULL,                          NULL                        }}
+	{1, {-1, -1, -1}, {"sound/world/fabricbreak.wav", NULL,                          NULL                       }}
 };
 
 /**
@@ -776,7 +776,7 @@ void CG_Explode(centity_t *cent, vec3_t origin, vec3_t dir, qhandle_t shader) {
 		            sound,                                  // sound
 		            cent->currentState.weapon,              // forceLowGrav
 		            shader
-		            );
+		           );
 	} else {
 		if (cent->currentState.dl_intensity == -1) {
 			CG_Explodef(origin,
@@ -786,7 +786,7 @@ void CG_Explode(centity_t *cent, vec3_t origin, vec3_t dir, qhandle_t shader) {
 			            0,                                      // sound
 			            cent->currentState.weapon,              // forceLowGrav
 			            shader
-			            );
+			           );
 		} else {
 			CG_Explodef(origin,
 			            dir,
@@ -795,7 +795,7 @@ void CG_Explode(centity_t *cent, vec3_t origin, vec3_t dir, qhandle_t shader) {
 			            CG_GetGameSound(cent->currentState.dl_intensity),     // sound
 			            cent->currentState.weapon,              // forceLowGrav
 			            shader
-			            );
+			           );
 		}
 	}
 }
@@ -846,7 +846,7 @@ void CG_Rubble(centity_t *cent, vec3_t origin, vec3_t dir, qhandle_t shader) {
 		            shader,
 		            cent->currentState.angles2[0],
 		            cent->currentState.angles2[1]
-		            );
+		           );
 	} else {
 		if (cent->currentState.dl_intensity == -1) {
 			CG_RubbleFx(origin,
@@ -858,7 +858,7 @@ void CG_Rubble(centity_t *cent, vec3_t origin, vec3_t dir, qhandle_t shader) {
 			            shader,
 			            cent->currentState.angles2[0],
 			            cent->currentState.angles2[1]
-			            );
+			           );
 		} else {
 			CG_RubbleFx(origin,
 			            dir,
@@ -869,7 +869,7 @@ void CG_Rubble(centity_t *cent, vec3_t origin, vec3_t dir, qhandle_t shader) {
 			            shader,
 			            cent->currentState.angles2[0],
 			            cent->currentState.angles2[1]
-			            );
+			           );
 		}
 	}
 }
@@ -1138,7 +1138,6 @@ void CG_RubbleFx(vec3_t origin, vec3_t dir, int mass, int type, sfxHandle_t soun
 
 				le->bounceFactor = 0.4f;
 			}
-
 			// rotation
 			le->angles.trType = TR_LINEAR;
 			le->angles.trTime = cg.time;
@@ -1441,7 +1440,6 @@ void CG_Explodef(vec3_t origin, vec3_t dir, int mass, int type, qhandle_t sound,
 
 				le->bounceFactor = 0.4f;
 			}
-
 			// rotation
 			le->angles.trType = TR_LINEAR;
 			le->angles.trTime = cg.time;
@@ -1534,7 +1532,7 @@ void CG_Effect(centity_t *cent, vec3_t origin, vec3_t dir) {
 		VectorMA(origin, 16, dir, sprOrg);
 		VectorScale(dir, 100, sprVel);
 		CG_ParticleExplosion("explode1", sprOrg, sprVel, 500, 20, 160, qtrue);
-		//CG_ParticleExplosion( "blueexp", sprOrg, sprVel, 1200, 9, 300 );
+		//CG_ParticleExplosion("blueexp", sprOrg, sprVel, 1200, 9, 300);
 
 		if (cg_markTime.integer) {
 			vec4_t color, projection;
@@ -1586,7 +1584,7 @@ void CG_Effect(centity_t *cent, vec3_t origin, vec3_t dir) {
 		le->pos.trType = TR_GRAVITY;
 		VectorCopy(origin, le->pos.trBase);
 
-		//VectorCopy( velocity, le->pos.trDelta );
+		//VectorCopy(velocity, le->pos.trDelta);
 		VectorNormalize(dir);
 		VectorMA(dir, 200, dir, le->pos.trDelta);
 
@@ -1622,7 +1620,7 @@ void CG_Shard(centity_t *cent, vec3_t origin, vec3_t dir) {
 	int howmany = cent->currentState.frame;
 	int i;
 	int rval;
-	qboolean      isflyingdebris = qfalse;
+	qboolean isflyingdebris = qfalse;
 
 	for (i = 0; i < howmany; i++) {
 		le = CG_AllocLocalEntity();
@@ -2103,9 +2101,9 @@ void CG_EntityEvent(centity_t *cent, vec3_t position) {
 			if (cg.demoPlayback || (cg.snap->ps.pm_flags & PMF_FOLLOW) ||
 			    cg_nopredict.integer
 #ifdef ALLOW_GSYNC
-			    || cg_synchronousClients.integer
+			 || cg_synchronousClients.integer
 #endif // ALLOW_GSYNC
-			    ) {
+			   ) {
 				break;
 			}
 			// check for stepping up before a previous step is completed
@@ -2116,7 +2114,6 @@ void CG_EntityEvent(centity_t *cent, vec3_t position) {
 			} else {
 				oldStep = 0;
 			}
-
 			// add this amount
 			step = 4 * (event - EV_STEP_4 + 1);
 			cg.stepChange = oldStep + step;
@@ -2174,7 +2171,6 @@ void CG_EntityEvent(centity_t *cent, vec3_t position) {
 			{
 				trap_S_StartSound(NULL, es->number, CHAN_AUTO, cgs.media.itemPickUpSounds[index]);
 			}
-
 			// show icon and name on status bar
 			if (es->number == cg.snap->ps.clientNum) {
 				CG_ItemPickup(index);
@@ -2198,7 +2194,6 @@ void CG_EntityEvent(centity_t *cent, vec3_t position) {
 			if (*item->pickup_sound) {
 				trap_S_StartSound(NULL, es->number, CHAN_AUTO, cgs.media.itemPickUpSounds[index]);
 			}
-
 			// show icon and name on status bar
 			if (es->number == cg.snap->ps.clientNum) {
 				CG_ItemPickup(index);
@@ -2499,7 +2494,7 @@ void CG_EntityEvent(centity_t *cent, vec3_t position) {
 		break;
 	case EV_SHOVE_SOUND:
 		DEBUGNAME("EV_SHOVE_SOUND");
-		//if ( cg_shoveSounds.integer ) {
+		//if (cg_shoveSounds.integer) {
 		// origin is NULL!
 		trap_S_StartSoundVControl(NULL, es->number, CHAN_AUTO, cgs.media.shoveSound, 255);
 		//}
@@ -2719,7 +2714,7 @@ void CG_EntityEvent(centity_t *cent, vec3_t position) {
 		break;
 	case EV_STOPSTREAMINGSOUND:
 		DEBUGNAME("EV_STOPSTREAMINGSOUND");
-		//trap_S_StopStreamingSound( es->number );
+		//trap_S_StopStreamingSound(es->number);
 		trap_S_StartSoundEx(NULL, es->number, CHAN_WEAPON, 0, SND_CUTOFF_ALL); // kill weapon sound (could be reloading)
 		break;
 	case EV_LOSE_HAT:

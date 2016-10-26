@@ -1242,7 +1242,7 @@ vec4_t clrRenderTeamButton4 = {1.f, 0.f, 0.f, 0.75f};
 void CG_LimboPanel_RenderTeamButton(panel_button_t *button) {
 	rectDef_t lock;
 	qhandle_t shader;
-	qboolean  teamDisabled;
+	qboolean teamDisabled;
 
 	teamDisabled = CG_LimboPanel_TeamIsDisabled(teamOrder[button->data[0]]);
 
@@ -1489,14 +1489,14 @@ void CG_LimboPanel_RenderObjectiveText(panel_button_t *button) {
 	int status = 0;
 
 	if (cg_gameType.integer == GT_WOLF_LMS) {
-		//cs = CG_ConfigString( CS_MULTI_MAPDESC );
-		//Q_strncpyz( buffer, cs, sizeof(buffer) );
+		//cs = CG_ConfigString(CS_MULTI_MAPDESC);
+		//Q_strncpyz(buffer, cs, sizeof(buffer));
 
 		Q_strncpyz(buffer, cg.objMapDescription_Neutral, sizeof(buffer));
 	} else {
 		if (CG_LimboPanel_GetTeam() == TEAM_SPECTATOR) {
-			//cs = CG_ConfigString( CS_MULTI_MAPDESC3 );
-			//Q_strncpyz( buffer, cs, sizeof(buffer) );
+			//cs = CG_ConfigString(CS_MULTI_MAPDESC3);
+			//Q_strncpyz(buffer, cs, sizeof(buffer));
 
 			Q_strncpyz(buffer, cg.objMapDescription_Neutral, sizeof(buffer));
 		} else {
@@ -1504,11 +1504,11 @@ void CG_LimboPanel_RenderObjectiveText(panel_button_t *button) {
 				cs = CG_ConfigString(CS_MULTI_OBJECTIVE);
 
 				if (CG_LimboPanel_GetTeam() == TEAM_AXIS) {
-					//info = Info_ValueForKey( cs, "axis_desc" );
+					//info = Info_ValueForKey(cs, "axis_desc");
 					info = cg.objDescription_Axis[cgs.ccSelectedObjective];
 					status = atoi(Info_ValueForKey(cs, va("x%i", cgs.ccSelectedObjective + 1)));
 				} else {
-					//info = Info_ValueForKey( cs, "allied_desc" );
+					//info = Info_ValueForKey(cs, "allied_desc");
 					info = cg.objDescription_Allied[cgs.ccSelectedObjective];
 					status = atoi(Info_ValueForKey(cs, va("a%i", cgs.ccSelectedObjective + 1)));
 				}
@@ -1597,14 +1597,14 @@ qboolean CG_LimboPanel_RenderLight_GetValue(panel_button_t *button) {
 
 void CG_LimboPanel_RenderLight(panel_button_t *button) {
 	if (CG_LimboPanel_RenderLight_GetValue(button)) {
-//      if( !button->data[2] || (button->data[2] - cg.time < 0) ) {
+//      if(!button->data[2] || (button->data[2] - cg.time < 0)) {
 		button->data[3] = button->data[3] ^ 1;
-//          if( button->data[3] ) {
+//          if(button->data[3]) {
 //              button->data[2] = cg.time + rand() % 200;
-//        } else {
+//       } else {
 //              button->data[2] = cg.time + rand() % 1000;
-//        }
-//    }
+//       }
+//   }
 
 		CG_DrawPic(button->rect.x - 4, button->rect.y - 2, button->rect.w + 4, button->rect.h + 4, button->data[3] ? cgs.media.limboLight_on2 : cgs.media.limboLight_on);
 	} else {
@@ -1659,7 +1659,7 @@ void CG_DrawPlayerHead(rectDef_t *rect, bg_character_t *character, bg_character_
 	// calculate distance so the head nearly fills the box
 	// assume heads are taller than wide
 	len = 3.5f * (maxs[2] - mins[2]);
-	origin[0] = len / tan(20 / 2); // 0.268; // len / tan( fov/2 )
+	origin[0] = len / tan(20 / 2); // 0.268; // len / tan(fov/2)
 
 	angles[PITCH] = pitch;
 	angles[YAW] = yaw;
@@ -1673,7 +1673,7 @@ void CG_DrawPlayerHead(rectDef_t *rect, bg_character_t *character, bg_character_
 	head.renderfx = RF_NOSHADOW | RF_FORCENOLOD; // no stencil shadows
 
 	// light the model with the current lightgrid
-	//VectorCopy( cg.refdef.vieworg, head.lightingOrigin );
+	//VectorCopy(cg.refdef.vieworg, head.lightingOrigin);
 
 	if (!cg.showGameView) {
 		head.renderfx |= /*RF_LIGHTING_ORIGIN |*/ RF_MINLIGHT;
@@ -1688,7 +1688,7 @@ void CG_DrawPlayerHead(rectDef_t *rect, bg_character_t *character, bg_character_
 		hat.renderfx = RF_NOSHADOW | RF_FORCENOLOD; // no stencil shadows
 
 		// light the model with the current lightgrid
-		//VectorCopy( cg.refdef.vieworg, hat.lightingOrigin );
+		//VectorCopy(cg.refdef.vieworg, hat.lightingOrigin);
 
 		if (!cg.showGameView) {
 			hat.renderfx |= /*RF_LIGHTING_ORIGIN |*/ RF_MINLIGHT;
@@ -1764,8 +1764,8 @@ void CG_LimboPanel_RenderHead(panel_button_t *button) {
 		CG_FillRect(button->rect.x, button->rect.y, button->rect.w, button->rect.h, clrBackRenderHead);
 		CG_DrawPlayerHead(&button->rect, CG_LimboPanel_GetCharacter(), CG_LimboPanel_GetCharacter(), 180, 0, qtrue, HD_IDLE4, 0, cgs.clientinfo[cg.clientNum].rank, qfalse, CG_LimboPanel_GetTeam());
 	} else {
-		//CG_FillRect( button->rect.x, button->rect.y, button->rect.w, button->rect.h, colorBlack );
-		//CG_DrawPlayerHead( &button->rect, BG_GetCharacter( TEAM_ALLIES, PC_SOLDIER ), BG_GetCharacter( TEAM_ALLIES, PC_SOLDIER ), 180, 0, qtrue, HD_IDLE4, 0, 0, qtrue );
+		//CG_FillRect(button->rect.x, button->rect.y, button->rect.w, button->rect.h, colorBlack);
+		//CG_DrawPlayerHead(&button->rect, BG_GetCharacter(TEAM_ALLIES, PC_SOLDIER), BG_GetCharacter(TEAM_ALLIES, PC_SOLDIER), 180, 0, qtrue, HD_IDLE4, 0, 0, qtrue);
 
 		CG_DrawPic(button->rect.x, button->rect.y, button->rect.w, button->rect.h, cgs.media.limboSpectator);
 	}

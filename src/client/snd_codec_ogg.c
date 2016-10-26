@@ -193,6 +193,7 @@ S_OGG_CodecOpenStream
 */
 snd_stream_t *S_OGG_CodecOpenStream(const char *filename) {
 	snd_stream_t *stream;
+
 	// OGG codec control structure
 	OggVorbis_File *vf;
 	// some variables used to get informations about the OGG
@@ -279,6 +280,7 @@ S_OGG_CodecCloseStream
 =======================================================================================================================================
 */
 void S_OGG_CodecCloseStream(snd_stream_t *stream) {
+
 	// check if input is valid
 	if (!stream) {
 		return;

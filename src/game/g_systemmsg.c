@@ -127,21 +127,21 @@ void G_CheckForNeededClasses(void) {
         if (!ent->client || !ent->inuse)
         {
             break;
-    }
+   }
 
        // don't want spectators
         if (ent->client->sess.sessionTeam < TEAM_AXIS ||
             ent->client->sess.sessionTeam > TEAM_ALLIES)
         {
             continue;
-    }
+   }
 
         team = ent->client->sess.sessionTeam == TEAM_AXIS ? 0 : 1;
 
         if (ent->client->sess.playerType != PC_SOLDIER)
         {
             playerClasses[ent->client->sess.playerType - 1][team] = qtrue;
-    }
+   }
 
         teamCounts[team]++;
 }
@@ -151,7 +151,7 @@ void G_CheckForNeededClasses(void) {
         if (!playerClasses[PC_ENGINEER - 1])
         {
             playerClasses[PC_ENGINEER - 1][0] = G_NeedEngineers(TEAM_ALLIES) ? 0 : 1;
-    }
+   }
 
         cnt = 0;
         for (i = 0; i < NUM_PLAYER_CLASSES; i++)
@@ -159,8 +159,8 @@ void G_CheckForNeededClasses(void) {
             if (!playerClasses[i][0])
             {
                 cnt++;
-        }
-    }
+       }
+   }
 
         if (cnt != 0)
         {
@@ -173,10 +173,10 @@ void G_CheckForNeededClasses(void) {
                     if (cnt-- == 0)
                     {
                         G_SendSystemMessage(SM_NEED_MEDIC + i, TEAM_AXIS);
-                }
-            }
-        }
-    }
+               }
+           }
+       }
+   }
 }
 
    // AXIS
@@ -184,7 +184,7 @@ void G_CheckForNeededClasses(void) {
         if (!playerClasses[PC_ENGINEER - 1])
         {
             playerClasses[PC_ENGINEER - 1][1] = G_NeedEngineers(TEAM_AXIS) ? 0 : 1;
-    }
+   }
 
         cnt = 0;
         for (i = 0; i < NUM_PLAYER_CLASSES; i++)
@@ -192,8 +192,8 @@ void G_CheckForNeededClasses(void) {
             if (!playerClasses[i][1])
             {
                 cnt++;
-        }
-    }
+       }
+   }
 
         if (cnt != 0)
         {
@@ -206,10 +206,10 @@ void G_CheckForNeededClasses(void) {
                     if (cnt-- == 0)
                     {
                         G_SendSystemMessage(SM_NEED_MEDIC + i, TEAM_ALLIES);
-                }
-            }
-        }
-    }
+               }
+           }
+       }
+   }
 }
 }
 */
@@ -227,25 +227,25 @@ void G_CheckMenDown(void) {
         if (!ent->client || !ent->inuse)
         {
             break;
-    }
+   }
 
        // don't want spectators
         if (ent->client->sess.sessionTeam < TEAM_AXIS ||
             ent->client->sess.sessionTeam > TEAM_ALLIES)
         {
             continue;
-    }
+   }
 
         team = ent->client->sess.sessionTeam == TEAM_AXIS ? 0 : 1;
 
         if (ent->health <= 0)
         {
             dead[team]++;
-    }
+   }
         else
         {
             alive[team]++;
-    }
+   }
 }
 
     if (dead[0] + alive[0] >= 4 && (dead[0] >= ((dead[0] + alive[0]) * 0.75f))) {

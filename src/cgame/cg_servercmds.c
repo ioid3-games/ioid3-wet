@@ -254,9 +254,9 @@ void CG_ParseLegacyinfo(void) {
 }
 
 /*
-==================
+=======================================================================================================================================
 CG_ParseWarmup
-==================
+=======================================================================================================================================
 */
 static void CG_ParseWarmup(void) {
 	const char *info = CG_ConfigString(CS_WARMUP);
@@ -279,9 +279,9 @@ static void CG_ParseWarmup(void) {
 }
 
 /*
-==================
+=======================================================================================================================================
 CG_ParseOIDInfo
-==================
+=======================================================================================================================================
 */
 
 oidInfo_t *CG_OIDInfoForEntityNum(int num) {
@@ -371,9 +371,9 @@ void CG_ParseOIDInfos(void) {
 }
 
 /*
-==================
+=======================================================================================================================================
 CG_ParseWolfinfo
-==================
+=======================================================================================================================================
 */
 void CG_ParseWolfinfo(void) {
 	int old_gs = cgs.gamestate;
@@ -403,9 +403,9 @@ void CG_ParseWolfinfo(void) {
 }
 
 /*
-==================
+=======================================================================================================================================
 CG_ParseSpawns
-==================
+=======================================================================================================================================
 */
 void CG_ParseSpawns(void) {
 	const char *info = CG_ConfigString(CS_MULTI_INFO);
@@ -478,9 +478,9 @@ void CG_ParseSpawns(void) {
 }
 
 /*
-=====================
+=======================================================================================================================================
 CG_ParseScreenFade
-=====================
+=======================================================================================================================================
 */
 static void CG_ParseScreenFade(void) {
 	const char *info = CG_ConfigString(CS_SCREENFADE);
@@ -500,14 +500,14 @@ static void CG_ParseScreenFade(void) {
 }
 
 /*
-==============
+=======================================================================================================================================
 CG_ParseFog
     float near dist
     float far dist
     float density
     float[3] r,g,b
     int time
-==============
+=======================================================================================================================================
 */
 static void CG_ParseFog(void) {
 	const char *info = CG_ConfigString(CS_FOGVARS);
@@ -542,7 +542,7 @@ static void CG_ParseFog(void) {
 static void CG_ParseGlobalFog(void) {
 	const char *info = CG_ConfigString(CS_GLOBALFOGVARS);
 	char *token;
-	qboolean   restore;
+	qboolean restore;
 	int duration;
 
 	token = COM_Parse((char **)&info);
@@ -605,11 +605,11 @@ void CG_ParseReinforcementTimes(const char *pszReinfSeedString) {
 }
 
 /*
-================
+=======================================================================================================================================
 CG_SetConfigValues
 
 Called on load to set the initial values from configure strings
-================
+=======================================================================================================================================
 */
 void CG_SetConfigValues(void) {
 	cgs.levelStartTime = atoi(CG_ConfigString(CS_LEVEL_START_TIME));
@@ -638,9 +638,9 @@ void CG_SetConfigValues(void) {
 }
 
 /*
-=====================
+=======================================================================================================================================
 CG_ShaderStateChanged
-=====================
+=======================================================================================================================================
 */
 void CG_ShaderStateChanged(void) {
 	char originalShader[MAX_QPATH];
@@ -683,9 +683,9 @@ void CG_ShaderStateChanged(void) {
 }
 
 /*
-===============
+=======================================================================================================================================
 CG_ChargeTimesChanged
-===============
+=======================================================================================================================================
 */
 void CG_ChargeTimesChanged(void) {
 	const char *info = CG_ConfigString(CS_CHARGETIMES);
@@ -703,9 +703,9 @@ void CG_ChargeTimesChanged(void) {
 }
 
 /*
-===============
+=======================================================================================================================================
 CG_TeamRestrictionsChanged
-===============
+=======================================================================================================================================
 */
 void CG_TeamRestrictionsChanged(void) {
 	const char *info = CG_ConfigString(CS_TEAMRESTRICTIONS);
@@ -726,9 +726,9 @@ void CG_TeamRestrictionsChanged(void) {
 #define SETSKILL(skill, string) sscanf(string, "%i,%i,%i,%i", &skillLevels[skill][1], &skillLevels[skill][2], &skillLevels[skill][3], &skillLevels[skill][4])
 
 /*
-===============
+=======================================================================================================================================
 CG_SkillLevelsChanged
-===============
+=======================================================================================================================================
 */
 void CG_SkillLevelsChanged(void) {
 	const char *info = CG_ConfigString(CS_UPGRADERANGE);
@@ -743,9 +743,9 @@ void CG_SkillLevelsChanged(void) {
 }
 
 /*
-================
+=======================================================================================================================================
 CG_ConfigStringModified
-================
+=======================================================================================================================================
 */
 static void CG_ConfigStringModified(void) {
 	int num;
@@ -906,9 +906,9 @@ static void CG_ConfigStringModified(void) {
 }
 
 /*
-=======================
+=======================================================================================================================================
 CG_AddToTeamChat
-=======================
+=======================================================================================================================================
 */
 static void CG_AddToTeamChat(const char *str, int clientnum) {
 	int len;
@@ -1002,7 +1002,7 @@ static void CG_AddToTeamChat(const char *str, int clientnum) {
 }
 
 /*
-===============
+=======================================================================================================================================
 CG_MapRestart
 
 The server has issued a map_restart, so the next snapshot
@@ -1010,7 +1010,7 @@ is completely new and should not be interpolated to.
 
 A tournement restart will clear everything, but doesn't
 require a reload of all the media
-===============
+=======================================================================================================================================
 */
 static void CG_MapRestart(void) {
 	if (cg_showmiss.integer) {
@@ -1166,7 +1166,7 @@ int CG_ParseVoiceChats(const char *filename, voiceChatList_t *voiceChatList, int
 	char **p, *ptr;
 	char *token;
 	voiceChat_t *voiceChats;
-	qboolean     compress = qtrue;
+	qboolean compress = qtrue;
 
 	if (cg_buildScript.integer) {
 		compress = qfalse;
@@ -1395,9 +1395,9 @@ void CG_PlayVoiceChat(bufferedVoiceChat_t *vchat) {
 }
 
 /*
-=====================
+=======================================================================================================================================
 CG_PlayBufferedVoieChats
-=====================
+=======================================================================================================================================
 */
 void CG_PlayBufferedVoiceChats(void) {
 	if (cg.voiceChatTime < cg.time) {
@@ -1411,9 +1411,9 @@ void CG_PlayBufferedVoiceChats(void) {
 }
 
 /*
-=====================
+=======================================================================================================================================
 CG_AddBufferedVoiceChat
-=====================
+=======================================================================================================================================
 */
 void CG_AddBufferedVoiceChat(bufferedVoiceChat_t *vchat) {
 	// new system doesn't buffer but overwrites vchats FIXME put this on a cvar to choose which to use
@@ -1498,7 +1498,7 @@ CG_VoiceChat
 void CG_VoiceChat(int mode) {
 	const char *cmd;
 	int clientNum, color;
-	qboolean   voiceOnly;
+	qboolean voiceOnly;
 	vec3_t origin;
 
 	voiceOnly = atoi(CG_Argv(1));
@@ -1549,14 +1549,14 @@ CG_LocalizeServerCommand
 const char *CG_LocalizeServerCommand(const char *buf) {
 	static char token[MAX_TOKEN_CHARS];
 	char temp[MAX_TOKEN_CHARS];
-	qboolean    togloc = qtrue;
+	qboolean togloc = qtrue;
 	const char *s = buf;
 	int i, prev = 0;
 
 	memset(token, 0, sizeof(token));
 
 	for (i = 0; *s; i++, s++) {
-		// line was: if ( *s == '[' && !Q_strncmp( s, "[lon]", 5 ) || !Q_strncmp( s, "[lof]", 5 ) ) {
+		// line was: if (*s == '[' && !Q_strncmp(s, "[lon]", 5) || !Q_strncmp(s, "[lof]", 5)) {
 		// || prevails on &&, gcc warning was 'suggest parentheses around && within ||'
 		// modified to the correct behaviour
 		if (*s == '[' && (!Q_strncmp(s, "[lon]", 5) || !Q_strncmp(s, "[lof]", 5))) {
@@ -1594,9 +1594,9 @@ const char *CG_LocalizeServerCommand(const char *buf) {
 void CG_wstatsParse_cmd(void) {
 	if (cg.showStats) {
 		if (cg.statsWindow == NULL
-		    || cg.statsWindow->id != WID_STATS
-		    || cg.statsWindow->inuse == qfalse
-		    ) {
+		 || cg.statsWindow->id != WID_STATS
+		 || cg.statsWindow->inuse == qfalse
+		   ) {
 			CG_createStatsWindow();
 		} else if (cg.statsWindow->state == WSTATE_SHUTDOWN) {
 			cg.statsWindow->state = WSTATE_START;
@@ -1606,7 +1606,7 @@ void CG_wstatsParse_cmd(void) {
 		if (cg.statsWindow == NULL) {
 			cg.showStats = qfalse;
 		} else {
-			cg.statsWindow->effects  |= WFX_TEXTSIZING;
+			cg.statsWindow->effects |= WFX_TEXTSIZING;
 			cg.statsWindow->lineCount = 0;
 			cg.windowCurrent = cg.statsWindow;
 			CG_parseWeaponStats_cmd(CG_printWindow);
@@ -1806,8 +1806,8 @@ void CG_parseWeaponStatsGS_cmd(void) {
 // Client-side stat presentation
 void CG_parseWeaponStats_cmd(void(txt_dump) (char *)) {
 	clientInfo_t *ci;
-	qboolean     fFull = (txt_dump != CG_printWindow);
-	qboolean     fHasStats = qfalse;
+	qboolean fFull = (txt_dump != CG_printWindow);
+	qboolean fHasStats = qfalse;
 	char strName[MAX_STRING_CHARS];
 	int atts, deaths, hits, kills, headshots;
 	unsigned int i, iArg = 1;
@@ -1836,7 +1836,7 @@ void CG_parseWeaponStats_cmd(void(txt_dump) (char *)) {
 		txt_dump("^7--------------------------------------------------\n");
 	} else {
 		txt_dump(CG_TranslateString("^7Weapon      Acrcy Hits/Shts Kll Dth HS\n"));
-		//txt_dump(     "^7--------------------------------------\n");
+		//txt_dump(    "^7--------------------------------------\n");
 		txt_dump("\n");
 	}
 
@@ -2002,7 +2002,7 @@ void CG_parseBestShotsStats_cmd(qboolean doTop, void(txt_dump) (char *)) {
 		txt_dump("-------------------------------------------------------------\n");
 	} else {
 		txt_dump("^3WP   Acrcy Hits/Shts Kll Dth\n");
-		//  txt_dump(    "-------------------------------------------\n");
+		//  txt_dump(   "-------------------------------------------\n");
 		txt_dump("\n");
 	}
 
@@ -2112,7 +2112,7 @@ void CG_printFile(char *str) {
 
 void CG_dumpStats(void) {
 	qtime_t ct;
-	qboolean   fDoScores = qfalse;
+	qboolean fDoScores = qfalse;
 	const char *info = CG_ConfigString(CS_SERVERINFO);
 	char *s = va("^3>>> %s: ^2%s\n\n", CG_TranslateString("Map"), Info_ValueForKey(info, "mapname"));
 
@@ -2244,7 +2244,6 @@ static void CG_ServerCommand(void) {
 			if (args == 4) {
 				s = va("%s%s", CG_Argv(3), s);
 			}
-
 			// for client logging
 			if (cg_printObjectiveInfo.integer > 0 && (args == 4 || atoi(CG_Argv(2)) > 1)) {
 				CG_Printf("[cgnotify]*** ^3INFO: ^5%s\n", CG_LocalizeServerCommand(CG_Argv(1)));
@@ -2600,7 +2599,7 @@ static void CG_ServerCommand(void) {
 		cg.serverRespawning = qtrue;
 
 		// fade out over the course of 5 seconds, should be enough (nuking: atvi bug 3793)
-		//CG_Fade( 0, 0, 0, 255, cg.time, 5000 );
+		//CG_Fade(0, 0, 0, 255, cg.time, 5000);
 		return;
 	} else if (CG_Debriefing_ServerCommand(cmd)) {
 		return;
@@ -2610,12 +2609,12 @@ static void CG_ServerCommand(void) {
 }
 
 /*
-====================
+=======================================================================================================================================
 CG_ExecuteNewServerCommands
 
 Execute all of the server commands that were received along
 with this this snapshot.
-====================
+=======================================================================================================================================
 */
 void CG_ExecuteNewServerCommands(int latestSequence) {
 	while (cgs.serverCommandSequence < latestSequence) {

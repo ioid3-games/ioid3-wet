@@ -644,7 +644,7 @@ void S_PaintChannelFromMuLaw(channel_t *ch, sfx_t *sc, int count, int sampleOffs
 	int i;
 	portable_samplepair_t *samp = &paintbuffer[bufferOffset];
 	sndBuffer             *chunk = sc->soundData;
-	byte        *samples;
+	byte     *samples;
 
 	while (sampleOffset >= (SND_CHUNK_SIZE * 2)) {
 		chunk = chunk->next;
