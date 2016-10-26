@@ -68,26 +68,26 @@ typedef struct iqmmesh
 
 enum
 {
-	IQM_POSITION     = 0,
-	IQM_TEXCOORD     = 1,
-	IQM_NORMAL       = 2,
-	IQM_TANGENT      = 3,
+	IQM_POSITION = 0,
+	IQM_TEXCOORD = 1,
+	IQM_NORMAL = 2,
+	IQM_TANGENT = 3,
 	IQM_BLENDINDEXES = 4,
 	IQM_BLENDWEIGHTS = 5,
-	IQM_COLOR        = 6,
-	IQM_CUSTOM       = 0x10
+	IQM_COLOR = 6,
+	IQM_CUSTOM = 0x10
 };
 
 enum
 {
-	IQM_BYTE   = 0,
-	IQM_UBYTE  = 1,
-	IQM_SHORT  = 2,
+	IQM_BYTE = 0,
+	IQM_UBYTE = 1,
+	IQM_SHORT = 2,
 	IQM_USHORT = 3,
-	IQM_INT    = 4,
-	IQM_UINT   = 5,
-	IQM_HALF   = 6,
-	IQM_FLOAT  = 7,
+	IQM_INT = 4,
+	IQM_UINT = 5,
+	IQM_HALF = 6,
+	IQM_FLOAT = 7,
 	IQM_DOUBLE = 8
 };
 

@@ -40,7 +40,7 @@
 #endif
 
 #define MAX_WORLD_HEIGHT            MAX_MAP_SIZE   // maximum world height
-#define MIN_WORLD_HEIGHT            - MAX_MAP_SIZE  // minimum world height
+#define MIN_WORLD_HEIGHT - MAX_MAP_SIZE  // minimum world height
 
 //#define TRACEMAP_SIZE             1024
 #define TRACEMAP_SIZE               256
@@ -196,11 +196,12 @@ void CG_GenerateTracemap(void) {
 					if (end[2] >= MAX_WORLD_HEIGHT) {
 						end[2] = MAX_WORLD_HEIGHT - 1;
 					}
+
 					CG_Trace(&tr, start, NULL, NULL, end, ENTITYNUM_NONE, MASK_SOLID);
 					tracecount++;
 
 					if (tr.startsolid)            // Stuck in something, skip over it.
-					{ // can happen, tr.endpos still is valid even if we're starting in a solid but trace out of it hitting the next surface
+					{// can happen, tr.endpos still is valid even if we're starting in a solid but trace out of it hitting the next surface
 						if (tr.surfaceFlags & SURF_SKY) {
 							// are we in a solid?
 							if (!(CG_PointContents(tr.endpos, ENTITYNUM_NONE) & (MASK_SOLID|MASK_WATER))) {
@@ -392,41 +393,41 @@ void CG_GenerateTracemap(void) {
 	trap_FS_FOpenFile(va("maps / %s_tracemap.tga", Q_strlwr(cgs.rawmapname)), &f, FS_WRITE);
 	// header
 	data = 0;
-	trap_FS_Write(&data, sizeof(data), f);     // 0
+	trap_FS_Write(&data, sizeof(data), f); // 0
 	data = 0;
-	trap_FS_Write(&data, sizeof(data), f);     // 1
+	trap_FS_Write(&data, sizeof(data), f); // 1
 	data = 2;
-	trap_FS_Write(&data, sizeof(data), f);     // 2 : uncompressed type
+	trap_FS_Write(&data, sizeof(data), f); // 2 : uncompressed type
 	data = 0;
-	trap_FS_Write(&data, sizeof(data), f);     // 3
+	trap_FS_Write(&data, sizeof(data), f); // 3
 	data = 0;
-	trap_FS_Write(&data, sizeof(data), f);     // 4
+	trap_FS_Write(&data, sizeof(data), f); // 4
 	data = 0;
-	trap_FS_Write(&data, sizeof(data), f);     // 5
+	trap_FS_Write(&data, sizeof(data), f); // 5
 	data = 0;
-	trap_FS_Write(&data, sizeof(data), f);     // 6
+	trap_FS_Write(&data, sizeof(data), f); // 6
 	data = 0;
-	trap_FS_Write(&data, sizeof(data), f);     // 7
+	trap_FS_Write(&data, sizeof(data), f); // 7
 	data = 0;
-	trap_FS_Write(&data, sizeof(data), f);     // 8
+	trap_FS_Write(&data, sizeof(data), f); // 8
 	data = 0;
-	trap_FS_Write(&data, sizeof(data), f);     // 9
+	trap_FS_Write(&data, sizeof(data), f); // 9
 	data = 0;
-	trap_FS_Write(&data, sizeof(data), f);     // 10
+	trap_FS_Write(&data, sizeof(data), f); // 10
 	data = 0;
-	trap_FS_Write(&data, sizeof(data), f);     // 11
+	trap_FS_Write(&data, sizeof(data), f); // 11
 	data = TRACEMAP_SIZE & 255;
-	trap_FS_Write(&data, sizeof(data), f);       // 12 : width
+	trap_FS_Write(&data, sizeof(data), f); // 12 : width
 	data = TRACEMAP_SIZE >> 8;
-	trap_FS_Write(&data, sizeof(data), f);    // 13 : width
+	trap_FS_Write(&data, sizeof(data), f); // 13 : width
 	data = TRACEMAP_SIZE & 255;
-	trap_FS_Write(&data, sizeof(data), f);       // 14 : height
+	trap_FS_Write(&data, sizeof(data), f); // 14 : height
 	data = TRACEMAP_SIZE >> 8;
-	trap_FS_Write(&data, sizeof(data), f);    // 15 : height
+	trap_FS_Write(&data, sizeof(data), f); // 15 : height
 	data = 32;
-	trap_FS_Write(&data, sizeof(data), f);    // 16 : pixel size
+	trap_FS_Write(&data, sizeof(data), f); // 16 : pixel size
 	data = 0;
-	trap_FS_Write(&data, sizeof(data), f);     // 17
+	trap_FS_Write(&data, sizeof(data), f); // 17
 
 	// R: topdown mask
 	// G: there is sky here yes / no mask
@@ -461,33 +462,33 @@ void CG_GenerateTracemap(void) {
 			}
 
 			data = tracemap.sky[TRACEMAP_SIZE - 1 - i][j];
-			trap_FS_Write(&data, sizeof(data), f);    // b
+			trap_FS_Write(&data, sizeof(data), f); // b
 			if (tracemap.skyground[TRACEMAP_SIZE - 1 - i][j] == MIN_WORLD_HEIGHT) {
 				data = 0;
-				trap_FS_Write(&data, sizeof(data), f);     // g
+				trap_FS_Write(&data, sizeof(data), f); // g
 			} else {
 				data = tracemap.skyground[TRACEMAP_SIZE - 1 - i][j];
-				trap_FS_Write(&data, sizeof(data), f);      // g
+				trap_FS_Write(&data, sizeof(data), f); // g
 			}
 
 			if (tracemap.ground[TRACEMAP_SIZE - 1 - i][j] == MIN_WORLD_HEIGHT) {
 				data = 0;
-				trap_FS_Write(&data, sizeof(data), f);     // r
+				trap_FS_Write(&data, sizeof(data), f); // r
 				data = 0;
-				trap_FS_Write(&data, sizeof(data), f);     // a
+				trap_FS_Write(&data, sizeof(data), f); // a
 			} else {
 				data = tracemap.ground[TRACEMAP_SIZE - 1 - i][j];
-				trap_FS_Write(&data, sizeof(data), f);     // r
+				trap_FS_Write(&data, sizeof(data), f); // r
 				data = 255;
-				trap_FS_Write(&data, sizeof(data), f);       // a
+				trap_FS_Write(&data, sizeof(data), f); // a
 			}
 		}
 	}
 	// footer
 	i = 0;
-	trap_FS_Write(&i, sizeof(i), f);      // extension area offset, 4 bytes
+	trap_FS_Write(&i, sizeof(i), f); // extension area offset, 4 bytes
 	i = 0;
-	trap_FS_Write(&i, sizeof(i), f);      // developer directory offset, 4 bytes
+	trap_FS_Write(&i, sizeof(i), f); // developer directory offset, 4 bytes
 	trap_FS_Write("TRUEVISION - XFILE.\0", 18, f);
 
 	trap_FS_FCloseFile(f);
@@ -514,7 +515,7 @@ qboolean BG_LoadTraceMap(char *rawmapname, vec2_t world_mins, vec2_t world_maxs)
 		}
 
 		for (i = 0; i < TRACEMAP_SIZE; i++) {
-			trap_FS_Read(&datablock, sizeof(datablock), f);      // TRACEMAP_SIZE * {b g r a}
+			trap_FS_Read(&datablock, sizeof(datablock), f); // TRACEMAP_SIZE * {b g r a}
 
 			for (j = 0; j < TRACEMAP_SIZE; j++) {
 				if (i == 0 && j < 6) {
@@ -546,7 +547,7 @@ qboolean BG_LoadTraceMap(char *rawmapname, vec2_t world_mins, vec2_t world_maxs)
 					continue;
 				}
 
-				tracemap.sky[TRACEMAP_SIZE - 1 - i][j] = (float)datablock[j][0];   // FIXME: swap
+				tracemap.sky[TRACEMAP_SIZE - 1 - i][j] = (float)datablock[j][0]; // FIXME: swap
 				if (tracemap.sky[TRACEMAP_SIZE - 1 - i][j] == 0) {
 					tracemap.sky[TRACEMAP_SIZE - 1 - i][j] = MAX_WORLD_HEIGHT;
 				}
@@ -578,15 +579,15 @@ qboolean BG_LoadTraceMap(char *rawmapname, vec2_t world_mins, vec2_t world_maxs)
 			            case 3: trap_FS_Read(&skyground_max, sizeof(skyground_max), f); break;
 			            case 4: trap_FS_Read(&sky_min, sizeof(sky_min), f); break;
 			            case 5: trap_FS_Read(&sky_max, sizeof(sky_max), f); break;
-			      }
+			    }
 			        tracemap.sky[TRACEMAP_SIZE - 1 - i][j] = MAX_WORLD_HEIGHT;
 			        tracemap.skyground[TRACEMAP_SIZE - 1 - i][j] = MAX_WORLD_HEIGHT;
 			        tracemap.ground[TRACEMAP_SIZE - 1 - i][j] = MIN_WORLD_HEIGHT;
 			        continue;
-			  }
+			}
 
-			    trap_FS_Read(&datablock, sizeof(datablock), f);  // b g r a
-			    tracemap.sky[TRACEMAP_SIZE - 1 - i][j] = (float)datablock[0];  // FIXME: swap
+			    trap_FS_Read(&datablock, sizeof(datablock), f); // b g r a
+			    tracemap.sky[TRACEMAP_SIZE - 1 - i][j] = (float)datablock[0]; // FIXME: swap
 			    if (tracemap.sky[TRACEMAP_SIZE - 1 - i][j] == 0)
 			        tracemap.sky[TRACEMAP_SIZE - 1 - i][j] = MAX_WORLD_HEIGHT;
 
@@ -595,8 +596,8 @@ qboolean BG_LoadTraceMap(char *rawmapname, vec2_t world_mins, vec2_t world_maxs)
 			    if (tracemap.skyground[TRACEMAP_SIZE - 1 - i][j] == 0)
 			        tracemap.skyground[TRACEMAP_SIZE - 1 - i][j] = MAX_WORLD_HEIGHT;
 
-			   // trap_FS_Read(&data, sizeof(data), f);  // r
-			    tracemap.ground[TRACEMAP_SIZE - 1 - i][j] = (float)datablock[2];   // FIXME: swap
+			   // trap_FS_Read(&data, sizeof(data), f); // r
+			    tracemap.ground[TRACEMAP_SIZE - 1 - i][j] = (float)datablock[2]; // FIXME: swap
 			    if (tracemap.ground[TRACEMAP_SIZE - 1 - i][j] == 0)
 			        tracemap.ground[TRACEMAP_SIZE - 1 - i][j] = MIN_WORLD_HEIGHT;
 
@@ -605,7 +606,7 @@ qboolean BG_LoadTraceMap(char *rawmapname, vec2_t world_mins, vec2_t world_maxs)
 			       // just in case
 			        tracemap.skyground[TRACEMAP_SIZE - 1 - i][j] = MAX_WORLD_HEIGHT;
 			        tracemap.ground[TRACEMAP_SIZE - 1 - i][j] = MIN_WORLD_HEIGHT;
-			  }
+			}
 			}*/
 		}
 

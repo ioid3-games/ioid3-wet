@@ -29,8 +29,8 @@ typedef struct {
 
 typedef struct {
   short closed;
-	int env;                /* reference to environment */
-  short auto_commit;        /* 0 for manual commit */
+	int env; /* reference to environment */
+  short auto_commit; /* 0 for manual commit */
   unsigned int cur_counter;
   sqlite3      *sql_conn;
 } conn_data;
@@ -38,10 +38,10 @@ typedef struct {
 
 typedef struct {
   short closed;
-	int conn;               /* reference to connection */
- int numcols;            /* number of columns */
+	int conn; /* reference to connection */
+ int numcols; /* number of columns */
  int colnames, coltypes; /* reference to column information tables */
-  conn_data   *conn_data;         /* reference to connection for cursor */
+  conn_data   *conn_data; /* reference to connection for cursor */
   sqlite3_stmt  *sql_vm;
 } cur_data;
 
@@ -106,7 +106,7 @@ static int finalize(lua_State *L, cur_data *cur) {
       errmsg = sqlite3_errmsg(cur->conn_data->sql_conn);
       cur_nullify(L, cur);
       return luasql_faildirect(L, errmsg);
-  }
+}
   cur_nullify(L, cur);
   lua_pushnil(L);
   return 1;
@@ -172,8 +172,8 @@ static int cur_fetch(lua_State *L) {
             {
               push_column(L, vm, i);
               lua_rawseti(L, 2, ++i);
-          }
-      }
+        }
+    }
       if (strchr(opts, 'a') != NULL)
         {
           /* Copy values to alphanumerical indices */
@@ -184,11 +184,11 @@ static int cur_fetch(lua_State *L) {
               lua_rawgeti(L, -1, i + 1);
               push_column(L, vm, i);
               lua_rawset(L, 2);
-          }
-      }
+        }
+    }
       lua_pushvalue(L, 2);
       return 1; /* return table */
-  }
+}
   else
     {
    int i;
@@ -196,7 +196,7 @@ static int cur_fetch(lua_State *L) {
       for (i = 0; i < cur->numcols; ++i)
         push_column(L, vm, i);
       return cur->numcols; /* return #numcols values */
-  }
+}
 }
 
 /*
@@ -207,7 +207,7 @@ static int cur_gc(lua_State *L) {
   if (cur != NULL && !(cur->closed)) {
       sqlite3_finalize(cur->sql_vm);
       cur_nullify(L, cur);
-  }
+}
   return 0;
 }
 
@@ -276,7 +276,7 @@ static int create_cursor(lua_State *L, int o, conn_data *conn, sqlite3_stmt *sql
   for (i = 0; i < numcols;) {
       lua_pushstring(L, sqlite3_column_name(sql_vm, i));
       lua_rawseti(L, -2, ++i);
-  }
+}
   cur->colnames = luaL_ref(L, LUA_REGISTRYINDEX);
 
   /* create table with column types */
@@ -284,7 +284,7 @@ static int create_cursor(lua_State *L, int o, conn_data *conn, sqlite3_stmt *sql
   for (i = 0; i < numcols;) {
       lua_pushstring(L, sqlite3_column_decltype(sql_vm, i));
       lua_rawseti(L, -2, ++i);
-  }
+}
   cur->coltypes = luaL_ref(L, LUA_REGISTRYINDEX);
 
   return 1;
@@ -303,7 +303,7 @@ static int conn_gc(lua_State *L) {
       conn->closed = 1;
       luaL_unref(L, LUA_REGISTRYINDEX, conn->env);
       sqlite3_close(conn->sql_conn);
-  }
+}
   return 0;
 }
 
@@ -316,7 +316,7 @@ static int conn_close(lua_State *L) {
   if (conn->closed) {
       lua_pushboolean(L, 0);
       return 1;
-  }
+}
   conn_gc(L);
   lua_pushboolean(L, 1);
   return 1;
@@ -327,12 +327,12 @@ static int conn_escape(lua_State *L) {
   char *escaped = sqlite3_mprintf("%q", from);
   if (escaped == NULL) {
       lua_pushnil(L);
-  }
+}
   else
     {
       lua_pushstring(L, escaped);
       sqlite3_free(escaped);
-  }
+}
   return 1;
 }
 
@@ -357,7 +357,7 @@ static int conn_execute(lua_State *L) {
   if (res != SQLITE_OK) {
       errmsg = sqlite3_errmsg(conn->sql_conn);
       return luasql_faildirect(L, errmsg);
-  }
+}
 
   /* process first result to retrive query information and type */
   res = sqlite3_step(vm);
@@ -367,7 +367,7 @@ static int conn_execute(lua_State *L) {
   if ((res == SQLITE_ROW) || ((res == SQLITE_DONE) && numcols)) {
       sqlite3_reset(vm);
       return create_cursor(L, 1, conn, vm, numcols);
-  }
+}
 
   if (res == SQLITE_DONE) /* and numcols == 0, INSERT, UPDATE, DELETE statement */
     {
@@ -375,7 +375,7 @@ static int conn_execute(lua_State *L) {
       /* return number of columns changed */
       lua_pushnumber(L, sqlite3_changes(conn->sql_conn));
       return 1;
-  }
+}
 
   /* error */
   errmsg = sqlite3_errmsg(conn->sql_conn);
@@ -403,7 +403,7 @@ static int conn_commit(lua_State *L) {
       sqlite3_free(errmsg);
       lua_concat(L, 2);
       return 2;
-  }
+}
   lua_pushboolean(L, 1);
   return 1;
 }
@@ -427,7 +427,7 @@ static int conn_rollback(lua_State *L) {
       sqlite3_free(errmsg);
       lua_concat(L, 2);
       return 2;
-  }
+}
   lua_pushboolean(L, 1);
   return 1;
 }
@@ -449,7 +449,7 @@ static int conn_setautocommit(lua_State *L) {
       conn->auto_commit = 1;
       /* undo active transaction - ignore errors */
       sqlite3_exec(conn->sql_conn, "ROLLBACK", NULL, NULL, NULL);
-  }
+}
   else
     {
       char *errmsg;
@@ -463,8 +463,8 @@ static int conn_setautocommit(lua_State *L) {
 	  sqlite3_free(errmsg);
 	  lua_concat(L, 2);
 	  lua_error(L);
-      }
-  }
+    }
+}
   lua_pushboolean(L, 1);
   return 1;
 }
@@ -495,7 +495,7 @@ static int env_connect(lua_State *L) {
   sqlite3 *conn;
   const char *errmsg;
 	int res;
-  getenvironment(L);  /* validate environment */
+  getenvironment(L); /* validate environment */
 
   sourcename = luaL_checkstring(L, 2);
 #if SQLITE_VERSION_NUMBER > 3006013
@@ -508,7 +508,7 @@ static int env_connect(lua_State *L) {
       luasql_faildirect(L, errmsg);
       sqlite3_close(conn);
       return 2;
-  }
+}
 
   if (lua_isnumber(L, 3)) {
   	sqlite3_busy_timeout(conn, lua_tonumber(L, 3)); /* TODO: remove this */

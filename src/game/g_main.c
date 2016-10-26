@@ -53,9 +53,9 @@ typedef struct {
 	char *cvarName;
 	char *defaultString;
 	int cvarFlags;
-	int modificationCount;         // for tracking changes
-	qboolean trackChange;          // track this variable, and announce if changed
-	qboolean fConfigReset;         // set this var to the default on a config reset
+	int modificationCount; // for tracking changes
+	qboolean trackChange; // track this variable, and announce if changed
+	qboolean fConfigReset; // set this var to the default on a config reset
 } cvarTable_t;
 
 gentity_t g_entities[MAX_GENTITIES];
@@ -278,7 +278,7 @@ vmCvar_t g_fixedphysicsfps;
 vmCvar_t g_pronedelay;
 vmCvar_t g_debugHitboxes;
 vmCvar_t g_debugPlayerHitboxes;
-vmCvar_t g_voting;       // see VOTEF_ defines
+vmCvar_t g_voting; // see VOTEF_ defines
 
 vmCvar_t g_corpses; // dynamic body que FIXME: limit max bodies by var value
 
@@ -791,7 +791,7 @@ void G_CheckForCursorHints(gentity_t *ent) {
 	float dist;
 	gentity_t *checkEnt, *traceEnt = 0;
 	playerState_t *ps;
-	static int hintValMax = 255;    // Breakable damage indicator can wrap when the entity has a lot of health
+	static int hintValMax = 255; // Breakable damage indicator can wrap when the entity has a lot of health
 	int hintType, hintDist, hintVal;
 	qboolean zooming;
 	int trace_contents;
@@ -892,7 +892,7 @@ void G_CheckForCursorHints(gentity_t *ent) {
 		// Show medics a syringe if they can revive someone
 		if (traceEnt->client && traceEnt->client->sess.sessionTeam == ent->client->sess.sessionTeam) {
 			if (ps->stats[STAT_PLAYER_CLASS] == PC_MEDIC && traceEnt->client->ps.pm_type == PM_DEAD && !(traceEnt->client->ps.pm_flags & PMF_LIMBO)) {
-				hintDist = CH_REVIVE_DIST;       // matches weapon_syringe in g_weapon.c
+				hintDist = CH_REVIVE_DIST; // matches weapon_syringe in g_weapon.c
 				hintType = HINT_REVIVE;
 			}
 		}
@@ -927,7 +927,7 @@ void G_CheckForCursorHints(gentity_t *ent) {
 					if (!checkEnt)      // no target found
 					{
 						hintType = HINT_BAD_USER;
-						hintDist = CH_MAX_DIST_ZOOM;   // show this one from super far for debugging
+						hintDist = CH_MAX_DIST_ZOOM; // show this one from super far for debugging
 					}
 				}
 			}
@@ -984,13 +984,13 @@ void G_CheckForCursorHints(gentity_t *ent) {
 				if (checkEnt->spawnflags & EXPLOSIVE_TANK) {
 					hintDist = CH_BREAKABLE_DIST * 2;
 					hintType = HINT_TANK;
-					hintVal = ps->serverCursorHintVal = 0;        // no health for tank destructibles
+					hintVal = ps->serverCursorHintVal = 0; // no health for tank destructibles
 				} else {
 					switch (checkEnt->constructibleStats.weaponclass) {
 					case 0:
 						hintDist = CH_BREAKABLE_DIST;
 						hintType = HINT_BREAKABLE;
-						hintVal = checkEnt->health;               // also send health to client for visualization
+						hintVal = checkEnt->health; // also send health to client for visualization
 
 						// Breakable damage indicator can wrap when the entity has a lot of health
 						if (hintVal > hintValMax) {
@@ -1002,7 +1002,7 @@ void G_CheckForCursorHints(gentity_t *ent) {
 					case 1:
 						hintDist = CH_BREAKABLE_DIST * 2;
 						hintType = HINT_SATCHELCHARGE;
-						hintVal = ps->serverCursorHintVal = 0;    // no health for satchel charges
+						hintVal = ps->serverCursorHintVal = 0; // no health for satchel charges
 						break;
 					case 2:
 						hintDist = CH_NONE_DIST;
@@ -1013,7 +1013,7 @@ void G_CheckForCursorHints(gentity_t *ent) {
 							if (((ent->client->sess.sessionTeam == TEAM_AXIS) && (checkEnt->parent->spawnflags & ALLIED_OBJECTIVE)) || ((ent->client->sess.sessionTeam == TEAM_ALLIES) && (checkEnt->parent->spawnflags & AXIS_OBJECTIVE))) {
 								hintDist = CH_BREAKABLE_DIST * 2;
 								hintType = HINT_BREAKABLE_DYNAMITE;
-								hintVal = ps->serverCursorHintVal = 0;        // no health for dynamite
+								hintVal = ps->serverCursorHintVal = 0; // no health for dynamite
 							}
 						}
 
@@ -1022,7 +1022,7 @@ void G_CheckForCursorHints(gentity_t *ent) {
 						if (checkEnt->health > 0) {
 							hintDist = CH_BREAKABLE_DIST;
 							hintType = HINT_BREAKABLE;
-							hintVal = checkEnt->health;           // also send health to client for visualization
+							hintVal = checkEnt->health; // also send health to client for visualization
 
 							// Breakable damage indicator can wrap when the entity has a lot of health
 							if (hintVal > hintValMax) {
@@ -1051,7 +1051,7 @@ void G_CheckForCursorHints(gentity_t *ent) {
 						case 0:
 							hintDist = CH_BREAKABLE_DIST;
 							hintType = HINT_BREAKABLE;
-							hintVal = checkEnt->health;           // also send health to client for visualization
+							hintVal = checkEnt->health; // also send health to client for visualization
 
 							// Breakable damage indicator can wrap when the entity has a lot of health
 							if (hintVal > hintValMax) {
@@ -1063,12 +1063,12 @@ void G_CheckForCursorHints(gentity_t *ent) {
 						case 1:
 							hintDist = CH_BREAKABLE_DIST * 2;
 							hintType = HINT_SATCHELCHARGE;
-							hintVal = ps->serverCursorHintVal = 0;        // no health for satchel charges
+							hintVal = ps->serverCursorHintVal = 0; // no health for satchel charges
 							break;
 						case 2:
 							hintDist = CH_BREAKABLE_DIST * 2;
 							hintType = HINT_BREAKABLE_DYNAMITE;
-							hintVal = ps->serverCursorHintVal = 0;        // no health for dynamite
+							hintVal = ps->serverCursorHintVal = 0; // no health for dynamite
 							break;
 						default:
 							hintDist = CH_NONE_DIST;
@@ -1196,7 +1196,7 @@ void G_CheckForCursorHints(gentity_t *ent) {
 				if (ps->stats[STAT_PLAYER_CLASS] == PC_ENGINEER) {
 					hintDist = CH_BREAKABLE_DIST;
 					hintType = HINT_DISARM;
-					hintVal = checkEnt->health;           // also send health to client for visualization
+					hintVal = checkEnt->health; // also send health to client for visualization
 					if (hintVal > 255) {
 						hintVal = 255;
 					}
@@ -1535,12 +1535,12 @@ void G_UpdateCvars(void) {
 							gt = g_gametype.integer;
 							if (gt != GT_WOLF_LMS) {
 								if (!(worldspawnflags & NO_GT_WOLF)) {
-									gt = GT_WOLF;  // Default wolf
+									gt = GT_WOLF; // Default wolf
 								}
 
 								else
 								{
-									gt = GT_WOLF_LMS;  // Last man standing
+									gt = GT_WOLF_LMS; // Last man standing
 								}
 							}
 
@@ -1554,9 +1554,9 @@ void G_UpdateCvars(void) {
 					if (!level.latchGametype && g_gamestate.integer == GS_PLAYING && (((g_gametype.integer == GT_WOLF || g_gametype.integer == GT_WOLF_CAMPAIGN || g_gametype.integer == GT_WOLF_MAPVOTE) && (worldspawnflags & NO_GT_WOLF)) || (g_gametype.integer == GT_WOLF_STOPWATCH && (worldspawnflags & NO_STOPWATCH)) || (g_gametype.integer == GT_WOLF_LMS && (worldspawnflags & NO_LMS)))
 				) {
 						if (!(worldspawnflags & NO_GT_WOLF)) {
-							gt = GT_WOLF;  // Default wolf
+							gt = GT_WOLF; // Default wolf
 						} else {
-							gt = GT_WOLF_LMS;  // Last man standing
+							gt = GT_WOLF_LMS; // Last man standing
 						}
 
 						level.latchGametype = qtrue;
@@ -1964,7 +1964,7 @@ void G_InitGame(int levelTime, int randomSeed, int restart, int legacyServer, in
 		}
 	}
 
-	trap_SetConfigstring(CS_SCRIPT_MOVER_NAMES, "");    // clear out
+	trap_SetConfigstring(CS_SCRIPT_MOVER_NAMES, ""); // clear out
 
 	G_DebugOpenSkillLog();
 
@@ -2635,11 +2635,11 @@ void BeginIntermission(void) {
 	int itime;
 
 	if (g_gamestate.integer == GS_INTERMISSION) {
-		return;    // already active
+		return; // already active
 	}
 	// MAPVOTE: initialize and populate the map struct for map voting
 	if (g_gametype.integer == GT_WOLF_MAPVOTE) {
-		char bspNames[8192];   // 32 x 128 chars = 4096 minimum. Up to 64(full - sized) mapnames fit in 8192 bytes..
+		char bspNames[8192]; // 32 x 128 chars = 4096 minimum. Up to 64(full - sized) mapnames fit in 8192 bytes..
 		int len, maxMaps;
 		char *bspptr;
 		char *bspptrTmp;
@@ -2815,7 +2815,7 @@ void ExitLevel(void) {
             trap_Cvar_Set("g_currentCampaignMap", va("%i", campaign->current + 1));
 
             trap_SendConsoleCommand(EXEC_APPEND, va("map %s\n", campaign->mapnames[campaign->current + 1]));
-      }
+    }
         else
         {
             char s[MAX_STRING_CHARS];
@@ -2824,29 +2824,29 @@ void ExitLevel(void) {
             if (*s)
             {
                 trap_SendConsoleCommand(EXEC_APPEND, "vstr nextcampaign\n");
-          }
+        }
             else
             {
                // restart the campaign
                 trap_Cvar_Set("g_currentCampaignMap", "0");
 
                 trap_SendConsoleCommand(EXEC_APPEND, va("map %s\n", campaign->mapnames[0]));
-          }
+        }
 
            // FIXME: do we want to do something here?
            // trap_SendConsoleCommand(EXEC_APPEND, "vstr nextmap\n");
-      }
+    }
         break;
-  }
+}
     case GT_WOLF_LMS:
         if (level.lmsDoNextMap)
         {
             trap_SendConsoleCommand(EXEC_APPEND, "vstr nextmap\n");
-      }
+    }
         else
         {
             trap_SendConsoleCommand(EXEC_APPEND, "map_restart 0\n");
-      }
+    }
         break;
 
    // MAPVOTE
@@ -2857,24 +2857,24 @@ void ExitLevel(void) {
         if (g_resetXPMapCount.integer)
         {
             level.mapsSinceLastXPReset++;
-      }
+    }
         maxMaps = g_maxMapsVotedFor.integer;
         if (maxMaps > level.mapVoteNumMaps)
         {
             maxMaps = level.mapVoteNumMaps;
-      }
+    }
         for (i = 0; i < maxMaps; i++)
         {
             if (level.mapvoteinfo[level.sortedMaps[i]].lastPlayed != -1)
             {
                 level.mapvoteinfo[level.sortedMaps[i]].lastPlayed++;
-          }
+        }
             curMapVotes = level.mapvoteinfo[level.sortedMaps[i]].numVotes;
             curMapAge = level.mapvoteinfo[level.sortedMaps[i]].lastPlayed;
             if (curMapAge == -1)
             {
-                curMapAge = 9999;  // - 1 means never, so set suitably high
-          }
+                curMapAge = 9999; // - 1 means never, so set suitably high
+        }
 
             if (curMapVotes > highMapVote ||
                (curMapVotes == highMapVote && curMapVotes > 0 &&
@@ -2884,22 +2884,22 @@ void ExitLevel(void) {
                 nextMap = level.sortedMaps[i];
                 highMapVote = curMapVotes;
                 highMapAge = curMapAge;
-          }
-      }
+        }
+    }
         if (highMapVote > 0 && level.mapvoteinfo[nextMap].bspName[0])
         {
             trap_SendConsoleCommand(EXEC_APPEND, va("map %s; set nextmap %s\n", level.mapvoteinfo[nextMap].bspName, g_nextmap.string));
-      }
+    }
         else
         {
             trap_SendConsoleCommand(EXEC_APPEND, "vstr nextmap\n");
-      }
+    }
         break;
-  }
+}
     default:
         trap_SendConsoleCommand(EXEC_APPEND, "vstr nextmap\n");
         break;
-  }
+}
 
 	level.intermissiontime = 0;
 	// reset all the scores so we don't enter the intermission again
@@ -3073,7 +3073,7 @@ void G_LogExit(const char *string) {
 		int roundLimit = g_lms_roundlimit.integer < 3 ? 3 : g_lms_roundlimit.integer;
 		int numWinningRounds = (roundLimit / 2) + 1;
 
-		roundLimit -= 1;   // - 1 as it starts at 0
+		roundLimit -= 1; // - 1 as it starts at 0
 
 		trap_GetConfigstring(CS_MULTI_MAPWINNER, cs, sizeof(cs));
 		winner = atoi(Info_ValueForKey(cs, "w"));
@@ -3484,7 +3484,7 @@ void CheckVote(void) {
 		if ((g_voting.integer & VOTEF_USE_TOTAL_VOTERS) &&
 		    level.time - level.voteInfo.voteTime >= VOTE_TIME) {
 			total = (level.voteInfo.voteYes
-			    + level.voteInfo.voteNo);
+			 + level.voteInfo.voteNo);
 		} else if (level.voteInfo.vote_fn == G_Kick_v || level.voteInfo.vote_fn == G_Surrender_v) {
 			gentity_t *other = &g_entities[level.voteInfo.voteCaller];
 

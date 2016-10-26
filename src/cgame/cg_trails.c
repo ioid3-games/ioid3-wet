@@ -36,11 +36,11 @@
 #include "cg_local.h"
 
 typedef struct trailJunc_s {
-	struct trailJunc_s *nextGlobal, *prevGlobal;   // next junction in the global list it is in(free or used)
-	struct trailJunc_s *nextJunc;                  // next junction in the trail
-	struct trailJunc_s *nextHead, *prevHead;       // next head junc in the world
+	struct trailJunc_s *nextGlobal, *prevGlobal; // next junction in the global list it is in(free or used)
+	struct trailJunc_s *nextJunc; // next junction in the trail
+	struct trailJunc_s *nextHead, *prevHead; // next head junc in the world
 
-	void *usedby;       // trail fix
+	void *usedby; // trail fix
 	qboolean inuse, freed;
 	qhandle_t shader;
 	int sType;
@@ -340,7 +340,7 @@ int CG_AddSparkJunc(int headJuncIndex, void *usedby, qhandle_t shader, vec3_t po
 	j->shader = shader;
 	j->sType = STYPE_STRETCH;
 	VectorCopy(pos, j->pos);
-	j->flags = TJFL_NOCULL;    // don't worry about fading up close
+	j->flags = TJFL_NOCULL; // don't worry about fading up close
 
 	j->spawnTime = cg.time;
 	j->endTime = cg.time + trailLife;
@@ -612,7 +612,7 @@ static void CG_AddTrailToScene(trailJunc_t *trail, int iteration, int numJuncs) 
 			VectorScale(verts[i].xyz, 0.5, verts[i].xyz);
 			VectorCopy(verts[i].xyz, verts[i - 1].xyz);
 		} else if (j->flags & TJFL_FADEIN) {
-			verts[i].modulate[3] = 0;  // fade in
+			verts[i].modulate[3] = 0; // fade in
 		}
 
 		i++;
@@ -633,7 +633,7 @@ static void CG_AddTrailToScene(trailJunc_t *trail, int iteration, int numJuncs) 
 			VectorScale(verts[i].xyz, 0.5, verts[i].xyz);
 			VectorCopy(verts[i].xyz, verts[i - 3].xyz);
 		} else if (j->flags & TJFL_FADEIN) {
-			verts[i].modulate[3] = 0;  // fade in
+			verts[i].modulate[3] = 0; // fade in
 		}
 
 		i++;
@@ -775,7 +775,7 @@ void CG_AddTrails(void) {
 		lifeFrac = (float) (cg.time - j->spawnTime) / (float) (j->endTime - j->spawnTime);
 
 		if (lifeFrac >= 1.0) {
-			j->inuse = qfalse;         // flag it as dead
+			j->inuse = qfalse; // flag it as dead
 			j->width = j->widthEnd;
 			j->alpha = j->alphaEnd;
 
@@ -806,7 +806,7 @@ void CG_AddTrails(void) {
 	j = headTrails;
 
 	while (j) {
-		jNext = j->nextHead;       // in case it gets removed
+		jNext = j->nextHead; // in case it gets removed
 		if (!j->inuse) {
 			CG_FreeTrailJunc(j);
 		} else {

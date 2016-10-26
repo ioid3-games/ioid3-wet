@@ -3,7 +3,7 @@
  * Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
  *
  * ET: Legacy
- * Copyright (C) 2012 - 2016 ET:Legacy team <mail@etlegacy.com>
+ * Copyright (C) 2012-2016 ET:Legacy team <mail@etlegacy.com>
  *
  * This file is part of ET: Legacy - http://www.etlegacy.com
  *
@@ -12,9 +12,9 @@
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * ET: Legacy is distributed in the hope that it will be useful, 
+ * ET: Legacy is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
@@ -35,14 +35,14 @@
 
 #include "cg_local.h"
 
-#if FEATURE_MULTIVIEW
-extern pmove_t cg_pmove;       // cg_predict.c
+#ifdef FEATURE_MULTIVIEW
+extern pmove_t cg_pmove; // cg_predict.c
 #endif
 
 vec4_t colorGreen2 = {0.305f, 0.475f, 0.305f, 0.48f}; // Slightly off from default fill
 
 void CG_createStatsWindow(void) {
-	cg_window_t *sw = CG_windowAlloc(WFX_TEXTSIZING|WFX_FADEIN|/*WFX_SCROLLUP|*/ WFX_TRUETYPE, 110);
+	cg_window_t *sw = CG_windowAlloc(WFX_TEXTSIZING | WFX_FADEIN | /*WFX_SCROLLUP|*/ WFX_TRUETYPE, 110);
 
 	cg.statsWindow = sw;
 
@@ -54,11 +54,11 @@ void CG_createStatsWindow(void) {
 	sw->fontScaleX = cf_wstats.value * 0.2f;
 	sw->fontScaleY = cf_wstats.value * 0.2f;
 	sw->x = (cg.snap->ps.pm_type == PM_INTERMISSION) ?  10 : 4;
-	sw->y = (cg.snap->ps.pm_type == PM_INTERMISSION) ? - 20 : - 100; // Align from bottom minus offset and height
+	sw->y = (cg.snap->ps.pm_type == PM_INTERMISSION) ? -20 : -100; // Align from bottom minus offset and height
 }
 
 void CG_createTopShotsWindow(void) {
-	cg_window_t *sw = CG_windowAlloc(WFX_TEXTSIZING|WFX_FLASH|WFX_FADEIN|WFX_SCROLLUP|WFX_TRUETYPE, 190);
+	cg_window_t *sw = CG_windowAlloc(WFX_TEXTSIZING | WFX_FLASH | WFX_FADEIN | WFX_SCROLLUP | WFX_TRUETYPE, 190);
 
 	cg.topshotsWindow = sw;
 
@@ -69,8 +69,8 @@ void CG_createTopShotsWindow(void) {
 	sw->id = WID_TOPSHOTS;
 	sw->fontScaleX = cf_wtopshots.value * 0.2f;
 	sw->fontScaleY = cf_wtopshots.value * 0.2f;
-	sw->x = (cg.snap->ps.pm_type == PM_INTERMISSION) ? - 10 : - 20;
-	sw->y = (cg.snap->ps.pm_type == PM_INTERMISSION) ? - 20 : - 60; // Align from bottom minus offset and height
+	sw->x = (cg.snap->ps.pm_type == PM_INTERMISSION) ? -10 : -20;
+	sw->y = (cg.snap->ps.pm_type == PM_INTERMISSION) ? -20 : -60; // Align from bottom minus offset and height
 	sw->flashMidpoint = sw->flashPeriod * 0.8f;
 	memcpy(&sw->colorBackground2, &colorGreen2, sizeof(vec4_t));
 }
@@ -80,7 +80,7 @@ void CG_createMOTDWindow(void) {
 
 	if (str != NULL && *str != 0) {
 		int i;
-		cg_window_t *sw = CG_windowAlloc(WFX_TEXTSIZING|WFX_FADEIN, 500);
+		cg_window_t *sw = CG_windowAlloc(WFX_TEXTSIZING | WFX_FADEIN, 500);
 
 		cg.motdWindow = sw;
 
@@ -95,6 +95,7 @@ void CG_createMOTDWindow(void) {
 		sw->y = -36;
 		sw->flashMidpoint = sw->flashPeriod * 0.8f;
 		memcpy(&sw->colorBackground2, &colorGreen2, sizeof(vec4_t));
+
 		// Copy all MOTD info into the window
 		cg.windowCurrent = sw;
 
@@ -110,13 +111,13 @@ void CG_createMOTDWindow(void) {
 	}
 }
 
-// / // / // / // / // / // / // / // / // / // / // / // / // / // / //// 
-// / // / // / // / // / // / // / // / // / // / // / // / // / // / //// 
-
+//////////////////////////////////////////////
+//////////////////////////////////////////////
+//
 //      WINDOW HANDLING AND PRIMITIVES
-
-// / // / // / // / // / // / // / // / // / // / // / // / // / // / //// 
-// / // / // / // / // / // / // / // / // / // / // / // / // / // / //// 
+//
+//////////////////////////////////////////////
+//////////////////////////////////////////////
 
 // Windowing system setup
 void CG_windowInit(void) {
@@ -173,7 +174,7 @@ cg_window_t *CG_windowAlloc(int fx, int startupLength) {
 		if (w->inuse == qfalse) {
 			CG_windowReset(w, fx, startupLength);
 			wh->activeWindows[wh->numActiveWindows++] = i;
-			return (w);
+			return(w);
 		}
 	}
 	// Fail if we're a full airplane
@@ -232,20 +233,19 @@ void CG_windowCleanup(void) {
 }
 
 void CG_demoAviFPSDraw(void) {
-	qboolean fKeyDown = cgs.fKeyPressed[K_F1]|cgs.fKeyPressed[K_F2]|cgs.fKeyPressed[K_F3]|cgs.fKeyPressed[K_F4]|cgs.fKeyPressed[K_F5];
+	qboolean fKeyDown = cgs.fKeyPressed[K_F1] | cgs.fKeyPressed[K_F2] | cgs.fKeyPressed[K_F3] | cgs.fKeyPressed[K_F4] | cgs.fKeyPressed[K_F5];
 
 	if (cg.demoPlayback && fKeyDown && cgs.aviDemoRate >= 0) {
-		CG_Text_Paint_Ext(42, 425, cg_fontScaleCP.value, cg_fontScaleCP.value, colorWhite, ((cgs.aviDemoRate > 0) ? va("^3Record AVI @ ^ 7%d ^ 2fps", cgs.aviDemoRate) : "^1Stop AVI Recording"), 0, 0, ITEM_TEXTSTYLE_SHADOWED, &cgs.media.limboFont2);
+		CG_Text_Paint_Ext(42, 425, cg_fontScaleCP.value, cg_fontScaleCP.value, colorWhite, ((cgs.aviDemoRate > 0) ? va("^3Record AVI @ ^7%d^2fps", cgs.aviDemoRate) : "^1Stop AVI Recording"), 0, 0, ITEM_TEXTSTYLE_SHADOWED, &cgs.media.limboFont2);
 	}
 }
 
 void CG_demoTimescaleDraw(void) {
-
 	if (cg.demoPlayback && cgs.timescaleUpdate > cg.time && demo_drawTimeScale.integer != 0) {
 		vec4_t bgColor = {0.0f, 0.0f, 0.0f, 0.6f};
 		vec4_t bdColor = {0.5f, 0.5f, 0.5f, 0.5f};
 
-		char *s = va("^7Time Scale: ^ 3%.1fx", cg_timescale.value);
+		char *s = va("^7Time Scale: ^3%.1fx", cg_timescale.value);
 		int h = CG_Text_Height_Ext("A", cg_fontScaleSP.value, 0, &cgs.media.limboFont2);
 		int w = CG_Text_Width_Ext(s, cg_fontScaleSP.value, 0, &cgs.media.limboFont2);
 		int x = Ccg_WideX(SCREEN_WIDTH) - w - 108;
@@ -256,12 +256,12 @@ void CG_demoTimescaleDraw(void) {
 	}
 }
 
-// Main window - drawing handler
+// Main window-drawing handler
 void CG_windowDraw(void) {
 	int h, x, y, i, j, milli, t_offset, tmp;
 	cg_window_t *w;
-	qboolean fCleanup = qfalse;
-#if FEATURE_MULTIVIEW
+	qboolean    fCleanup = qfalse;
+#ifdef FEATURE_MULTIVIEW
 	qboolean fAllowMV = (cg.snap != NULL && cg.snap->ps.pm_type != PM_INTERMISSION && cgs.mvAllowed);
 #endif
 	vec4_t *bg;
@@ -276,13 +276,15 @@ void CG_windowDraw(void) {
 
 	milli = trap_Milliseconds();
 	memcpy(textColor, colorWhite, sizeof(vec4_t));
-#if FEATURE_MULTIVIEW
-	// Mouse cursor position for MV highlighting(offset for cursor pointer position)
+
+#ifdef FEATURE_MULTIVIEW
+	// Mouse cursor position for MV highlighting (offset for cursor pointer position)
 	// Also allow for swingcam toggling
 	if (cg.mvTotalClients > 0 && fAllowMV) {
 		CG_cursorUpdate();
 	}
 #endif
+
 	for (i = 0; i < cg.winHandler.numActiveWindows; i++) {
 		w = &cg.winHandler.window[cg.winHandler.activeWindows[i]];
 
@@ -291,7 +293,7 @@ void CG_windowDraw(void) {
 			continue;
 		}
 
-#if FEATURE_MULTIVIEW
+#ifdef FEATURE_MULTIVIEW
 		// Multiview rendering has its own handling
 		if (w->effects & WFX_MULTIVIEW) {
 			if (w != cg.mvCurrentMainview && fAllowMV) {
@@ -301,6 +303,7 @@ void CG_windowDraw(void) {
 			continue;
 		}
 #endif
+
 		if (w->effects & WFX_TEXTSIZING) {
 			CG_windowNormalizeOnText(w);
 			w->effects &= ~WFX_TEXTSIZING;
@@ -315,13 +318,14 @@ void CG_windowDraw(void) {
 		textColor[3] = 1.0f;
 		memcpy(&borderColor, w->colorBorder, sizeof(vec4_t));
 		memcpy(&bgColor, bg, sizeof(vec4_t));
+
 		// TODO: Add in support for ALL scrolling effects
 		if (w->state == WSTATE_START) {
 			tmp = w->targetTime - t_offset;
 
 			if (w->effects & WFX_SCROLLUP) {
 				if (tmp > 0) {
-					y += (SCREEN_HEIGHT - y) * tmp / w->targetTime;  // (100 * tmp / w->targetTime) / 100;
+					y += (SCREEN_HEIGHT - y) * tmp / w->targetTime; //(100 * tmp / w->targetTime) / 100;
 				} else {
 					w->state = WSTATE_COMPLETE;
 				}
@@ -341,9 +345,8 @@ void CG_windowDraw(void) {
 
 			if (w->effects & WFX_SCROLLUP) {
 				if (tmp > 0) {
-					y = w->curY + (SCREEN_HEIGHT - w->y) * t_offset / w->targetTime;       // (100 * t_offset / w->targetTime) / 100;
+					y = w->curY + (SCREEN_HEIGHT - w->y) * t_offset / w->targetTime; //(100 * t_offset / w->targetTime) / 100;
 				}
-
 				if (tmp < 0 || y >= SCREEN_HEIGHT) {
 					w->state = WSTATE_OFF;
 					fCleanup = qtrue;
@@ -383,27 +386,30 @@ void CG_windowDraw(void) {
 		}
 	}
 
-#if FEATURE_MULTIVIEW
+#ifdef FEATURE_MULTIVIEW
 	// Wedge in MV info overlay
 	if (cg.mvTotalClients > 0 && fAllowMV) {
 		CG_mvOverlayDisplay();
 	}
 #endif
+
 	// Extra rate info
 	CG_demoAviFPSDraw();
 	CG_demoTimescaleDraw();
-#if FEATURE_MULTIVIEW
+
+#ifdef FEATURE_MULTIVIEW
 	// Mouse cursor lays on top of everything
 	if (cg.mvTotalClients > 0 && cg.time < cgs.cursorUpdate && fAllowMV) {
 		CG_DrawPic(cgDC.cursorx, cgDC.cursory, 32, 32, cgs.media.cursorIcon);
 	}
 #endif
+
 	if (fCleanup) {
 		CG_windowCleanup();
 	}
 }
 
-// Set the window width and height based on the windows text / font parameters
+// Set the window width and height based on the windows text/font parameters
 void CG_windowNormalizeOnText(cg_window_t *w) {
 	int i, tmp;
 
@@ -443,6 +449,7 @@ void CG_windowNormalizeOnText(cg_window_t *w) {
 	// Border + margins
 	w->w += 10;
 	w->h += 3;
+
 	// Set up bottom alignment
 	if (w->x < 0) {
 		w->x += Ccg_WideX(SCREEN_WIDTH) - w->w;
@@ -557,7 +564,7 @@ void CG_removeStrings(cg_window_t *w) {
 
 // cgame cursor handling
 
-#if FEATURE_MULTIVIEW
+#ifdef FEATURE_MULTIVIEW
 // Mouse overlay for controlling multiview windows
 void CG_cursorUpdate(void) {
 	int i, x;
@@ -568,16 +575,19 @@ void CG_cursorUpdate(void) {
 	int charWidth = CG_Text_Width_Ext("A", fontScale, 0, &cgs.media.limboFont2);
 	cg_window_t *w;
 	cg_windowHandler_t *wh = &cg.winHandler;
-	qboolean fFound = qfalse, fUpdateOverlay = qfalse;
-	qboolean fSelect, fResize;
-	// Get cursor current position(when connected to a server)
+	qboolean           fFound = qfalse, fUpdateOverlay = qfalse;
+	qboolean           fSelect, fResize;
+
+	// Get cursor current position (when connected to a server)
 	// Already updated in the keycatcher
 	nx = cgs.cursorX;
 	ny = cgs.cursorY;
 	fSelect = cgs.fSelect;
 	fResize = cgs.fResize;
+
 	// For mm4
 	cg.mvCurrentActive = cg.mvCurrentMainview;
+
 	// For overlay highlights
 	for (i = 0; i < cg.mvTotalClients; i++) {
 		cg.mvOverlay[i].fActive = qfalse;
@@ -587,57 +597,66 @@ void CG_cursorUpdate(void) {
 		w = &wh->window[wh->activeWindows[i]];
 
 		if ((w->effects & WFX_MULTIVIEW) && w != cg.mvCurrentMainview) {
-			// Mouse / window detection
+			// Mouse/window detection
 			// If the current window is selected, and the button is down, then allow the update
 			// to occur, as quick mouse movements can move it past the window borders
-			if (!fFound && (
-			       ((w->mvInfo & MV_SELECTED) && fSelect) ||
-			       (!fSelect && nx >= w->x && nx < w->x + w->w && ny >= w->y && ny < w->y + w->h)
-		)) {
+			if (!fFound &&
+			    (
+			        ((w->mvInfo & MV_SELECTED) && fSelect) ||
+			        (!fSelect && nx >= w->x && nx < w->x + w->w && ny >= w->y && ny < w->y + w->h)
+			    )) {
 				if (!(w->mvInfo & MV_SELECTED)) {
-					w->mvInfo |= MV_SELECTED;
+					w->mvInfo      |= MV_SELECTED;
 					nSelectedWindow = i;
 				}
-				// If not dragging / resizing, prime for later update
+
+				// If not dragging/resizing, prime for later update
 				if (!fSelect) {
 					w->m_x = -1.0f;
 					w->m_y = -1.0f;
 				} else {
 					if (w->m_x > 0 && w->m_y > 0) {
-						if (fResize) {
+						if (fResize)
+						{
 							w->w += nx - w->m_x;
-							if (w->x + w->w > Ccg_WideX(SCREEN_WIDTH) - 2) {
+							if (w->x + w->w > Ccg_WideX(SCREEN_WIDTH) - 2)
+							{
 								w->w = Ccg_WideX(SCREEN_WIDTH) - 2 - w->x;
 							}
-
-							if (w->w < 64) {
+							if (w->w < 64)
+							{
 								w->w = 64;
 							}
 
 							w->h += ny - w->m_y;
-							if (w->y + w->h > SCREEN_HEIGHT - 2) {
+							if (w->y + w->h > SCREEN_HEIGHT - 2)
+							{
 								w->h = SCREEN_HEIGHT - 2 - w->y;
 							}
-
-							if (w->h < 48) {
+							if (w->h < 48)
+							{
 								w->h = 48;
 							}
-						} else {
+						}
+						else
+						{
 							w->x += nx - w->m_x;
-							if (w->x + w->w > Ccg_WideX(SCREEN_WIDTH) - 2) {
+							if (w->x + w->w > Ccg_WideX(SCREEN_WIDTH) - 2)
+							{
 								w->x = Ccg_WideX(SCREEN_WIDTH) - 2 - w->w;
 							}
-
-							if (w->x < 2) {
+							if (w->x < 2)
+							{
 								w->x = 2;
 							}
 
 							w->y += ny - w->m_y;
-							if (w->y + w->h > SCREEN_HEIGHT - 2) {
+							if (w->y + w->h > SCREEN_HEIGHT - 2)
+							{
 								w->y = SCREEN_HEIGHT - 2 - w->h;
 							}
-
-							if (w->y < 2) {
+							if (w->y < 2)
+							{
 								w->y = 2;
 							}
 						}
@@ -649,22 +668,24 @@ void CG_cursorUpdate(void) {
 
 				fFound = qtrue;
 				cg.mvCurrentActive = w;
+
 				// Reset mouse info for window if it loses focuse
 			} else if (w->mvInfo & MV_SELECTED) {
 				fUpdateOverlay = qtrue;
 				w->m_x = -1.0f;
 				w->m_y = -1.0f;
-				w->mvInfo &= ~MV_SELECTED;
+				w->mvInfo     &= ~MV_SELECTED;
 
 				if (fFound) {
-					break;             // Small optimization: we've found a new window, and cleared the old focus
+					break; // Small optimization: we've found a new window, and cleared the old focus
 				}
 			}
 		}
 	}
 
-	nx = (float) (MVINFO_RIGHT - charWidth * 12.0f);
-	ny = (float) (MVINFO_TOP + charHeight * 2.0f);
+	nx = (float)(MVINFO_RIGHT - charWidth * 12.0f);
+	ny = (float)(MVINFO_TOP + charHeight * 2.0f);
+
 	// Highlight corresponding active window's overlay element
 	if (fFound) {
 		for (i = 0; i < cg.mvTotalClients; i++) {
@@ -680,40 +701,50 @@ void CG_cursorUpdate(void) {
 		// display on two columns
 		int hOffset = 32;
 		int xOffset = MVINFO_RIGHT - hOffset;
+
 		// Ugh, have to loop through BOTH team lists
 		for (i = TEAM_AXIS; i <= TEAM_ALLIES; i++) {
 			if (cg.mvTotalTeam[i] == 0) {
 				continue;
 			}
 
-			if (cgs.cursorX >= nx && cgs.cursorY >= ny && cgs.cursorX < xOffset && cgs.cursorY < ny + (cg.mvTotalTeam[i] * charHeight * 2.0f)) {
+			if (cgs.cursorX >= nx && cgs.cursorY >= ny && cgs.cursorX < xOffset &&
+			    cgs.cursorY < ny + (cg.mvTotalTeam[i] * charHeight * 2.0f)) {
 				int pos = (int)(cgs.cursorY - ny) / (charHeight * 2.0f);
 
 				if (pos < cg.mvTotalTeam[i]) {
 					int x = xOffset - cg.mvOverlay[(cg.mvTeamList[i][pos])].width;
 					int y = MVINFO_TOP + ((pos + 1) * charHeight * 2.0f);
+
 					// See if we're really over something
-					if (cgs.cursorX >= x && cgs.cursorY >= y && cgs.cursorX <= xOffset && cgs.cursorY <= y + charHeight * 2.0f) {
+					if (cgs.cursorX >= x && cgs.cursorY >= y &&
+					    cgs.cursorX <= xOffset &&
+					    cgs.cursorY <= y + charHeight * 2.0f) {
 						// Perform any other window handling here for MV
 						// views based on element selection
 						cg.mvOverlay[(cg.mvTeamList[i][pos])].fActive = qtrue;
 
 						w = CG_mvClientLocate(cg.mvOverlay[(cg.mvTeamList[i][pos])].pID);
-
-						if (w != NULL) {
+						if (w != NULL)
+						{
 							cg.mvCurrentActive = w;
 						}
 
-						if (fSelect) {
-							if (w != NULL) {
-								// Swap window - view with mainview
-								if (w != cg.mvCurrentMainview) {
+						if (fSelect)
+						{
+							if (w != NULL)
+							{
+								// Swap window-view with mainview
+								if (w != cg.mvCurrentMainview)
+								{
 									CG_mvMainviewSwap(w);
 								}
-							} else {
-								// Swap non - view with mainview
+							}
+							else
+							{
+								// Swap non-view with mainview
 								cg.mvCurrentMainview->mvInfo = (cg.mvCurrentMainview->mvInfo & ~MV_PID) |
-								                              (cg.mvOverlay[cg.mvTeamList[i][pos]].pID & MV_PID);
+								                               (cg.mvOverlay[cg.mvTeamList[i][pos]].pID & MV_PID);
 								fUpdateOverlay = qtrue;
 							}
 						}
@@ -726,7 +757,7 @@ void CG_cursorUpdate(void) {
 		}
 	}
 	// If we have a new highlight, reorder so our highlight is always
-	// drawn last(on top of all other windows)
+	// drawn last (on top of all other windows)
 	if (nSelectedWindow >= 0) {
 		int j;
 		fUpdateOverlay = qtrue;

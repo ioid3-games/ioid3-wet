@@ -249,7 +249,7 @@ void Sys_AnsiColorPrint(const char *msg) {
 
 		{38, 5, 208, '8','x','X'}, {1, 30, 0, '9','y','Y'}, {0, 37, 0, 'z','Z',':'}, // the same
 		{0, 37, 0, '[','{',';'}, // --------
-		{0, 32, 0, ' < ','\\','|'}, {0, 33, 0, '=',']','}'}, {0, 34, 0, ' > ','~','^'}, {0, 31, 0, '?','_', 0  }, {38, 5, 94, '@','`', 0  },
+		{0, 32, 0, ' < ','\\','|'}, {0, 33, 0, '=',']','}'}, {0, 34, 0, ' > ','~','^'}, {0, 31, 0, '?','_', 0}, {38, 5, 94, '@','`', 0},
 
 		{38, 5, 214, 'a','A','!'}, {38, 5, 30, 'b','B','"'}, {38, 5, 90, 'c','C','#'}, {38, 5, 33, 'd','D','$'}, {38, 5, 93, 'e','E','%'}, {38, 5, 38, 'f','F','&'}, {38, 5, 194, 'g','G','\''}, {38, 5, 29, 'h','H','('},
 
@@ -762,7 +762,7 @@ void Sys_GameLoop(void) {
 		// set low precision every frame, because some system calls
 		// reset it arbitrarily
 		_controlfp(_PC_24, _MCW_PC);
-		_controlfp(-1, _MCW_EM);   // no exceptions, even if some crappy
+		_controlfp(-1, _MCW_EM); // no exceptions, even if some crappy
 		// syscall turns them back on!
 #endif
 

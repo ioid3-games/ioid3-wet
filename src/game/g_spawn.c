@@ -41,21 +41,17 @@
 #include "g_lua.h"
 #endif
 
-qboolean G_SpawnStringExt(const char *key, const char *defaultString, char **out, const char *file, int line)
-{
+qboolean G_SpawnStringExt(const char *key, const char *defaultString, char **out, const char *file, int line) {
 	int i;
 
-	if (!level.spawning)
-	{
+	if (!level.spawning) {
 		*out = (char *)defaultString;
 		// see InitMover
 		G_Error("G_SpawnString() called while not spawning, file %s, line %i\n", file, line);
 	}
 
-	for (i = 0 ; i < level.numSpawnVars ; i++)
-	{
-		if (!strcmp(key, level.spawnVars[i][0]))
-		{
+	for (i = 0; i < level.numSpawnVars; i++) {
+		if (!strcmp(key, level.spawnVars[i][0])) {
 			*out = level.spawnVars[i][1];
 			return qtrue;
 		}
@@ -65,29 +61,26 @@ qboolean G_SpawnStringExt(const char *key, const char *defaultString, char **out
 	return qfalse;
 }
 
-qboolean G_SpawnFloatExt(const char *key, const char *defaultString, float *out, const char *file, int line)
-{
-	char     *s;
+qboolean G_SpawnFloatExt(const char *key, const char *defaultString, float *out, const char *file, int line) {
+	char *s;
 	qboolean present;
 
 	present = G_SpawnStringExt(key, defaultString, &s, file, line);
-	*out    = atof(s);
+	*out = atof(s);
 	return present;
 }
 
-qboolean G_SpawnIntExt(const char *key, const char *defaultString, int *out, const char *file, int line)
-{
-	char     *s;
+qboolean G_SpawnIntExt(const char *key, const char *defaultString, int *out, const char *file, int line) {
+	char *s;
 	qboolean present;
 
 	present = G_SpawnStringExt(key, defaultString, &s, file, line);
-	*out    = atoi(s);
+	*out = atoi(s);
 	return present;
 }
 
-qboolean G_SpawnVectorExt(const char *key, const char *defaultString, float *out, const char *file, int line)
-{
-	char     *s;
+qboolean G_SpawnVectorExt(const char *key, const char *defaultString, float *out, const char *file, int line) {
+	char *s;
 	qboolean present;
 
 	present = G_SpawnStringExt(key, defaultString, &s, file, line);
@@ -95,9 +88,8 @@ qboolean G_SpawnVectorExt(const char *key, const char *defaultString, float *out
 	return present;
 }
 
-qboolean G_SpawnVector2DExt(const char *key, const char *defaultString, float *out, const char *file, int line)
-{
-	char     *s;
+qboolean G_SpawnVector2DExt(const char *key, const char *defaultString, float *out, const char *file, int line) {
+	char *s;
 	qboolean present;
 
 	present = G_SpawnStringExt(key, defaultString, &s, file, line);
@@ -105,97 +97,93 @@ qboolean G_SpawnVector2DExt(const char *key, const char *defaultString, float *o
 	return present;
 }
 
-field_t fields[] =
-{
-	{ "classname",    FOFS(classname),      F_LSTRING   },
-	{ "origin",       FOFS(s.origin),       F_VECTOR    },
-	{ "model",        FOFS(model),          F_LSTRING   },
-	{ "model2",       FOFS(model2),         F_LSTRING   },
-	{ "spawnflags",   FOFS(spawnflags),     F_INT       },
-	{ "eflags",       FOFS(s.eFlags),       F_INT       },
-	{ "svflags",      FOFS(r.svFlags),      F_INT       },
-	{ "maxs",         FOFS(r.maxs),         F_VECTOR    },
-	{ "mins",         FOFS(r.mins),         F_VECTOR    },
-	{ "speed",        FOFS(speed),          F_FLOAT     },
-	{ "closespeed",   FOFS(closespeed),     F_FLOAT     },
-	{ "target",       FOFS(target),         F_LSTRING   },
-	{ "targetname",   FOFS(targetname),     F_LSTRING   },
-	{ "message",      FOFS(message),        F_LSTRING   },
-	{ "popup",        FOFS(message),        F_LSTRING   }, // mutually exclusive from 'message', but makes the ent more logical for the level designer
-	{ "book",         FOFS(message),        F_LSTRING   }, // mutually exclusive from 'message', but makes the ent more logical for the level designer
-	{ "team",         FOFS(team),           F_LSTRING   },
-	{ "wait",         FOFS(wait),           F_FLOAT     },
-	{ "random",       FOFS(random),         F_FLOAT     },
-	{ "count",        FOFS(count),          F_INT       },
-	{ "health",       FOFS(health),         F_INT       },
-	{ "light",        0,                    F_IGNORE    },
-	{ "dmg",          FOFS(damage),         F_INT       },
-	{ "angles",       FOFS(s.angles),       F_VECTOR    },
-	{ "angle",        FOFS(s.angles),       F_ANGLEHACK },
+field_t fields[] = {
+	{"classname",    FOFS(classname),      F_LSTRING },
+	{"origin",       FOFS(s.origin),       F_VECTOR  },
+	{"model",        FOFS(model),          F_LSTRING },
+	{"model2",       FOFS(model2),         F_LSTRING },
+	{"spawnflags",   FOFS(spawnflags),     F_INT     },
+	{"eflags",       FOFS(s.eFlags),       F_INT     },
+	{"svflags",      FOFS(r.svFlags),      F_INT     },
+	{"maxs",         FOFS(r.maxs),         F_VECTOR  },
+	{"mins",         FOFS(r.mins),         F_VECTOR  },
+	{"speed",        FOFS(speed),          F_FLOAT   },
+	{"closespeed",   FOFS(closespeed),     F_FLOAT   },
+	{"target",       FOFS(target),         F_LSTRING },
+	{"targetname",   FOFS(targetname),     F_LSTRING },
+	{"message",      FOFS(message),        F_LSTRING },
+	{"popup",        FOFS(message),        F_LSTRING }, // mutually exclusive from 'message', but makes the ent more logical for the level designer
+	{"book",         FOFS(message),        F_LSTRING }, // mutually exclusive from 'message', but makes the ent more logical for the level designer
+	{"team",         FOFS(team),           F_LSTRING },
+	{"wait",         FOFS(wait),           F_FLOAT   },
+	{"random",       FOFS(random),         F_FLOAT   },
+	{"count",        FOFS(count),          F_INT     },
+	{"health",       FOFS(health),         F_INT     },
+	{"light",        0,                    F_IGNORE  },
+	{"dmg",          FOFS(damage),         F_INT     },
+	{"angles",       FOFS(s.angles),       F_VECTOR  },
+	{"angle",        FOFS(s.angles),       F_ANGLEHACK},
 
-	{ "duration",     FOFS(duration),       F_FLOAT     },
-	{ "rotate",       FOFS(rotate),         F_VECTOR    },
+	{"duration",     FOFS(duration),       F_FLOAT   },
+	{"rotate",       FOFS(rotate),         F_VECTOR  },
 
-	{ "degrees",      FOFS(angle),          F_FLOAT     },
-	{ "time",         FOFS(speed),          F_FLOAT     },
+	{"degrees",      FOFS(angle),          F_FLOAT   },
+	{"time",         FOFS(speed),          F_FLOAT   },
 
 	// additional ai field
-	{ "skin",         FOFS(aiSkin),         F_LSTRING   },
+	{"skin",         FOFS(aiSkin),         F_LSTRING },
 
-	// dlight lightstyles (made all these unique variables for testing)
-	{ "_color",       FOFS(dl_color),       F_VECTOR    }, // color of the light	(the underscore is inserted by the color picker in QER)
-	{ "color",        FOFS(dl_color),       F_VECTOR    }, // color of the light
-	{ "stylestring",  FOFS(dl_stylestring), F_LSTRING   }, // user defined stylestring "fffndlsfaaaaaa" for example
+	// dlight lightstyles (made all these unique variables for testing) {"_color",       FOFS(dl_color),       F_VECTOR  }, // color of the light	(the underscore is inserted by the color picker in QER) {"color",        FOFS(dl_color),       F_VECTOR  }, // color of the light
+	{"stylestring",  FOFS(dl_stylestring), F_LSTRING }, // user defined stylestring "fffndlsfaaaaaa" for example
 
-	{ "shader",       FOFS(dl_shader),      F_LSTRING   }, // shader to use for a target_effect or dlight
+	{"shader",       FOFS(dl_shader),      F_LSTRING }, // shader to use for a target_effect or dlight
 
 	// for target_unlock
-	{ "key",          FOFS(key),            F_INT       },
+	{"key",          FOFS(key),            F_INT     },
 
 	// mg42
-	{ "harc",         FOFS(harc),           F_FLOAT     },
-	{ "varc",         FOFS(varc),           F_FLOAT     },
+	{"harc",         FOFS(harc),           F_FLOAT   },
+	{"varc",         FOFS(varc),           F_FLOAT   },
 
 	// sniper
-	{ "delay",        FOFS(delay),          F_FLOAT     },
-	{ "radius",       FOFS(radius),         F_INT       },
+	{"delay",        FOFS(delay),          F_FLOAT   },
+	{"radius",       FOFS(radius),         F_INT     },
 
 	// for reloading savegames at correct mission spot
-	{ "missionlevel", FOFS(missionLevel),   F_INT       },
+	{"missionlevel", FOFS(missionLevel),   F_INT     },
 
-	{ "start_size",   FOFS(start_size),     F_INT       },
-	{ "end_size",     FOFS(end_size),       F_INT       },
+	{"start_size",   FOFS(start_size),     F_INT     },
+	{"end_size",     FOFS(end_size),       F_INT     },
 
-	{ "shard",        FOFS(count),          F_INT       },
+	{"shard",        FOFS(count),          F_INT     },
 
-	{ "spawnitem",    FOFS(spawnitem),      F_LSTRING   },
+	{"spawnitem",    FOFS(spawnitem),      F_LSTRING },
 
-	{ "track",        FOFS(track),          F_LSTRING   },
+	{"track",        FOFS(track),          F_LSTRING },
 
-	{ "scriptName",   FOFS(scriptName),     F_LSTRING   },
+	{"scriptName",   FOFS(scriptName),     F_LSTRING },
 
-	{ "shortname",    FOFS(message),        F_LSTRING   },
-	{ "constages",    FOFS(constages),      F_LSTRING   },
-	{ "desstages",    FOFS(desstages),      F_LSTRING   },
-	{ "partofstage",  FOFS(partofstage),    F_INT       },
-	{ "override",     FOFS(spawnitem),      F_LSTRING   },
+	{"shortname",    FOFS(message),        F_LSTRING },
+	{"constages",    FOFS(constages),      F_LSTRING },
+	{"desstages",    FOFS(desstages),      F_LSTRING },
+	{"partofstage",  FOFS(partofstage),    F_INT     },
+	{"override",     FOFS(spawnitem),      F_LSTRING },
 
-	{ "damageparent", FOFS(damageparent),   F_LSTRING   },
+	{"damageparent", FOFS(damageparent),   F_LSTRING },
 
-	{ "numPlayers",   FOFS(numPlayers),     F_INT       }, // number of players needed to trigger this
+	{"numPlayers",   FOFS(numPlayers),     F_INT     }, // number of players needed to trigger this
 
-	{ "contents",     FOFS(r.contents),     F_INT       },
-	{ "clipmask",     FOFS(clipmask),       F_INT       },
-	{ "count2",       FOFS(count2),         F_INT       },
+	{"contents",     FOFS(r.contents),     F_INT     },
+	{"clipmask",     FOFS(clipmask),       F_INT     },
+	{"count2",       FOFS(count2),         F_INT     },
 	// doors need this one
-	{ "baseAngle",    FOFS(s.apos.trBase),  F_VECTOR    },
-	{ "baseOrigin",   FOFS(s.pos.trBase),   F_VECTOR    },
+	{"baseAngle",    FOFS(s.apos.trBase),  F_VECTOR  },
+	{"baseOrigin",   FOFS(s.pos.trBase),   F_VECTOR  },
 
-	{ NULL }
+	{NULL}
 };
 
-typedef struct
-{
+typedef struct {
 	char *name;
 	void (*spawn)(gentity_t *ent);
 } spawn_t;
@@ -385,199 +373,198 @@ void SP_func_debris(gentity_t *ent);
 // forty - etpro mapscripting - spawn function for fakebrushes
 void SP_func_fakebrush(gentity_t *ent);
 
-spawn_t spawns[] =
-{
+spawn_t spawns[] = {
 	// info entities don't do anything at all, but provide positional
 	// information for things controlled by other processes
-	{ "info_player_start",         SP_info_player_start         },
-	{ "info_player_checkpoint",    SP_info_player_checkpoint    },
-	{ "info_player_deathmatch",    SP_info_player_deathmatch    },
-	{ "info_player_intermission",  SP_info_player_intermission  },
-	{ "info_null",                 SP_info_null                 },
-	{ "info_notnull",              SP_info_notnull              }, // use target_position instead
-	{ "info_notnull_big",          SP_info_notnull              }, // use target_position instead
-	{ "info_camp",                 SP_info_camp                 },
+	{"info_player_start",         SP_info_player_start       },
+	{"info_player_checkpoint",    SP_info_player_checkpoint},
+	{"info_player_deathmatch",    SP_info_player_deathmatch  },
+	{"info_player_intermission",  SP_info_player_intermission},
+	{"info_null",                 SP_info_null               },
+	{"info_notnull",              SP_info_notnull            }, // use target_position instead
+	{"info_notnull_big",          SP_info_notnull            }, // use target_position instead
+	{"info_camp",                 SP_info_camp               },
 
 	// debris test
-	{ "func_debris",               SP_func_debris               },
+	{"func_debris",               SP_func_debris             },
 	// ===================
 
-	{ "func_plat",                 SP_func_plat                 },
-	{ "func_button",               SP_func_button               },
-	{ "func_explosive",            SP_func_explosive            },
-	{ "func_door",                 SP_func_door                 },
-	{ "func_static",               SP_func_static               },
-	{ "func_leaky",                SP_func_leaky                },
-	{ "func_rotating",             SP_func_rotating             },
-	{ "func_bobbing",              SP_func_bobbing              },
-	{ "func_pendulum",             SP_func_pendulum             },
-	{ "func_train",                SP_func_train                },
-	{ "func_group",                SP_info_null                 },
+	{"func_plat",                 SP_func_plat               },
+	{"func_button",               SP_func_button             },
+	{"func_explosive",            SP_func_explosive          },
+	{"func_door",                 SP_func_door               },
+	{"func_static",               SP_func_static             },
+	{"func_leaky",                SP_func_leaky              },
+	{"func_rotating",             SP_func_rotating           },
+	{"func_bobbing",              SP_func_bobbing            },
+	{"func_pendulum",             SP_func_pendulum           },
+	{"func_train",                SP_func_train              },
+	{"func_group",                SP_info_null               },
 
-	{ "func_train_rotating",       SP_func_train_rotating       },
-	{ "func_secret",               SP_func_secret               },
+	{"func_train_rotating",       SP_func_train_rotating     },
+	{"func_secret",               SP_func_secret             },
 
-	{ "func_door_rotating",        SP_func_door_rotating        },
+	{"func_door_rotating",        SP_func_door_rotating      },
 
-	{ "func_timer",                SP_func_timer                }, // rename trigger_timer?
+	{"func_timer",                SP_func_timer              }, // rename trigger_timer?
 
-	{ "func_invisible_user",       SP_func_invisible_user       },
+	{"func_invisible_user",       SP_func_invisible_user     },
 
 	// Triggers are brush objects that cause an effect when contacted
 	// by a living player, usually involving firing targets.
 	// While almost everything could be done with
 	// a single trigger class and different targets, triggered effects
 	// could not be client side predicted (push and teleport).
-	{ "trigger_always",            SP_trigger_always            },
-	{ "trigger_multiple",          SP_trigger_multiple          },
-	{ "trigger_push",              SP_trigger_push              },
-	{ "trigger_teleport",          SP_trigger_teleport          },
-	{ "trigger_hurt",              SP_trigger_hurt              },
+	{"trigger_always",            SP_trigger_always          },
+	{"trigger_multiple",          SP_trigger_multiple        },
+	{"trigger_push",              SP_trigger_push            },
+	{"trigger_teleport",          SP_trigger_teleport        },
+	{"trigger_hurt",              SP_trigger_hurt            },
 
 	// Wolf triggers
-	{ "trigger_concussive_dust",   SP_trigger_concussive_dust   },
-	{ "trigger_once",              SP_trigger_once              },
+	{"trigger_concussive_dust",   SP_trigger_concussive_dust },
+	{"trigger_once",              SP_trigger_once            },
 
-	{ "trigger_heal",              SP_trigger_heal              },
-	{ "trigger_ammo",              SP_trigger_ammo              },
+	{"trigger_heal",              SP_trigger_heal            },
+	{"trigger_ammo",              SP_trigger_ammo            },
 
 	// adding the model things to go with the triggers
-	{ "misc_cabinet_health",       SP_misc_cabinet_health       },
-	{ "misc_cabinet_supply",       SP_misc_cabinet_supply       },
+	{"misc_cabinet_health",       SP_misc_cabinet_health     },
+	{"misc_cabinet_supply",       SP_misc_cabinet_supply     },
 
 	// targets perform no action by themselves, but must be triggered
 	// by another entity
-	{ "target_give",               SP_target_give               },
-	{ "target_remove_powerups",    SP_target_remove_powerups    },
-	{ "target_delay",              SP_target_delay              },
-	{ "target_speaker",            SP_target_speaker            },
-	{ "target_print",              SP_target_print              },
-	{ "target_laser",              SP_target_laser              },
-	{ "target_score",              SP_target_score              },
-	{ "target_teleporter",         SP_target_teleporter         },
-	{ "target_relay",              SP_target_relay              },
-	{ "target_kill",               SP_target_kill               },
-	{ "target_position",           SP_target_position           },
-	{ "target_location",           SP_target_location           },
-	{ "target_push",               SP_target_push               },
-	{ "target_script_trigger",     SP_target_script_trigger     },
+	{"target_give",               SP_target_give             },
+	{"target_remove_powerups",    SP_target_remove_powerups  },
+	{"target_delay",              SP_target_delay            },
+	{"target_speaker",            SP_target_speaker          },
+	{"target_print",              SP_target_print},
+	{"target_laser",              SP_target_laser            },
+	{"target_score",              SP_target_score            },
+	{"target_teleporter",         SP_target_teleporter       },
+	{"target_relay",              SP_target_relay            },
+	{"target_kill",               SP_target_kill             },
+	{"target_position",           SP_target_position         },
+	{"target_location",           SP_target_location         },
+	{"target_push",               SP_target_push             },
+	{"target_script_trigger",     SP_target_script_trigger   },
 
 	// Wolf targets
-	{ "target_alarm",              SP_target_alarm              },
-	{ "target_counter",            SP_target_counter            },
-	{ "target_lock",               SP_target_lock               },
-	{ "target_effect",             SP_target_effect             },
-	{ "target_fog",                SP_target_fog                },
+	{"target_alarm",              SP_target_alarm            },
+	{"target_counter",            SP_target_counter          },
+	{"target_lock",               SP_target_lock             },
+	{"target_effect",             SP_target_effect           },
+	{"target_fog",                SP_target_fog              },
 
-	{ "target_rumble",             SP_target_rumble             },
+	{"target_rumble",             SP_target_rumble           },
 
-	{ "light",                     SP_light                     },
+	{"light",                     SP_light                   },
 
-	{ "lightJunior",               SP_lightJunior               },
+	{"lightJunior",               SP_lightJunior             },
 
-	{ "path_corner",               SP_path_corner               },
-	{ "path_corner_2",             SP_path_corner_2             },
+	{"path_corner",               SP_path_corner             },
+	{"path_corner_2",             SP_path_corner_2           },
 
-	{ "info_train_spline_main",    SP_info_train_spline_main    },
-	{ "info_train_spline_control", SP_path_corner_2             },
-	{ "info_limbo_camera",         SP_info_limbo_camera         },
+	{"info_train_spline_main",    SP_info_train_spline_main  },
+	{"info_train_spline_control", SP_path_corner_2           },
+	{"info_limbo_camera",         SP_info_limbo_camera       },
 
-	{ "misc_teleporter_dest",      SP_misc_teleporter_dest      },
-	{ "misc_model",                SP_misc_model                },
-	{ "misc_gamemodel",            SP_misc_gamemodel            },
-	{ "misc_portal_surface",       SP_misc_portal_surface       },
-	{ "misc_portal_camera",        SP_misc_portal_camera        },
+	{"misc_teleporter_dest",      SP_misc_teleporter_dest    },
+	{"misc_model",                SP_misc_model              },
+	{"misc_gamemodel",            SP_misc_gamemodel          },
+	{"misc_portal_surface",       SP_misc_portal_surface     },
+	{"misc_portal_camera",        SP_misc_portal_camera      },
 
-	{ "misc_commandmap_marker",    SP_misc_commandmap_marker    },
+	{"misc_commandmap_marker",    SP_misc_commandmap_marker  },
 
-	{ "misc_vis_dummy",            SP_misc_vis_dummy            },
-	{ "misc_vis_dummy_multiple",   SP_misc_vis_dummy_multiple   },
-	{ "misc_light_surface",        SP_misc_light_surface        },
+	{"misc_vis_dummy",            SP_misc_vis_dummy          },
+	{"misc_vis_dummy_multiple",   SP_misc_vis_dummy_multiple },
+	{"misc_light_surface",        SP_misc_light_surface      },
 
-	{ "misc_mg42",                 SP_mg42                      },
-	{ "misc_aagun",                SP_aagun                     },
+	{"misc_mg42",                 SP_mg42                    },
+	{"misc_aagun",                SP_aagun                   },
 
-	{ "misc_flak",                 SP_misc_flak                 },
-	{ "misc_firetrails",           SP_misc_firetrails           },
+	{"misc_flak",                 SP_misc_flak               },
+	{"misc_firetrails",           SP_misc_firetrails         },
 
-	{ "shooter_rocket",            SP_shooter_rocket            },
-	{ "shooter_grenade",           SP_shooter_grenade           },
+	{"shooter_rocket",            SP_shooter_rocket          },
+	{"shooter_grenade",           SP_shooter_grenade         },
 
-	{ "shooter_mortar",            SP_shooter_mortar            },
-	{ "alarm_box",                 SP_alarm_box                 },
+	{"shooter_mortar",            SP_shooter_mortar          },
+	{"alarm_box",                 SP_alarm_box               },
 
-	{ "team_CTF_redspawn",         SP_team_CTF_redspawn         },
-	{ "team_CTF_bluespawn",        SP_team_CTF_bluespawn        },
+	{"team_CTF_redspawn",         SP_team_CTF_redspawn       },
+	{"team_CTF_bluespawn",        SP_team_CTF_bluespawn      },
 
-	{ "team_WOLF_objective",       SP_team_WOLF_objective       },
+	{"team_WOLF_objective",       SP_team_WOLF_objective     },
 
-	{ "team_WOLF_checkpoint",      SP_team_WOLF_checkpoint      },
+	{"team_WOLF_checkpoint",      SP_team_WOLF_checkpoint},
 
-	{ "target_smoke",              SP_target_smoke              },
+	{"target_smoke",              SP_target_smoke            },
 
-	{ "misc_spawner",              SP_misc_spawner              },
+	{"misc_spawner",              SP_misc_spawner            },
 
-	{ "props_box_32",              SP_props_box_32              },
-	{ "props_box_48",              SP_props_box_48              },
-	{ "props_box_64",              SP_props_box_64              },
+	{"props_box_32",              SP_props_box_32            },
+	{"props_box_48",              SP_props_box_48            },
+	{"props_box_64",              SP_props_box_64            },
 
-	{ "props_smokedust",           SP_SmokeDust                 },
-	{ "props_dust",                SP_Dust                      },
-	{ "props_sparks",              SP_props_sparks              },
-	{ "props_gunsparks",           SP_props_gunsparks           },
+	{"props_smokedust",           SP_SmokeDust               },
+	{"props_dust",                SP_Dust                    },
+	{"props_sparks",              SP_props_sparks            },
+	{"props_gunsparks",           SP_props_gunsparks         },
 
-	{ "props_bench",               SP_Props_Bench               },
-	{ "props_radio",               SP_Props_Radio               },
-	{ "props_chair",               SP_Props_Chair               },
-	{ "props_chair_hiback",        SP_Props_ChairHiback         },
-	{ "props_chair_side",          SP_Props_ChairSide           },
-	{ "props_chair_chat",          SP_Props_ChairChat           },
-	{ "props_chair_chatarm",       SP_Props_ChairChatArm        },
-	{ "props_damageinflictor",     SP_Props_DamageInflictor     },
-	{ "props_locker_tall",         SP_Props_Locker_Tall         },
-	{ "props_desklamp",            SP_Props_Desklamp            },
-	{ "props_flamebarrel",         SP_Props_Flamebarrel         },
-	{ "props_crate_64",            SP_crate_64                  },
-	{ "props_flippy_table",        SP_Props_Flipping_Table      },
-	{ "props_crate_32",            SP_crate_32                  },
-	{ "props_crate_32x64",         SP_Props_Crate32x64          },
-	{ "props_58x112tablew",        SP_Props_58x112tablew        },
-	{ "props_radioSEVEN",          SP_Props_RadioSEVEN          },
-	{ "props_snowGenerator",       SP_props_snowGenerator       },
+	{"props_bench",               SP_Props_Bench             },
+	{"props_radio",               SP_Props_Radio             },
+	{"props_chair",               SP_Props_Chair             },
+	{"props_chair_hiback",        SP_Props_ChairHiback       },
+	{"props_chair_side",          SP_Props_ChairSide         },
+	{"props_chair_chat",          SP_Props_ChairChat         },
+	{"props_chair_chatarm",       SP_Props_ChairChatArm      },
+	{"props_damageinflictor",     SP_Props_DamageInflictor   },
+	{"props_locker_tall",         SP_Props_Locker_Tall       },
+	{"props_desklamp",            SP_Props_Desklamp          },
+	{"props_flamebarrel",         SP_Props_Flamebarrel       },
+	{"props_crate_64",            SP_crate_64                },
+	{"props_flippy_table",        SP_Props_Flipping_Table    },
+	{"props_crate_32",            SP_crate_32                },
+	{"props_crate_32x64",         SP_Props_Crate32x64        },
+	{"props_58x112tablew",        SP_Props_58x112tablew      },
+	{"props_radioSEVEN",          SP_Props_RadioSEVEN        },
+	{"props_snowGenerator",       SP_props_snowGenerator     },
 
-	{ "props_decoration",          SP_props_decoration          },
-	{ "props_decorBRUSH",          SP_props_decorBRUSH          },
-	{ "props_statue",              SP_props_statue              },
-	{ "props_statueBRUSH",         SP_props_statueBRUSH         },
-	{ "props_skyportal",           SP_skyportal                 },
-	{ "props_footlocker",          SP_props_footlocker          },
-	{ "props_flamethrower",        SP_props_flamethrower        },
-	{ "props_decoration_scale",    SP_props_decor_Scale         },
+	{"props_decoration",          SP_props_decoration        },
+	{"props_decorBRUSH",          SP_props_decorBRUSH        },
+	{"props_statue",              SP_props_statue            },
+	{"props_statueBRUSH",         SP_props_statueBRUSH       },
+	{"props_skyportal",           SP_skyportal               },
+	{"props_footlocker",          SP_props_footlocker        },
+	{"props_flamethrower",        SP_props_flamethrower      },
+	{"props_decoration_scale",    SP_props_decor_Scale       },
 
-	{ "dlight",                    SP_dlight                    },
+	{"dlight",                    SP_dlight                  },
 
-	{ "corona",                    SP_corona                    },
+	{"corona",                    SP_corona                  },
 
-	{ "trigger_flagonly",          SP_trigger_flagonly          },
-	{ "trigger_flagonly_multiple", SP_trigger_flagonly_multiple },
+	{"trigger_flagonly",          SP_trigger_flagonly        },
+	{"trigger_flagonly_multiple", SP_trigger_flagonly_multiple},
 
-	{ "trigger_objective_info",    SP_trigger_objective_info    },
+	{"trigger_objective_info",    SP_trigger_objective_info  },
 
 	// scripting
-	{ "script_model_med",          SP_script_model_med          },
-	{ "script_mover",              SP_script_mover              },
-	{ "script_multiplayer",        SP_script_multiplayer        },
+	{"script_model_med",          SP_script_model_med        },
+	{"script_mover",              SP_script_mover            },
+	{"script_multiplayer",        SP_script_multiplayer      },
 
-	{ "func_constructible",        SP_func_constructible        },
-	{ "func_brushmodel",           SP_func_brushmodel           },
-	{ "misc_beam",                 SP_misc_beam                 },
-	{ "misc_constructiblemarker",  SP_misc_constructiblemarker  },
-	{ "target_explosion",          SP_target_explosion          },
-	{ "misc_landmine",             SP_misc_landmine             },
+	{"func_constructible",        SP_func_constructible      },
+	{"func_brushmodel",           SP_func_brushmodel         },
+	{"misc_beam",                 SP_misc_beam               },
+	{"misc_constructiblemarker",  SP_misc_constructiblemarker},
+	{"target_explosion",          SP_target_explosion        },
+	{"misc_landmine",             SP_misc_landmine           },
 
-	{ "func_fakebrush",            SP_func_fakebrush            },
+	{"func_fakebrush",            SP_func_fakebrush          },
 
-	{ 0,                           0                            }
+	{0,                           0                          }
 };
 
 /*
@@ -588,22 +575,17 @@ Finds the spawn function for the entity and calls it,
 returning qfalse if not found
 ===============
 */
-qboolean G_CallSpawn(gentity_t *ent)
-{
+qboolean G_CallSpawn(gentity_t *ent) {
 	spawn_t *s;
 	gitem_t *item;
 
-	if (!ent->classname)
-	{
+	if (!ent->classname) {
 		G_Printf("G_CallSpawn: NULL classname\n");
 		return qfalse;
 	}
-
 	// check item spawn functions
-	for (item = bg_itemlist + 1 ; item->classname ; item++)
-	{
-		if (!strcmp(item->classname, ent->classname))
-		{
+	for (item = bg_itemlist + 1; item->classname; item++) {
+		if (!strcmp(item->classname, ent->classname)) {
 			// found it
 			if (g_gametype.integer != GT_WOLF_LMS)     // lets not have items in last man standing for the moment
 			{
@@ -611,26 +593,21 @@ qboolean G_CallSpawn(gentity_t *ent)
 
 				G_Script_ScriptParse(ent);
 				G_Script_ScriptEvent(ent, "spawn", "");
-			}
-			else
-			{
+			} else {
 				return qfalse;
 			}
+
 			return qtrue;
 		}
 	}
-
 	// check normal spawn functions
-	for (s = spawns ; s->name ; s++)
-	{
-		if (!strcmp(s->name, ent->classname))
-		{
+	for (s = spawns; s->name; s++) {
+		if (!strcmp(s->name, ent->classname)) {
 			// found it
 			s->spawn(ent);
 
 			// entity scripting
-			if (/*ent->s.number >= MAX_CLIENTS &&*/ ent->scriptName)
-			{
+			if (/*ent->s.number >= MAX_CLIENTS &&*/ ent->scriptName) {
 				G_Script_ScriptParse(ent);
 				G_Script_ScriptEvent(ent, "spawn", "");
 			}
@@ -638,11 +615,9 @@ qboolean G_CallSpawn(gentity_t *ent)
 			return qtrue;
 		}
 	}
-
 	// hack: this avoids spammy prints on start, bsp uses obsolete classnames!
 	// bot_sniper_spot (railgun)
-	if (Q_stricmp(ent->classname, "bot_sniper_spot"))
-	{
+	if (Q_stricmp(ent->classname, "bot_sniper_spot")) {
 		G_Printf("%s doesn't have a spawn function\n", ent->classname);
 	}
 
@@ -650,17 +625,16 @@ qboolean G_CallSpawn(gentity_t *ent)
 }
 
 /*
-=============
+=======================================================================================================================================
 G_NewString
 
 Builds a copy of the string, translating \n to real linefeeds
 so message texts can be multi-line
-=============
+=======================================================================================================================================
 */
-char *G_NewString(const char *string)
-{
+char *G_NewString(const char *string) {
 	char *newb, *new_p;
-	int  i, l;
+	int i, l;
 
 	l = strlen(string) + 1;
 
@@ -669,22 +643,16 @@ char *G_NewString(const char *string)
 	new_p = newb;
 
 	// turn \n into a real linefeed
-	for (i = 0 ; i < l ; i++)
-	{
-		if (string[i] == '\\' && i < l - 1)
-		{
+	for (i = 0; i < l; i++) {
+		if (string[i] == '\\' && i < l - 1) {
 			i++;
-			if (string[i] == 'n')
-			{
+
+			if (string[i] == 'n') {
 				*new_p++ = '\n';
-			}
-			else
-			{
+			} else {
 				*new_p++ = '\\';
 			}
-		}
-		else
-		{
+		} else {
 			*new_p++ = string[i];
 		}
 	}
@@ -700,22 +668,18 @@ Takes a key/value pair and sets the binary values
 in a gentity
 ===============
 */
-void G_ParseField(const char *key, const char *value, gentity_t *ent)
-{
+void G_ParseField(const char *key, const char *value, gentity_t *ent) {
 	field_t *f;
 	byte    *b;
-	float   v;
-	vec3_t  vec;
+	float v;
+	vec3_t vec;
 
-	for (f = fields ; f->name ; f++)
-	{
-		if (!Q_stricmp(f->name, key))
-		{
+	for (f = fields; f->name; f++) {
+		if (!Q_stricmp(f->name, key)) {
 			// found it
 			b = (byte *)ent;
 
-			switch (f->type)
-			{
+			switch (f->type) {
 			case F_LSTRING:
 				*( char ** )(b + f->ofs) = G_NewString(value);
 				break;
@@ -732,7 +696,7 @@ void G_ParseField(const char *key, const char *value, gentity_t *ent)
 				*( float * )(b + f->ofs) = atof(value);
 				break;
 			case F_ANGLEHACK:
-				v                            = atof(value);
+				v = atof(value);
 				(( float * )(b + f->ofs))[0] = 0;
 				(( float * )(b + f->ofs))[1] = v;
 				(( float * )(b + f->ofs))[2] = 0;
@@ -741,6 +705,7 @@ void G_ParseField(const char *key, const char *value, gentity_t *ent)
 			case F_IGNORE:
 				break;
 			}
+
 			return;
 		}
 	}
@@ -754,62 +719,53 @@ Spawn an entity and fill in all of the level fields from
 level.spawnVars[], then call the class specfic spawn function
 ===================
 */
-gentity_t *G_SpawnGEntityFromSpawnVars(void)
-{
-	int       i;
+gentity_t *G_SpawnGEntityFromSpawnVars(void) {
+	int i;
 	gentity_t *ent;
-	char      *str;
+	char *str;
 
 	ent = G_Spawn(); // get the next free entity
 
-	for (i = 0 ; i < level.numSpawnVars ; i++)
-	{
+	for (i = 0; i < level.numSpawnVars; i++) {
 		G_ParseField(level.spawnVars[i][0], level.spawnVars[i][1], ent);
 	}
-
 	// check for "notteam" / "notfree" flags
 	G_SpawnInt("notteam", "0", &i);
-	if (i)
-	{
+
+	if (i) {
 		G_FreeEntity(ent);
 		return NULL;
 	}
-
 	// allowteams handling
 	G_SpawnString("allowteams", "", &str);
-	if (str[0])
-	{
+
+	if (str[0]) {
 		str = Q_strlwr(str);
-		if (strstr(str, "axis"))
-		{
+
+		if (strstr(str, "axis")) {
 			ent->allowteams |= ALLOW_AXIS_TEAM;
 		}
-		if (strstr(str, "allies"))
-		{
+
+		if (strstr(str, "allies")) {
 			ent->allowteams |= ALLOW_ALLIED_TEAM;
 		}
-		if (strstr(str, "cvops"))
-		{
+
+		if (strstr(str, "cvops")) {
 			ent->allowteams |= ALLOW_DISGUISED_CVOPS;
 		}
 	}
 
-	if (ent->targetname && *ent->targetname)
-	{
+	if (ent->targetname && *ent->targetname) {
 		ent->targetnamehash = BG_StringHashValue(ent->targetname);
-	}
-	else
-	{
+	} else {
 		ent->targetnamehash = -1;
 	}
-
 	// move editor origin to pos
 	VectorCopy(ent->s.origin, ent->s.pos.trBase);
 	VectorCopy(ent->s.origin, ent->r.currentOrigin);
 
 	// if we didn't get a classname, don't bother spawning anything
-	if (!G_CallSpawn(ent))
-	{
+	if (!G_CallSpawn(ent)) {
 		G_FreeEntity(ent);
 	}
 
@@ -821,14 +777,13 @@ gentity_t *G_SpawnGEntityFromSpawnVars(void)
 G_AddSpawnVarToken
 ====================
 */
-char *G_AddSpawnVarToken(const char *string)
-{
-	int  l;
+char *G_AddSpawnVarToken(const char *string) {
+	int l;
 	char *dest;
 
 	l = strlen(string);
-	if (level.numSpawnVarChars + l + 1 > MAX_SPAWN_VARS_CHARS)
-	{
+
+	if (level.numSpawnVarChars + l + 1 > MAX_SPAWN_VARS_CHARS) {
 		G_Error("G_AddSpawnVarToken: MAX_SPAWN_VARS\n");
 	}
 
@@ -850,53 +805,45 @@ level's entity strings into level.spawnVars[]
 This does not actually spawn an entity.
 ====================
 */
-qboolean G_ParseSpawnVars(void)
-{
+qboolean G_ParseSpawnVars(void) {
 	char keyname[MAX_TOKEN_CHARS];
 	char com_token[MAX_TOKEN_CHARS];
 
-	level.numSpawnVars     = 0;
+	level.numSpawnVars = 0;
 	level.numSpawnVarChars = 0;
 
 	// parse the opening brace
-	if (!trap_GetEntityToken(com_token, sizeof(com_token)))
-	{
+	if (!trap_GetEntityToken(com_token, sizeof(com_token))) {
 		// end of spawn string
 		return qfalse;
 	}
-	if (com_token[0] != '{')
-	{
+
+	if (com_token[0] != '{') {
 		G_Error("G_ParseSpawnVars: found %s when expecting {\n", com_token);
 	}
-
 	// go through all the key / value pairs
-	while (1)
-	{
+	while (1) {
 		// parse key
-		if (!trap_GetEntityToken(keyname, sizeof(keyname)))
-		{
+		if (!trap_GetEntityToken(keyname, sizeof(keyname))) {
 			G_Error("G_ParseSpawnVars: EOF without closing brace\n");
 		}
 
-		if (keyname[0] == '}')
-		{
+		if (keyname[0] == '}') {
 			break;
 		}
-
 		// parse value
-		if (!trap_GetEntityToken(com_token, sizeof(com_token)))
-		{
+		if (!trap_GetEntityToken(com_token, sizeof(com_token))) {
 			G_Error("G_ParseSpawnVars: EOF without closing brace\n");
 		}
 
-		if (com_token[0] == '}')
-		{
+		if (com_token[0] == '}') {
 			G_Error("G_ParseSpawnVars: closing brace without data\n");
 		}
-		if (level.numSpawnVars == MAX_SPAWN_VARS)
-		{
+
+		if (level.numSpawnVars == MAX_SPAWN_VARS) {
 			G_Error("G_ParseSpawnVars: MAX_SPAWN_VARS\n");
 		}
+
 		level.spawnVars[level.numSpawnVars][0] = G_AddSpawnVarToken(keyname);
 		level.spawnVars[level.numSpawnVars][1] = G_AddSpawnVarToken(com_token);
 		level.numSpawnVars++;
@@ -915,16 +862,14 @@ Every map should have exactly one worldspawn.
 "_color"    Ambient light color (must be used with 'ambient')
 "sun"        Shader to use for 'sun' image
 */
-void SP_worldspawn(void)
-{
+void SP_worldspawn(void) {
 	char *s;
 
 	G_SpawnString("classname", "", &s);
-	if (Q_stricmp(s, "worldspawn"))
-	{
+
+	if (Q_stricmp(s, "worldspawn")) {
 		G_Error("SP_worldspawn: The first entity isn't 'worldspawn'\n");
 	}
-
 	// make some data visible to connecting client
 	trap_SetConfigstring(CS_GAME_VERSION, GAME_VERSION);
 
@@ -934,15 +879,16 @@ void SP_worldspawn(void)
 	trap_SetConfigstring(CS_MUSIC, s);
 
 	G_SpawnString("message", "", &s);
-	trap_SetConfigstring(CS_MESSAGE, s);                // map specific message
+	trap_SetConfigstring(CS_MESSAGE, s); // map specific message
 
 	G_SpawnString("cclayers", "0", &s);
-	if (atoi(s))
-	{
+
+	if (atoi(s)) {
 		level.ccLayers = qtrue;
 	}
 
 	level.mapcoordsValid = qfalse;
+
 	if (G_SpawnVector2D("mapcoordsmins", "-128 128", level.mapcoordsMins) &&     // top left
 	    G_SpawnVector2D("mapcoordsmaxs", "128 -128", level.mapcoordsMaxs))       // bottom right
 	{
@@ -951,33 +897,32 @@ void SP_worldspawn(void)
 
 	BG_InitLocations(level.mapcoordsMins, level.mapcoordsMaxs);
 
-	trap_SetConfigstring(CS_MOTD, g_motd.string);       // message of the day
+	trap_SetConfigstring(CS_MOTD, g_motd.string); // message of the day
 
 	G_SpawnString("gravity", "800", &s);
 	trap_Cvar_Set("g_gravity", s);
 
 	G_SpawnString("spawnflags", "0", &s);
-	g_entities[ENTITYNUM_WORLD].spawnflags   = atoi(s);
+	g_entities[ENTITYNUM_WORLD].spawnflags = atoi(s);
 	g_entities[ENTITYNUM_WORLD].r.worldflags = g_entities[ENTITYNUM_WORLD].spawnflags;
 
-	g_entities[ENTITYNUM_WORLD].s.number   = ENTITYNUM_WORLD;
+	g_entities[ENTITYNUM_WORLD].s.number = ENTITYNUM_WORLD;
 	g_entities[ENTITYNUM_WORLD].r.ownerNum = ENTITYNUM_NONE;
-	g_entities[ENTITYNUM_WORLD].classname  = "worldspawn";
+	g_entities[ENTITYNUM_WORLD].classname = "worldspawn";
 
-	g_entities[ENTITYNUM_NONE].s.number   = ENTITYNUM_NONE;
+	g_entities[ENTITYNUM_NONE].s.number = ENTITYNUM_NONE;
 	g_entities[ENTITYNUM_NONE].r.ownerNum = ENTITYNUM_NONE;
-	g_entities[ENTITYNUM_NONE].classname  = "nothing";
+	g_entities[ENTITYNUM_NONE].classname = "nothing";
 
 	// see if we want a warmup time
 	trap_SetConfigstring(CS_WARMUP, "");
-	if (g_restarted.integer)
-	{
+
+	if (g_restarted.integer) {
 		trap_Cvar_Set("g_restarted", "0");
 		level.warmupTime = 0;
 	}
 
-	if (g_gamestate.integer == GS_PLAYING)
-	{
+	if (g_gamestate.integer == GS_PLAYING) {
 		G_initMatch();
 	}
 }
@@ -989,8 +934,7 @@ SP_func_fakebrush
 forty - etpro mapscripting - spawn function for fake brushes
 ==============
 */
-void SP_func_fakebrush(gentity_t *ent)
-{
+void SP_func_fakebrush(gentity_t *ent) {
 	ent->s.eFlags |= EF_FAKEBMODEL;
 	G_SetOrigin(ent, ent->s.origin);
 
@@ -1004,25 +948,23 @@ G_SpawnEntitiesFromString
 Parses textual entity definitions out of an entstring and spawns gentities.
 ==============
 */
-void G_SpawnEntitiesFromString(void)
-{
+void G_SpawnEntitiesFromString(void) {
 	// allow calls to G_Spawn*()
 	G_Printf("Enable spawning!\n");
-	level.spawning     = qtrue;
+	level.spawning = qtrue;
 	level.numSpawnVars = 0;
 
 	// the worldspawn is not an actual entity, but it still
 	// has a "spawn" function to perform any global setup
 	// needed by a level (setting configstrings or cvars, etc)
-	if (!G_ParseSpawnVars())
-	{
+	if (!G_ParseSpawnVars()) {
 		G_Error("SpawnEntities: no entities\n");
 	}
+
 	SP_worldspawn();
 
 	// parse ents
-	while (G_ParseSpawnVars())
-	{
+	while (G_ParseSpawnVars()) {
 		G_SpawnGEntityFromSpawnVars();
 	}
 
@@ -1031,7 +973,7 @@ void G_SpawnEntitiesFromString(void)
 #endif
 
 	G_Printf("Disable spawning!\n");
-	level.spawning = qfalse;            // any future calls to G_Spawn*() will be errors
+	level.spawning = qfalse; // any future calls to G_Spawn*() will be errors
 }
 
 #ifdef FEATURE_LUA
@@ -1041,28 +983,26 @@ void G_SpawnEntitiesFromString(void)
 
 // return the index in the fiels[] array of the given fieldname,
 // return -1 if not found..
-int GetFieldIndex(char *fieldname)
-{
+int GetFieldIndex(char *fieldname) {
 	int i;
 
 	for (i = 0; fields[i].name; i++)
-		if (!Q_stricmp(fields[i].name, fieldname))
-		{
+		if (!Q_stricmp(fields[i].name, fieldname)) {
 			return i;
 		}
+
 	return -1;
 }
 
 // return the fieldType of the given fieldname..
 // return F_IGNORE if the field is not found.
-fieldtype_t GetFieldType(char *fieldname)
-{
+fieldtype_t GetFieldType(char *fieldname) {
 	int index = GetFieldIndex(fieldname);
 
-	if (index == -1)
-	{
+	if (index == -1) {
 		return F_IGNORE;
 	}
+
 	return fields[index].type;
 }
 #endif // FEATURE_LUA

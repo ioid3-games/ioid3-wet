@@ -123,7 +123,7 @@ static qboolean CG_ParseHudHeadConfig(const char *filename, animation_t *hha) {
 	COM_BeginParseSession("CG_ParseHudHeadConfig");
 
 	for (i = 0; i < MAX_HD_ANIMATIONS; i++) {
-		token = COM_Parse(&text_p);    // first frame
+		token = COM_Parse(&text_p); // first frame
 
 		if (!token[0]) {
 			break;
@@ -131,7 +131,7 @@ static qboolean CG_ParseHudHeadConfig(const char *filename, animation_t *hha) {
 
 		hha[i].firstFrame = atoi(token);
 
-		token = COM_Parse(&text_p);    // length
+		token = COM_Parse(&text_p); // length
 
 		if (!token[0]) {
 			break;
@@ -139,7 +139,7 @@ static qboolean CG_ParseHudHeadConfig(const char *filename, animation_t *hha) {
 
 		hha[i].numFrames = atoi(token);
 
-		token = COM_Parse(&text_p);    // fps
+		token = COM_Parse(&text_p); // fps
 
 		if (!token[0]) {
 			break;
@@ -154,7 +154,7 @@ static qboolean CG_ParseHudHeadConfig(const char *filename, animation_t *hha) {
 		hha[i].frameLerp = 1000 / fps;
 		hha[i].initialLerp = 1000 / fps;
 
-		token = COM_Parse(&text_p);    // looping frames
+		token = COM_Parse(&text_p); // looping frames
 
 		if (!token[0]) {
 			break;
@@ -342,16 +342,16 @@ typedef struct {
 static acc_t cg_accessories[] = {
 	{"md3_beltr", ACC_BELT_LEFT},
 	{"md3_beltl", ACC_BELT_RIGHT},
-	{"md3_belt", ACC_BELT     },
-	{"md3_back", ACC_BACK     },
-	{"md3_weapon", ACC_WEAPON   },
-	{"md3_weapon2", ACC_WEAPON2  },
+	{"md3_belt", ACC_BELT   },
+	{"md3_back", ACC_BACK   },
+	{"md3_weapon", ACC_WEAPON },
+	{"md3_weapon2", ACC_WEAPON2},
 };
 
 static int cg_numAccessories = sizeof(cg_accessories) / sizeof(cg_accessories[0]);
 static acc_t cg_headAccessories[] = {
-	{"md3_hat", ACC_HAT  },
-	{"md3_rank", ACC_RANK },
+	{"md3_hat", ACC_HAT},
+	{"md3_rank", ACC_RANK},
 	{"md3_hat2", ACC_MOUTH2},
 	{"md3_hat3", ACC_MOUTH3},
 };

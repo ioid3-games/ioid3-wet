@@ -61,7 +61,7 @@ SND_free
 void SND_free(sndBuffer *v) {
 	*(sndBuffer **)v = freelist;
 	freelist = (sndBuffer *)v;
-	inUse     += sizeof(sndBuffer);
+	inUse += sizeof(sndBuffer);
 }
 
 /*
@@ -105,7 +105,7 @@ void SND_setup(void) {
 		Com_Error(ERR_FATAL, "Sound buffer failed to allocate %1.1f megs", (float)scs / (1024 * 1024));
 	}
 	// allocate the stack based hunk allocator
-	sfxScratchBuffer = malloc(SND_CHUNK_SIZE * sizeof(short) * 4);     // Hunk_Alloc(SND_CHUNK_SIZE * sizeof(short) * 4);
+	sfxScratchBuffer = malloc(SND_CHUNK_SIZE * sizeof(short) * 4); // Hunk_Alloc(SND_CHUNK_SIZE * sizeof(short) * 4);
 
 	if (!sfxScratchBuffer) {
 		Com_Error(ERR_FATAL, "Unable to allocate sound scratch buffer");

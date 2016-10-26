@@ -38,11 +38,11 @@
 
 void G_UpdateSkillRating(int winner);
 
-// MU      25            - mean
-// SIGMA   MU / 3        - standard deviation
-// BETA    SIGMA / 2     - skill chain length
-// TAU     SIGMA / 100   - dynamics factor
-// EPSILON 0.f           - draw margin(assumed null)
+// MU      25 - mean
+// SIGMA   MU / 3 - standard deviation
+// BETA    SIGMA / 2 - skill chain length
+// TAU     SIGMA / 100 - dynamics factor
+// EPSILON 0.f - draw margin(assumed null)
 
 /**
  * @brief Calculate skill ratings

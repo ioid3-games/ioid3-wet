@@ -254,7 +254,7 @@ void G_ResetXP(gentity_t *ent) {
 	// newWeapon = ent->client->ps.weapon;
 
 	for (i = WP_NONE; i < WP_NUM_WEAPONS; ++i) // i < MAX_WEAPONS
-	{ // only restore ammo for valid weapons..
+	{// only restore ammo for valid weapons..
 		// ..they might have lost some weapons because of skill changes.
 		// Also restore to the old amount of ammo, because..
 		// ..SetWolfSpawnWeapons sets amount of ammo for a fresh spawning player, // which is usually more than the player currently has left.
@@ -429,8 +429,8 @@ void G_AddKillSkillPoints(gentity_t *attacker, meansOfDeath_t mod, hitRegion_t h
 		case HR_HEAD:   G_AddSkillPoints(attacker, SK_LIGHT_WEAPONS, 5.f); G_DebugAddSkillPoints(attacker, SK_LIGHT_WEAPONS, 5.f, "headshot kill"); break;
 		case HR_ARMS:   G_AddSkillPoints(attacker, SK_LIGHT_WEAPONS, 3.f); G_DebugAddSkillPoints(attacker, SK_LIGHT_WEAPONS, 3.f, "armshot kill"); break;
 		case HR_BODY:   G_AddSkillPoints(attacker, SK_LIGHT_WEAPONS, 3.f); G_DebugAddSkillPoints(attacker, SK_LIGHT_WEAPONS, 3.f, "bodyshot kill"); break;
-		case HR_LEGS:   G_AddSkillPoints(attacker, SK_LIGHT_WEAPONS, 3.f); G_DebugAddSkillPoints(attacker, SK_LIGHT_WEAPONS, 3.f, "legshot kill");  break;
-		default:        G_AddSkillPoints(attacker, SK_LIGHT_WEAPONS, 3.f); G_DebugAddSkillPoints(attacker, SK_LIGHT_WEAPONS, 3.f, "kill"); break;              // for weapons that don't have localized damage
+		case HR_LEGS:   G_AddSkillPoints(attacker, SK_LIGHT_WEAPONS, 3.f); G_DebugAddSkillPoints(attacker, SK_LIGHT_WEAPONS, 3.f, "legshot kill"); break;
+		default:        G_AddSkillPoints(attacker, SK_LIGHT_WEAPONS, 3.f); G_DebugAddSkillPoints(attacker, SK_LIGHT_WEAPONS, 3.f, "kill"); break; // for weapons that don't have localized damage
 		}
 
 		break;
@@ -453,7 +453,7 @@ void G_AddKillSkillPoints(gentity_t *attacker, meansOfDeath_t mod, hitRegion_t h
 		case HR_ARMS:   G_AddSkillPoints(attacker, SK_MILITARY_INTELLIGENCE_AND_SCOPED_WEAPONS, 3.f); G_DebugAddSkillPoints(attacker, SK_MILITARY_INTELLIGENCE_AND_SCOPED_WEAPONS, 2.f, "armshot kill"); break;
 		case HR_BODY:   G_AddSkillPoints(attacker, SK_MILITARY_INTELLIGENCE_AND_SCOPED_WEAPONS, 3.f); G_DebugAddSkillPoints(attacker, SK_MILITARY_INTELLIGENCE_AND_SCOPED_WEAPONS, 3.f, "bodyshot kill"); break;
 		case HR_LEGS:   G_AddSkillPoints(attacker, SK_MILITARY_INTELLIGENCE_AND_SCOPED_WEAPONS, 3.f); G_DebugAddSkillPoints(attacker, SK_MILITARY_INTELLIGENCE_AND_SCOPED_WEAPONS, 2.f, "legshot kill"); break;
-		default:        G_AddSkillPoints(attacker, SK_MILITARY_INTELLIGENCE_AND_SCOPED_WEAPONS, 3.f); G_DebugAddSkillPoints(attacker, SK_MILITARY_INTELLIGENCE_AND_SCOPED_WEAPONS, 3.f, "kill"); break;            // for weapons that don't have localized damage
+		default:        G_AddSkillPoints(attacker, SK_MILITARY_INTELLIGENCE_AND_SCOPED_WEAPONS, 3.f); G_DebugAddSkillPoints(attacker, SK_MILITARY_INTELLIGENCE_AND_SCOPED_WEAPONS, 3.f, "kill"); break; // for weapons that don't have localized damage
 		}
 
 		break;

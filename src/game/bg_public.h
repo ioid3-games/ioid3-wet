@@ -60,8 +60,8 @@
 #define SPRINTTIME 20000.0f
 
 #define DEFAULT_GRAVITY     800
-#define FORCE_LIMBO_HEALTH  -75
-#define GIB_HEALTH          -175
+#define FORCE_LIMBO_HEALTH -75
+#define GIB_HEALTH -175
 
 #define HOLDBREATHTIME      12000
 
@@ -76,9 +76,9 @@
 
 #define DEFAULT_VIEWHEIGHT  40
 #define CROUCH_VIEWHEIGHT   16
-#define DEAD_VIEWHEIGHT     -16
+#define DEAD_VIEWHEIGHT -16
 
-#define PRONE_VIEWHEIGHT    -8
+#define PRONE_VIEWHEIGHT -8
 
 extern vec3_t playerlegsProneMins;
 extern vec3_t playerlegsProneMaxs;
@@ -122,16 +122,14 @@ extern vec3_t playerlegsProneMaxs;
 #define SVC_INCLUDE         7
 #define SVC_EXCLUDE         8
 
-typedef struct svCvar_s
-{
+typedef struct svCvar_s {
 	char cvarName[MAX_CVAR_VALUE_STRING];
 	int mode;
 	char Val1[MAX_CVAR_VALUE_STRING];
 	char Val2[MAX_CVAR_VALUE_STRING];
 } svCvar_t;
 
-typedef struct forceCvar_s
-{
+typedef struct forceCvar_s {
 	char cvarName[MAX_CVAR_VALUE_STRING];
 	char cvarValue[MAX_CVAR_VALUE_STRING];
 } forceCvar_t;
@@ -162,8 +160,7 @@ typedef enum
 
 #define MAX_GAMETYPES 16
 
-typedef struct
-{
+typedef struct {
 	const char *mapName;
 	const char *mapLoadName;
 	const char *imageName;
@@ -191,21 +188,18 @@ typedef struct
 // changed this from 6 to 10
 #define MAX_MAPS_PER_CAMPAIGN   10
 
-typedef struct
-{
+typedef struct {
 	int mapnameHash;
 } cpsMap_t;
 
-typedef struct
-{
+typedef struct {
 	int shortnameHash;
 	int progress;
 
 	cpsMap_t maps[MAX_MAPS_PER_CAMPAIGN];
 } cpsCampaign_t;
 
-typedef struct
-{
+typedef struct {
 	int ident;
 	int version;
 
@@ -213,14 +207,12 @@ typedef struct
 	int profileHash;
 } cpsHeader_t;
 
-typedef struct
-{
+typedef struct {
 	cpsHeader_t header;
 	cpsCampaign_t campaigns[MAX_CAMPAIGNS];
 } cpsFile_t;
 
-typedef struct
-{
+typedef struct {
 	const char *campaignShortName;
 	const char *campaignName;
 	const char *campaignDescription;
@@ -229,7 +221,7 @@ typedef struct
 	int mapCount;
 	mapInfo *mapInfos[MAX_MAPS_PER_CAMPAIGN];
 	vec2_t mapTC[2];
-	cpsCampaign_t *cpsCampaign;   // if this campaign was found in the campaignsave, more detailed info can be found here
+	cpsCampaign_t *cpsCampaign; // if this campaign was found in the campaignsave, more detailed info can be found here
 
 	const char *campaignShotName;
 	int campaignCinematic;
@@ -362,7 +354,7 @@ typedef enum
 	GT_MAX_GAME_TYPE
 } gametype_t;
 
-typedef enum { GENDER_MALE, GENDER_FEMALE, GENDER_NEUTER } gender_t;
+typedef enum {GENDER_MALE, GENDER_FEMALE, GENDER_NEUTER} gender_t;
 
 /*
 ===================================================================================
@@ -426,14 +418,13 @@ typedef enum
 
 #define PMF_ALL_TIMES   (PMF_TIME_WATERJUMP | PMF_TIME_LAND | PMF_TIME_KNOCKBACK | PMF_TIME_LOCKPLAYER)
 
-typedef struct pmoveExt_s
-{
-	qboolean bAutoReload;           // do we predict autoreload of weapons
+typedef struct pmoveExt_s {
+	qboolean bAutoReload; // do we predict autoreload of weapons
 
-	int jumpTime;                   // used in MP to prevent jump accel
+	int jumpTime; // used in MP to prevent jump accel
 
-	int weapAnimTimer;              // don't change low priority animations until this runs out
-	int silencedSideArm;            // Keep track of whether the luger/colt is silenced "in holster", prolly want to do this for the kar98 etc too
+	int weapAnimTimer; // don't change low priority animations until this runs out
+	int silencedSideArm; // Keep track of whether the luger/colt is silenced "in holster", prolly want to do this for the kar98 etc too
 	int sprintTime;
 
 	int airleft;
@@ -442,13 +433,13 @@ typedef struct pmoveExt_s
 	float varc, harc;
 	vec3_t centerangles;
 
-	int proneTime;                  // time a go-prone or stop-prone move starts, to sync the animation to
+	int proneTime; // time a go-prone or stop-prone move starts, to sync the animation to
 
-	float proneLegsOffset;          // offset legs bounding box
+	float proneLegsOffset; // offset legs bounding box
 
-	vec3_t mountedWeaponAngles;     // mortar, mg42 (prone), etc
+	vec3_t mountedWeaponAngles; // mortar, mg42 (prone), etc
 
-	int weapRecoilTime;             // time at which a weapon that has a recoil kickback has been fired last
+	int weapRecoilTime; // time at which a weapon that has a recoil kickback has been fired last
 	int weapRecoilDuration;
 	float weapRecoilYaw;
 	float weapRecoilPitch;
@@ -463,12 +454,11 @@ typedef struct pmoveExt_s
 
 	qboolean releasedFire;
 
-} pmoveExt_t;   // data used both in client and server - store it here
+} pmoveExt_t; // data used both in client and server - store it here
                 // instead of playerstate to prevent different engine versions of playerstate between XP and MP
 
 #define MAXTOUCH    32
-typedef struct
-{
+typedef struct {
 	// state (in / out)
 	playerState_t *ps;
 	pmoveExt_t *pmext;
@@ -476,13 +466,13 @@ typedef struct
 
 	// command (in)
 	usercmd_t cmd, oldcmd;
-	int tracemask;                  // collide against these types of surfaces
-	int debugLevel;                 // if set, diagnostic output will be printed
-	qboolean noFootsteps;           // if the game is setup for no footsteps by the server
-	qboolean noWeapClips;           // if the game is setup for no weapon clips by the server
+	int tracemask; // collide against these types of surfaces
+	int debugLevel; // if set, diagnostic output will be printed
+	qboolean noFootsteps; // if the game is setup for no footsteps by the server
+	qboolean noWeapClips; // if the game is setup for no weapon clips by the server
 
 	int gametype;
-	int ltChargeTime;               // fieldopsChargeTime in cgame and ui. Cannot change here because of compatibility
+	int ltChargeTime; // fieldopsChargeTime in cgame and ui. Cannot change here because of compatibility
 	int soldierChargeTime;
 	int engineerChargeTime;
 	int medicChargeTime;
@@ -492,15 +482,14 @@ typedef struct
 	// results (out)
 	int numtouch;
 	int touchents[MAXTOUCH];
-
-	vec3_t mins, maxs;              // bounding box size
+	vec3_t mins, maxs; // bounding box size
 
 	int watertype;
 	int waterlevel;
 
 	float xyspeed;
 
-	int *skill;                     // player skills
+	int *skill; // player skills
 
 	// for fixed msec Pmove
 	int pmove_fixed;
@@ -527,7 +516,7 @@ void PmovePredict(pmove_t *pmove, float frametime);
 #define PC_MEDIC                1   //	heal stuff
 #define PC_ENGINEER             2   //	build stuff
 #define PC_FIELDOPS             3   //	bomb stuff
-#define PC_COVERTOPS            4   //	sneak about ;o
+#define PC_COVERTOPS            4   //	sneak about;o
 
 #define NUM_PLAYER_CLASSES      5
 
@@ -677,7 +666,7 @@ typedef enum
 	KEY_16,
 	KEY_LOCKED_PICKABLE, // ent can be unlocked with the WP_LOCKPICK. FIXME: remove
 	KEY_NUM_KEYS
-} wkey_t;           // conflicts with types.h
+} wkey_t; // conflicts with types.h
 
 #define NO_AIRSTRIKE    1
 #define NO_ARTILLERY    2
@@ -752,8 +741,7 @@ typedef enum
 	                        // NOTE: this cannot be larger than 64 for AI/player weapons!
 } weapon_t;
 
-typedef struct
-{
+typedef struct {
 	int kills, teamkills, killedby;
 } weaponStats_t;
 
@@ -789,67 +777,64 @@ extern const char *medalNames[SK_NUM_SKILLS];
 #define NUM_SKILL_LEVELS 5
 extern int skillLevels[SK_NUM_SKILLS][NUM_SKILL_LEVELS];
 
-typedef struct
-{
+typedef struct {
 	weaponStats_t weaponStats[WP_NUM_WEAPONS];
 	int selfkills;
 	int hitRegions[HR_NUM_HITREGIONS];
 	int objectiveStats[MAX_OBJECTIVES];
 } playerStats_t;
 
-typedef struct ammotable_s
-{
-	int maxammo;            //
-	int uses;               //
-	int maxclip;            //
+typedef struct ammotable_s {
+	int maxammo; //
+	int uses; //
+	int maxclip; //
 	int defaultStartingAmmo;
 	int defaultStartingClip;
-	int reloadTime;         //
-	int fireDelayTime;      //
-	int nextShotTime;       //
+	int reloadTime; //
+	int fireDelayTime; //
+	int nextShotTime; //
 
-	int maxHeat;            // max active firing time before weapon 'overheats' (at which point the weapon will fail)
-	int coolRate;           // how fast the weapon cools down. (per second)
+	int maxHeat; // max active firing time before weapon 'overheats' (at which point the weapon will fail)
+	int coolRate; // how fast the weapon cools down. (per second)
 
-	int mod;                // means of death
+	int mod; // means of death
 } ammotable_t;
 
 // Lookup table to find ammo table entry
 extern ammotable_t *GetAmmoTableData(int ammoIndex);
 
-typedef struct weapontable_s
-{
-	int weapon;               // reference
-	int weapAlts;             // bg
-	int akimboSideram;        // bg
+typedef struct weapontable_s {
+	int weapon; // reference
+	int weapAlts; // bg
+	int akimboSideram; // bg
 
-	int ammoIndex;            // bg type of weapon ammo this uses.  (ex. WP_MP40 and WP_LUGER share 9mm ammo, so they both have WP_LUGER for giAmmoIndex)
-	int clipIndex;            // bg which clip this weapon uses.  this allows the sniper rifle to use the same clip as the garand, etc.
+	int ammoIndex; // bg type of weapon ammo this uses.  (ex. WP_MP40 and WP_LUGER share 9mm ammo, so they both have WP_LUGER for giAmmoIndex)
+	int clipIndex; // bg which clip this weapon uses.  this allows the sniper rifle to use the same clip as the garand, etc.
 
-	qboolean isScoped;        // bg
+	qboolean isScoped; // bg
 
 	qboolean isLightWeaponSupportingFastReload; // bg
 
-	int damage;               // g
-	qboolean canGib;          // g
-	qboolean isReload;        // g
+	int damage; // g
+	qboolean canGib; // g
+	qboolean isReload; // g
 
-	float spread;             // g
-	//int splashDamage;         // g
-	//int splashRadius;         // g
+	float spread; // g
+	//int splashDamage; // g
+	//int splashRadius; // g
 
-	//qboolean keepDisguise;    // g
+	//qboolean keepDisguise; // g
 
-	//qboolean isAutoReload;    // bg
+	//qboolean isAutoReload; // bg
 
-	//qboolean isAkimbo;        // bg
-	//qboolean isPanzer;        // bg
-	//qboolean isRiflenade;     // bg
-	//qboolean isMortar;        // bg
-	//qboolean isMortarSet;     // bg
+	//qboolean isAkimbo; // bg
+	//qboolean isPanzer; // bg
+	//qboolean isRiflenade; // bg
+	//qboolean isMortar; // bg
+	//qboolean isMortarSet; // bg
 
-	//qboolean isHeavyWeapon;   // bg
-	//qboolean isSetWeapon;     // bg
+	//qboolean isHeavyWeapon; // bg
+	//qboolean isSetWeapon; // bg
 
 	//qboolean isUnderWaterFire; // bg
 
@@ -861,24 +846,23 @@ typedef struct weapontable_s
 
 } weaponTable_t;
 
-#define WEAPON_CLASS_FOR_MOD_NO       -1
+#define WEAPON_CLASS_FOR_MOD_NO -1
 #define WEAPON_CLASS_FOR_MOD_EXPLOSIVE 0
 #define WEAPON_CLASS_FOR_MOD_SATCHEL   1
 #define WEAPON_CLASS_FOR_MOD_DYNAMITE  2
 
-typedef struct modtable_s
-{
-	int mod;    // reference
+typedef struct modtable_s {
+	int mod; // reference
 
-	qboolean isHeadshot;   // g
-	qboolean isExplosive;  // g
+	qboolean isHeadshot; // g
+	qboolean isExplosive; // g
 
 	int weaponClassForMOD; // g
 } modTable_t;
 
 extern weaponTable_t *GetWeaponTableData(int weaponIndex);
 
-extern int weapAlts[];  // defined in bg_misc.c
+extern int weapAlts[]; // defined in bg_misc.c
 
 // FIXME: weapon table - put following macros in
 #define IS_RIFLENADE_WEAPON(w) \
@@ -1248,7 +1232,7 @@ typedef enum // unused
 } animNumber_t;
 
 // text represenation for scripting
-extern const char *animStrings[];     // defined in bg_misc.c
+extern const char *animStrings[]; // defined in bg_misc.c
 
 typedef enum
 {
@@ -1268,8 +1252,7 @@ typedef enum
 	MAX_WP_ANIMATIONS
 } weapAnimNumber_t;
 
-typedef enum hudHeadAnimNumber_s
-{
+typedef enum hudHeadAnimNumber_s {
 	HD_IDLE1 = 0,
 	HD_IDLE2,
 	HD_IDLE3,
@@ -1293,8 +1276,7 @@ typedef enum hudHeadAnimNumber_s
 #define ANIMFL_FIRINGANIM   0x2
 #define ANIMFL_REVERSED     0x4
 
-typedef struct animation_s
-{
+typedef struct animation_s {
 #ifdef USE_MDXFILE
 	qhandle_t mdxFile;
 #else
@@ -1303,11 +1285,11 @@ typedef struct animation_s
 	char name[MAX_QPATH];
 	int firstFrame;
 	int numFrames;
-	int loopFrames;                 // 0 to numFrames
-	int frameLerp;                  // msec between frames
-	int initialLerp;                // msec to get to first frame
+	int loopFrames; // 0 to numFrames
+	int frameLerp; // msec between frames
+	int initialLerp; // msec to get to first frame
 	int moveSpeed;
-	int animBlend;                  // take this long to blend to next anim
+	int animBlend; // take this long to blend to next anim
 
 	// derived
 	int duration;
@@ -1338,8 +1320,7 @@ typedef enum
 	MAX_HEAD_ANIMS
 } animHeadNumber_t;
 
-typedef struct headAnimation_s
-{
+typedef struct headAnimation_s {
 	int firstFrame;
 	int numFrames;
 } headAnimation_t;
@@ -1363,8 +1344,7 @@ typedef enum
 #define TEAM_LOCATION_UPDATE_TIME       1000
 
 // weapon stat info: mapping between MOD_ and WP_ types (FIXME for new ET weapons)
-typedef enum extWeaponStats_s
-{
+typedef enum extWeaponStats_s {
 	WS_KNIFE = 0,       // 0
 	WS_KNIFE_KBAR,      // 1
 	WS_LUGER,           // 2
@@ -1376,12 +1356,12 @@ typedef enum extWeaponStats_s
 	WS_PANZERFAUST,     // 8
 	WS_BAZOOKA,         // 9
 	WS_FLAMETHROWER,    // 10
-	WS_GRENADE,         // 11   -- includes axis and allies grenade types
+	WS_GRENADE,         // 11 -- includes axis and allies grenade types
 	WS_MORTAR,          // 12
 	WS_MORTAR2,         // 13
 	WS_DYNAMITE,        // 14
-	WS_AIRSTRIKE,       // 15   -- Fieldops smoke grenade attack
-	WS_ARTILLERY,       // 16   -- Fieldops binocular attack
+	WS_AIRSTRIKE,       // 15 -- Fieldops smoke grenade attack
+	WS_ARTILLERY,       // 16 -- Fieldops binocular attack
 	WS_SATCHEL,         // 17
 	WS_GRENADELAUNCHER, // 18
 	WS_LANDMINE,        // 19
@@ -1395,8 +1375,7 @@ typedef enum extWeaponStats_s
 	WS_MAX
 } extWeaponStats_t;
 
-typedef struct
-{
+typedef struct {
 	qboolean fHasHeadShots;
 	const char *pszCode;
 	const char *pszName;
@@ -1524,26 +1503,24 @@ typedef enum
 // each IT_* item has an associated itemInfo_t
 // that constains media references necessary to present the
 // item and its effects
-typedef struct
-{
+typedef struct {
 	qboolean registered;
 	qhandle_t models[MAX_ITEM_MODELS];
 	qhandle_t icons[MAX_ITEM_ICONS];
 } itemInfo_t;
 #endif
 
-typedef struct gitem_s
-{
-	char *classname;        // spawning name
+typedef struct gitem_s {
+	char *classname; // spawning name
 	char *pickup_sound;
 	char *world_model[MAX_ITEM_MODELS];
 
 	char *icon;
 	char *ammoicon;
-	char *pickup_name;          // for printing on pickup
+	char *pickup_name; // for printing on pickup
 
-	int quantity;               // for ammo how much, or duration of powerup (value not necessary for ammo/health.  that value set in gameskillnumber[] below)
-	itemType_t giType;          // IT_* flags
+	int quantity; // for ammo how much, or duration of powerup (value not necessary for ammo/health.  that value set in gameskillnumber[] below)
+	itemType_t giType; // IT_* flags
 
 	int giTag;
 
@@ -1555,7 +1532,7 @@ typedef struct gitem_s
 
 // included in both the game dll and the client
 extern gitem_t bg_itemlist[];
-extern int     bg_numItems;
+extern int bg_numItems;
 
 #define FIRST_WEAPON_ITEM 9 // bg_itemlist is sorted and weapons start at 9
 
@@ -1824,43 +1801,37 @@ typedef enum
 
 //-------------------------------------------------------------------
 
-typedef struct
-{
+typedef struct {
 	const char *string;
 	int hash;
 } animStringItem_t;
 
-typedef struct
-{
-	int index;           // reference into the table of possible conditionals
-	int value[2];        // can store anything from weapon bits, to position enums, etc
-	qboolean negative;   // (,)NOT <condition>
+typedef struct {
+	int index; // reference into the table of possible conditionals
+	int value[2]; // can store anything from weapon bits, to position enums, etc
+	qboolean negative; // (,)NOT <condition>
 } animScriptCondition_t;
 
-typedef struct
-{
-	short int bodyPart[2];      // play this animation on legs/torso/both
-	short int animIndex[2];     // animation index in our list of animations
+typedef struct {
+	short int bodyPart[2]; // play this animation on legs/torso/both
+	short int animIndex[2]; // animation index in our list of animations
 	short int animDuration[2];
 	short int soundIndex;
 } animScriptCommand_t;
 
-typedef struct
-{
+typedef struct {
 	int numConditions;
 	animScriptCondition_t conditions[NUM_ANIM_CONDITIONS];
 	int numCommands;
 	animScriptCommand_t commands[MAX_ANIMSCRIPT_ANIMCOMMANDS];
 } animScriptItem_t;
 
-typedef struct
-{
+typedef struct {
 	int numItems;
-	animScriptItem_t *items[MAX_ANIMSCRIPT_ITEMS];      // pointers into a global list of items
+	animScriptItem_t *items[MAX_ANIMSCRIPT_ITEMS]; // pointers into a global list of items
 } animScript_t;
 
-typedef struct
-{
+typedef struct {
 	char animationGroup[MAX_QPATH];
 	char animationScript[MAX_QPATH];
 
@@ -1872,14 +1843,14 @@ typedef struct
 	qboolean isSkeletal;
 
 	// parsed from animgroup file
-	animation_t *animations[MAX_MODEL_ANIMATIONS];              // anim names, frame ranges, etc
+	animation_t *animations[MAX_MODEL_ANIMATIONS]; // anim names, frame ranges, etc
 	headAnimation_t headAnims[MAX_HEAD_ANIMS];
 	int numAnimations, numHeadAnims;
 
 	// parsed from script file
-	animScript_t scriptAnims[MAX_AISTATES][NUM_ANIM_MOVETYPES];                 // locomotive anims, etc
-	animScript_t scriptCannedAnims[NUM_ANIM_MOVETYPES];                         // played randomly
-	animScript_t scriptEvents[NUM_ANIM_EVENTTYPES];                             // events that trigger special anims
+	animScript_t scriptAnims[MAX_AISTATES][NUM_ANIM_MOVETYPES]; // locomotive anims, etc
+	animScript_t scriptCannedAnims[NUM_ANIM_MOVETYPES]; // played randomly
+	animScript_t scriptEvents[NUM_ANIM_EVENTTYPES]; // events that trigger special anims
 
 	// global list of script items for this model
 	animScriptItem_t scriptItems[MAX_ANIMSCRIPT_ITEMS_PER_MODEL];
@@ -1888,8 +1859,7 @@ typedef struct
 } animModelInfo_t;
 
 // this is the main structure that is duplicated on the client and server
-typedef struct
-{
+typedef struct {
 	animModelInfo_t modelInfo[MAX_ANIMSCRIPT_MODELS];
 	int clientConditions[MAX_CLIENTS][NUM_ANIM_CONDITIONS][2];
 
@@ -1984,8 +1954,7 @@ typedef enum
 
 #define MAX_WEAPS_PER_CLASS 10
 
-typedef struct
-{
+typedef struct {
 	int classNum;
 	const char *characterFile;
 	const char *iconName;
@@ -1998,8 +1967,7 @@ typedef struct
 
 } bg_playerclass_t;
 
-typedef struct bg_character_s
-{
+typedef struct bg_character_s {
 	char characterFile[MAX_QPATH];
 
 #ifdef USE_MDXFILE
@@ -2071,13 +2039,12 @@ extern bg_playerclass_t bg_axis_playerclasses[NUM_PLAYER_CLASSES];
 
 #define MAX_PATH_CORNERS        512
 
-typedef struct
-{
+typedef struct {
 	char name[64];
 	vec3_t origin;
 } pathCorner_t;
 
-extern int          numPathCorners;
+extern int numPathCorners;
 extern pathCorner_t pathCorners[MAX_PATH_CORNERS];
 
 #define NUM_EXPERIENCE_LEVELS 11
@@ -2110,15 +2077,13 @@ extern const char *rankSoundNames_Allies[NUM_EXPERIENCE_LEVELS];
 
 typedef struct splinePath_s splinePath_t;
 
-typedef struct
-{
+typedef struct {
 	vec3_t start;
 	vec3_t v_norm;
 	float length;
 } splineSegment_t;
 
-struct splinePath_s
-{
+struct splinePath_s {
 	pathCorner_t point;
 
 	char strTarget[64];
@@ -2136,7 +2101,7 @@ struct splinePath_s
 	qboolean isEnd;
 };
 
-extern int          numSplinePaths;
+extern int numSplinePaths;
 extern splinePath_t splinePaths[MAX_SPLINE_PATHS];
 
 pathCorner_t *BG_Find_PathCorner(const char *match);
@@ -2156,11 +2121,10 @@ char *BG_GetLocationString(float xpos, float ypos);
 
 extern const char *bg_fireteamNames[MAX_FIRETEAMS / 2];
 
-typedef struct
-{
+typedef struct {
 	int ident;
-	char joinOrder[MAX_CLIENTS];        // order in which clients joined the fire team (server), client uses to store if a client is on this fireteam
-	int leader;         // leader = joinOrder[0] on server, stored here on client
+	char joinOrder[MAX_CLIENTS]; // order in which clients joined the fire team (server), client uses to store if a client is on this fireteam
+	int leader; // leader = joinOrder[0] on server, stored here on client
 	qboolean inuse;
 	qboolean priv;
 } fireteamData_t;
@@ -2239,14 +2203,13 @@ void BG_setCrosshair(char *colString, float *col, float alpha, char *cvarName);
 // Voting
 #define VOTING_DISABLED     ((1 << numVotesAvailable) - 1)
 
-typedef struct
-{
+typedef struct {
 	const char *pszCvar;
 	int flag;
 } voteType_t;
 
 extern const voteType_t voteToggles[];
-extern int              numVotesAvailable;
+extern int numVotesAvailable;
 
 // Tracemap
 #ifdef CGAMEDLL
@@ -2266,8 +2229,7 @@ qboolean BG_R_RegisterAnimationGroup(const char *filename, animModelInfo_t *anim
 
 // bg_character.c
 
-typedef struct bg_characterDef_s
-{
+typedef struct bg_characterDef_s {
 	char mesh[MAX_QPATH];
 	char animationGroup[MAX_QPATH];
 	char animationScript[MAX_QPATH];
@@ -2302,8 +2264,7 @@ typedef enum
 	S_BT_NOPVS
 } speakerBroadcastType_t;
 
-typedef struct bg_speaker_s
-{
+typedef struct bg_speaker_s {
 	char filename[MAX_QPATH];
 	qhandle_t noise;
 	vec3_t origin;
@@ -2349,8 +2310,7 @@ qboolean BG_BBoxCollision(vec3_t min1, vec3_t max1, vec3_t min2, vec3_t max2);
 
 // bg_stats.c
 
-typedef struct weap_ws_convert_s
-{
+typedef struct weap_ws_convert_s {
 	weapon_t iWeapon;
 	extWeaponStats_t iWS;
 } weap_ws_convert_t;
@@ -2482,16 +2442,15 @@ enum VOTE_TYPE_ENUM
 
 enum VOTE_FLAGS_ENUM
 {
-	VOTE_FLAG_GLOBAL          = BIT(0),
-	VOTE_FLAG_PERSONAL        = BIT(1),
-	VOTE_FLAG_AXIS            = BIT(2),
-	VOTE_FLAG_ALLIES          = BIT(3),
+	VOTE_FLAG_GLOBAL = BIT(0),
+	VOTE_FLAG_PERSONAL = BIT(1),
+	VOTE_FLAG_AXIS = BIT(2),
+	VOTE_FLAG_ALLIES = BIT(3),
 	VOTE_FLAG_CREATE_FIRETEAM = BIT(4),
-	VOTE_FLAG_JOIN_FIRETEAM   = BIT(5)
+	VOTE_FLAG_JOIN_FIRETEAM = BIT(5)
 };
 
-typedef struct client_vote_s
-{
+typedef struct client_vote_s {
 	int id;
 	int type;
 	int flags;

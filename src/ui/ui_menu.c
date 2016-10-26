@@ -337,7 +337,7 @@ int Menu_ItemsMatchingGroup(menuDef_t *menu, const char *name) {
 	char *pdest;
 	int wildcard = -1; // if wildcard is set, it's value is the number of characters to compare
 
-	pdest = strstr(name, " * ");  // allow wildcard strings(ex. "hide nb_ * " would translate to "hide nb_pg1; hide nb_extra" etc)
+	pdest = strstr(name, " * "); // allow wildcard strings(ex. "hide nb_ * " would translate to "hide nb_pg1; hide nb_extra" etc)
 	if (pdest) {
 		wildcard = pdest - name;
 	}
@@ -363,7 +363,7 @@ itemDef_t *Menu_GetMatchingItemByNumber(menuDef_t *menu, int index, const char *
 	char *pdest;
 	int wildcard = -1; // if wildcard is set, it's value is the number of characters to compare
 
-	pdest = strstr(name, " * ");  // allow wildcard strings(ex. "hide nb_ * " would translate to "hide nb_pg1; hide nb_extra" etc)
+	pdest = strstr(name, " * "); // allow wildcard strings(ex. "hide nb_ * " would translate to "hide nb_pg1; hide nb_extra" etc)
 	if (pdest) {
 		wildcard = pdest - name;
 	}
@@ -514,7 +514,7 @@ void Menus_CloseByName(const char *p) {
 				modalMenuCount--;
 				// if modal doesn't have a parent, the stack item may be NULL .. just go back to the main menu then
 				if (modalMenuStack[modalMenuCount]) {
-					Menus_ActivateByName(modalMenuStack[modalMenuCount]->window.name, qfalse);  // don't try to push the one we are opening to the stack
+					Menus_ActivateByName(modalMenuStack[modalMenuCount]->window.name, qfalse); // don't try to push the one we are opening to the stack
 				}
 			}
 		}
@@ -648,7 +648,7 @@ void Menus_Activate(menuDef_t *menu) {
 	menu->openTime = DC->realTime;
 
 	if (menu->soundName && *menu->soundName) {
-		// DC->stopBackgroundTrack();                 // you don't want to do this since it will reset s_rawend
+		// DC->stopBackgroundTrack(); // you don't want to do this since it will reset s_rawend
 		DC->startBackgroundTrack(menu->soundName, menu->soundName, 0);
 	}
 
@@ -678,7 +678,7 @@ void Menus_HandleOOBClick(menuDef_t *menu, int key, qboolean down) {
 
 		for (i = 0; i < menuCount; i++) {
 			if (Menu_OverActiveItem(&Menus[i], DC->cursorx, DC->cursory)) {
-				// Menu_RunCloseScript(menu);         // why do we close the calling menu instead of just removing the focus?
+				// Menu_RunCloseScript(menu); // why do we close the calling menu instead of just removing the focus?
 				// menu->window.flags &= ~(WINDOW_HASFOCUS|WINDOW_VISIBLE|WINDOW_MOUSEOVER);
 
 				menu->window.flags    &= ~(WINDOW_HASFOCUS|WINDOW_MOUSEOVER);
@@ -703,7 +703,7 @@ void Menu_HandleKey(menuDef_t *menu, int key, qboolean down) {
 	int i;
 	itemDef_t *item = NULL;
 
-	Menu_HandleMouseMove(menu, DC->cursorx, DC->cursory);      // fix for focus not resetting on unhidden buttons
+	Menu_HandleMouseMove(menu, DC->cursorx, DC->cursory); // fix for focus not resetting on unhidden buttons
 
 	// enter key handling for the window supercedes item enter handling
 	if (down && ((key == K_ENTER || key == K_KP_ENTER) && menu->onEnter)) {

@@ -36,7 +36,7 @@
 #include "client.h"
 #include "../qcommon/q_unicode.h"
 
-qboolean scr_initialized;          // ready to draw
+qboolean scr_initialized; // ready to draw
 
 cvar_t *cl_timegraph;
 cvar_t *cl_debuggraph;
@@ -299,8 +299,8 @@ void SCR_DrawScreenField(stereoFrame_t stereoFrame) {
 	            re.SetColor(g_color_table[0]);
 	            re.DrawStretchPic(0, 0, cls.glconfig.vidWidth, cls.glconfig.vidHeight, 0, 0, 0, 0, cls.whiteShader);
 	            re.SetColor(NULL);
-	      }
-	  }*/
+	    }
+	}*/
 
 	if (!uivm) {
 		Com_DPrintf("draw screen without UI loaded\n");
@@ -371,7 +371,7 @@ void SCR_UpdateScreen(void) {
 	static int recursive = 0;
 
 	if (!scr_initialized) {
-		return;            // not initialized yet
+		return; // not initialized yet
 	}
 
 	if (++recursive >= 2) {

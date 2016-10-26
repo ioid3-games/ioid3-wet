@@ -539,12 +539,12 @@ static int G_SwitchBodyPartEntity(gentity_t *ent) {
 }
 
 #define POSITION_READJUST                       \
-	if (res != results->entityNum) {              \
-		VectorSubtract(end, start, dir);          \
-		VectorNormalizeFast(dir);             \
+	if (res != results->entityNum) {             \
+		VectorSubtract(end, start, dir); \
+		VectorNormalizeFast(dir); \
                                     \
-		VectorMA(results->endpos, -1, dir, results->endpos);  \
-		results->entityNum = res;               \
+		VectorMA(results->endpos, -1, dir, results->endpos); \
+		results->entityNum = res; \
 	}
 
 // Run a trace with players in historical positions.

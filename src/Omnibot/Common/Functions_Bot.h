@@ -21,8 +21,7 @@
 //		This struct defines all the function pointers that the bot will fill in
 //		and give to the interface so that the interface can request the entire
 //		suite of functions at once from the bot.
-typedef struct
-{
+typedef struct {
 	omnibot_error (*pfnInitialize)(IEngineInterface *_pEngineFuncs, int _version);
 	void (*pfnUpdate)();
 	void (*pfnShutdown)();
@@ -41,8 +40,7 @@ typedef struct
 	void (*pfnUpdateEntity)(GameEntity oldent, GameEntity newent);
 } Bot_EngineFuncs_t;
 
-typedef struct
-{
+typedef struct {
 	omnibot_error (*pfnInitialize)(IEngineInterface71 *_pEngineFuncs, int _version);
 	void (*pfnUpdate)();
 	void (*pfnShutdown)();

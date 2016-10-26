@@ -198,8 +198,8 @@ void G_spawnPrintf(int print_type, int print_time, gentity_t *owner) {
 	ent->s.eFlags |= EF_NODRAW;
 	ent->s.eType = ET_ITEM;
 
-	ent->spawnflags = print_type;      // Tunnel in DP enum
-	ent->timestamp = level.time;      // Time entity was created
+	ent->spawnflags = print_type; // Tunnel in DP enum
+	ent->timestamp = level.time; // Time entity was created
 
 	ent->nextthink = print_time;
 	ent->think = G_delayPrint;
@@ -310,32 +310,32 @@ void G_addStatsHeadShot(gentity_t *attacker, int mod) {
 	attacker->client->sess.aWeaponStats[G_weapStatIndex_MOD(mod)].headshots++;
 }
 
-//  -->MOD_ * to WS_ * conversion
+// -->MOD_ * to WS_ * conversion
 
 // WS_MAX = no equivalent / not used
 // FIXME: move to mod table
 static const mod_ws_convert_t aWeapMOD[MOD_NUM_MODS] = {
-	{MOD_UNKNOWN,     WS_MAX           }, {MOD_MACHINEGUN,  WS_MG42          }, {MOD_BROWNING,    WS_BROWNING      }, {MOD_MG42,        WS_MG42          }, {MOD_GRENADE,     WS_GRENADE       }, // FIXME: explosion(world kills = WS_GREANDE) ?!
+	{MOD_UNKNOWN,     WS_MAX         }, {MOD_MACHINEGUN,  WS_MG42        }, {MOD_BROWNING,    WS_BROWNING    }, {MOD_MG42,        WS_MG42        }, {MOD_GRENADE,     WS_GRENADE     }, // FIXME: explosion(world kills = WS_GREANDE) ?!
 
-	{MOD_KNIFE,       WS_KNIFE         }, {MOD_LUGER,       WS_LUGER         }, {MOD_COLT,        WS_COLT          }, {MOD_MP40,        WS_MP40          }, {MOD_THOMPSON,    WS_THOMPSON      }, {MOD_STEN,        WS_STEN          }, {MOD_GARAND,      WS_GARAND        },
-	{MOD_SILENCER,    WS_LUGER         }, {MOD_FG42,        WS_FG42          }, {MOD_FG42SCOPE,   WS_FG42          }, {MOD_PANZERFAUST, WS_PANZERFAUST   }, {MOD_GRENADE_LAUNCHER,  WS_GRENADE       }, {MOD_FLAMETHROWER,   WS_FLAMETHROWER  }, {MOD_GRENADE_PINEAPPLE, WS_GRENADE       },
-	{MOD_MAPMORTAR,   WS_MORTAR        }, // FIXME: do we have to convert an attacker=world weapon as WS?
-	{MOD_MAPMORTAR_SPLASH,  WS_MORTAR        },
-	{MOD_KICKED,      WS_MAX           },
-	{MOD_DYNAMITE,    WS_DYNAMITE      }, {MOD_AIRSTRIKE,   WS_AIRSTRIKE     }, {MOD_SYRINGE,     WS_MAX           }, {MOD_AMMO,        WS_MAX           }, {MOD_ARTY,        WS_ARTILLERY     },
-	{MOD_WATER,       WS_MAX           }, {MOD_SLIME,       WS_MAX           }, {MOD_LAVA,        WS_MAX           }, {MOD_CRUSH,       WS_MAX           }, {MOD_TELEFRAG,    WS_MAX           }, {MOD_FALLING,     WS_MAX           }, {MOD_SUICIDE,     WS_MAX           }, {MOD_TARGET_LASER,   WS_MAX           }, {MOD_TRIGGER_HURT,   WS_MAX           }, {MOD_EXPLOSIVE,   WS_MAX           },
-	{MOD_CARBINE,     WS_CARBINE       }, {MOD_KAR98,       WS_KAR98         }, {MOD_GPG40,       WS_GRENADELAUNCHER}, {MOD_M7,          WS_GRENADELAUNCHER}, {MOD_LANDMINE,    WS_LANDMINE      }, {MOD_SATCHEL,     WS_SATCHEL       },
-	{MOD_SMOKEBOMB,   WS_MAX           }, {MOD_MOBILE_MG42, WS_MG42          }, {MOD_SILENCED_COLT,  WS_COLT          }, {MOD_GARAND_SCOPE,   WS_GARAND        },
-	{MOD_CRUSH_CONSTRUCTION,   WS_MAX           }, {MOD_CRUSH_CONSTRUCTIONDEATH, WS_MAX           }, {MOD_CRUSH_CONSTRUCTIONDEATH_NOATTACKER, WS_MAX           },
-	{MOD_K43,         WS_K43           }, {MOD_K43_SCOPE,   WS_K43           },
-	{MOD_MORTAR,      WS_MORTAR        },
-	{MOD_AKIMBO_COLT, WS_COLT          }, {MOD_AKIMBO_LUGER,   WS_LUGER         }, {MOD_AKIMBO_SILENCEDCOLT,  WS_COLT          }, {MOD_AKIMBO_SILENCEDLUGER, WS_LUGER         },
-	{MOD_SMOKEGRENADE,   WS_AIRSTRIKE     }, // airstrike tag
+	{MOD_KNIFE,       WS_KNIFE       }, {MOD_LUGER,       WS_LUGER       }, {MOD_COLT,        WS_COLT        }, {MOD_MP40,        WS_MP40        }, {MOD_THOMPSON,    WS_THOMPSON    }, {MOD_STEN,        WS_STEN        }, {MOD_GARAND,      WS_GARAND      },
+	{MOD_SILENCER,    WS_LUGER       }, {MOD_FG42,        WS_FG42        }, {MOD_FG42SCOPE,   WS_FG42        }, {MOD_PANZERFAUST, WS_PANZERFAUST }, {MOD_GRENADE_LAUNCHER,  WS_GRENADE     }, {MOD_FLAMETHROWER,   WS_FLAMETHROWER}, {MOD_GRENADE_PINEAPPLE, WS_GRENADE     },
+	{MOD_MAPMORTAR,   WS_MORTAR      }, // FIXME: do we have to convert an attacker=world weapon as WS?
+	{MOD_MAPMORTAR_SPLASH,  WS_MORTAR      },
+	{MOD_KICKED,      WS_MAX         },
+	{MOD_DYNAMITE,    WS_DYNAMITE    }, {MOD_AIRSTRIKE,   WS_AIRSTRIKE   }, {MOD_SYRINGE,     WS_MAX         }, {MOD_AMMO,        WS_MAX         }, {MOD_ARTY,        WS_ARTILLERY   },
+	{MOD_WATER,       WS_MAX         }, {MOD_SLIME,       WS_MAX         }, {MOD_LAVA,        WS_MAX         }, {MOD_CRUSH,       WS_MAX         }, {MOD_TELEFRAG,    WS_MAX         }, {MOD_FALLING,     WS_MAX         }, {MOD_SUICIDE,     WS_MAX         }, {MOD_TARGET_LASER,   WS_MAX         }, {MOD_TRIGGER_HURT,   WS_MAX         }, {MOD_EXPLOSIVE,   WS_MAX         },
+	{MOD_CARBINE,     WS_CARBINE     }, {MOD_KAR98,       WS_KAR98       }, {MOD_GPG40,       WS_GRENADELAUNCHER}, {MOD_M7,          WS_GRENADELAUNCHER}, {MOD_LANDMINE,    WS_LANDMINE    }, {MOD_SATCHEL,     WS_SATCHEL     },
+	{MOD_SMOKEBOMB,   WS_MAX         }, {MOD_MOBILE_MG42, WS_MG42        }, {MOD_SILENCED_COLT,  WS_COLT        }, {MOD_GARAND_SCOPE,   WS_GARAND      },
+	{MOD_CRUSH_CONSTRUCTION,   WS_MAX         }, {MOD_CRUSH_CONSTRUCTIONDEATH, WS_MAX         }, {MOD_CRUSH_CONSTRUCTIONDEATH_NOATTACKER, WS_MAX         },
+	{MOD_K43,         WS_K43         }, {MOD_K43_SCOPE,   WS_K43         },
+	{MOD_MORTAR,      WS_MORTAR      },
+	{MOD_AKIMBO_COLT, WS_COLT        }, {MOD_AKIMBO_LUGER,   WS_LUGER       }, {MOD_AKIMBO_SILENCEDCOLT,  WS_COLT        }, {MOD_AKIMBO_SILENCEDLUGER, WS_LUGER       },
+	{MOD_SMOKEGRENADE,   WS_AIRSTRIKE   }, // airstrike tag
 
-	{MOD_SWAP_PLACES, WS_MAX           },
-	{MOD_SWITCHTEAM,  WS_MAX           },
-	{MOD_SHOVE,       WS_MAX           },
-	{MOD_KNIFE_KABAR, WS_KNIFE_KBAR    }, {MOD_MOBILE_BROWNING,   WS_BROWNING      }, {MOD_MORTAR2,     WS_MORTAR2       }, {MOD_BAZOOKA,     WS_BAZOOKA       }, {MOD_BACKSTAB,    WS_KNIFE         },
+	{MOD_SWAP_PLACES, WS_MAX         },
+	{MOD_SWITCHTEAM,  WS_MAX         },
+	{MOD_SHOVE,       WS_MAX         },
+	{MOD_KNIFE_KABAR, WS_KNIFE_KBAR  }, {MOD_MOBILE_BROWNING,   WS_BROWNING    }, {MOD_MORTAR2,     WS_MORTAR2     }, {MOD_BAZOOKA,     WS_BAZOOKA     }, {MOD_BACKSTAB,    WS_KNIFE       },
 };
 
 // Get right stats index based on weapon mod
@@ -436,7 +436,7 @@ void G_deleteStats(int nClient) {
 }
 
 // Parses weapon stat info for given ent
-//   --->The given string must be space delimited and contain only integers
+// --->The given string must be space delimited and contain only integers
 void G_parseStats(char *pszStatsInfo) {
 	gclient_t *cl;
 	const char *tmp = pszStatsInfo;
@@ -473,7 +473,7 @@ void G_parseStats(char *pszStatsInfo) {
 }
 
 // Prints current player match info.
-//  -->FIXME: put the pretty print on the client
+// -->FIXME: put the pretty print on the client
 void G_printMatchInfo(gentity_t *ent) {
 	int i, j, cnt = 0, eff, time_eff;
 	int tot_timex, tot_timel, tot_timep, tot_kills, tot_deaths, tot_gibs, tot_sk, tot_tk, tot_tg, tot_dg, tot_dr, tot_tdg, tot_tdr, tot_xp;
@@ -620,7 +620,7 @@ void G_matchInfoDump(unsigned int dwDumpType) {
 					G_statsall_cmd(ent, 0, qfalse);
 				} else if (cl->sess.sessionTeam != TEAM_SPECTATOR) {
 					if (cl->pers.autoaction & AA_STATSTEAM) {
-						G_statsall_cmd(ent, cl->sess.sessionTeam, qfalse);               // Currently broken.. need to support the overloading of dwCommandID
+						G_statsall_cmd(ent, cl->sess.sessionTeam, qfalse); // Currently broken.. need to support the overloading of dwCommandID
 					} else {
 						CP(va("ws %s\n", G_createStats(ent)));
 					}
@@ -714,7 +714,7 @@ int G_checkServerToggle(vmCvar_t *cv) {
 
 // Sends a player's stats to the requesting client.
 void G_statsPrint(gentity_t *ent, int nType) {
-	char *cmd = (nType == 0) ? "ws" : ((nType == 1) ? "wws" : "gstats");        // Yes, not the cleanest
+	char *cmd = (nType == 0) ? "ws" : ((nType == 1) ? "wws" : "gstats"); // Yes, not the cleanest
 	char arg[MAX_TOKEN_CHARS];
 
 	if (!ent || (ent->r.svFlags & SVF_BOT)) {

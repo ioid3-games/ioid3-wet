@@ -35,8 +35,8 @@ static int bbox_vert;
 // local functions
 // ======================================================================
 
-#define POS_LIM     1.0
-#define NEG_LIM    - 1.0
+#define POS_LIM 1.0
+#define NEG_LIM - 1.0
 
 static int zero_vector(vec3_t v) {
 
@@ -311,7 +311,7 @@ static int player_in_fov(vec3_t viewangle, vec3_t ppos, vec3_t opos) {
 	// calculate and test the angle between the two vectors
 	cos_angle = DotProduct(dir, los);
 
-	if (cos_angle > 0)   // + /  - 90 degrees(fov = 180) {
+	if (cos_angle > 0)   // + / - 90 degrees(fov = 180) {
 		return 1;
 	}
 

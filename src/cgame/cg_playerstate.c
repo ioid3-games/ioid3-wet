@@ -3,7 +3,7 @@
  * Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
  *
  * ET: Legacy
- * Copyright (C) 2012 - 2016 ET:Legacy team <mail@etlegacy.com>
+ * Copyright (C) 2012-2016 ET:Legacy team <mail@etlegacy.com>
  *
  * This file is part of ET: Legacy - http://www.etlegacy.com
  *
@@ -12,9 +12,9 @@
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * ET: Legacy is distributed in the hope that it will be useful, 
+ * ET: Legacy is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
@@ -40,9 +40,9 @@
 #include "cg_local.h"
 
 /*
-=======================================================================================================================================
+==============
 CG_DamageFeedback
-=======================================================================================================================================
+==============
 */
 void CG_DamageFeedback(int yawByte, int pitchByte, int damage) {
 	float kick;
@@ -52,8 +52,10 @@ void CG_DamageFeedback(int yawByte, int pitchByte, int damage) {
 	vec3_t angles;
 	int slot;
 	viewDamage_t *vd;
+
 	// show the attacking player's head and name in corner
 	cg.attackerTime = cg.time;
+
 	// the lower on health you are, the greater the view kick will be
 	if (health < 40) {
 		scale = 1;
@@ -78,12 +80,13 @@ void CG_DamageFeedback(int yawByte, int pitchByte, int damage) {
 	}
 
 	if (slot == MAX_VIEWDAMAGE) {
-		return;    // no free slots, never override or splats will suddenly disappear
+		return; // no free slots, never override or splats will suddenly disappear
 
 	}
 
 	vd = &cg.viewDamage[slot];
-	// if yaw and pitch are both 255, make the damage always centered(falling, etc)
+
+	// if yaw and pitch are both 255, make the damage always centered (falling, etc)
 	if (yawByte == 255 && pitchByte == 255) {
 		vd->damageX = 0;
 		vd->damageY = 0;
@@ -123,7 +126,7 @@ void CG_DamageFeedback(int yawByte, int pitchByte, int damage) {
 			front = 0.1;
 		}
 
-		vd->damageX = crandom() * 0.3 + - left / front;
+		vd->damageX = crandom() * 0.3 + -left / front;
 		vd->damageY = crandom() * 0.3 + up / dist;
 	}
 	// clamp the position
@@ -156,21 +159,22 @@ void CG_DamageFeedback(int yawByte, int pitchByte, int damage) {
 }
 
 /*
-=======================================================================================================================================
+================
 CG_Respawn
 
-A respawn happened this snapshot.
-=======================================================================================================================================
+A respawn happened this snapshot
+================
 */
 void CG_Respawn(qboolean revived) {
 	static int oldTeam = -1;
 	static int oldCls = -1;
-	cg.serverRespawning = qfalse;  // just in case
+	cg.serverRespawning = qfalse; // just in case
 
 	// no error decay on player movement
 	cg.thisFrameTeleport = qtrue;
-	// need to reset client - side weapon animations
-	cg.predictedPlayerState.weapAnim = ((cg.predictedPlayerState.weapAnim & ANIM_TOGGLEBIT) ^ ANIM_TOGGLEBIT)|PM_IdleAnimForWeapon(cg.snap->ps.weapon);     // reset weapon animations
+
+	// need to reset client-side weapon animations
+	cg.predictedPlayerState.weapAnim = ((cg.predictedPlayerState.weapAnim & ANIM_TOGGLEBIT) ^ ANIM_TOGGLEBIT) | PM_IdleAnimForWeapon(cg.snap->ps.weapon); // reset weapon animations
 	cg.predictedPlayerState.weaponstate = WEAPON_READY; // hmm, set this?  what to?
 
 	// display weapons available
@@ -178,6 +182,7 @@ void CG_Respawn(qboolean revived) {
 
 	cg.cursorHintIcon = 0;
 	cg.cursorHintTime = 0;
+
 	// select the weapon the server says we are using
 	cg.weaponSelect = cg.snap->ps.weapon;
 	// clear even more things on respawn
@@ -188,6 +193,7 @@ void CG_Respawn(qboolean revived) {
 
 	trap_SendConsoleCommand("-zoom\n");
 	cg.binocZoomTime = 0;
+
 	// ensure scoped weapons are reset after revive
 	if (revived) {
 		if (cg.snap->ps.weapon == WP_FG42SCOPE) {
@@ -212,7 +218,7 @@ void CG_Respawn(qboolean revived) {
 	if (!revived) {
 		cgs.limboLoadoutSelected = qfalse;
 	}
-	// Saves the state of sidearm(riflenade weapon is considered as one too)
+	// Saves the state of sidearm (riflenade weapon is considered as one too)
 	// Puts the silencer on if class is COVERTOPS
 	// Puts riflenade on if current weapon is riflenade weapon
 	if (cg.predictedPlayerState.stats[STAT_PLAYER_CLASS] == PC_COVERTOPS) {
@@ -222,8 +228,10 @@ void CG_Respawn(qboolean revived) {
 	}
 
 	cg.proneMovingTime = 0;
-	// reset fog to world fog(if present)
+
+	// reset fog to world fog (if present)
 	trap_R_SetFog(FOG_CMD_SWITCHFOG, FOG_MAP, 20, 0, 0, 0, 0);
+
 	// try to exec a cfg file if it is found
 	if (!revived) {
 		if ((cgs.clientinfo[cg.clientNum].team == TEAM_AXIS || cgs.clientinfo[cg.clientNum].team == TEAM_ALLIES) && (cgs.clientinfo[cg.clientNum].cls != oldCls)) {
@@ -250,14 +258,14 @@ void CG_CheckPlayerstateEvents(playerState_t *ps, playerState_t *ops) {
 		CG_EntityEvent(cent, cent->lerpOrigin);
 	}
 
-	cent = &cg.predictedPlayerEntity; // cg_entities[ps->clientNum];
+	cent = &cg.predictedPlayerEntity; // cg_entities[ ps->clientNum ];
 	// go through the predictable events buffer
 	for (i = ps->eventSequence - MAX_EVENTS; i < ps->eventSequence; i++) {
 		// if we have a new predictable event
 		if (i >= ops->eventSequence
-		   // or the server told us to play another event instead of a predicted event we already issued
-		   // or something the server told us changed our prediction causing a different event
-		 || (i > ops->eventSequence - MAX_EVENTS && ps->events[i & (MAX_EVENTS - 1)] != ops->events[i & (MAX_EVENTS - 1)])) {
+		    // or the server told us to play another event instead of a predicted event we already issued
+		    // or something the server told us changed our prediction causing a different event
+		    || (i > ops->eventSequence - MAX_EVENTS && ps->events[i & (MAX_EVENTS - 1)] != ops->events[i & (MAX_EVENTS - 1)])) {
 			event = ps->events[i & (MAX_EVENTS - 1)];
 			cent->currentState.event = event;
 			cent->currentState.eventParm = ps->eventParms[i & (MAX_EVENTS - 1)];
@@ -276,18 +284,19 @@ CG_CheckChangedPredictableEvents
 ==================
 void CG_CheckChangedPredictableEvents(playerState_t *ps) {
     int i;
-	int event;
+    int event;
     centity_t *cent = &cg.predictedPlayerEntity;
 
-    for (i = ps->eventSequence - MAX_EVENTS; i < ps->eventSequence; i++) {
+    for (i = ps->eventSequence - MAX_EVENTS; i < ps->eventSequence; i++)
+    {
         if (i >= cg.eventSequence)
         {
             continue;
       }
-       // if this event is not further back in than the maximum predictable events we remember
+        // if this event is not further back in than the maximum predictable events we remember
         if (i > cg.eventSequence - MAX_PREDICTED_EVENTS)
         {
-           // if the new playerstate event is different from a previously predicted one
+            // if the new playerstate event is different from a previously predicted one
             if (ps->events[i & (MAX_EVENTS - 1)] != cg.predictableEvents[i & (MAX_PREDICTED_EVENTS - 1)])
             {
                 event = ps->events[i & (MAX_EVENTS - 1)];
@@ -308,12 +317,12 @@ void CG_CheckChangedPredictableEvents(playerState_t *ps) {
 */
 
 /*
-=======================================================================================================================================
+==================
 CG_CheckLocalSounds
-=======================================================================================================================================
+==================
 */
 void CG_CheckLocalSounds(playerState_t *ps, playerState_t *ops) {
-	// health changes of more than - 1 should make pain sounds
+	// health changes of more than -1 should make pain sounds
 	if (ps->stats[STAT_HEALTH] < ops->stats[STAT_HEALTH] - 1) {
 		if (ps->stats[STAT_HEALTH] > 0) {
 			CG_PainEvent(&cg.predictedPlayerEntity, ps->stats[STAT_HEALTH], qfalse);
@@ -345,7 +354,7 @@ void CG_CheckLocalSounds(playerState_t *ps, playerState_t *ops) {
 		int msec = cg.time - cgs.levelStartTime;
 
 		if (cgs.timelimit > 5 && !(cg.timelimitWarnings & 1) && (msec > (cgs.timelimit - 5) * 60000) &&
-		   (msec < (cgs.timelimit - 5) * 60000 + 1000)) // 60 * 1000
+		    (msec < (cgs.timelimit - 5) * 60000 + 1000)) // 60 * 1000
 		{
 			cg.timelimitWarnings |= 1;
 
@@ -365,7 +374,7 @@ void CG_CheckLocalSounds(playerState_t *ps, playerState_t *ops) {
 		}
 
 		if (cgs.timelimit > 2 && !(cg.timelimitWarnings & 2) && (msec > (cgs.timelimit - 2) * 60000) &&
-		   (msec < (cgs.timelimit - 2) * 60000 + 1000)) // 60 * 1000
+		    (msec < (cgs.timelimit - 2) * 60000 + 1000)) // 60 * 1000
 		{
 			cg.timelimitWarnings |= 2;
 
@@ -385,7 +394,7 @@ void CG_CheckLocalSounds(playerState_t *ps, playerState_t *ops) {
 		}
 
 		if (!(cg.timelimitWarnings & 4) && (msec > (cgs.timelimit) * 60000 - 30000) &&
-		   (msec < cgs.timelimit * 60000 - 29000)) // 60 * 1000
+		    (msec < cgs.timelimit * 60000 - 29000)) // 60 * 1000
 		{
 			cg.timelimitWarnings |= 4;
 
@@ -407,16 +416,17 @@ void CG_CheckLocalSounds(playerState_t *ps, playerState_t *ops) {
 }
 
 /*
-=======================================================================================================================================
+===============
 CG_TransitionPlayerState
-=======================================================================================================================================
+===============
 */
 void CG_TransitionPlayerState(playerState_t *ps, playerState_t *ops) {
-#if FEATURE_MULTIVIEW
+#ifdef FEATURE_MULTIVIEW
 	// MV client handling
 	if (cg.mvTotalClients > 0) {
 		if (ps->clientNum != ops->clientNum) {
 			cg.thisFrameTeleport = qtrue;
+
 			// clear voicechat
 			cg.predictedPlayerEntity.voiceChatSpriteTime = 0; // CHECKME: should we do this here?
 			cg_entities[ps->clientNum].voiceChatSpriteTime = 0;
@@ -428,14 +438,18 @@ void CG_TransitionPlayerState(playerState_t *ps, playerState_t *ops) {
 		return;
 	}
 #endif
+
 	// check for changing follow mode
 	if (ps->clientNum != ops->clientNum) {
 		cg.thisFrameTeleport = qtrue;
+
 		// clear voicechat
 		cg.predictedPlayerEntity.voiceChatSpriteTime = 0;
 		cg_entities[ps->clientNum].voiceChatSpriteTime = 0;
+
 		// make sure we don't get any unwanted transition effects
 		*ops = *ps;
+
 		// After Limbo, make sure and do a CG_Respawn
 		if (ps->clientNum == cg.clientNum) {
 			ops->persistant[PERS_SPAWN_COUNT]--;
@@ -467,7 +481,7 @@ void CG_TransitionPlayerState(playerState_t *ps, playerState_t *ops) {
 	}
 
 	if (cg.snap->ps.pm_type != PM_INTERMISSION
-	 && ps->persistant[PERS_TEAM] != TEAM_SPECTATOR) {
+	    && ps->persistant[PERS_TEAM] != TEAM_SPECTATOR) {
 		CG_CheckLocalSounds(ps, ops);
 	}
 
@@ -479,8 +493,8 @@ void CG_TransitionPlayerState(playerState_t *ps, playerState_t *ops) {
 		}
 
 		if (!(ops->eFlags & EF_PRONE_MOVING)) {
-			// this screws up auto - switching when dynamite planted or grenade thrown / out of ammo
-			// CG_FinishWeaponChange(cg.weaponSelect, ps->nextWeapon);
+			// this screws up auto-switching when dynamite planted or grenade thrown/out of ammo
+			//CG_FinishWeaponChange( cg.weaponSelect, ps->nextWeapon );
 
 			cg.proneMovingTime = cg.time;
 		}
@@ -495,6 +509,7 @@ void CG_TransitionPlayerState(playerState_t *ps, playerState_t *ops) {
 	}
 	// run events
 	CG_CheckPlayerstateEvents(ps, ops);
+
 	// smooth the ducking viewheight change
 	if (ps->viewheight != ops->viewheight) {
 		cg.duckChange = ps->viewheight - ops->viewheight;

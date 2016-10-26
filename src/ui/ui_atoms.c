@@ -102,7 +102,7 @@ char *UI_Cvar_VariableString(const char *var_name) {
 	static char buffer[2][MAX_STRING_CHARS];
 	static int toggle;
 
-	toggle ^= 1;       // flip - flop to allow two returns without clash
+	toggle ^= 1; // flip - flop to allow two returns without clash
 
 	trap_Cvar_VariableStringBuffer(var_name, buffer[toggle], sizeof(buffer[0]));
 

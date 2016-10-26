@@ -70,7 +70,7 @@ them, which prevents having to deal with multiple fragments of a single entity.
 */
 
 typedef struct worldSector_s {
-	int axis;                        // - 1 = leaf node
+	int axis; // - 1 = leaf node
 	float dist;
 	struct worldSector_s *children[2];
 	svEntity_t *entities;
@@ -181,7 +181,7 @@ void SV_UnlinkEntity(sharedEntity_t *gEnt) {
 	ws = ent->worldSector;
 
 	if (!ws) {
-		return;    // not linked in anywhere
+		return; // not linked in anywhere
 	}
 
 	ent->worldSector = NULL;
@@ -224,16 +224,16 @@ void SV_LinkEntity(sharedEntity_t *gEnt) {
 	if (!gEnt->r.bmodel && vec3_compare(gEnt->r.currentOrigin, vec3_origin)) {
 		// I've seen this warning a lot - let map makers know which entity is affected.
 		// FIXME: - Clarify if this warning is false positive for some ents
-		//        - print gEnt->s.eType as string
+		// - print gEnt->s.eType as string
 		Com_DPrintf("WARNING: BBOX entity %i(type: %i) is being linked at world origin, this is probably a bug - see  / entitylist cmd\n", gEnt->s.number, gEnt->s.eType);
 	}
 
 	if (ent->worldSector) {
-		SV_UnlinkEntity(gEnt);     // unlink from old position
+		SV_UnlinkEntity(gEnt); // unlink from old position
 	}
 	// encode the size into the entityState_t for client prediction
 	if (gEnt->r.bmodel) {
-		gEnt->s.solid = SOLID_BMODEL;      // a solid_box will never create this value
+		gEnt->s.solid = SOLID_BMODEL; // a solid_box will never create this value
 
 		// for the origin only bmodel checks
 		ent->originCluster = CM_LeafCluster(CM_PointLeafnum(gEnt->r.currentOrigin));
@@ -360,7 +360,7 @@ void SV_LinkEntity(sharedEntity_t *gEnt) {
 		} else if (gEnt->r.absmax[node->axis] < node->dist) {
 			node = node->children[1];
 		} else {
-			break;     // crosses the node
+			break; // crosses the node
 		}
 	}
 	// link it in
@@ -396,7 +396,7 @@ void SV_AreaEntities_r(worldSector_t *node, areaParms_t *ap) {
 	svEntity_t *check, *next;
 	sharedEntity_t *gcheck;
 
-	for (check = node->entities ; check; check = next) {
+	for (check = node->entities; check; check = next) {
 		next = check->nextEntityInWorldSector;
 
 		gcheck = SV_GEntityForSvEntity(check);
@@ -419,7 +419,7 @@ void SV_AreaEntities_r(worldSector_t *node, areaParms_t *ap) {
 	}
 
 	if (node->axis == -1) {
-		return;    // terminal node
+		return; // terminal node
 	}
 	// recurse down both sides
 	if (ap->maxs[node->axis] > node->dist) {
@@ -451,9 +451,9 @@ int SV_AreaEntities(const vec3_t mins, const vec3_t maxs, int *entityList, int m
 }
 
 typedef struct {
-	vec3_t boxmins, boxmaxs;           // enclose the test object along entire move
+	vec3_t boxmins, boxmaxs; // enclose the test object along entire move
 	const float *mins;
-	const float *maxs;                 // size of the moving object
+	const float *maxs; // size of the moving object
 	const float *start;
 	vec3_t end;
 	trace_t trace;
@@ -487,7 +487,7 @@ void SV_ClipToEntity(trace_t *trace, const vec3_t start, const vec3_t mins, cons
 	angles = touch->r.currentAngles;
 
 	if (!touch->r.bmodel) {
-		angles = vec3_origin;  // boxes don't rotate
+		angles = vec3_origin; // boxes don't rotate
 	}
 
 	CM_TransformedBoxTrace(trace, start, end,   mins, maxs, clipHandle, contentmask,   origin, angles, capsule);
@@ -535,15 +535,15 @@ void SV_ClipMoveToEntities(moveclip_t *clip) {
 		// see if we should ignore this entity
 		if (clip->passEntityNum != ENTITYNUM_NONE) {
 			if (touchlist[i] == clip->passEntityNum) {
-				continue;  // don't clip against the pass entity
+				continue; // don't clip against the pass entity
 			}
 
 			if (touch->r.ownerNum == clip->passEntityNum) {
-				continue;  // don't clip against own missiles
+				continue; // don't clip against own missiles
 			}
 
 			if (touch->r.ownerNum == passOwnerNum) {
-				continue;  // don't clip against other missiles from our owner
+				continue; // don't clip against other missiles from our owner
 			}
 		}
 		// if it doesn't have any brushes of a type we
@@ -566,7 +566,7 @@ void SV_ClipMoveToEntities(moveclip_t *clip) {
 		angles = touch->r.currentAngles;
 
 		if (!touch->r.bmodel) {
-			angles = vec3_origin;  // boxes don't rotate
+			angles = vec3_origin; // boxes don't rotate
 		}
 
 		CM_TransformedBoxTrace(&trace, clip->start, clip->end, clip->mins, clip->maxs, clipHandle, clip->contentmask,   origin, angles, clip->capsule);
@@ -621,7 +621,7 @@ void SV_Trace(trace_t *results, const vec3_t start, const vec3_t mins, const vec
 
 	if (clip.trace.fraction == 0 || passEntityNum == -2) {
 		*results = clip.trace;
-		return;    // blocked immediately by the world
+		return; // blocked immediately by the world
 	}
 
 	clip.contentmask = contentmask;

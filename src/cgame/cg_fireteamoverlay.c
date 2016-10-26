@@ -37,12 +37,12 @@
 static int sortedFireTeamClients[MAX_CLIENTS];
 
 // colors and fonts for overlays
-static vec4_t FT_bg = {0.16f, 0.2f, 0.17f, 0.8f};              // header
-static vec4_t FT_bg2 = {0.0f, 0.0f, 0.0f, 0.3f};               // box itself
+static vec4_t FT_bg = {0.16f, 0.2f, 0.17f, 0.8f}; // header
+static vec4_t FT_bg2 = {0.0f, 0.0f, 0.0f, 0.3f}; // box itself
 static vec4_t FT_border = {0.5f, 0.5f, 0.5f, 0.5f};
 
-static vec4_t FT_noselect = {0.0f, 0.0f, 0.0f, 0.1f};          // not selected
-static vec4_t FT_select = {0.5f, 0.5f, 0.2f, 0.3f};            // selected member
+static vec4_t FT_noselect = {0.0f, 0.0f, 0.0f, 0.1f}; // not selected
+static vec4_t FT_select = {0.5f, 0.5f, 0.2f, 0.3f}; // selected member
 static vec4_t FT_text = {0.6f, 0.6f, 0.6f, 1.0f};
 
 #define FONT_HEADER         &cgs.media.limboFont1
@@ -129,9 +129,9 @@ void CG_ParseFireteams() {
 		        if (!s || !*s) {
 		            cg.fireTeams[i].inuse = qfalse;
 		            continue;
-		      } else {
+		    } else {
 		            cg.fireTeams[i].inuse = qtrue;
-		      }*/
+		    }*/
 
 		// Q_strncpyz(cg.fireTeams[i].name, s, 32);
 		// CG_Printf("Fireteam: %s\n", cg.fireTeams[i].name);
@@ -304,13 +304,13 @@ clientInfo_t *CG_SortedFireTeamPlayerForPosition(int pos) {
  */
 void CG_DrawFireTeamOverlay(rectDef_t *rect) {
 	int x = rect->x;
-	int y = rect->y + 1;            // + 1, jitter it into place
+	int y = rect->y + 1; // + 1, jitter it into place
 	int i, locwidth, namewidth, puwidth, lineX;
 	int boxWidth = 90;
 	int bestNameWidth = -1;
 	int bestLocWidth = -1;
 	char buffer[64];
-	float h = 16;                   // 12 + 2 + 2
+	float h = 16; // 12 + 2 + 2
 	clientInfo_t *ci = NULL;
 	fireteamData_t *f = NULL;
 	char *locStr[MAX_FIRETEAM_MEMBERS];
@@ -509,25 +509,25 @@ qboolean CG_FireteamGetBoxNeedsButtons(void) {
         if (cgs.applicationClient < 0)
         {
             return qfalse;
-      }
+    }
         return qtrue;
-  }
+}
 
     if (cgs.invitationEndTime > cg.time) {
         if (cgs.invitationClient < 0)
         {
             return qfalse;
-      }
+    }
         return qtrue;
-  }
+}
 
     if (cgs.propositionEndTime > cg.time) {
         if (cgs.propositionClient < 0)
         {
             return qfalse;
-      }
+    }
         return qtrue;
-  }
+}
 
     return qfalse;
 }
@@ -539,88 +539,88 @@ const char *CG_FireteamGetBoxText(void) {
         if (cgs.applicationClient == -1)
         {
             return "Sent";
-      }
+    }
 
         if (cgs.applicationClient == -2)
         {
             return "Failed";
-      }
+    }
 
         if (cgs.applicationClient == -3)
         {
             return "Accepted";
-      }
+    }
 
         if (cgs.applicationClient == -4)
         {
             return "Sent";
-      }
+    }
 
         if (cgs.applicationClient < 0)
         {
             return NULL;
-      }
+    }
 
         return va("Accept application from %s?", cgs.clientinfo[cgs.applicationClient].name);
-  }
+}
 
     if (cgs.invitationEndTime > cg.time) {
         if (cgs.invitationClient == -1)
         {
             return "Sent";
-      }
+    }
 
         if (cgs.invitationClient == -2)
         {
             return "Failed";
-      }
+    }
 
         if (cgs.invitationClient == -3)
         {
             return "Accepted";
-      }
+    }
 
         if (cgs.invitationClient == -4)
         {
             return "Sent";
-      }
+    }
 
         if (cgs.invitationClient < 0)
         {
             return NULL;
-      }
+    }
 
         return va("Accept invitiation from %s?", cgs.clientinfo[cgs.invitationClient].name);
-  }
+}
 
     if (cgs.propositionEndTime > cg.time) {
         if (cgs.propositionClient == -1)
         {
             return "Sent";
-      }
+    }
 
         if (cgs.propositionClient == -2)
         {
             return "Failed";
-      }
+    }
 
         if (cgs.propositionClient == -3)
         {
             return "Accepted";
-      }
+    }
 
         if (cgs.propositionClient == -4)
         {
             return "Sent";
-      }
+    }
 
         if (cgs.propositionClient < 0)
         {
             return NULL;
-      }
+    }
 
         return va("Accept %s's proposition to invite %s to join your fireteam?", cgs.clientinfo[cgs.propositionClient2].name, cgs.clientinfo[cgs.propositionClient].name);
-  }
+}
 
     return NULL;
 }
@@ -637,7 +637,7 @@ qboolean CG_FireteamHasClass(int classnum, qboolean selectedonly) {
 	for (i = 0; i < MAX_CLIENTS; i++) {
 		/*      if (i == cgs.clientinfo) {
 		            continue;
-		      }*/
+		    }*/
 
 		if (!cgs.clientinfo[i].infoValid) {
 			continue;

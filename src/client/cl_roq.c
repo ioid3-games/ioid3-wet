@@ -5,7 +5,7 @@
  * Copyright (C) 2015 Team Blur Games.
  *
  * ET: Legacy
- * Copyright (C) 2012 - 2016 ET:Legacy team <mail@etlegacy.com>
+ * Copyright (C) 2012-2016 ET:Legacy team <mail@etlegacy.com>
  *
  * This file is part of ET: Legacy - http://www.etlegacy.com
  *
@@ -14,9 +14,9 @@
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * ET: Legacy is distributed in the hope that it will be useful, 
+ * ET: Legacy is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
@@ -47,12 +47,12 @@ typedef struct {
 	uint16_t args;
 } roqChunkHeader_t;
 
-#define chunkHeader((roqChunkHeader_t *)cin->data)
+#define chunkHeader ((roqChunkHeader_t *)cin->data)
 
 /*
  ==============================================================================
 
- ROQ files are used for cinematics and in - game videos
+ ROQ files are used for cinematics and in-game videos
 
  ==============================================================================
 */
@@ -82,11 +82,15 @@ static int16_t cin_cr2rTable[256];
 static int16_t cin_cb2gTable[256];
 static int16_t cin_cr2gTable[256];
 static int16_t cin_cb2bTable[256];
+
 static short cin_sqrTable[256];
+
 static uint32_t cin_quadVQ2[256 << 2];
 static uint32_t cin_quadVQ4[256 << 4];
 static uint32_t cin_quadVQ8[256 << 6];
+
 static short cin_soundSamples[ROQ_CHUNK_MAX_DATA_SIZE >> 2];
+
 static byte cin_chunkData[ROQ_CHUNK_HEADER_SIZE + ROQ_CHUNK_MAX_DATA_SIZE];
 
 /*
@@ -98,7 +102,7 @@ static void CIN_BlitBlock2x2(cinematic_t *cin, int x, int y, int index) {
 	uint32_t *src, *dst;
 
 	src = &cin_quadVQ2[index << 2];
-	dst = (uint32_t *)cin->frameBuffer[0] + (y * cin->frameWidth + x);
+	dst = (uint32_t *) cin->frameBuffer[0] + (y * cin->frameWidth + x);
 
 	dst[cin->frameWidth * 0 + 0] = src[0];
 	dst[cin->frameWidth * 0 + 1] = src[1];
@@ -116,7 +120,7 @@ static void CIN_BlitBlock4x4(cinematic_t *cin, int x, int y, int index) {
 	uint32_t *src, *dst;
 
 	src = &cin_quadVQ4[index << 4];
-	dst = (uint32_t *)cin->frameBuffer[0] + (y * cin->frameWidth + x);
+	dst = (uint32_t *) cin->frameBuffer[0] + (y * cin->frameWidth + x);
 
 	dst[cin->frameWidth * 0 + 0] = src[0];
 	dst[cin->frameWidth * 0 + 1] = src[1];
@@ -148,7 +152,7 @@ static void CIN_BlitBlock8x8(cinematic_t *cin, int x, int y, int index) {
 	uint32_t *src, *dst;
 
 	src = &cin_quadVQ8[index << 6];
-	dst = (uint32_t *)cin->frameBuffer[0] + (y * cin->frameWidth + x);
+	dst = (uint32_t *) cin->frameBuffer[0] + (y * cin->frameWidth + x);
 
 	dst[cin->frameWidth * 0 + 0] = src[0];
 	dst[cin->frameWidth * 0 + 1] = src[1];
@@ -235,8 +239,8 @@ static void CIN_MoveBlock4x4(cinematic_t *cin, int x, int y, int xMean, int yMea
 	xMot = x + xMean - (xyMove >> 4);
 	yMot = y + yMean - (xyMove & 15);
 
-	src = (uint32_t *)cin->frameBuffer[1] + (yMot * cin->frameWidth + xMot);
-	dst = (uint32_t *)cin->frameBuffer[0] + (y * cin->frameWidth + x);
+	src = (uint32_t *) cin->frameBuffer[1] + (yMot * cin->frameWidth + xMot);
+	dst = (uint32_t *) cin->frameBuffer[0] + (y * cin->frameWidth + x);
 
 	dst[cin->frameWidth * 0 + 0] = src[cin->frameWidth * 0 + 0];
 	dst[cin->frameWidth * 0 + 1] = src[cin->frameWidth * 0 + 1];
@@ -271,8 +275,8 @@ static void CIN_MoveBlock8x8(cinematic_t *cin, int x, int y, int xMean, int yMea
 	xMot = x + xMean - (xyMove >> 4);
 	yMot = y + yMean - (xyMove & 15);
 
-	src = (uint32_t *)cin->frameBuffer[1] + (yMot * cin->frameWidth + xMot);
-	dst = (uint32_t *)cin->frameBuffer[0] + (y * cin->frameWidth + x);
+	src = (uint32_t *) cin->frameBuffer[1] + (yMot * cin->frameWidth + xMot);
+	dst = (uint32_t *) cin->frameBuffer[0] + (y * cin->frameWidth + x);
 
 	dst[cin->frameWidth * 0 + 0] = src[cin->frameWidth * 0 + 0];
 	dst[cin->frameWidth * 0 + 1] = src[cin->frameWidth * 0 + 1];
@@ -353,20 +357,19 @@ static void CIN_MoveBlock8x8(cinematic_t *cin, int x, int y, int xMean, int yMea
  ==================
 */
 static void CIN_DecodeQuadInfo(cinematic_t *cin, const byte *data) {
-
 	if (cin->frameBuffer[0] && cin->frameBuffer[1]) {
 		return;
 	}
 	// Allocate the frame buffers
-	cin->frameWidth = data[0]|(data[1] << 8);
-	cin->frameHeight = data[2]|(data[3] << 8);
+	cin->frameWidth = data[0] | (data[1] << 8);
+	cin->frameHeight = data[2] | (data[3] << 8);
 
 	if ((cin->frameWidth & 15) || (cin->frameHeight & 15)) {
 		Com_Error(ERR_DROP, "CIN_DecodeQuadInfo: video dimensions not divisible by 16");
 	}
 
-	cin->frameBuffer[0] = (byte *)Com_Allocate(cin->frameWidth * cin->frameHeight * 4);
-	cin->frameBuffer[1] = (byte *)Com_Allocate(cin->frameWidth * cin->frameHeight * 4);
+	cin->frameBuffer[0] = (byte *) Com_Allocate(cin->frameWidth * cin->frameHeight * 4);
+	cin->frameBuffer[1] = (byte *) Com_Allocate(cin->frameWidth * cin->frameHeight * 4);
 }
 
 /*
@@ -380,7 +383,7 @@ static void CIN_DecodeQuadCodebook(cinematic_t *cin, const byte *data) {
 	int numQuadVecs;
 	int numQuadCels;
 	int i, r, g, b;
-	byte pixels[4][4];
+	byte     pixels[4][4];
 
 	if (!chunkHeader->args) {
 		numQuadVecs = 256;
@@ -437,6 +440,7 @@ static void CIN_DecodeQuadCodebook(cinematic_t *cin, const byte *data) {
 
 		quadVQ4 = &cin_quadVQ4[i << 4];
 		quadVQ8 = &cin_quadVQ8[i << 6];
+
 		// Set up 4x4 pixel vectors
 		quadVQ4[0] = cin_quadVQ2[index0 + 0];
 		quadVQ4[1] = cin_quadVQ2[index0 + 1];
@@ -454,6 +458,7 @@ static void CIN_DecodeQuadCodebook(cinematic_t *cin, const byte *data) {
 		quadVQ4[13] = cin_quadVQ2[index2 + 3];
 		quadVQ4[14] = cin_quadVQ2[index3 + 2];
 		quadVQ4[15] = cin_quadVQ2[index3 + 3];
+
 		// Set up 8x8 pixel vectors
 		quadVQ8[0] = cin_quadVQ2[index0 + 0];
 		quadVQ8[1] = cin_quadVQ2[index0 + 0];
@@ -553,7 +558,7 @@ static void CIN_DecodeQuadVQ(cinematic_t *cin, const byte *data) {
 				// Decode
 				if (!codeBits) {
 					codeBits = 16;
-					codeWord = data[0]|(data[1] << 8);
+					codeWord = data[0] | (data[1] << 8);
 
 					data += 2;
 				}
@@ -567,21 +572,21 @@ static void CIN_DecodeQuadVQ(cinematic_t *cin, const byte *data) {
 				case ROQ_VQ_MOT:
 					// Skip over block
 
-						break;
+					break;
 				case ROQ_VQ_FCC:
 					// Motion compensation
 					CIN_MoveBlock8x8(cin, xPos, yPos, xMean, yMean, *data);
 
 					data += 1;
 
-						break;
+					break;
 				case ROQ_VQ_SLD:
 					// Vector quantization
 					CIN_BlitBlock8x8(cin, xPos, yPos, *data);
 
 					data += 1;
 
-						break;
+					break;
 				case ROQ_VQ_CCC:
 					// Subdivide the 8x8 pixel block into 4x4 pixel sub blocks
 					for (i = 0; i < 4; i++) {
@@ -589,9 +594,10 @@ static void CIN_DecodeQuadVQ(cinematic_t *cin, const byte *data) {
 						yOfs = yPos + 4 * (i >> 1);
 
 						// Decode
-						if (!codeBits) {
+						if (!codeBits)
+						{
 							codeBits = 16;
-							codeWord = data[0]|(data[1] << 8);
+							codeWord = data[0] | (data[1] << 8);
 
 							data += 2;
 						}
@@ -601,7 +607,8 @@ static void CIN_DecodeQuadVQ(cinematic_t *cin, const byte *data) {
 						codeBits -= 2;
 						codeWord <<= 2;
 
-						switch (code) {
+						switch (code)
+						{
 						case ROQ_VQ_MOT:
 							// Skip over block
 
@@ -631,13 +638,13 @@ static void CIN_DecodeQuadVQ(cinematic_t *cin, const byte *data) {
 
 							break;
 						default:
-							Com_Error(ERR_DROP, "CIN_DecodeQuadVQ: bad code(%i)", code);
+							Com_Error(ERR_DROP, "CIN_DecodeQuadVQ: bad code (%i)", code);
 						}
 					}
 
-						break;
+					break;
 				default:
-					Com_Error(ERR_DROP, "CIN_DecodeQuadVQ: bad code(%i)", code);
+					Com_Error(ERR_DROP, "CIN_DecodeQuadVQ: bad code (%i)", code);
 				}
 			}
 		}
@@ -656,12 +663,13 @@ static void CIN_DecodeQuadVQ(cinematic_t *cin, const byte *data) {
 	}
 	// Bump frame count
 	cin->frameCount++;
+
 	// Swap the frame buffers
 	if (cin->frameCount == 1) {
 		Com_Memcpy(cin->frameBuffer[1], cin->frameBuffer[0], cin->frameWidth * cin->frameHeight * 4);
 		return;
 	}
-	// swap
+	//swap
 	{
 		byte *tmpData = cin->frameBuffer[0];
 		cin->frameBuffer[0] = cin->frameBuffer[1];
@@ -690,7 +698,7 @@ static void CIN_DecodeSoundMono22(cinematic_t *cin, const byte *data) {
 		cin_soundSamples[i] = prev;
 	}
 	// Submit the sound samples
-	S_RawSamples(0, chunkHeader->size, 22050, 2, 1, (byte *)cin_soundSamples, 1.0f, 1.0f);
+	S_RawSamples(0, chunkHeader->size, 22050, 2, 1, (byte *) cin_soundSamples, 1.0f, 1.0f);
 }
 
 /*
@@ -706,8 +714,8 @@ static void CIN_DecodeSoundStereo22(cinematic_t *cin, const byte *data) {
 		return;
 	}
 	// Decode the sound samples
-	prevL = (short) (chunkHeader->args & 0xFF00) << 0;
-	prevR = (short) (chunkHeader->args & 0x00FF) << 8;
+	prevL = (short)(chunkHeader->args & 0xFF00) << 0;
+	prevR = (short)(chunkHeader->args & 0x00FF) << 8;
 
 	for (i = 0; i < chunkHeader->size; i += 2) {
 		prevL = (short) (prevL + cin_sqrTable[data[i + 0]]);
@@ -717,7 +725,7 @@ static void CIN_DecodeSoundStereo22(cinematic_t *cin, const byte *data) {
 		cin_soundSamples[i + 1] = prevR;
 	}
 	// Submit the sound samples
-	S_RawSamples(0, chunkHeader->size >> 1, 22050, 2, 2, (byte *)cin_soundSamples, 1.0f, 1.0f);
+	S_RawSamples(0, chunkHeader->size >> 1, 22050, 2, 2, (byte *) cin_soundSamples, 1.0f, 1.0f);
 }
 
 /*
@@ -734,12 +742,12 @@ static void CIN_DecodeSoundMono48(cinematic_t *cin, const byte *data) {
 	}
 	// Decode the sound samples
 	for (i = 0, j = 0; i < chunkHeader->size; i += 2, j++) {
-		samp = (short) (data[i]|(data[i + 1] << 8));
+		samp = (short) (data[i] | (data[i + 1] << 8));
 
 		cin_soundSamples[j] = samp;
 	}
 	// Submit the sound samples
-	S_RawSamples(0, chunkHeader->size >> 1, 48000, 2, 1, (byte *)cin_soundSamples, 1.0f, 1.0f);
+	S_RawSamples(0, chunkHeader->size >> 1, 48000, 2, 1, (byte *) cin_soundSamples, 1.0f, 1.0f);
 }
 
 /*
@@ -756,14 +764,14 @@ static void CIN_DecodeSoundStereo48(cinematic_t *cin, const byte *data) {
 	}
 	// Decode the sound samples
 	for (i = 0, j = 0; i < chunkHeader->size; i += 4, j += 2) {
-		sampL = (short) (data[i + 0]|(data[i + 1] << 8));
-		sampR = (short) (data[i + 2]|(data[i + 3] << 8));
+		sampL = (short) (data[i + 0] | (data[i + 1] << 8));
+		sampR = (short) (data[i + 2] | (data[i + 3] << 8));
 
 		cin_soundSamples[j + 0] = sampL;
 		cin_soundSamples[j + 1] = sampR;
 	}
 	// Submit the sound samples
-	S_RawSamples(0, chunkHeader->size >> 2, 48000, 2, 2, (byte *)cin_soundSamples, 1.0f, 1.0f);
+	S_RawSamples(0, chunkHeader->size >> 2, 48000, 2, 2, (byte *) cin_soundSamples, 1.0f, 1.0f);
 }
 
 /*
@@ -776,20 +784,21 @@ static qboolean CIN_DecodeChunk(cinematic_t *cin) {
 
 	if (cin->offset >= cin->size) {
 		return qfalse;
-	}  // Finished
+	}    // Finished
 
 	data = cin_chunkData;
+
 	// Read and decode the first chunk header if needed
 	if (cin->offset == ROQ_CHUNK_HEADER_SIZE) {
 		cin->offset += FS_Read(cin_chunkData, ROQ_CHUNK_HEADER_SIZE, cin->file);
 
-		chunkHeader->id = data[0]|(data[1] << 8);
-		chunkHeader->size = data[2]|(data[3] << 8)|(data[4] << 16)|(data[5] << 24);
-		chunkHeader->args = data[6]|(data[7] << 8);
+		chunkHeader->id = data[0] | (data[1] << 8);
+		chunkHeader->size = data[2] | (data[3] << 8) | (data[4] << 16) | (data[5] << 24);
+		chunkHeader->args = data[6] | (data[7] << 8);
 	}
 	// Read the chunk data and the next chunk header
 	if (chunkHeader->size > ROQ_CHUNK_MAX_DATA_SIZE) {
-		Com_Error(ERR_DROP, "CIN_DecodeChunk: bad chunk size(%u)", chunkHeader->size);
+		Com_Error(ERR_DROP, "CIN_DecodeChunk: bad chunk size (%u)", chunkHeader->size);
 	}
 
 	if (cin->offset + chunkHeader->size >= cin->size) {
@@ -821,7 +830,7 @@ static qboolean CIN_DecodeChunk(cinematic_t *cin) {
 		CIN_DecodeSoundStereo48(cin, data);
 		break;
 	default:
-		Com_Error(ERR_DROP, "CIN_DecodeChunk: bad chunk id(%u)", chunkHeader->id);
+		Com_Error(ERR_DROP, "CIN_DecodeChunk: bad chunk id (%u)", chunkHeader->id);
 	}
 	// Decode the next chunk header if needed
 	if (cin->offset >= cin->size) {
@@ -830,9 +839,9 @@ static qboolean CIN_DecodeChunk(cinematic_t *cin) {
 
 	data += chunkHeader->size;
 
-	chunkHeader->id = data[0]|(data[1] << 8);
-	chunkHeader->size = data[2]|(data[3] << 8)|(data[4] << 16)|(data[5] << 24);
-	chunkHeader->args = data[6]|(data[7] << 8);
+	chunkHeader->id = data[0] | (data[1] << 8);
+	chunkHeader->size = data[2] | (data[3] << 8) | (data[4] << 16) | (data[5] << 24);
+	chunkHeader->args = data[6] | (data[7] << 8);
 
 	return qtrue;
 }
@@ -844,6 +853,7 @@ static qboolean CIN_DecodeChunk(cinematic_t *cin) {
 */
 void ROQ_UpdateCinematic(cinematic_t *cin, int time) {
 	int frame;
+
 	// If we don't have a frame yet, set the start time
 	if (!cin->frameCount) {
 		cin->startTime = time;
@@ -867,12 +877,13 @@ void ROQ_UpdateCinematic(cinematic_t *cin, int time) {
 	// If we're dropping frames
 	if (frame > cin->frameCount + 1) {
 		if (cin->flags & CIN_system) {
-			Com_Printf(S_COLOR_YELLOW "Dropped cinematic frame: %i > %i(%s)\n", frame, cin->frameCount + 1, cin->name);
+			Com_Printf(S_COLOR_YELLOW "Dropped cinematic frame: %i > %i (%s)\n", frame, cin->frameCount + 1, cin->name);
 		} else {
-			Com_DPrintf(S_COLOR_YELLOW "Dropped cinematic frame: %i > %i(%s)\n", frame, cin->frameCount + 1, cin->name);
+			Com_DPrintf(S_COLOR_YELLOW "Dropped cinematic frame: %i > %i (%s)\n", frame, cin->frameCount + 1, cin->name);
 		}
 
 		frame = cin->frameCount + 1;
+
 		// Reset the start time
 		cin->startTime = time - frame * 1000 / cin->frameRate;
 	}
@@ -893,11 +904,12 @@ void ROQ_UpdateCinematic(cinematic_t *cin, int time) {
 			return;
 		}
 		// Reset the cinematic
-		FS_Seek(cin->file, ROQ_CHUNK_HEADER_SIZE, FS_SEEK_SET);
+		(void) FS_Seek(cin->file, ROQ_CHUNK_HEADER_SIZE, FS_SEEK_SET);
 
 		cin->offset = ROQ_CHUNK_HEADER_SIZE;
 		cin->startTime = time;
 		cin->frameCount = 0;
+
 		// Get the first frame
 		frame = 1;
 	}
@@ -912,17 +924,18 @@ void ROQ_UpdateCinematic(cinematic_t *cin, int time) {
 }
 
 void ROQ_Reset(cinematic_t *cin) {
-	FS_Seek(cin->file, ROQ_CHUNK_HEADER_SIZE, FS_SEEK_SET);
+	(void) FS_Seek(cin->file, ROQ_CHUNK_HEADER_SIZE, FS_SEEK_SET);
 	cin->offset = ROQ_CHUNK_HEADER_SIZE;
 }
 
 qboolean ROQ_StartRead(cinematic_t *cin) {
 	uint16_t id, fps;
+
 	// Read the file header
 	FS_Read(cin_chunkData, ROQ_CHUNK_HEADER_SIZE, cin->file);
 
-	id = cin_chunkData[0]|(cin_chunkData[1] << 8);
-	fps = cin_chunkData[6]|(cin_chunkData[7] << 8);
+	id = cin_chunkData[0] | (cin_chunkData[1] << 8);
+	fps = cin_chunkData[6] | (cin_chunkData[7] << 8);
 
 	if (id != ROQ_ID) {
 		return qfalse;
@@ -943,7 +956,6 @@ qboolean ROQ_StartRead(cinematic_t *cin) {
 }
 
 void ROQ_StopVideo(cinematic_t *cin) {
-
 	if (cin->data) {
 		Com_Dealloc(cin->data);
 		cin->data = NULL;
@@ -955,14 +967,14 @@ void ROQ_Init(void) {
 	int16_t s;
 	int i;
 
-	// Build YCbCr - to - RGB tables
+	// Build YCbCr-to-RGB tables
 	for (i = 0; i < 256; i++) {
 		f = (float) (i - 128);
 
-		cin_cr2rTable[i] = (int16_t)(f * 1.40200f);
-		cin_cb2gTable[i] = (int16_t)(f * - 0.34414f);
-		cin_cr2gTable[i] = (int16_t)(f * - 0.71414f);
-		cin_cb2bTable[i] = (int16_t)(f * 1.77200f);
+		cin_cr2rTable[i] = (int16_t) (f * 1.40200f);
+		cin_cb2gTable[i] = (int16_t) (f * -0.34414f);
+		cin_cr2gTable[i] = (int16_t) (f * -0.71414f);
+		cin_cb2bTable[i] = (int16_t) (f * 1.77200f);
 	}
 	// Build square table
 	for (i = 0; i < 128; i++) {

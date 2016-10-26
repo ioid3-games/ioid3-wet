@@ -36,8 +36,8 @@
 #define INCLUDE_SND_PUBLIC_H
 
 // background track queuing
-#define QUEUED_PLAY_ONCE    - 1
-#define QUEUED_PLAY_LOOPED  - 2
+#define QUEUED_PLAY_ONCE - 1
+#define QUEUED_PLAY_LOOPED - 2
 #define QUEUED_PLAY_ONCE_SILENT - 3 // when done it goes quiet
 
 void S_Init(void);

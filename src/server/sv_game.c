@@ -115,7 +115,7 @@ void SV_GameSendServerCommand(int clientNum, const char *text) {
 	if (sv.demoState == DS_RECORDING) {
 		SV_DemoWriteGameCommand(clientNum, text);
 	} else if (sv.demoState == DS_PLAYBACK) {
-		SV_CheckLastCmd(text, qtrue);  // store the new game command, so when replaying a demo message, we can check for duplicates: maybe this message was already submitted(because of the events simulation, an event may trigger a message), and so we want to avoid those duplicates: if an event already triggered a message, no need to issue the one stored in the demo
+		SV_CheckLastCmd(text, qtrue); // store the new game command, so when replaying a demo message, we can check for duplicates: maybe this message was already submitted(because of the events simulation, an event may trigger a message), and so we want to avoid those duplicates: if an event already triggered a message, no need to issue the one stored in the demo
 	}
 
 	if (clientNum == -1) {
@@ -170,9 +170,9 @@ void SV_GameDropClient(int clientNum, const char *reason, int length) {
 	VectorCopy(maxs, ent->r.maxs);
 	ent->r.bmodel = qtrue;
 
-	ent->r.contents = -1;      // we don't know exactly what is in the brushes
+	ent->r.contents = -1; // we don't know exactly what is in the brushes
 
-	SV_LinkEntity(ent);        // FIXME: remove
+	SV_LinkEntity(ent); // FIXME: remove
 }
 
 /*
@@ -202,7 +202,7 @@ qboolean SV_inPVS(const vec3_t p1, const vec3_t p2) {
 	}
 
 	if (!CM_AreasConnected(area1, area2)) {
-		return qfalse;     // a door blocks sight
+		return qfalse; // a door blocks sight
 	}
 
 	return qtrue;

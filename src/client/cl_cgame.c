@@ -102,12 +102,12 @@ qboolean CL_GetParseEntityState(int parseEntityNumber, entityState_t *state) {
     if (parseEntityNumber >= cl.parseEntitiesNum) {
         Com_Error(ERR_DROP, "CL_GetParseEntityState: %i >= %i", 
                   parseEntityNumber, cl.parseEntitiesNum);
-  }
+}
 
    // can't return anything that has been overwritten in the circular buffer
     if (parseEntityNumber <= cl.parseEntitiesNum - MAX_PARSE_ENTITIES) {
         return qfalse;
-  }
+}
 
     *state = cl.parseEntities[parseEntityNumber & (MAX_PARSE_ENTITIES - 1)];
     return qtrue;
@@ -230,7 +230,7 @@ void CL_ConfigstringModified(void) {
 	old = cl.gameState.stringData + cl.gameState.stringOffsets[index];
 
 	if (!strcmp(old, s)) {
-		return;    // unchanged
+		return; // unchanged
 	}
 	// build the new gameState_t
 	oldGs = cl.gameState;
@@ -247,7 +247,7 @@ void CL_ConfigstringModified(void) {
 		}
 
 		if (!dup[0]) {
-			continue;      // leave with the default empty string
+			continue; // leave with the default empty string
 		}
 
 		len = strlen(dup);
@@ -413,7 +413,7 @@ void CL_SetExpectedHunkUsage(const char *mapname) {
 		while ((token = COM_Parse(&buftrav)) != NULL && token[0]) {
 			if (!Q_stricmp(token, (char *)mapname)) {
 				// found a match
-				token = COM_Parse(&buftrav);   // read the size
+				token = COM_Parse(&buftrav); // read the size
 				if (token && token[0]) {
 					// this is the usage
 					com_expectedhunkusage = atoi(token);
@@ -683,10 +683,10 @@ intptr_t CL_CgameSystemCalls(intptr_t *args) {
 	case CG_S_REGISTERSOUND:
 		return S_RegisterSound(VMA(1), args[2]);
 	case CG_S_STARTBACKGROUNDTRACK:
-		S_StartBackgroundTrack(VMA(1), VMA(2), args[3]);   // added fadeup time
+		S_StartBackgroundTrack(VMA(1), VMA(2), args[3]); // added fadeup time
 		return 0;
 	case CG_S_FADESTREAMINGSOUND:
-		S_FadeStreamingSound(VMF(1), args[2], args[3]);    // added music / all - streaming options
+		S_FadeStreamingSound(VMF(1), args[2], args[3]); // added music / all - streaming options
 		return 0;
 	case CG_S_STARTSTREAMINGSOUND:
 		return S_StartStreamingSound(VMA(1), VMA(2), args[3], args[4], args[5]);
@@ -991,7 +991,7 @@ void CL_UpdateLevelHunkUsage(void) {
 			{
 				Q_strcat(outbuftrav, len + 1, token);
 				Q_strcat(outbuftrav, len + 1, " ");
-				token = COM_Parse(&buftrav);   // read the size
+				token = COM_Parse(&buftrav); // read the size
 				if (token && token[0]) {
 					Q_strcat(outbuftrav, len + 1, token);
 					Q_strcat(outbuftrav, len + 1, "\n");
@@ -1026,7 +1026,7 @@ void CL_UpdateLevelHunkUsage(void) {
 	}
 
 	Com_sprintf(outstr, sizeof(outstr), "%s %i\n", cl.mapname, memusage);
-	FS_Write(outstr, strlen(outstr), handle);
+	(void) FS_Write(outstr, strlen(outstr), handle);
 	FS_FCloseFile(handle);
 	// now just open it and close it, so it gets copied to the pak dir
 	len = FS_FOpenFileByMode(memlistfile, &handle, FS_READ);
@@ -1307,7 +1307,7 @@ CL_GetTag
 qboolean CL_GetTag(int clientNum, char *tagname, orientation_t *orientation) {
     if (!cgvm) {
         return qfalse;
-  }
+}
 
     return VM_Call(cgvm, CG_GET_TAG, clientNum, tagname, orientation);
 }

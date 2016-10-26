@@ -120,7 +120,7 @@ void Com_GetAutoUpdate(void) {
 	Cvar_Set("r_uiFullScreen", "0");
 	// toggle on all the download related cvars
 	Cvar_Set("cl_allowDownload", "1"); // general flag
-	Cvar_Set("cl_wwwDownload", "1");   // ftp / http support
+	Cvar_Set("cl_wwwDownload", "1"); // ftp / http support
 
 	// clear any previous "server full" type messages
 	clc.serverMessage[0] = 0;

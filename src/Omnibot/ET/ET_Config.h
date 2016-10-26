@@ -115,7 +115,7 @@ typedef enum eET_Msgs
 typedef enum eET_Weapons
 {
 	ET_WP_UNKNOWN = INVALID_WEAPON,
-	ET_WP_NONE    = INVALID_WEAPON,
+	ET_WP_NONE = INVALID_WEAPON,
 
 	// general
 	ET_WP_KNIFE,
@@ -196,7 +196,7 @@ typedef enum eET_EntityCategory
 typedef enum eET_PlayerClass
 {
 	ET_CLASS_UNKNOWN = 0,
-	ET_CLASS_NULL    = 0,
+	ET_CLASS_NULL = 0,
 	ET_CLASS_SOLDIER,
 	ET_CLASS_MEDIC,
 	ET_CLASS_ENGINEER,
@@ -347,14 +347,14 @@ typedef enum eCursorHintType
 
 typedef enum eExplosiveTargetType
 {
-	XPLO_TYPE_DYNAMITE    = 1 << 0,
+	XPLO_TYPE_DYNAMITE = 1 << 0,
 	    XPLO_TYPE_SATCHEL = 1 << 1
 } ExplosiveTargetType;
 
 typedef enum eExplosiveState
 {
 	XPLO_INVALID = -1,
-	XPLO_ARMED   = 0,
+	XPLO_ARMED = 0,
 	XPLO_UNARMED = 1,
 } ExplosiveState;
 
@@ -362,11 +362,11 @@ typedef enum eConstructableState
 {
 	CONST_INVALID = -1,
 
-	CONST_BUILT   = 0,
+	CONST_BUILT = 0,
 	CONST_UNBUILT = 1,
 
 	CONST_NOTDESTROYABLE = 0,
-	CONST_DESTROYABLE    = 1,
+	CONST_DESTROYABLE = 1,
 
 	CONST_BROKEN = 2,
 } ConstructableState;

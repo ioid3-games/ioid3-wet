@@ -31,7 +31,7 @@
 /**
  * @file geoip.c
  * @brief This is a modified version of GeoIP API(simplified to use in our case)
- *       - query performance about ~2.6 Sec for 1 million requests p4 2.0 Ghz
+ * - query performance about ~2.6 Sec for 1 million requests p4 2.0 Ghz
  *
  * @copyright mcwf / ETPub
  */

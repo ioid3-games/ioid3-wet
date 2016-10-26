@@ -44,21 +44,21 @@
 // optimization is necessary, since lots of these will be spawned, but as they grow, they can be
 // merged so that less overdraw occurs
 typedef struct flameChunk_s {
-	struct flameChunk_s *nextGlobal, *prevGlobal;  // next junction in the global list it is in(free or used)
-	struct flameChunk_s *nextFlameChunk;           // next junction in the trail
-	struct flameChunk_s *nextHead, *prevHead;      // next head junc in the world
+	struct flameChunk_s *nextGlobal, *prevGlobal; // next junction in the global list it is in(free or used)
+	struct flameChunk_s *nextFlameChunk; // next junction in the trail
+	struct flameChunk_s *nextHead, *prevHead; // next head junc in the world
 
 	qboolean inuse;
-	qboolean dead;         // set when a chunk is effectively inactive, but waiting to be freed
-	int ownerCent;             // cent that spawned us
+	qboolean dead; // set when a chunk is effectively inactive, but waiting to be freed
+	int ownerCent; // cent that spawned us
 	int timeStart, timeEnd;
-	float sizeMax;                 // start small, increase if we slow down
+	float sizeMax; // start small, increase if we slow down
 	float sizeRand;
-	float sizeRate;                // rate per ms, variable according to speed(larger if moving slower)
+	float sizeRate; // rate per ms, variable according to speed(larger if moving slower)
 	vec3_t baseOrg;
 	int baseOrgTime;
 	vec3_t velDir;
-	float velSpeed;                // flame chunks should start with a fast velocity, then slow down if there is nothing behind them pushing them along
+	float velSpeed; // flame chunks should start with a fast velocity, then slow down if there is nothing behind them pushing them along
 	float rollAngle;
 	qboolean ignitionOnly;
 	int blueLife;
@@ -68,7 +68,7 @@ typedef struct flameChunk_s {
 	// current variables
 	vec3_t org;
 	float size;
-	float lifeFrac;                // 0.0(baby) ->1.0(aged)
+	float lifeFrac; // 0.0(baby) ->1.0(aged)
 	int lastFriction, lastFrictionTake;
 	vec3_t parentFwd;
 } flameChunk_t;
@@ -85,11 +85,11 @@ static int numFlameChunksInuse;
 // the flamethrower data separate to the rest of the code, which helps if we decide against
 // using this weapon in the game
 typedef struct centFlameInfo_s {
-	int lastClientFrame;           // client frame that we last fired the flamethrower
-	vec3_t lastAngles;             // angles at last firing
-	vec3_t lastOrigin;             // origin at last firing
+	int lastClientFrame; // client frame that we last fired the flamethrower
+	vec3_t lastAngles; // angles at last firing
+	vec3_t lastOrigin; // origin at last firing
 	flameChunk_t
- *lastFlameChunk;               // flame chunk we last spawned
+ *lastFlameChunk; // flame chunk we last spawned
 	int lastSoundUpdate;
 	qboolean lastFiring;
 } centFlameInfo_t;
@@ -197,9 +197,9 @@ void CG_FireFlameChunks(centity_t *cent, vec3_t origin, vec3_t angles, float spe
 			// spawn a new chunk
 			CG_FlameLerpVec(lastOrg, thisOrg, backLerp, org);
 
-			CG_Trace(&trace, org, flameChunkMins, flameChunkMaxs, org, cent->currentState.number, MASK_SHOT|MASK_WATER);  // JPW NERVE water fixes
+			CG_Trace(&trace, org, flameChunkMins, flameChunkMaxs, org, cent->currentState.number, MASK_SHOT|MASK_WATER); // JPW NERVE water fixes
 			if (trace.startsolid) {
-				return;    // don't spawn inside a wall
+				return; // don't spawn inside a wall
 
 			}
 
@@ -339,8 +339,8 @@ void CG_FireFlameChunks(centity_t *cent, vec3_t origin, vec3_t angles, float spe
 	            dot -= 0.99;
 	            dot *= (1.0 /  (1.0 - 0.99));
 	            CG_FlameAdjustSpeed(f, 0.5 * frametime * FLAME_FRICTION_PER_SEC * pow(dot, 4));
-	      }
-	  }
+	    }
+	}
 
 	    f = f->nextFlameChunk;
 	}
@@ -566,7 +566,7 @@ void CG_MoveFlameChunk(flameChunk_t *f) {
 	// adjust size
 	if (f->size < f->sizeMax) {
 		if ((cg.time - f->timeStart) < f->blueLife) {
-			f->sizeRate = GET_FLAME_BLUE_SIZE_SPEED(FLAME_START_MAX_SIZE);   // use a constant so the blue flame doesn't distort
+			f->sizeRate = GET_FLAME_BLUE_SIZE_SPEED(FLAME_START_MAX_SIZE); // use a constant so the blue flame doesn't distort
 		} else {
 			f->sizeRate = GET_FLAME_SIZE_SPEED(f->sizeMax);
 		}
@@ -583,7 +583,7 @@ void CG_MoveFlameChunk(flameChunk_t *f) {
 	while (f->velSpeed > 1 && f->baseOrgTime != cg.time) {
 		CG_FlameCalcOrg(f, cg.time, newOrigin);
 		// trace a line from previous position to new position
-		CG_Trace(&trace, sOrg, flameChunkMins, flameChunkMaxs, newOrigin, f->ownerCent, MASK_SHOT|MASK_WATER);  // JPW NERVE water fixes
+		CG_Trace(&trace, sOrg, flameChunkMins, flameChunkMaxs, newOrigin, f->ownerCent, MASK_SHOT|MASK_WATER); // JPW NERVE water fixes
 
 		if (trace.startsolid) {
 			f->velSpeed = 0;
@@ -618,7 +618,7 @@ void CG_MoveFlameChunk(flameChunk_t *f) {
 	}
 
 	CG_FlameCalcOrg(f, cg.time, f->org);
-	f->baseOrgTime = cg.time;  // incase we skipped the movement
+	f->baseOrgTime = cg.time; // incase we skipped the movement
 }
 
 /*
@@ -782,7 +782,7 @@ void CG_AddFlameToScene(flameChunk_t *fHead) {
 	flameChunk_t *lastBlueChunk = NULL;
 	qboolean skip = qfalse, droppedTrail;
 	vec3_t v;
-	vec3_t lightOrg;        // origin to place light at
+	vec3_t lightOrg; // origin to place light at
 	float lightSize;
 	float lightFlameCount;
 	float lastFuelAlpha;
@@ -814,7 +814,7 @@ void CG_AddFlameToScene(flameChunk_t *fHead) {
 		fNext = f->nextFlameChunk;
 		lived = (float) (headTimeStart - f->timeStart);
 		// update the "blow" sound volume(louder as we sway it)
-		vdist = Distance(cg.refdef_current->vieworg, f->org);  // NOTE: this needs to be here or the flameSound code further below won't work
+		vdist = Distance(cg.refdef_current->vieworg, f->org); // NOTE: this needs to be here or the flameSound code further below won't work
 		if (lastBlowChunk && (centFlameStatus[f->ownerCent].blowVolume < 1.0) &&
 		   ((bdot = DotProduct(lastBlowChunk->startVelDir, f->startVelDir)) < 1.0)) {
 			if (vdist < FLAME_SOUND_RANGE) {
@@ -865,7 +865,7 @@ void CG_AddFlameToScene(flameChunk_t *fHead) {
 
 				lastBlueChunk = f;
 
-				alpha = 1.0;   // new nozzle sprite
+				alpha = 1.0; // new nozzle sprite
 				VectorScale(whiteColor, alpha, c);
 
 				if (f->blueLife > lived * 3.0) {
@@ -921,7 +921,7 @@ void CG_AddFlameToScene(flameChunk_t *fHead) {
 				 && (DotProduct(f->velDir, fNext->velDir) > 0.99)
 			) {
 					CG_MergeFlameChunks(f, fNext);
-					fNext = f->nextFlameChunk;         // it may have changed
+					fNext = f->nextFlameChunk; // it may have changed
 				} else {
 					break;
 				}
@@ -1088,7 +1088,7 @@ void CG_AddFlameChunks(void) {
 	f = headFlameChunks;
 
 	while (f) {
-		fNext = f->nextHead;       // in case it gets removed
+		fNext = f->nextHead; // in case it gets removed
 		if (f->dead) {
 			if (centFlameInfo[f->ownerCent].lastFlameChunk == f) {
 				centFlameInfo[f->ownerCent].lastFlameChunk = NULL;

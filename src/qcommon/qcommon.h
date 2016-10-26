@@ -49,17 +49,16 @@
 
 // msg.c
 
-typedef struct
-{
-	qboolean allowoverflow;     // if false, do a Com_Error
-	qboolean overflowed;        // set to true if the buffer size failed (with allowoverflow set)
-	qboolean oob;               // set to true if the buffer size failed (with allowoverflow set)
-	byte *data;                 // message content
+typedef struct {
+	qboolean allowoverflow; // if false, do a Com_Error
+	qboolean overflowed; // set to true if the buffer size failed (with allowoverflow set)
+	qboolean oob; // set to true if the buffer size failed (with allowoverflow set)
+	byte *data; // message content
 	int maxsize;
 	int cursize;
-	int uncompsize;             // net debugging
+	int uncompsize; // net debugging
 	int readcount;
-	int bit;                    // for bitwise reads and writes
+	int bit; // for bitwise reads and writes
 } msg_t;
 
 void MSG_Init(msg_t *buf, byte *data, int length);
@@ -157,7 +156,7 @@ NET
  */
 #define MAX_PACKET_USERCMDS     32
 
-#define PORT_ANY            -1
+#define PORT_ANY -1
 
 /**
  * @def MAX_RELIABLE_COMMANDS
@@ -191,8 +190,7 @@ typedef enum
  */
 #define NET_ADDRSTRMAXLEN     48 // why 48? IPv4-mapped IPv6 maximum is 45 .. + trailing 0 is 46
 #define NET_ADDRSTRMAXLEN_EXT 56 // NET_ADDRSTRMAXLEN + 8 (2xbrackets, colon, 5xport)
-typedef struct
-{
+typedef struct {
 	uint16_t type;
 	byte ip[4];
 	byte ip6[16];
@@ -238,14 +236,13 @@ void NET_Sleep(int msec);
 Netchan handles packet fragmentation and out of order / duplicate suppression
 */
 
-typedef struct
-{
+typedef struct {
 	netsrc_t sock;
 
-	int dropped;                    // between last packet and previous
+	int dropped; // between last packet and previous
 
 	netadr_t remoteAddress;
-	int qport;                      // qport value to write when transmitting
+	int qport; // qport value to write when transmitting
 
 	// sequencing variables
 	int incomingSequence;
@@ -275,31 +272,30 @@ void Netchan_TransmitNextFragment(netchan_t *chan);
 
 qboolean Netchan_Process(netchan_t *chan, msg_t *msg);
 
-typedef struct
-{
+typedef struct {
 	// file transfer from server
 	fileHandle_t download;
 	int downloadNumber;
-	int downloadBlock;          // block we are waiting for
-	int downloadCount;          // how many bytes we got
-	int downloadSize;           // how many bytes we got
-	int downloadFlags;         // misc download behaviour flags sent by the server
-	char downloadList[MAX_INFO_STRING];        // list of paks we need to download
+	int downloadBlock; // block we are waiting for
+	int downloadCount; // how many bytes we got
+	int downloadSize; // how many bytes we got
+	int downloadFlags; // misc download behaviour flags sent by the server
+	char downloadList[MAX_INFO_STRING]; // list of paks we need to download
 
 	// www downloading
-	qboolean bWWWDl;    // we have a www download going
-	qboolean bWWWDlAborting;    // disable the CL_WWWDownload until server gets us a gamestate (used for aborts)
-	char redirectedList[MAX_INFO_STRING];        // list of files that we downloaded through a redirect since last FS_ComparePaks
-	char badChecksumList[MAX_INFO_STRING];        // list of files for which wwwdl redirect is broken (wrong checksum)
+	qboolean bWWWDl; // we have a www download going
+	qboolean bWWWDlAborting; // disable the CL_WWWDownload until server gets us a gamestate (used for aborts)
+	char redirectedList[MAX_INFO_STRING]; // list of files that we downloaded through a redirect since last FS_ComparePaks
+	char badChecksumList[MAX_INFO_STRING]; // list of files for which wwwdl redirect is broken (wrong checksum)
 
 	// www downloading from static
 	// in the static stuff since this may have to survive server disconnects
 	// if new stuff gets added, CL_ClearStaticDownload code needs to be updated for clear up
 	qboolean bWWWDlDisconnected; // keep going with the download after server disconnect
-	qboolean noReconnect;   //do not try to reconnect when the dowload is ready
+	qboolean noReconnect; //do not try to reconnect when the dowload is ready
 	char downloadName[MAX_OSPATH];
-	char downloadTempName[MAX_OSPATH];    // in wwwdl mode, this is OS path (it's a qpath otherwise)
-	char originalDownloadName[MAX_QPATH];    // if we get a redirect, keep a copy of the original file path
+	char downloadTempName[MAX_OSPATH]; // in wwwdl mode, this is OS path (it's a qpath otherwise)
+	char originalDownloadName[MAX_QPATH]; // if we get a redirect, keep a copy of the original file path
 	qboolean downloadRestart; // if true, we need to do another FS_Restart because we downloaded a pak
 } download_t;
 
@@ -307,13 +303,12 @@ typedef struct
 
 #define AUTOUPDATE_DIR "update"
 
-typedef struct
-{
+typedef struct {
 	netadr_t autoupdateServer;
-	netadr_t authorizeServer;               // Unused.
+	netadr_t authorizeServer; // Unused.
 	netadr_t motdServer;
 
-	qboolean updateChecked;                 // Have we heard from the auto-update server this session?
+	qboolean updateChecked; // Have we heard from the auto-update server this session?
 	qboolean updateStarted;
 
 	qboolean forceUpdate;
@@ -457,8 +452,7 @@ void *VM_ArgPtr(intptr_t intValue);
 void *VM_ExplicitArgPtr(vm_t *vm, intptr_t intValue);
 
 #define VMA(x) VM_ArgPtr(args[x])
-static ID_INLINE float _vmf(intptr_t x)
-{
+static ID_INLINE float _vmf(intptr_t x) {
 	floatint_t fi;
 	fi.i = (int) x;
 	return fi.f;
@@ -670,8 +664,7 @@ issues.
 #define BASEGAME "etmain"
 #define DEFAULT_MODGAME "legacy" // see files.c
 
-typedef struct
-{
+typedef struct {
 	unsigned int defaultMod;
 	unsigned int currentMod;
 } modHash;
@@ -882,8 +875,7 @@ Edit fields and command line history/completion
 */
 
 #define MAX_EDIT_LINE   512
-typedef struct
-{
+typedef struct {
 	int cursor;
 	int scroll;
 	int widthInChars;
@@ -915,7 +907,7 @@ void QDECL Com_DPrintf(const char *fmt, ...) __attribute__ ((format(printf, 1, 2
 void QDECL Com_Error(int code, const char *fmt, ...) __attribute__ ((noreturn, format(printf, 2, 3)));
 void Com_Quit_f(void) __attribute__ ((noreturn));
 
-int Com_Milliseconds(void);     // will be journaled properly
+int Com_Milliseconds(void); // will be journaled properly
 unsigned int Com_BlockChecksum(const void *buffer, int length);
 unsigned int Com_BlockChecksumKey(void *buffer, int length, int key);
 char *Com_MD5FileETCompat(const char *filename);
@@ -950,9 +942,9 @@ extern cvar_t *com_speeds;
 extern cvar_t *com_timescale;
 extern cvar_t *com_sv_running;
 extern cvar_t *com_cl_running;
-extern cvar_t *com_viewlog;             // 0 = hidden, 1 = visible, 2 = minimized
+extern cvar_t *com_viewlog; // 0 = hidden, 1 = visible, 2 = minimized
 extern cvar_t *com_version;
-extern cvar_t *com_buildScript;         // for building release pak files
+extern cvar_t *com_buildScript; // for building release pak files
 extern cvar_t *com_journal;
 extern cvar_t *com_ansiColor;
 extern cvar_t *com_unfocused;
@@ -980,7 +972,7 @@ extern cvar_t *sv_packetdelay;
 // com_speeds times
 extern int time_game;
 extern int time_frontend;
-extern int time_backend;            // renderer backend time
+extern int time_backend; // renderer backend time
 
 extern int com_frameTime;
 extern int com_expectedhunkusage;
@@ -1026,13 +1018,13 @@ temp file loading
 #define Z_TagMalloc(size, tag)          Z_TagMallocDebug(size, tag, # size, __FILE__, __LINE__)
 #define Z_Malloc(size)                  Z_MallocDebug(size, # size, __FILE__, __LINE__)
 #define S_Malloc(size)                  S_MallocDebug(size, # size, __FILE__, __LINE__)
-void *Z_TagMallocDebug(int size, int tag, char *label, char *file, int line);   // NOT 0 filled memory
-void *Z_MallocDebug(int size, char *label, char *file, int line);               // returns 0 filled memory
-void *S_MallocDebug(int size, char *label, char *file, int line);               // returns 0 filled memory
+void *Z_TagMallocDebug(int size, int tag, char *label, char *file, int line); // NOT 0 filled memory
+void *Z_MallocDebug(int size, char *label, char *file, int line); // returns 0 filled memory
+void *S_MallocDebug(int size, char *label, char *file, int line); // returns 0 filled memory
 #else
-void *Z_TagMalloc(int size, int tag);   // NOT 0 filled memory
-void *Z_Malloc(int size);               // returns 0 filled memory
-void *S_Malloc(int size);               // NOT 0 filled memory only for small allocations
+void *Z_TagMalloc(int size, int tag); // NOT 0 filled memory
+void *Z_Malloc(int size); // returns 0 filled memory
+void *S_Malloc(int size); // NOT 0 filled memory only for small allocations
 #endif
 void Z_Free(void *ptr);
 void Z_FreeTags(int tag);
@@ -1152,7 +1144,7 @@ void Key_WriteBindings(fileHandle_t f);
 void S_ClearSoundBuffer(qboolean killStreaming);
 // call before filesystem access
 
-void SCR_DebugGraph(float value);     // FIXME: move logging to common?
+void SCR_DebugGraph(float value); // FIXME: move logging to common?
 
 // AVI files have the start of pixel lines 4 byte-aligned
 #define AVI_LINE_PADDING 4
@@ -1202,13 +1194,12 @@ typedef enum
 	SE_CONSOLE,         // evPtr is a char*
 } sysEventType_t;
 
-typedef struct
-{
+typedef struct {
 	int evTime;
 	sysEventType_t evType;
 	int evValue, evValue2;
-	int evPtrLength;                // bytes of data pointed to by evPtr, for journaling
-	void *evPtr;                    // this must be manually freed if not NULL
+	int evPtrLength; // bytes of data pointed to by evPtr, for journaling
+	void *evPtr; // this must be manually freed if not NULL
 } sysEvent_t;
 
 void Com_QueueEvent(int time, sysEventType_t type, int value, int value2, int ptrLength, void *ptr);
@@ -1235,7 +1226,7 @@ char *Sys_GetCurrentUser(void);
 
 void QDECL Sys_Error(const char *error, ...) __attribute__ ((noreturn, format(printf, 1, 2)));
 void Sys_Quit(void) __attribute__ ((noreturn));
-char *IN_GetClipboardData(void);       // note that this isn't journaled...
+char *IN_GetClipboardData(void); // note that this isn't journaled...
 
 void Sys_Print(const char *msg);
 
@@ -1283,9 +1274,9 @@ void Sys_SetEnv(const char *name, const char *value);
 
 typedef enum
 {
-	DR_YES    = 0,
-	DR_NO     = 1,
-	DR_OK     = 0,
+	DR_YES = 0,
+	DR_NO = 1,
+	DR_OK = 0,
 	DR_CANCEL = 1
 } dialogResult_t;
 
@@ -1342,8 +1333,7 @@ typedef struct nodetype
 
 #define HMAX 256 // Maximum symbol
 
-typedef struct
-{
+typedef struct {
 	int blocNode;
 	int blocPtrs;
 
@@ -1357,8 +1347,7 @@ typedef struct
 	node_t *nodePtrs[768];
 } huff_t;
 
-typedef struct
-{
+typedef struct {
 	huff_t compressor;
 	huff_t decompressor;
 } huffman_t;

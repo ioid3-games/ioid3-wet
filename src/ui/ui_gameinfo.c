@@ -116,7 +116,7 @@ static void UI_LoadArenasFromFile(char *filename) {
 		        trap_Print(va(S_COLOR_RED "unexpected end of file inside: %s\n", filename));
 		        trap_PC_FreeSource(handle);
 		        return;
-		  }
+		}
 		}
 
 		*/

@@ -136,8 +136,7 @@ float CG_ClientHitboxMaxZ(entityState_t *hitEnt, float def) {
 CG_ClipMoveToEntities
 =======================================================================================================================================
 */
-static void CG_ClipMoveToEntities(const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, 
-                                  int skipNumber, int mask, int capsule, trace_t *tr) {
+static void CG_ClipMoveToEntities(const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int skipNumber, int mask, int capsule, trace_t *tr) {
 	int i, x, zd, zu;
 	trace_t trace;
 	entityState_t *ent;
@@ -184,9 +183,9 @@ static void CG_ClipMoveToEntities(const vec3_t start, const vec3_t mins, const v
 		}
 		// use bbox of capsule
 		if (capsule) {
-			trap_CM_TransformedCapsuleTrace(&trace, start, end,         mins, maxs, cmodel, mask, origin, angles);
+			trap_CM_TransformedCapsuleTrace(&trace, start, end, mins, maxs, cmodel, mask, origin, angles);
 		} else {
-			trap_CM_TransformedBoxTrace(&trace, start, end,     mins, maxs, cmodel, mask, origin, angles);
+			trap_CM_TransformedBoxTrace(&trace, start, end, mins, maxs, cmodel, mask, origin, angles);
 		}
 
 		if (trace.allsolid || trace.fraction < tr->fraction) {
@@ -219,7 +218,7 @@ static void CG_ClipMoveToEntities_FT(const vec3_t start, const vec3_t mins, cons
         if (ent->number == skipNumber)
         {
             continue;
-      }
+    }
 
         if (ent->solid == SOLID_BMODEL)
         {
@@ -229,7 +228,7 @@ static void CG_ClipMoveToEntities_FT(const vec3_t start, const vec3_t mins, cons
            // VectorCopy(cent->lerpOrigin, origin);
             BG_EvaluateTrajectory(&cent->currentState.apos, cg.physicsTime, angles, qtrue, cent->currentState.effect2Time);
             BG_EvaluateTrajectory(&cent->currentState.pos, cg.physicsTime, origin, qfalse, cent->currentState.effect2Time);
-      }
+    }
         else
         {
            // encoded bbox
@@ -245,43 +244,43 @@ static void CG_ClipMoveToEntities_FT(const vec3_t start, const vec3_t mins, cons
             if (ent->eType == ET_PLAYER && cg.bulletTrace)
             {
                 bmaxs[2] = CG_ClientHitboxMaxZ(ent, zu);
-          }
+        }
             else
             {
                 bmaxs[2] = zu;
-          }
+        }
 
             cmodel = trap_CM_TempCapsuleModel(bmins, bmaxs);
 
             VectorCopy(vec3_origin, angles);
             VectorCopy(cent->lerpOrigin, origin);
-      }
+    }
        // use bbox of capsule
         if (capsule)
         {
             trap_CM_TransformedCapsuleTrace(&trace, start, end, 
                                             mins, maxs, cmodel, mask, origin, angles);
-      }
+    }
         else
         {
             trap_CM_TransformedBoxTrace(&trace, start, end, 
                                         mins, maxs, cmodel, mask, origin, angles);
-      }
+    }
 
         if (trace.allsolid || trace.fraction < tr->fraction)
         {
             trace.entityNum = ent->number;
             *tr = trace;
-      }
+    }
         else if (trace.startsolid)
         {
             tr->startsolid = qtrue;
-      }
+    }
         if (tr->allsolid)
         {
             return;
-      }
-  }
+    }
+}
 }
 */
 
@@ -290,8 +289,7 @@ static void CG_ClipMoveToEntities_FT(const vec3_t start, const vec3_t mins, cons
 CG_Trace
 =======================================================================================================================================
 */
-void CG_Trace(trace_t *result, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, 
-              int skipNumber, int mask) {
+void CG_Trace(trace_t *result, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int skipNumber, int mask) {
 	trace_t t;
 
 	trap_CM_BoxTrace(&t, start, end, mins, maxs, 0, mask);
@@ -436,7 +434,7 @@ static void CG_InterpolatePlayerState(qboolean grabAngles) {
 	i = next->ps.bobCycle;
 
 	if (i < prev->ps.bobCycle) {
-		i += 256;      // handle wraparound
+		i += 256; // handle wraparound
 	}
 
 	out->bobCycle = prev->ps.bobCycle + f * (i - prev->ps.bobCycle);
@@ -445,12 +443,10 @@ static void CG_InterpolatePlayerState(qboolean grabAngles) {
 		out->origin[i] = prev->ps.origin[i] + f * (next->ps.origin[i] - prev->ps.origin[i]);
 
 		if (!grabAngles) {
-			out->viewangles[i] = LerpAngle(
-			    prev->ps.viewangles[i], next->ps.viewangles[i], f);
+			out->viewangles[i] = LerpAngle(prev->ps.viewangles[i], next->ps.viewangles[i], f);
 		}
 
-		out->velocity[i] = prev->ps.velocity[i] + 
-		                   f * (next->ps.velocity[i] - prev->ps.velocity[i]);
+		out->velocity[i] = prev->ps.velocity[i] + f * (next->ps.velocity[i] - prev->ps.velocity[i]);
 	}
 }
 
@@ -501,9 +497,7 @@ static void CG_TouchTriggerPrediction(void) {
 
 		if (ent->eType == ET_CONSTRUCTIBLE || ent->eType == ET_OID_TRIGGER
 #ifdef VISIBLE_TRIGGERS
-		 || ent->eType == ET_TRIGGER_MULTIPLE
-		 || ent->eType == ET_TRIGGER_FLAGONLY
-		 || ent->eType == ET_TRIGGER_FLAGONLY_MULTIPLE
+		 || ent->eType == ET_TRIGGER_MULTIPLE || ent->eType == ET_TRIGGER_FLAGONLY || ent->eType == ET_TRIGGER_FLAGONLY_MULTIPLE
 #endif // VISIBLE_TRIGGERS
 	) {
 			vec3_t mins, maxs, pmins, pmaxs;
@@ -610,17 +604,11 @@ int CG_PredictionOk(playerState_t *ps1, playerState_t *ps2) {
 		return 6;
 	}
 
-	if (ps2->speed != ps1->speed ||
-	    ps2->delta_angles[0] != ps1->delta_angles[0] ||
-	    ps2->delta_angles[1] != ps1->delta_angles[1] ||
-	    ps2->delta_angles[2] != ps1->delta_angles[2]) {
+	if (ps2->speed != ps1->speed || ps2->delta_angles[0] != ps1->delta_angles[0] || ps2->delta_angles[1] != ps1->delta_angles[1] || ps2->delta_angles[2] != ps1->delta_angles[2]) {
 		return 8;
 	}
 
-	if (ps2->legsTimer != ps1->legsTimer ||
-	    ps2->legsAnim != ps1->legsAnim ||
-	    ps2->torsoTimer != ps1->torsoTimer ||
-	    ps2->torsoAnim != ps1->torsoAnim) {
+	if (ps2->legsTimer != ps1->legsTimer || ps2->legsAnim != ps1->legsAnim || ps2->torsoTimer != ps1->torsoTimer || ps2->torsoAnim != ps1->torsoAnim) {
 		return 9;
 	}
 	// common with item pickups
@@ -634,9 +622,7 @@ int CG_PredictionOk(playerState_t *ps1, playerState_t *ps2) {
 		}
 	}
 
-	if (ps2->externalEvent != ps1->externalEvent ||
-	    ps2->externalEventParm != ps1->externalEventParm ||
-	    ps2->externalEventTime != ps1->externalEventTime) {
+	if (ps2->externalEvent != ps1->externalEvent || ps2->externalEventParm != ps1->externalEventParm || ps2->externalEventTime != ps1->externalEventTime) {
 		return 13;
 	}
 
@@ -663,9 +649,9 @@ int CG_PredictionOk(playerState_t *ps1, playerState_t *ps2) {
 	}
 
 	for (i = 0; i < MAX_STATS; i++) {
-		// if (i == STAT_HEALTH || i == STAT_DEAD_YAW) // FIXME: predict health?!STAT_DEAD_YAW?
-		// {                                         //        we got tons of prediction issues here 
-		// 	if (cg_showmiss.integer & 8)
+		//if (i == STAT_HEALTH || i == STAT_DEAD_YAW) // FIXME: predict health?! STAT_DEAD_YAW?
+		//{                                          //        we got tons of prediction issues here
+		//	if (cg_showmiss.integer & 8)
 		// 	{
 		// 		CG_Printf("CG_PredictionOk info: skipping health/stat_dead_yaw\n");
 		// 	}
@@ -850,7 +836,6 @@ void CG_PredictPlayerState(void) {
 	}
 
 	cg_pmove.skill = cgs.clientinfo[cg.snap->ps.clientNum].skill;
-
 	cg_pmove.trace = CG_TraceCapsule;
 	// cg_pmove.trace = CG_Trace;
 	cg_pmove.pointcontents = CG_PointContents;
@@ -869,7 +854,7 @@ void CG_PredictPlayerState(void) {
 
 	if ((cg.snap->ps.persistant[PERS_TEAM] == TEAM_SPECTATOR) || (cg.snap->ps.pm_flags & PMF_LIMBO)) // limbo
 	{
-		cg_pmove.tracemask &= ~CONTENTS_BODY;  // spectators can fly through bodies
+		cg_pmove.tracemask &= ~CONTENTS_BODY; // spectators can fly through bodies
 	}
 
 	cg_pmove.noFootsteps = qfalse;
@@ -916,7 +901,7 @@ void CG_PredictPlayerState(void) {
 		trap_Cvar_Set("pmove_msec", "33");
 	}
 
-	cg_pmove.pmove_fixed = pmove_fixed.integer;    // |cg_pmove_fixed.integer;
+	cg_pmove.pmove_fixed = pmove_fixed.integer; // |cg_pmove_fixed.integer;
 	cg_pmove.pmove_msec = pmove_msec.integer;
 	// unlagged - optimized prediction
 	// Like the comments described above, a player's state is entirely
@@ -1075,6 +1060,7 @@ void CG_PredictPlayerState(void) {
 					} else {
 						VectorClear(cg.predictedError);
 					}
+
 					VectorAdd(delta, cg.predictedError, cg.predictedError);
 					cg.predictedErrorTime = cg.oldTime;
 				}
@@ -1098,7 +1084,7 @@ void CG_PredictPlayerState(void) {
 			cg_pmove.medicChargeTime = cg.medicChargeTime[cg.snap->ps.persistant[PERS_TEAM] - 1];
 			cg_pmove.covertopsChargeTime = cg.covertopsChargeTime[cg.snap->ps.persistant[PERS_TEAM] - 1];
 		}
-		// memcpy(&pmext, &cg.pmext, sizeof(pmoveExt_t));   // grab data, we only want the final result
+		// memcpy(&pmext, &cg.pmext, sizeof(pmoveExt_t)); // grab data, we only want the final result
 		// copy the pmext as it was just before we
 		// previously ran this cmd(or, this will be the
 		// current predicted data if this is the current cmd) (#166)
@@ -1186,15 +1172,9 @@ void CG_PredictPlayerState(void) {
 		cg.cameraShakeScale = 0;
 	} else {
 		float x = (cg.cameraShakeTime - cg.time) / cg.cameraShakeLength; // starts at 1, approaches 0 over time
-
 		// move
-		cg.predictedPlayerState.origin[2] += 
-		    sin(M_PI * 8 * 13 + cg.cameraShakePhase) * x * 6.0f * cg.cameraShakeScale;
-
-		cg.predictedPlayerState.origin[1] += 
-		    sin(M_PI * 17 * x + cg.cameraShakePhase) * x * 6.0f * cg.cameraShakeScale;
-
-		cg.predictedPlayerState.origin[0] += 
-		    cos(M_PI * 7 * x + cg.cameraShakePhase) * x * 6.0f * cg.cameraShakeScale;
+		cg.predictedPlayerState.origin[2] += sin(M_PI * 8 * 13 + cg.cameraShakePhase) * x * 6.0f * cg.cameraShakeScale;
+		cg.predictedPlayerState.origin[1] += sin(M_PI * 17 * x + cg.cameraShakePhase) * x * 6.0f * cg.cameraShakeScale;
+		cg.predictedPlayerState.origin[0] += cos(M_PI * 7 * x + cg.cameraShakePhase) * x * 6.0f * cg.cameraShakeScale;
 	}
 }

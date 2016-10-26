@@ -98,11 +98,11 @@ void IN_KeyDown(kbutton_t *b) {
 	if (c[0]) {
 		k = atoi(c);
 	} else {
-		k = -1;    // typed manually at the console for continuous down
+		k = -1; // typed manually at the console for continuous down
 	}
 
 	if (k == b->down[0] || k == b->down[1]) {
-		return;    // repeating key
+		return; // repeating key
 	}
 
 	if (!b->down[0]) {
@@ -115,7 +115,7 @@ void IN_KeyDown(kbutton_t *b) {
 	}
 
 	if (b->active) {
-		return;    // still down
+		return; // still down
 	}
 	// save timestamp for partial frame summing
 	c = Cmd_Argv(2);
@@ -151,11 +151,11 @@ void IN_KeyUp(kbutton_t *b) {
 	} else if (b->down[1] == k) {
 		b->down[1] = 0;
 	} else {
-		return;    // key up without coresponding down (menu pass through)
+		return; // key up without coresponding down (menu pass through)
 	}
 
 	if (b->down[0] || b->down[1]) {
-		return;    // some other key is still holding it down
+		return; // some other key is still holding it down
 	}
 
 	b->active = qfalse;
@@ -344,31 +344,31 @@ void IN_SprintUp(void) {
 
 // wbuttons(wolf buttons)
 void IN_Wbutton0Down(void) {
-	IN_KeyDown(&kb[KB_WBUTTONS0]);        // secondary fire button
+	IN_KeyDown(&kb[KB_WBUTTONS0]); // secondary fire button
 }
 void IN_Wbutton0Up(void) {
 	IN_KeyUp(&kb[KB_WBUTTONS0]);
 }
 void IN_ZoomDown(void) {
-	IN_KeyDown(&kb[KB_WBUTTONS1]);        // zoom key
+	IN_KeyDown(&kb[KB_WBUTTONS1]); // zoom key
 }
 void IN_ZoomUp(void) {
 	IN_KeyUp(&kb[KB_WBUTTONS1]);
 }
 void IN_ReloadDown(void) {
-	IN_KeyDown(&kb[KB_WBUTTONS3]);        // manual weapon re - load
+	IN_KeyDown(&kb[KB_WBUTTONS3]); // manual weapon re - load
 }
 void IN_ReloadUp(void) {
 	IN_KeyUp(&kb[KB_WBUTTONS3]);
 }
 void IN_LeanLeftDown(void) {
-	IN_KeyDown(&kb[KB_WBUTTONS4]);        // lean left
+	IN_KeyDown(&kb[KB_WBUTTONS4]); // lean left
 }
 void IN_LeanLeftUp(void) {
 	IN_KeyUp(&kb[KB_WBUTTONS4]);
 }
 void IN_LeanRightDown(void) {
-	IN_KeyDown(&kb[KB_WBUTTONS5]);        // lean right
+	IN_KeyDown(&kb[KB_WBUTTONS5]); // lean right
 }
 void IN_LeanRightUp(void) {
 	IN_KeyUp(&kb[KB_WBUTTONS5]);
@@ -397,7 +397,7 @@ void IN_ButtonUp(void) {
 void IN_Help(void) {
 
 	if (cls.state == CA_ACTIVE && !clc.demoplaying) {
-		VM_Call(uivm, UI_SET_ACTIVE_MENU, UIMENU_HELP);         // startup help system
+		VM_Call(uivm, UI_SET_ACTIVE_MENU, UIMENU_HELP); // startup help system
 	}
 }
 
@@ -471,7 +471,7 @@ void CL_KeyMove(usercmd_t *cmd) {
 			cmd->wbuttons |= WBUTTON_LEANLEFT;
 		}
 
-		side = 0;  // disallow the strafe when holding 'activate'
+		side = 0; // disallow the strafe when holding 'activate'
 	}
 
 	up += movespeed * CL_KeyState(&kb[KB_UP]);
@@ -487,7 +487,7 @@ void CL_KeyMove(usercmd_t *cmd) {
 	// double tap
 	cmd->doubleTap = DT_NONE; // reset
 	if (com_frameTime - cl.doubleTap.lastdoubleTap > cl_doubletapdelay->integer + 150 + cls.frametime)    // double tap only once every 500 msecs(add
-	{ // frametime for low(-ish) fps situations)
+	{// frametime for low(-ish) fps situations)
 		int i;
 		qboolean key_down;
 
@@ -606,7 +606,7 @@ void CL_MouseMove(usercmd_t *cmd) {
 		my = cl.mouseDy[cl.mouseIndex];
 	}
 
-	cl.mouseIndex            ^= 1;
+	cl.mouseIndex ^= 1;
 	cl.mouseDx[cl.mouseIndex] = 0;
 	cl.mouseDy[cl.mouseIndex] = 0;
 
@@ -983,6 +983,7 @@ void CL_SendCmd(void) {
 	}
 	// we create commands even if a demo is playing,
 	CL_CreateNewCommands();
+
 	if (!CL_ReadyToSendPacket()) {
 		if (cl_showSend->integer) {
 			Com_Printf(". ");
@@ -1025,7 +1026,7 @@ void CL_InitInput(void) {
 	Cmd_AddCommand("+speed", IN_SpeedDown);
 	Cmd_AddCommand("-speed", IN_SpeedUp);
 
-	Cmd_AddCommand("+attack", IN_Button0Down);    // ---- id  (primary firing)
+	Cmd_AddCommand("+attack", IN_Button0Down); // ---- id  (primary firing)
 	Cmd_AddCommand("-attack", IN_Button0Up);
 
 	Cmd_AddCommand("+button1", IN_Button1Down);
@@ -1046,7 +1047,7 @@ void CL_InitInput(void) {
 	Cmd_AddCommand(" + sprint", IN_SprintDown);
 	Cmd_AddCommand(" - sprint", IN_SprintUp);
 	// wolf buttons
-	Cmd_AddCommand("+attack2", IN_Wbutton0Down);         // secondary firing
+	Cmd_AddCommand("+attack2", IN_Wbutton0Down); // secondary firing
 	Cmd_AddCommand("-attack2", IN_Wbutton0Up);
 	Cmd_AddCommand(" + zoom", IN_ZoomDown);
 	Cmd_AddCommand("-zoom", IN_ZoomUp);

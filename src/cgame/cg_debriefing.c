@@ -345,7 +345,7 @@ panel_button_t debriefPlayerInfoHS = {
 };
 
 #define PLAYERHEADER_SKILLS(number)         \
-	panel_button_t debriefPlayerInfoSkills ##number = {     \
+	panel_button_t debriefPlayerInfoSkills ##number = {    \
 		NULL,                \
 		NULL,                \
 		{18 + (94 * (number % 2)), 140 + (number / 2 * 24),   12, 12}, \
@@ -384,7 +384,7 @@ panel_button_text_t teamDebriefTitle = {
 };
 
 #define TDB_SKILL_TITLES_XP(number, title, x)           \
-	panel_button_t teamDebriefSkillXPText_ ##number = {         \
+	panel_button_t teamDebriefSkillXPText_ ##number = {        \
 		NULL,                            \
 		title,                           \
 		{100 + (number * 65), 304 - (x * 12),   20, 200}, \
@@ -406,7 +406,7 @@ TDB_SKILL_TITLES_XP(6, "Covert Ops", 0);
 TDB_SKILL_TITLES_XP(7, "Total", 1);
 
 #define TDB_SKILL_AXIS_XP(number)                       \
-	panel_button_t teamDebriefSkillXPText0_ ##number = {        \
+	panel_button_t teamDebriefSkillXPText0_ ##number = {       \
 		NULL,                            \
 		NULL,                            \
 		{110 + (number * 65), 320, 470, 200},  \
@@ -419,7 +419,7 @@ TDB_SKILL_TITLES_XP(7, "Total", 1);
 	}
 
 #define TDB_SKILL_ALLIES_XP(number)                     \
-	panel_button_t teamDebriefSkillXPText1_ ##number = {        \
+	panel_button_t teamDebriefSkillXPText1_ ##number = {       \
 		NULL,                            \
 		NULL,                            \
 		{110 + (number * 65), 340, 470, 200},  \
@@ -465,7 +465,7 @@ panel_button_t chatPanelWindow = {
 };
 
 panel_button_t chatPanelText = {
-	NULL, NULL, {18,  SCREEN_HEIGHT - 34, SCREEN_WIDTH - 36, TEAMCHAT_HEIGHT}, {0,   0,  0,   0, 0, 0, 0, 0 }, NULL,  /* font     */
+	NULL, NULL, {18,  SCREEN_HEIGHT - 34, SCREEN_WIDTH - 36, TEAMCHAT_HEIGHT}, {0,   0,  0,   0, 0, 0, 0, 0}, NULL,  /* font     */
 	NULL,  /* keyDown  */
 	NULL,  /* keyUp    */
 	CG_Debriefing_ChatBox_Draw, NULL,
@@ -692,7 +692,7 @@ qboolean CG_MapVote_MultiVoteButton_KeyDown(panel_button_t *button, int key) {
 				}
 			}
 
-			trap_SendClientCommand(va("mapvote %d %d",   cgs.dbMapID[cgs.dbSelectedMap],   arrIdx + 1));
+			trap_SendClientCommand(va("mapvote %d %d",   cgs.dbMapID[cgs.dbSelectedMap], arrIdx + 1));
 			cgs.dbMapVotedFor[arrIdx] = cgs.dbSelectedMap;
 			return qtrue;
 		}
@@ -769,21 +769,21 @@ panel_button_t mapVoteButton3 = {
 };
 
 panel_button_t mapVoteBorder1 = {
-	NULL, NULL, {DB_MAPVOTE_X2 - 10, DB_MAPVOTE_Y - 12, 620 - DB_MAPVOTE_X2 + 10, DB_MAPVOTE_Y2 - DB_MAPVOTE_Y - 4}, {1,  255,         255,  255, 40, 1, 0, 0               }, NULL, /* font       */
+	NULL, NULL, {DB_MAPVOTE_X2 - 10, DB_MAPVOTE_Y - 12, 620 - DB_MAPVOTE_X2 + 10, DB_MAPVOTE_Y2 - DB_MAPVOTE_Y - 4}, {1,  255,         255,  255, 40, 1, 0, 0             }, NULL, /* font       */
 	NULL, /* keyDown    */
 	NULL, /* keyUp  */
 	BG_PanelButtonsRender_Img, NULL,
 };
 
 panel_button_t mapVoteBorder2 = {
-	NULL, NULL, {DB_MAPVOTE_X2 - 10, DB_MAPVOTE_Y2 - 10 + 2, 620 - DB_MAPVOTE_X2 + 10, 370 - DB_MAPVOTE_Y2 - 2 - 10}, {1,  255,              255,  255, 40, 1, 0, 0           }, NULL, /* font       */
+	NULL, NULL, {DB_MAPVOTE_X2 - 10, DB_MAPVOTE_Y2 - 10 + 2, 620 - DB_MAPVOTE_X2 + 10, 370 - DB_MAPVOTE_Y2 - 2 - 10}, {1,  255,              255,  255, 40, 1, 0, 0         }, NULL, /* font       */
 	NULL, /* keyDown    */
 	NULL, /* keyUp  */
 	BG_PanelButtonsRender_Img, NULL,
 };
 
 panel_button_t mapVoteBorder3 = {
-	NULL, NULL, {20, DB_MAPVOTE_Y - 12, DB_MAPVOTE_X2 - 40 + 2, 370 - DB_MAPVOTE_Y - 10 + 2}, {1,  255,  255,   255, 40, 1, 0, 0          }, NULL, /* font       */
+	NULL, NULL, {20, DB_MAPVOTE_Y - 12, DB_MAPVOTE_X2 - 40 + 2, 370 - DB_MAPVOTE_Y - 10 + 2}, {1,  255,  255,   255, 40, 1, 0, 0        }, NULL, /* font       */
 	NULL, /* keyDown    */
 	NULL, /* keyUp  */
 	BG_PanelButtonsRender_Img, NULL,
@@ -942,7 +942,7 @@ void CG_Debriefing_Startup(void) {
 
 	switch (cgs.gametype) {
 	case GT_WOLF_MAPVOTE:
-		cgs.dbMode = 3;    // display first
+		cgs.dbMode = 3; // display first
 		break;
 	default:
 		cgs.dbMode = 0;
@@ -2496,17 +2496,17 @@ team_t CG_Debriefing_FindWinningTeamForPos(int pos) {
 			} else if (alliedwins > axiswins) {
 				return TEAM_ALLIES;
 			}
-			/*        } else {
+			/*      } else {
 			                const char *s = CG_ConfigString(CS_MULTI_MAPWINNER);
 			                const char *buf = Info_ValueForKey(s, "w");
 
 			                if (atoi(buf) == -1) {
-			              } else if (atoi(buf)) {
+			            } else if (atoi(buf)) {
 			                    return TEAM_ALLIES;
-			              } else {
+			            } else {
 			                    return TEAM_AXIS;
-			              }
-			          }*/
+			            }
+			        }*/
 		} else {
 			if (cg.teamWonRounds[1] & (1 << (pos - 1))) {
 				return TEAM_AXIS;

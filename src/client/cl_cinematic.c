@@ -55,7 +55,7 @@ typedef enum {
 	VIDEO_NUM_CODECS
 } cinType_t;
 static videoDecode_t videoDecoders[] = {
-	{"\0", "\0", NULL, NULL, NULL, NULL,  NULL, NULL        },
+	{"\0", "\0", NULL, NULL, NULL, NULL,  NULL, NULL      },
 	{"roq", "\0", ROQ_Init, NULL, ROQ_StartRead, ROQ_UpdateCinematic, ROQ_Reset, ROQ_StopVideo},
 #ifdef FEATURE_THEORA
 	{"ogv", "ogm", NULL, NULL, OGV_StartRead, OGV_UpdateCinematic, NULL, OGV_StopVideo},
@@ -216,7 +216,7 @@ static void CIN_ListCinematics_f(void) {
 	int i;
 
 	Com_Printf("\n");
-	Com_Printf("    - w-- - h-- - size - fps - name---------- - \n");
+	Com_Printf(" - w-- - h-- - size - fps - name---------- - \n");
 
 	for (i = 0, cin = cin_cinematics; i < MAX_CINEMATICS; i++, cin++) {
 		if (!cin->playing) {

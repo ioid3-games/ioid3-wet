@@ -75,7 +75,7 @@ Print progress
 */
 static int DL_cb_Progress(void *clientp, double dltotal, double dlnow, double ultotal, double ulnow) {
 	/* cl_downloadSize and cl_downloadTime are set by the Q3 protocol...
-	   and it would probably be expensive to verify them here.  - zinx */
+	   and it would probably be expensive to verify them here. - zinx */
 
 	Cvar_SetValue("cl_downloadCount", (float)dlnow);
 	return 0;

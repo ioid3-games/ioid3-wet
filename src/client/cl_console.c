@@ -176,7 +176,7 @@ void Con_Dump_f(void) {
 #else
 		Q_strcat(buffer, bufferlen, "\n");
 #endif
-		FS_Write(buffer, strlen(buffer), f);
+		(void) FS_Write(buffer, strlen(buffer), f);
 	}
 
 	Hunk_FreeTempMemory(buffer);
@@ -202,7 +202,7 @@ void Con_CheckResize(void) {
 		return;
 	}
 
-	if (width < 1) { // video hasn't been initialized yet
+	if (width < 1) {// video hasn't been initialized yet
 		con.linewidth = DEFAULT_CONSOLE_WIDTH;
 		con.maxTotalLines = CON_TEXTSIZE / con.linewidth;
 

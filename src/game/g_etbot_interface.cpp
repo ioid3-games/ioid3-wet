@@ -1501,6 +1501,7 @@ static int _GetEntityTeam(gentity_t *_ent) {
 		// t = ET_PLAYER;
 		return Bot_TeamGameToBot(_ent->client->sess.sessionTeam);
 	}
+
 	int t = _ent->s.eType;
 
 	switch (t) {
@@ -2580,6 +2581,7 @@ public:
 
 		return bInPVS ? Success : OutOfPVS;
 	}
+
 	int GetPointContents(const float _pos[3]) {
 		vec3_t vpos = {_pos[0], _pos[1], _pos[2]};
 		int iContents = trap_PointContents(vpos, -1);
@@ -2817,6 +2819,7 @@ public:
 #endif
 		return GameEntity();
 	}
+
 	int GetEntityClass(const GameEntity _ent) {
 		gentity_t *pEnt = EntityFromHandle(_ent);
 		return pEnt && pEnt->inuse ? _GetEntityClass(pEnt) : ET_TEAM_NONE;
@@ -3651,6 +3654,7 @@ public:
 			{
 				if (!Q_stricmp(pEnt->classname, "team_CTF_redflag") || !Q_stricmp(pEnt->classname, "team_CTF_blueflag")) {
 					int iFlagEntNum = pEnt - g_entities;
+
 					for (int i = 0; i < g_maxclients.integer; ++i) {
 						if (g_entities[i].inuse && g_entities[i].client && g_entities[i].client->flagParent == iFlagEntNum) {
 							owner = HandleFromEntity(&g_entities[i]);
@@ -3687,6 +3691,7 @@ public:
 
 		return owner;
 	}
+
 	int GetEntityTeam(const GameEntity _ent) {
 		gentity_t *pEnt = EntityFromHandle(_ent);
 		return pEnt && pEnt->inuse ? _GetEntityTeam(pEnt) : ET_TEAM_NONE;
@@ -3846,6 +3851,7 @@ public:
 
 		return InvalidEntity;
 	}
+
 	int GetGameTime() {
 		return level.time;
 	}
@@ -3987,6 +3993,7 @@ public:
 					obUserData bud;
 					bud.DataType = obUserData::dtInt;
 					bud.udata.m_Int = 0;
+
 					switch (e->target_ent->constructibleStats.weaponclass) {
 					case - 1:    // Grenade, fall through and also register as satchel and dyno.
 					case 1:    // Satchelable, it should fall through and also register as dyno.
@@ -4035,6 +4042,7 @@ public:
 				// check for objective targets
 				else if (e->target_ent->s.eType == ET_EXPLOSIVE) {
 					obUserData bud;
+
 					switch (e->target_ent->constructibleStats.weaponclass) {
 					case 1:
 					{
@@ -4137,7 +4145,7 @@ public:
 
 			case ET_HEALER:
 			{
-				obUserData bud(e->damage);    // heal rate
+				obUserData bud(e->damage); // heal rate
 				int team = (1 << ET_TEAM_ALLIES)|(1 << ET_TEAM_AXIS);
 				pGoalName = _GetEntityName(e->target_ent) ? _GetEntityName(e->target_ent) : _GetEntityName(e);
 				Bot_Util_AddGoal("healthcab", e, team, pGoalName, "HealRate", &bud);
@@ -4146,7 +4154,7 @@ public:
 
 			case ET_SUPPLIER:
 			{
-				obUserData bud(e->damage);    // heal rate
+				obUserData bud(e->damage); // heal rate
 				int team = (1 << ET_TEAM_ALLIES)|(1 << ET_TEAM_AXIS);
 				pGoalName = _GetEntityName(e->target_ent) ? _GetEntityName(e->target_ent) : _GetEntityName(e);
 				Bot_Util_AddGoal("ammocab", e, team, pGoalName, "AmmoRate", &bud);
@@ -4527,6 +4535,7 @@ public:
 				int iTimeLimit = (int)(g_timelimit.value * 60000);
 				int iMatchTime = level.timeCurrent - level.startTime;
 				pMsg->m_TimeLeft = (iTimeLimit - iMatchTime) / 1000.f;
+
 				switch (g_gamestate.integer) {
 				case GS_PLAYING:
 					pMsg->m_GameState = GAME_STATE_PLAYING;
@@ -5259,6 +5268,7 @@ public:
 					pMsg->m_InFireTeam = True;
 
 					int mbrnum = 0;
+
 					for (int i = 0; i < g_maxclients.integer; ++i) {
 						pMsg->m_Members[mbrnum].Reset();
 
@@ -5425,6 +5435,7 @@ public:
 		gentity_t *pEnt = INDEXENT(_gameId);
 		return pEnt ? HandleFromEntity(pEnt) : GameEntity();
 	}
+
 	int IDFromEntity(const GameEntity _ent) {
 		gentity_t *pEnt = EntityFromHandle(_ent);
 
@@ -5441,6 +5452,7 @@ public:
 	bool DoesEntityStillExist(const GameEntity &_hndl) {
 		return _hndl.IsValid() ? EntityFromHandle(_hndl) != NULL : false;
 	}
+
 	int GetAutoNavFeatures(AutoNavFeature *_feature, int _max) {
 		int iNumFeatures = 0;
 
@@ -5893,6 +5905,7 @@ void Bot_Event_AddWeapon(int _client, int _weaponId) {
 		if (IsBot(&g_entities[_client])) {
 			// / // / // / // / // / // / // / // / // / // / // / // / // / // / // / // / // / // / // / // / // / // / // / ////  / 
 			int AddWeapon = _weaponId;
+
 			switch (AddWeapon) {
 			case ET_WP_GARAND:
 			{
@@ -6099,6 +6112,7 @@ void Bot_Event_ChatMessage(int _to, gentity_t *_source, int _type, const char *_
 	if (IsOmnibotLoaded()) {
 		if (IsBot(&g_entities[_to])) {
 			int iMsg = PERCEPT_HEAR_GLOBALCHATMSG;
+
 			switch (_type) {
 			case SAY_ALL:
 				iMsg = PERCEPT_HEAR_GLOBALCHATMSG;

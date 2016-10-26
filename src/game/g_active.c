@@ -61,7 +61,7 @@ void P_DamageFeedback(gentity_t *player) {
 	count = client->damage_blood;
 
 	if (count == 0) {
-		return;    // didn't take any damage
+		return; // didn't take any damage
 	}
 
 	if (count > 127) {
@@ -89,7 +89,7 @@ void P_DamageFeedback(gentity_t *player) {
 		G_AddEvent(player, EV_PAIN, player->health);
 	}
 
-	client->ps.damageEvent++;  // always increment this since we do multiple view damage anims
+	client->ps.damageEvent++; // always increment this since we do multiple view damage anims
 
 	client->ps.damageCount = count;
 	// clear totals
@@ -312,7 +312,7 @@ void ClientImpacts(gentity_t *ent, pmove_t *pm) {
 		}
 
 		if (j != i) {
-			continue;  // duplicated
+			continue; // duplicated
 		}
 
 		other = &g_entities[pm->touchents[i]];
@@ -752,7 +752,7 @@ void G_FallDamage(gentity_t *ent, int event) {
 	int damage;
 
 	if (ent->s.eType != ET_PLAYER) {
-		return;     // not in the player model
+		return; // not in the player model
 	}
 
 	if (event == EV_FALL_NDIE) {
@@ -1416,7 +1416,7 @@ void SpectatorClientEndFrame(gentity_t *ent) {
 		}
 		// to avoid overflows for big XP values(>= 32768), count each overflow and add it
 		// again in cg_draw.c at display time
-		ent->client->ps.stats[STAT_XP_OVERFLOW] = ent->client->ps.stats[STAT_XP] >> 15;    // >> 15 ==  / 32768
+		ent->client->ps.stats[STAT_XP_OVERFLOW] = ent->client->ps.stats[STAT_XP] >> 15; // >> 15 ==  / 32768
 		ent->client->ps.stats[STAT_XP] = ent->client->ps.stats[STAT_XP] & 0x7FFF;
 	}
 	// if we are doing a chase cam or a remote view, grab the latest info
@@ -1508,7 +1508,7 @@ void SpectatorClientEndFrame(gentity_t *ent) {
 #ifdef FEATURE_MULTIVIEW
 					ent->client->ps.powerups[PW_MVCLIENTLIST] = savedMVList;
 #endif
-					ent->client->ps.stats[STAT_PLAYER_CLASS] = savedClass;         //  put player class back
+					ent->client->ps.stats[STAT_PLAYER_CLASS] = savedClass; //  put player class back
 				} else {
 					int savedScore = ent->client->ps.persistant[PERS_SCORE];
 
@@ -1758,7 +1758,7 @@ void ClientEndFrame(gentity_t *ent) {
 	}
 	// to avoid overflows for big XP values(>= 32768), count each overflow and add it
 	// again in cg_draw.c at display time
-	ent->client->ps.stats[STAT_XP_OVERFLOW] = ent->client->ps.stats[STAT_XP] >> 15;    // >> 15 ==  / 32768
+	ent->client->ps.stats[STAT_XP_OVERFLOW] = ent->client->ps.stats[STAT_XP] >> 15; // >> 15 ==  / 32768
 	ent->client->ps.stats[STAT_XP] = ent->client->ps.stats[STAT_XP] & 0x7FFF; // & 0x7FFF == %32768
 
 	// If we're paused, make sure other timers stay in sync
@@ -1766,7 +1766,7 @@ void ClientEndFrame(gentity_t *ent) {
 	if (level.match_pause != PAUSE_NONE) {
 		int time_delta = level.time - level.previousTime;
 
-		ent->client->airOutTime   += time_delta;
+		ent->client->airOutTime += time_delta;
 		ent->client->inactivityTime += time_delta;
 		ent->client->lastBurnTime += time_delta;
 		ent->client->pers.connectTime += time_delta;
@@ -1775,7 +1775,7 @@ void ClientEndFrame(gentity_t *ent) {
 		// ent->client->respawnTime += time_delta;
 		ent->lastHintCheckTime += time_delta;
 		ent->pain_debounce_time += time_delta;
-		ent->s.onFireEnd  += time_delta;
+		ent->s.onFireEnd += time_delta;
 	}
 	// save network bandwidth
 #if 0

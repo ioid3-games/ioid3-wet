@@ -111,7 +111,7 @@ DictionaryManager::get_dictionary(const Language& language) {
 
 			for (std::vector < std::string > ::iterator filename = files.begin(); filename != files.end(); ++filename) {
 				// check if filename matches requested language
-				if (has_suffix(*filename, ".po")) { // ignore anything that isn't a .po file
+				if (has_suffix(*filename, ".po")) {// ignore anything that isn't a .po file
 
 					Language po_language = Language::from_env(convertFilename2Language(*filename));
 

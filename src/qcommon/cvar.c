@@ -321,10 +321,10 @@ cvar_t *Cvar_Get(const char *var_name, const char *var_value, int flags) {
 		// if CVAR_USERINFO was toggled on for an existing cvar, check whether the value needs to be cleaned from foreigh characters
 		// (for instance, seta name "name - with - foreign - chars" in the config file, and toggle to CVAR_USERINFO happens later in CL_Init)
 		if (flags & CVAR_USERINFO) {
-			char *cleaned = Cvar_ClearForeignCharacters(var->string);  // NOTE: it is probably harmless to call Cvar_Set2 in all cases, but I don't want to risk it
+			char *cleaned = Cvar_ClearForeignCharacters(var->string); // NOTE: it is probably harmless to call Cvar_Set2 in all cases, but I don't want to risk it
 
 			if (strcmp(var->string, cleaned)) {
-				Cvar_Set2(var->name, var->string, qfalse);  // call Cvar_Set2 with the value to be cleaned up for verbosity
+				Cvar_Set2(var->name, var->string, qfalse); // call Cvar_Set2 with the value to be cleaned up for verbosity
 			}
 		}
 		// ZOID--needs to be set so that cvars the game sets as
@@ -513,14 +513,14 @@ cvar_t *Cvar_Set2(const char *var_name, const char *value, qboolean force) {
 	}
 
 	if (!strcmp(value, var->string)) {
-		return var;    // not changed
+		return var; // not changed
 
 	}
 
 	var->modified = qtrue;
 	var->modificationCount++;
 
-	Z_Free(var->string);    // free the old value string
+	Z_Free(var->string); // free the old value string
 
 	var->string = CopyString(value);
 	var->value = atof(var->string);
@@ -1298,7 +1298,7 @@ void Cvar_Update(vmCvar_t *vmCvar) {
 	}
 
 	if (!cv->string) {
-		return;    // variable might have been cleared by a cvar_restart
+		return; // variable might have been cleared by a cvar_restart
 	}
 
 	vmCvar->modificationCount = cv->modificationCount;

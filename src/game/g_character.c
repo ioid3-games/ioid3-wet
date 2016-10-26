@@ -38,7 +38,7 @@
 #include "g_mdx.h"
 #endif
 
-static char text[100000];          // < -was causing callstacks > 64k
+static char text[100000]; // < -was causing callstacks > 64k
 
 #ifdef FEATURE_SERVERMDX
 /*

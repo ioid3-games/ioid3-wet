@@ -47,8 +47,7 @@
 #define BSP_VERSION_Q3      46
 #define REF_HARD_LINKED 1
 
-typedef struct
-{
+typedef struct {
 	qboolean ARBTextureCompressionAvailable;
 
 	int maxCubeMapTextureSize;
@@ -59,7 +58,7 @@ typedef struct
 	char shadingLanguageVersion[MAX_STRING_CHARS];
 
 	int maxVertexUniforms;
-	//	int             maxVaryingFloats;
+	//	int maxVaryingFloats;
 	int maxVertexAttribs;
 	qboolean vboVertexSkinningAvailable;
 	int maxVertexSkinningBones;
@@ -110,8 +109,7 @@ typedef enum
 } shadowingMode_t;
 
 // light grid
-typedef struct
-{
+typedef struct {
 	byte ambient[3];
 	byte directed[3];
 	byte latLong[2];
@@ -141,8 +139,8 @@ extern quat_t quatIdentity;
 typedef enum
 {
 	SIDE_FRONT = 0,
-	SIDE_BACK  = 1,
-	SIDE_ON    = 2,
+	SIDE_BACK = 1,
+	SIDE_ON = 2,
 	SIDE_CROSS = 3
 } planeSide_t;
 
@@ -199,26 +197,23 @@ qboolean Q_strreplace(char *dest, int destsize, const char *find, const char *re
 
 #define DotProduct4(x, y)             ((x)[0] * (y)[0] + (x)[1] * (y)[1] + (x)[2] * (y)[2] + (x)[3] * (y)[3])
 
-static ID_INLINE int Vector4Compare(const vec4_t v1, const vec4_t v2)
-{
-	if (v1[0] != v2[0] || v1[1] != v2[1] || v1[2] != v2[2] || v1[3] != v2[3])
-	{
+static ID_INLINE int Vector4Compare(const vec4_t v1, const vec4_t v2) {
+	if (v1[0] != v2[0] || v1[1] != v2[1] || v1[2] != v2[2] || v1[3] != v2[3]) {
 		return 0;
 	}
+
 	return 1;
 }
 
-static ID_INLINE int Vector5Compare(const vec5_t v1, const vec5_t v2)
-{
-	if (v1[0] != v2[0] || v1[1] != v2[1] || v1[2] != v2[2] || v1[3] != v2[3] || v1[4] != v2[4])
-	{
+static ID_INLINE int Vector5Compare(const vec5_t v1, const vec5_t v2) {
+	if (v1[0] != v2[0] || v1[1] != v2[1] || v1[2] != v2[2] || v1[3] != v2[3] || v1[4] != v2[4]) {
 		return 0;
 	}
+
 	return 1;
 }
 
-static ID_INLINE float Q_recip(float in)
-{
+static ID_INLINE float Q_recip(float in) {
 #if id386_3dnow && defined __GNUC__ && 0
 	vec_t out;
 
@@ -236,39 +231,32 @@ static ID_INLINE float Q_recip(float in)
 #endif
 }
 
-static ID_INLINE void VectorToAngles(const vec3_t value1, vec3_t angles)
-{
+static ID_INLINE void VectorToAngles(const vec3_t value1, vec3_t angles) {
 	vectoangles(value1, angles);
 }
 
 // RB: XreaL quaternion math functions required by the renderer
 
-static ID_INLINE void VectorLerp(const vec3_t from, const vec3_t to, float frac, vec3_t out)
-{
+static ID_INLINE void VectorLerp(const vec3_t from, const vec3_t to, float frac, vec3_t out) {
 	out[0] = from[0] + ((to[0] - from[0]) * frac);
 	out[1] = from[1] + ((to[1] - from[1]) * frac);
 	out[2] = from[2] + ((to[2] - from[2]) * frac);
 }
 
-static ID_INLINE void QuatClear(quat_t q)
-{
+static ID_INLINE void QuatClear(quat_t q) {
 	q[0] = 0;
 	q[1] = 0;
 	q[2] = 0;
 	q[3] = 1;
 }
 
-static ID_INLINE void QuatCalcW(quat_t q)
-{
+static ID_INLINE void QuatCalcW(quat_t q) {
 #if 1
 	vec_t term = 1.0f - (q[0] * q[0] + q[1] * q[1] + q[2] * q[2]);
 
-	if (term < 0.0)
-	{
+	if (term < 0.0) {
 		q[3] = 0.0;
-	}
-	else
-	{
+	} else {
 		q[3] = -sqrt(term);
 	}
 #else
@@ -292,8 +280,7 @@ enum
 };
 
 // helper struct for reading binary file formats
-typedef struct memStream_s
-{
+typedef struct memStream_s {
 	byte *buffer;
 	int bufSize;
 	byte *curPos;
@@ -303,11 +290,11 @@ memStream_t;
 
 memStream_t *AllocMemStream(byte *buffer, int bufSize);
 void            FreeMemStream(memStream_t *s);
-int             MemStreamRead(memStream_t *s, void *buffer, int len);
-int             MemStreamGetC(memStream_t *s);
-int             MemStreamGetLong(memStream_t *s);
-int             MemStreamGetShort(memStream_t *s);
-float           MemStreamGetFloat(memStream_t *s);
+int MemStreamRead(memStream_t *s, void *buffer, int len);
+int MemStreamGetC(memStream_t *s);
+int MemStreamGetLong(memStream_t *s);
+int MemStreamGetShort(memStream_t *s);
+float MemStreamGetFloat(memStream_t *s);
 
 //=============================================
 

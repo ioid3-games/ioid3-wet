@@ -55,18 +55,18 @@
 
 // snapshots are a view of the server at a given time
 typedef struct {
-	qboolean valid;                // cleared if delta parsing was invalid
-	int snapFlags;                 // rate delayed and dropped commands
-	int serverTime;                // server time the message is valid for (in msec)
-	int messageNum;                // copied from netchan->incoming_sequence
-	int deltaNum;                  // messageNum the delta is from
-	int ping;                      // time from when cmdNum-1 was sent to time packet was received
+	qboolean valid; // cleared if delta parsing was invalid
+	int snapFlags; // rate delayed and dropped commands
+	int serverTime; // server time the message is valid for (in msec)
+	int messageNum; // copied from netchan->incoming_sequence
+	int deltaNum; // messageNum the delta is from
+	int ping; // time from when cmdNum-1 was sent to time packet was received
 	byte areamask[MAX_MAP_AREA_BYTES]; // portalarea visibility bits
-	int cmdNum;                    // the next cmdNum the server is expecting
-	playerState_t ps;              // complete information about the current player at this time
-	int numEntities;               // all of the entities that need to be presented
-	int parseEntitiesNum;          // at the time of this snapshot
-	int serverCommandNum;          // execute all commands up to this before
+	int cmdNum; // the next cmdNum the server is expecting
+	playerState_t ps; // complete information about the current player at this time
+	int numEntities; // all of the entities that need to be presented
+	int parseEntitiesNum; // at the time of this snapshot
+	int serverCommandNum; // execute all commands up to this before
 	// making the snapshot current
 } clSnapshot_t;
 
@@ -85,9 +85,9 @@ new gamestate_t, potentially several times during an established connection
 */
 
 typedef struct {
-	int p_cmdNumber;           // cl.cmdNumber when packet was sent
-	int p_serverTime;          // usercmd->serverTime when packet was sent
-	int p_realtime;            // cls.realtime when packet was sent
+	int p_cmdNumber; // cl.cmdNumber when packet was sent
+	int p_serverTime; // usercmd->serverTime when packet was sent
+	int p_realtime; // cls.realtime when packet was sent
 } outPacket_t;
 
 // the parseEntities array must be large enough to hold PACKET_BACKUP frames of
@@ -98,36 +98,36 @@ typedef struct {
 extern int g_console_field_width;
 
 typedef struct {
-	int timeoutcount;              // it requres several frames in a timeout condition
+	int timeoutcount; // it requres several frames in a timeout condition
 	// to disconnect, preventing debugging breaks from
 	// causing immediate disconnects on continue
-	clSnapshot_t snap;             // latest received from server
-	int serverTime;                // may be paused during play
-	int oldServerTime;             // to prevent time from flowing bakcwards
-	int oldFrameServerTime;        // to check tournament restarts
-	int serverTimeDelta;           // cl.serverTime = cls.realtime + cl.serverTimeDelta
+	clSnapshot_t snap; // latest received from server
+	int serverTime; // may be paused during play
+	int oldServerTime; // to prevent time from flowing bakcwards
+	int oldFrameServerTime; // to check tournament restarts
+	int serverTimeDelta; // cl.serverTime = cls.realtime + cl.serverTimeDelta
 	// this value changes as net lag varies
-	qboolean extrapolatedSnapshot;     // set if any cgame frame has been forced to extrapolate
+	qboolean extrapolatedSnapshot; // set if any cgame frame has been forced to extrapolate
 	// cleared when CL_AdjustTimeDelta looks at it
-	qboolean newSnapshots;         // set on parse of any valid packet
+	qboolean newSnapshots; // set on parse of any valid packet
 
-	gameState_t gameState;         // configstrings
-	char mapname[MAX_QPATH];       // extracted from CS_SERVERINFO
-	int parseEntitiesNum;          // index (not anded off) into cl_parse_entities[]
-	int mouseDx[2], mouseDy[2];        // added to by mouse events
+	gameState_t gameState; // configstrings
+	char mapname[MAX_QPATH]; // extracted from CS_SERVERINFO
+	int parseEntitiesNum; // index (not anded off) into cl_parse_entities[]
+	int mouseDx[2], mouseDy[2]; // added to by mouse events
 	int mouseIndex;
 	int joystickAxis[MAX_JOYSTICK_AXIS]; // set by joystick events
 
 	// cgame communicates a few values to the client system
-	int cgameUserCmdValue;             // current weapon to add to usercmd_t
-	int cgameFlags;                    // flags that can be set by the gamecode
+	int cgameUserCmdValue; // current weapon to add to usercmd_t
+	int cgameFlags; // flags that can be set by the gamecode
 	float cgameSensitivity;
 	int cgameMpIdentClient;
 	vec3_t cgameClientLerpOrigin;
 	// cmds[cmdNumber] is the predicted command, [cmdNumber-1] is the last
 	// properly generated command
-	usercmd_t cmds[CMD_BACKUP];    // each message will send several old cmds
-	int cmdNumber;                 // incremented each frame, because multiple
+	usercmd_t cmds[CMD_BACKUP]; // each message will send several old cmds
+	int cmdNumber; // incremented each frame, because multiple
 	// frames may need to be packed into a single packet
 
 	// double tapping
@@ -139,12 +139,12 @@ typedef struct {
 	// level. The server sends a delta each frame which is added to the locally tracked view angles to account for standing on rotating
 	// objects, and teleport direction changes
 	vec3_t viewangles;
-	int serverId;                  // included in each client message so the server
+	int serverId; // included in each client message so the server
 	// can tell if it is for a prior map_restart
 	// big stuff at end of structure so most offsets are 15 bits or less
 	clSnapshot_t snapshots[PACKET_BACKUP];
 
-	entityState_t entityBaselines[MAX_GENTITIES];  // for delta compression when not in previous frame
+	entityState_t entityBaselines[MAX_GENTITIES]; // for delta compression when not in previous frame
 
 	entityState_t parseEntities[MAX_PARSE_ENTITIES];
 	// NOTE - UI uses LIMBOCHAT_WIDTH strings(140), // but for the processing in CL_AddToLimboChat we need some safe room
@@ -166,21 +166,21 @@ demo through a file.
 */
 
 typedef struct {
-	connstate_t state;                     // connection status
+	connstate_t state; // connection status
 	int clientNum;
-	int lastPacketSentTime;                // for retransmits during connection
-	int lastPacketTime;                    // for timeouts
+	int lastPacketSentTime; // for retransmits during connection
+	int lastPacketTime; // for timeouts
 
 	netadr_t serverAddress;
-	int connectTime;                       // for connection retransmits
-	int connectPacketCount;                // for display on connection dialog
+	int connectTime; // for connection retransmits
+	int connectPacketCount; // for display on connection dialog
 	char serverMessage[MAX_STRING_TOKENS]; // for display on connection dialog
-	int challenge;                         // from the server to use for connecting
-	int checksumFeed;                      // from the server for checksum calculations
+	int challenge; // from the server to use for connecting
+	int checksumFeed; // from the server for checksum calculations
 	int onlyVisibleClients;
 	// these are our reliable messages that go to the server
 	int reliableSequence;
-	int reliableAcknowledge;               // the last one the server has executed
+	int reliableAcknowledge; // the last one the server has executed
 	// NOTE: incidentally, reliableCommands[0] is never used(always start at reliableAcknowledge + 1)
 	char reliableCommands[MAX_RELIABLE_COMMANDS][MAX_TOKEN_CHARS];
 	// unreliable binary data to send to server
@@ -195,21 +195,21 @@ typedef struct {
 	int serverMessageSequence;
 	// reliable messages received from server
 	int serverCommandSequence;
-	int lastExecutedServerCommand;             // last server command grabbed or executed with CL_GetServerCommand
+	int lastExecutedServerCommand; // last server command grabbed or executed with CL_GetServerCommand
 	char serverCommands[MAX_RELIABLE_COMMANDS][MAX_TOKEN_CHARS];
 	// demo information
 	char demoName[MAX_QPATH];
 	qboolean demorecording;
 	qboolean demoplaying;
-	qboolean demowaiting;      // don't record until a non-delta message is received
+	qboolean demowaiting; // don't record until a non-delta message is received
 	qboolean firstDemoFrameSkipped;
 	fileHandle_t demofile;
 	qboolean waverecording;
 	fileHandle_t wavefile;
 	int wavetime;
-	int timeDemoFrames;            // counter of rendered frames
-	int timeDemoStart;             // cls.realtime before first frame
-	int timeDemoBaseTime;          // each frame will be at this time + frameNum * 50
+	int timeDemoFrames; // counter of rendered frames
+	int timeDemoStart; // cls.realtime before first frame
+	int timeDemoBaseTime; // each frame will be at this time + frameNum * 50
 
 	// float aviVideoFrameRemainder;
 	// float aviSoundFrameRemainder;
@@ -259,12 +259,12 @@ typedef struct {
 } serverInfo_t;
 
 typedef struct {
-	connstate_t state;             // connection status
-	int keyCatchers;               // bit flags
+	connstate_t state; // connection status
+	int keyCatchers; // bit flags
 
-	qboolean doCachePurge;         // empty the renderer cache as soon as possible
+	qboolean doCachePurge; // empty the renderer cache as soon as possible
 
-	char servername[MAX_OSPATH];   // name of server from original connect(used by reconnect)
+	char servername[MAX_OSPATH]; // name of server from original connect(used by reconnect)
 
 	// when the server clears the hunk, all of these must be restarted
 	qboolean rendererStarted;
@@ -273,9 +273,9 @@ typedef struct {
 	qboolean uiStarted;
 	qboolean cgameStarted;
 	int framecount;
-	int frametime;                 // msec since last frame
-	int realtime;                  // ignores pause
-	int realFrametime;             // ignoring pause, so console always works
+	int frametime; // msec since last frame
+	int realtime; // ignores pause
+	int realFrametime; // ignoring pause, so console always works
 	int numlocalservers;
 	serverInfo_t localServers[MAX_OTHER_SERVERS];
 	int numglobalservers;
@@ -285,7 +285,7 @@ typedef struct {
 	netadr_t globalServerAddresses[MAX_GLOBAL_SERVERS];
 	int32_t numfavoriteservers;
 	serverInfo_t favoriteServers[MAX_OTHER_SERVERS];
-	int pingUpdateSource;      // source currently pinging or updating
+	int pingUpdateSource; // source currently pinging or updating
 	int masterNum;
 
 	char updateInfoString[MAX_INFO_STRING];
@@ -303,9 +303,9 @@ extern clientStatic_t cls;
 
 // =============================================================================
 
-extern vm_t *cgvm;      // interface to cgame dll or vm
-extern vm_t *uivm;      // interface to ui dll or vm
-extern refexport_t re;         // interface to refresh .dll
+extern vm_t *cgvm; // interface to cgame dll or vm
+extern vm_t *uivm; // interface to ui dll or vm
+extern refexport_t re; // interface to refresh .dll
 
 // cvars
 
@@ -417,11 +417,11 @@ void CL_DemoInit(void);
 // cl_input
 
 typedef struct {
-	int down[2];               // key nums holding it down
-	unsigned downtime;         // msec timestamp
-	unsigned msec;             // msec down this frame if both a down and up happened
-	qboolean active;           // current state
-	qboolean wasPressed;       // set when down, not cleared when up
+	int down[2]; // key nums holding it down
+	unsigned downtime; // msec timestamp
+	unsigned msec; // msec down this frame if both a down and up happened
+	qboolean active; // current state
+	qboolean wasPressed; // set when down, not cleared when up
 } kbutton_t;
 
 typedef enum {
@@ -481,22 +481,22 @@ typedef struct {
 
 	unsigned int text[CON_TEXTSIZE];
 	byte textColor[CON_TEXTSIZE];
-	int current;            // line where next message will be printed
-	int x;                  // offset in current line for next print
-	int scrollIndex;        // bottom of console displays this line(current)
+	int current; // line where next message will be printed
+	int x; // offset in current line for next print
+	int scrollIndex; // bottom of console displays this line(current)
 	int bottomDisplayedLine; // bottom of console displays this line(final)
-	int linewidth;          // characters across screen
-	int totalLines;         // total text filled lines in console scrollback
-	int maxTotalLines;      // total lines in console scrollback
-	float xadjust;          // for wide aspect screens
-	float displayFrac;      // aproaches finalFrac at con_openspeed
-	float finalFrac;        // 0.0 to 1.0 lines of console to display
-	float desiredFrac;      // for variable console heights
-	int scanLines;          // in scan lines
-	int visibleLines;       // amount of visible lines
+	int linewidth; // characters across screen
+	int totalLines; // total text filled lines in console scrollback
+	int maxTotalLines; // total lines in console scrollback
+	float xadjust; // for wide aspect screens
+	float displayFrac; // aproaches finalFrac at con_openspeed
+	float finalFrac; // 0.0 to 1.0 lines of console to display
+	float desiredFrac; // for variable console heights
+	int scanLines; // in scan lines
+	int visibleLines; // amount of visible lines
 
-	vec4_t color;           // for transparent lines
-	int highlightOffset;    // highligting start offset(if == 0) then no hightlight
+	vec4_t color; // for transparent lines
+	int highlightOffset; // highligting start offset(if == 0) then no hightlight
 } console_t;
 extern console_t con;
 
@@ -639,7 +639,7 @@ void LAN_LoadCachedServers(void);
 
 // cl_net_chan.c
 
-void CL_Netchan_Transmit(netchan_t *chan, msg_t *msg);  // int length, const byte *data);
+void CL_Netchan_Transmit(netchan_t *chan, msg_t *msg); // int length, const byte *data);
 void CL_Netchan_TransmitNextFragment(netchan_t *chan);
 qboolean CL_Netchan_Process(netchan_t *chan, msg_t *msg);
 

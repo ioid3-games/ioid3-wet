@@ -48,14 +48,14 @@
 #define SND_CHUNK_SIZE_BYTE    (SND_CHUNK_SIZE * 2) // floats
 
 typedef struct {
-	int left;          // the final values will be clamped to + /  - 0x00ffff00 and shifted down
+	int left; // the final values will be clamped to + / - 0x00ffff00 and shifted down
 	int right;
 } portable_samplepair_t;
 
 typedef struct adpcm_state
 {
-	short sample;       /* Previous output value */
-	char index;         /* Index into stepsize table */
+	short sample; /* Previous output value */
+	char index; /* Index into stepsize table */
 } adpcm_state_t;
 
 typedef struct sndBuffer_s {
@@ -67,9 +67,9 @@ typedef struct sndBuffer_s {
 
 typedef struct sfx_s {
 	sndBuffer *soundData;
-	qboolean defaultSound;                 // couldn't be loaded, so use buzz
-	qboolean inMemory;                     // not in Memory
-	qboolean soundCompressed;              // not in Memory
+	qboolean defaultSound; // couldn't be loaded, so use buzz
+	qboolean inMemory; // not in Memory
+	qboolean soundCompressed; // not in Memory
 	int soundCompressionMethod;
 	int soundLength;
 	int soundChannels;
@@ -80,8 +80,8 @@ typedef struct sfx_s {
 
 typedef struct {
 	int channels;
-	int samples;                       // mono samples in buffer
-	int submission_chunk;              // don't mix less than this #
+	int samples; // mono samples in buffer
+	int submission_chunk; // don't mix less than this #
 	int samplebits;
 	int speed;
 	byte *buffer;
@@ -111,17 +111,17 @@ typedef struct loopSound_s {
 
 typedef struct {
 	int allocTime;
-	int startSample;           // START_SAMPLE_IMMEDIATE = set immediately on next mix
-	int entnum;                // to allow overriding a specific sound
-	int entchannel;            // to allow overriding a specific sound
-	int leftvol;               // 0 - 255 volume after spatialization
-	int rightvol;              // 0 - 255 volume after spatialization
-	int master_vol;            // 0 - 255 volume before spatialization
+	int startSample; // START_SAMPLE_IMMEDIATE = set immediately on next mix
+	int entnum; // to allow overriding a specific sound
+	int entchannel; // to allow overriding a specific sound
+	int leftvol; // 0 - 255 volume after spatialization
+	int rightvol; // 0 - 255 volume after spatialization
+	int master_vol; // 0 - 255 volume before spatialization
 	float dopplerScale;
 	float oldDopplerScale;
-	vec3_t origin;             // only use if fixed_origin is set
-	qboolean fixed_origin;     // use origin instead of fetching entnum's origin
-	sfx_t *thesfx;             // sfx structure
+	vec3_t origin; // only use if fixed_origin is set
+	qboolean fixed_origin; // use origin instead of fetching entnum's origin
+	sfx_t *thesfx; // sfx structure
 	qboolean doppler;
 	int flags;
 } channel_t;
@@ -134,7 +134,7 @@ typedef struct {
 	int width;
 	int channels;
 	int samples;
-	int dataofs;               // chunk starts this many bytes from file start
+	int dataofs; // chunk starts this many bytes from file start
 } wavinfo_t;
 
 // Interface between Q3 sound "api" and the sound backend

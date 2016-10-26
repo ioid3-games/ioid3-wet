@@ -197,7 +197,7 @@ void Team_FragBonuses(gentity_t *targ, gentity_t *inflictor, gentity_t *attacker
 	}
 
 	if (flag)  // added some more stuff after this fn
-	{ //      return; // can't find attacker's flag
+	{//      return; // can't find attacker's flag
 		int i;
 		// find attacker's team's flag carrier
 		for (i = 0; i < g_maxclients.integer; i++) {
@@ -235,7 +235,7 @@ void Team_FragBonuses(gentity_t *targ, gentity_t *inflictor, gentity_t *attacker
 				{
 					AddScore(attacker, WOLF_SP_PROTECT_BONUS);
 				} else {
-					AddScore(attacker, WOLF_CP_PROTECT_BONUS);   // protected checkpoint
+					AddScore(attacker, WOLF_CP_PROTECT_BONUS); // protected checkpoint
 				}
 			}
 		}

@@ -54,47 +54,47 @@ typedef struct {
 
 // VC optimizes for dup strings :)
 static const cmd_reference_t aCommandInfo[] = {
-	{"+stats", qtrue, qtrue, NULL, ": ^ 7 HUD overlay showing current weapon stats info"                                        },
-	{"+topshots", qtrue, qtrue, NULL, ": ^ 7 HUD overlay showing current top accuracies of all players"                            },
-	{"+objectives", qtrue, qtrue, NULL, ": ^ 7 HUD overlay showing current objectives info"                                          },
-	{"?", qtrue, qtrue, G_commands_cmd, ": ^ 7 Gives a list of commands"                                                             },
-	{"autorecord", qtrue, qtrue, NULL, ": ^ 7 Creates a demo with a consistent naming scheme"                                       },
-	{"autoscreenshot", qtrue, qtrue, NULL, ": ^ 7 Creates a screenshot with a consistent naming scheme"                                 },
+	{"+stats", qtrue, qtrue, NULL, ": ^ 7 HUD overlay showing current weapon stats info"                                      },
+	{"+topshots", qtrue, qtrue, NULL, ": ^ 7 HUD overlay showing current top accuracies of all players"                          },
+	{"+objectives", qtrue, qtrue, NULL, ": ^ 7 HUD overlay showing current objectives info"                                        },
+	{"?", qtrue, qtrue, G_commands_cmd, ": ^ 7 Gives a list of commands"                                                           },
+	{"autorecord", qtrue, qtrue, NULL, ": ^ 7 Creates a demo with a consistent naming scheme"                                     },
+	{"autoscreenshot", qtrue, qtrue, NULL, ": ^ 7 Creates a screenshot with a consistent naming scheme"                               },
 	{"bottomshots", qtrue, qfalse, G_weaponRankings_cmd, ": ^ 7 Shows WORST player for each weapon. Add ^ 3 < weapon_ID > ^ 7 to show all stats for a weapon"},
-	{"callvote", qtrue, qfalse, (void (*) (gentity_t *, unsigned int, qboolean))Cmd_CallVote_f, " < params > : ^ 7 Calls a vote"                        }, 
+	{"callvote", qtrue, qfalse, (void (*) (gentity_t *, unsigned int, qboolean))Cmd_CallVote_f, " < params > : ^ 7 Calls a vote"                      }, 
 //  {"coach", qtrue, qtrue, NULL, ": ^ 7 Accepts coach invitation / restarts coach view"}, 
 //  {"coachdecline", qtrue, qtrue, NULL, ": ^ 7 Declines coach invitation or resigns coach status"}, 
 //  {"coachinvite", qtrue, qtrue, NULL, " <player_ID > : ^ 7 Invites a player to coach team"}, 
 //  {"coachkick", qtrue, qtrue, NULL, " <player_ID > : ^ 7 Kicks active coach from team"},
-	{"commands", qtrue, qtrue, G_commands_cmd, ": ^ 7 Gives a list of commands"                                                             },
-	{"currenttime", qtrue, qtrue, NULL, ": ^ 7 Displays current local time"                                                          },
-	{"follow", qfalse, qtrue, Cmd_Follow_f, " <player_ID|allies|axis > : ^ 7 Spectates a particular player or team"                        }, 
+	{"commands", qtrue, qtrue, G_commands_cmd, ": ^ 7 Gives a list of commands"                                                           },
+	{"currenttime", qtrue, qtrue, NULL, ": ^ 7 Displays current local time"                                                        },
+	{"follow", qfalse, qtrue, Cmd_Follow_f, " <player_ID|allies|axis > : ^ 7 Spectates a particular player or team"                      }, 
 //  {"invite", qtrue, qtrue, NULL, " <player_ID > : ^ 7 Invites a player to join a team"},
-	{"lock", qtrue, qtrue, G_lock_cmd, ": ^ 7 Locks a player's team to prevent others from joining"                                 },
-	{"notready", qtrue, qfalse, G_ready_cmd, ": ^ 7 Sets your status to ^ 5not ready ^ 7 to start a match"                                   },
-	{"pause", qfalse, qtrue, G_pause_cmd, ": ^ 7 Allows a team to pause a match"                                                       },
-	{"players", qtrue, qtrue, G_players_cmd, ": ^ 7 Lists all active players and their IDs / information"                                   },
-	{"ready", qtrue, qtrue, G_ready_cmd, ": ^ 7 Sets your status to ^ 5ready ^ 7 to start a match"                                       },
-	{"readyteam", qfalse, qtrue, G_teamready_cmd, ": ^ 7 Sets an entire team's status to ^ 5ready ^ 7 to start a match"                           },
-	{"ref", qtrue, qtrue, G_ref_cmd, " < password > : ^ 7 Become a referee(admin access)"                                           }, 
+	{"lock", qtrue, qtrue, G_lock_cmd, ": ^ 7 Locks a player's team to prevent others from joining"                               },
+	{"notready", qtrue, qfalse, G_ready_cmd, ": ^ 7 Sets your status to ^ 5not ready ^ 7 to start a match"                                 },
+	{"pause", qfalse, qtrue, G_pause_cmd, ": ^ 7 Allows a team to pause a match"                                                     },
+	{"players", qtrue, qtrue, G_players_cmd, ": ^ 7 Lists all active players and their IDs / information"                                 },
+	{"ready", qtrue, qtrue, G_ready_cmd, ": ^ 7 Sets your status to ^ 5ready ^ 7 to start a match"                                     },
+	{"readyteam", qfalse, qtrue, G_teamready_cmd, ": ^ 7 Sets an entire team's status to ^ 5ready ^ 7 to start a match"                         },
+	{"ref", qtrue, qtrue, G_ref_cmd, " < password > : ^ 7 Become a referee(admin access)"                                         }, 
 //  {"remove", qtrue, qtrue, NULL, " <player_ID > : ^ 7 Removes a player from the team"},
-	{"say_teamnl", qtrue, qtrue, G_say_teamnl_cmd, " < msg > : ^ 7 Sends a team chat without location info"                                         },
-	{"scores", qtrue, qtrue, G_scores_cmd, ": ^ 7 Displays current match stat info"                                                     },
-	{"specinvite", qtrue, qtrue, G_specinvite_cmd, ": ^ 7 Invites a player to spectate a speclock'ed team"                                      },
-	{"speclock", qtrue, qtrue, G_speclock_cmd, ": ^ 7 Locks a player's team from spectators"                                                }, 
+	{"say_teamnl", qtrue, qtrue, G_say_teamnl_cmd, " < msg > : ^ 7 Sends a team chat without location info"                                       },
+	{"scores", qtrue, qtrue, G_scores_cmd, ": ^ 7 Displays current match stat info"                                                   },
+	{"specinvite", qtrue, qtrue, G_specinvite_cmd, ": ^ 7 Invites a player to spectate a speclock'ed team"                                    },
+	{"speclock", qtrue, qtrue, G_speclock_cmd, ": ^ 7 Locks a player's team from spectators"                                              }, 
 //  {"speconly", qtrue, qtrue, NULL, ": ^ 7 Toggles option to stay as a spectator in 1v1"},
-	{"specunlock", qtrue, qfalse, G_speclock_cmd, ": ^ 7 Unlocks a player's team from spectators"                                              },
-	{"statsall", qtrue, qfalse, G_statsall_cmd, ": ^ 7 Shows weapon accuracy stats for all players"                                          },
-	{"statsdump", qtrue, qtrue, NULL, ": ^ 7 Shows player stats + match info saved locally to a file"                              },
-	{"stoprecord", qtrue, qtrue, NULL, ": ^ 7 Stops a demo recording currently in progress"                                         },
-	{"team", qtrue, qtrue, Cmd_Team_f, " < b|r|s|none > : ^ 7 Joins a team(b = allies, r = axis, s = spectator)"                      },
-	{"timein", qfalse, qfalse, G_pause_cmd, ": ^ 7 Unpauses a match(if initiated by the issuing team)"                                  },
-	{"timeout", qfalse, qtrue, G_pause_cmd, ": ^ 7 Allows a team to pause a match"                                                       },
+	{"specunlock", qtrue, qfalse, G_speclock_cmd, ": ^ 7 Unlocks a player's team from spectators"                                            },
+	{"statsall", qtrue, qfalse, G_statsall_cmd, ": ^ 7 Shows weapon accuracy stats for all players"                                        },
+	{"statsdump", qtrue, qtrue, NULL, ": ^ 7 Shows player stats + match info saved locally to a file"                            },
+	{"stoprecord", qtrue, qtrue, NULL, ": ^ 7 Stops a demo recording currently in progress"                                       },
+	{"team", qtrue, qtrue, Cmd_Team_f, " < b|r|s|none > : ^ 7 Joins a team(b = allies, r = axis, s = spectator)"                    },
+	{"timein", qfalse, qfalse, G_pause_cmd, ": ^ 7 Unpauses a match(if initiated by the issuing team)"                                },
+	{"timeout", qfalse, qtrue, G_pause_cmd, ": ^ 7 Allows a team to pause a match"                                                     },
 	{"topshots", qtrue, qtrue, G_weaponRankings_cmd, ": ^ 7 Shows BEST player for each weapon. Add ^ 3 < weapon_ID > ^ 7 to show all stats for a weapon"},
-	{"unlock", qtrue, qfalse, G_lock_cmd, ": ^ 7 Unlocks a player's team, allowing others to join"                                     },
-	{"unpause", qfalse, qfalse, G_pause_cmd, ": ^ 7 Unpauses a match(if initiated by the issuing team)"                                  },
-	{"unready", qtrue, qfalse, G_ready_cmd, ": ^ 7 Sets your status to ^ 5not ready ^ 7 to start a match"                                   },
-	{"weaponstats", qtrue, qfalse, G_weaponStats_cmd, " [player_ID]: ^ 7 Shows weapon accuracy stats for a player"                                 },
+	{"unlock", qtrue, qfalse, G_lock_cmd, ": ^ 7 Unlocks a player's team, allowing others to join"                                   },
+	{"unpause", qfalse, qfalse, G_pause_cmd, ": ^ 7 Unpauses a match(if initiated by the issuing team)"                                },
+	{"unready", qtrue, qfalse, G_ready_cmd, ": ^ 7 Sets your status to ^ 5not ready ^ 7 to start a match"                                 },
+	{"weaponstats", qtrue, qfalse, G_weaponStats_cmd, " [player_ID]: ^ 7 Shows weapon accuracy stats for a player"                               },
 #ifdef FEATURE_MULTIVIEW
 	// FIXME: add multiview commands? (following list is obsolete)
 //  {"viewcam", qfalse, qtrue, NULL, ": ^ 7 Switches to cinematic camera mode"}, 
@@ -111,7 +111,7 @@ static const cmd_reference_t aCommandInfo[] = {
 //  {"viewnone", qfalse, qtrue, NULL, ": ^ 7 Disables multiview mode and goes back to spectator mode"}, 
 //  {"viewremove", qfalse, qtrue, NULL, " [player_ID]: ^ 7 Removes current selected or specific player from multi - screen view"},
 #endif
-	{0,  qfalse, qtrue, NULL, 0                                                                                          }
+	{0,  qfalse, qtrue, NULL, 0                                                                                        }
 };
 
 // Commands
@@ -334,7 +334,7 @@ void G_players_cmd(gentity_t *ent, unsigned int dwCommand, qboolean fValue) {
 		ready[0] = 0;
 		// Rate info
 		if (cl_ent->r.svFlags & SVF_BOT) {
-			strcpy(rate, va("%s%s%s%s", "[BOT]", " ---- - ", "       --", "     --"));
+			strcpy(rate, va("%s%s%s%s", "[BOT]", " ---- - ", " --", " --"));
 		} else if (cl->pers.connected == CON_CONNECTING) {
 			strcpy(rate, va("%s", "^3 >> > CONNECTING << < ^ 7"));
 		} else {

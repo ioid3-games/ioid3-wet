@@ -152,8 +152,7 @@ int ParseHex(const char *text) {
  * @brief unused
  */
 void VM_LoadSymbols(vm_t *vm) {
-	union
-	{
+	union {
 		char *c;
 		void *v;
 	} mapfile;
@@ -198,7 +197,7 @@ void VM_LoadSymbols(vm_t *vm) {
 		if (segment) {
 			COM_Parse(&text_p);
 			COM_Parse(&text_p);
-			continue;      // only load code segment values
+			continue; // only load code segment values
 		}
 
 		token = COM_Parse(&text_p);

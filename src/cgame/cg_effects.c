@@ -107,10 +107,7 @@ Adds a smoke puff or blood trail localEntity.
 localEntity_t *CG_SmokePuff(const vec3_t p, const vec3_t vel, 
                             float radius, 
                             float r, float g, float b, float a, 
-                            float duration, 
-                            int startTime, 
-                            int fadeInTime, 
-                            int leFlags, 
+                            float duration, int startTime, int fadeInTime, int leFlags, 
                             qhandle_t hShader) {
 	static int seed = 0x92;
 	localEntity_t *le;
@@ -315,7 +312,7 @@ void CG_Bleed(vec3_t origin, int entityNum) {
 			CG_AddBloodTrails(bOrigin, ndir, 100, // speed
 			                  450 + (int)(crandom() * 50), // duration
 			                  2 + rand() % 2, // count
-			                  0.1f);    // rand scale
+			                  0.1f); // rand scale
 		}
 	}
 }
@@ -365,7 +362,7 @@ void CG_LaunchGib(centity_t *cent, vec3_t origin, vec3_t angles, vec3_t velocity
 
 	le->angles.trDelta[0] = (10 + (rand() & 50)) - 30;
 	// le->angles.trDelta[0] = (100 + (rand()&500)) - 300;	// pitch
-	le->angles.trDelta[1] = (100 + (rand() & 500)) - 300;  // this is the safe one right now(yaw) turn the others up when I have tumbling things landing properly
+	le->angles.trDelta[1] = (100 + (rand() & 500)) - 300; // this is the safe one right now(yaw) turn the others up when I have tumbling things landing properly
 	le->angles.trDelta[2] = (10 + (rand() & 50)) - 30;
 	// le->angles.trDelta[2] = (100 + (rand()&500)) - 300;	// roll
 
@@ -446,7 +443,7 @@ void CG_LoseHat(centity_t *cent, vec3_t dir) {
 		VectorCopy(tv(0, 0, 0), le->angles.trBase);
 		le->angles.trDelta[0] = 0;
 		le->angles.trDelta[1] = (100 + (rand() & 500)) - 300;
-		le->angles.trDelta[2] = 400;   // this is set with a very particular value to try to get it
+		le->angles.trDelta[2] = 400; // this is set with a very particular value to try to get it
 		                               // to flip exactly once before landing(based on player alive
 		                               // (standing) and on level ground) and will be unnecessary when
 		                               // I have things landing properly on their own
@@ -741,7 +738,7 @@ void CG_RumbleEfx(float pitch, float yaw) {
 		}
 	}
 
-	recoil[ROLL] = -recoil[YAW];  // why not
+	recoil[ROLL] = -recoil[YAW]; // why not
 	recoil[PITCH] = -pitchAdd;
 	// scale it up a bit(easier to modify this while tweaking)
 	VectorScale(recoil, 30, recoil);
@@ -758,11 +755,10 @@ void CG_RumbleEfx(float pitch, float yaw) {
 
 typedef struct smokesprite_s {
 	struct smokesprite_s *next;
-	struct smokesprite_s *prev;            // this one is only valid for alloced smokesprites
+	struct smokesprite_s *prev; // this one is only valid for alloced smokesprites
 
 	vec3_t pos;
 	vec4_t colour;
-
 	vec3_t dir;
 	float dist;
 	float size;
@@ -771,8 +767,8 @@ typedef struct smokesprite_s {
 } smokesprite_t;
 static smokesprite_t SmokeSprites[MAX_SMOKESPRITES];
 static int SmokeSpriteCount = 0;
-static smokesprite_t *firstfreesmokesprite;        // pointer to the first free smokepuff in the SmokeSprites pool
-static smokesprite_t *lastusedsmokesprite;         // pointer to the last used smokepuff
+static smokesprite_t *firstfreesmokesprite; // pointer to the first free smokepuff in the SmokeSprites pool
+static smokesprite_t *lastusedsmokesprite; // pointer to the last used smokepuff
 
 void InitSmokeSprites(void) {
 	int i;
@@ -911,8 +907,8 @@ void CG_RenderSmokeGrenadeSmoke(centity_t *cent, const weaponInfo_t *weapon) {
 
 	if (cent->currentState.effect1Time == 16) {
 		cent->miscTime = 0;
-		cent->lastFuseSparkTime = 0;   // last spawn time
-		cent->muzzleFlashTime = 0;   // delta time
+		cent->lastFuseSparkTime = 0; // last spawn time
+		cent->muzzleFlashTime = 0; // delta time
 		cent->dl_atten = 0;
 		return;
 	}

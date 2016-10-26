@@ -100,7 +100,7 @@ void SP_target_remove_powerups(gentity_t *ent) {
 /*
 QUAKED target_delay(1 1 0) (-8 - 8 - 8) (8 8 8)
 "wait" seconds to pause before firing targets.
-"random" delay variance, total delay = delay + /  - random seconds
+"random" delay variance, total delay = delay + / - random seconds
 */
 void Think_Target_Delay(gentity_t *ent) {
 	G_UseTargets(ent, ent->activator);
@@ -207,9 +207,9 @@ void Use_Target_Speaker(gentity_t *ent, gentity_t *other, gentity_t *activator) 
 	if (ent->spawnflags & 3)   // looping sound toggles
 	{
 		if (ent->s.loopSound) {
-			ent->s.loopSound = 0;  // turn it off
+			ent->s.loopSound = 0; // turn it off
 		} else {
-			ent->s.loopSound = ent->noise_index;   // start it
+			ent->s.loopSound = ent->noise_index; // start it
 		}
 	} else    // normal sound
 	{
@@ -754,12 +754,12 @@ void Use_Target_Counter(gentity_t *ent, gentity_t *other, gentity_t *activator) 
 		return;
 	}
 
-	ent->count -= 1;   // dec count
+	ent->count -= 1; // dec count
 
 	// 	G_Printf("count at: %d\n", ent->count);
 
 	if (!ent->count)    // specified count is now hit
-	{ // 		G_Printf("firing!!\n");
+	{// 		G_Printf("firing!!\n");
 		G_UseTargets(ent, other);
 	}
 }

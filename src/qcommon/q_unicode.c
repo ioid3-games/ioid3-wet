@@ -284,9 +284,9 @@ unsigned long Q_UTF8_CodePoint(const char *str) {
 	shiftbitsright(p, 8 * sizeof(codepoint), 8 * sizeof(codepoint) - n);
 #ifndef Q3_BIG_ENDIAN
 	for (i = 0; i < sizeof(codepoint) / 2; i++) {
-		p[i]                         ^= p[sizeof(codepoint) - 1 - i];
+		p[i] ^= p[sizeof(codepoint) - 1 - i];
 		p[sizeof(codepoint) - 1 - i] ^= p[i];
-		p[i]                         ^= p[sizeof(codepoint) - 1 - i];
+		p[i] ^= p[sizeof(codepoint) - 1 - i];
 	}
 #endif
 	return codepoint;

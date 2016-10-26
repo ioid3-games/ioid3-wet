@@ -199,7 +199,7 @@ void CM_TestInLeaf(traceWork_t *tw, cLeaf_t *leaf) {
 		b = &cm.brushes[brushnum];
 
 		if (b->checkcount == cm.checkcount) {
-			continue;  // already checked this brush in another leaf
+			continue; // already checked this brush in another leaf
 		}
 
 		b->checkcount = cm.checkcount;
@@ -226,7 +226,7 @@ void CM_TestInLeaf(traceWork_t *tw, cLeaf_t *leaf) {
 			}
 
 			if (patch->checkcount == cm.checkcount) {
-				continue;  // already checked this brush in another leaf
+				continue; // already checked this brush in another leaf
 			}
 
 			patch->checkcount = cm.checkcount;
@@ -713,7 +713,7 @@ static void CM_TraceThroughLeaf(traceWork_t *tw, cLeaf_t *leaf) {
 		brush = &cm.brushes[cm.leafbrushes[leaf->firstLeafBrush + k]];
 
 		if (brush->checkcount == cm.checkcount) {
-			continue;  // already checked this brush in another leaf
+			continue; // already checked this brush in another leaf
 		}
 
 		brush->checkcount = cm.checkcount;
@@ -752,7 +752,7 @@ static void CM_TraceThroughLeaf(traceWork_t *tw, cLeaf_t *leaf) {
 			}
 
 			if (patch->checkcount == cm.checkcount) {
-				continue;  // already checked this patch in another leaf
+				continue; // already checked this patch in another leaf
 			}
 
 			patch->checkcount = cm.checkcount;
@@ -840,7 +840,7 @@ static void CM_TraceThroughSphere(traceWork_t *tw, vec3_t origin, float radius, 
 		vec3_t intersection;
 		float sqrtd = SquareRootFloat(d);
 		// = (-b + sqrtd) * 0.5f; // / (2.0f * a);
-		float fraction = (-b - sqrtd) * 0.5f;  // / (2.0f * a);
+		float fraction = (-b - sqrtd) * 0.5f; // / (2.0f * a);
 
 		if (fraction < 0) {
 			fraction = 0;
@@ -942,7 +942,7 @@ static void CM_TraceThroughVerticalCylinder(traceWork_t *tw, vec3_t origin, floa
 	if (d > 0) {
 		float sqrtd = SquareRootFloat(d);
 		// = (-b + sqrtd) * 0.5f; // / (2.0f * a);
-		float fraction = (-b - sqrtd) * 0.5f;  // / (2.0f * a);
+		float fraction = (-b - sqrtd) * 0.5f; // / (2.0f * a);
 
 		if (fraction < 0) {
 			fraction = 0;
@@ -1100,7 +1100,7 @@ static void CM_TraceThroughTree(traceWork_t *tw, int num, float p1f, float p2f, 
 	float midf;
 
 	if (tw->trace.fraction <= p1f) {
-		return;    // already hit something nearer
+		return; // already hit something nearer
 	}
 	// if < 0, we are in a leaf node
 	if (num < 0) {
@@ -1214,13 +1214,13 @@ static void CM_Trace(trace_t *results, const vec3_t start, const vec3_t end,
 
 	cmod = CM_ClipHandleToModel(model);
 
-	cm.checkcount++;       // for multi - check avoidance
+	cm.checkcount++; // for multi - check avoidance
 
-	c_traces++;            // for statistics, may be zeroed
+	c_traces++; // for statistics, may be zeroed
 
 	// fill in a default trace
 	memset(&tw, 0, sizeof(tw));
-	tw.trace.fraction = 1.0f;  // assume it goes the entire distance until shown otherwise
+	tw.trace.fraction = 1.0f; // assume it goes the entire distance until shown otherwise
 	VectorCopy(origin, tw.modelOrigin);
 
 	if (!cm.numNodes) {

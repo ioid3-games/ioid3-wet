@@ -57,7 +57,7 @@ static animScriptData_t *globalScriptData = NULL;
 
 #define MAX_ANIM_DEFINES    16
 
-static char *globalFilename;   // to prevent redundant params
+static char *globalFilename; // to prevent redundant params
 
 // these are used globally during script parsing
 static int numDefines[NUM_ANIM_CONDITIONS];
@@ -253,7 +253,7 @@ static animStringItem_t animConditionsStr[] = {
 };
 
 static animConditionTable_t animConditionsTable[NUM_ANIM_CONDITIONS] = {
-	{ANIM_CONDTYPE_BITFLAGS, weaponStrings              }, {ANIM_CONDTYPE_BITFLAGS, animConditionPositionsStr  }, {ANIM_CONDTYPE_BITFLAGS, weaponStrings              }, {ANIM_CONDTYPE_VALUE, NULL                       }, {ANIM_CONDTYPE_VALUE, animConditionMountedStr    }, {ANIM_CONDTYPE_BITFLAGS, animMoveTypesStr           }, {ANIM_CONDTYPE_VALUE, NULL                       }, {ANIM_CONDTYPE_VALUE, animConditionLeaningStr    }, {ANIM_CONDTYPE_VALUE, animConditionImpactPointsStr}, {ANIM_CONDTYPE_VALUE, NULL                       }, {ANIM_CONDTYPE_VALUE, NULL                       }, {ANIM_CONDTYPE_VALUE, NULL                       }, {ANIM_CONDTYPE_VALUE, NULL                       }, {ANIM_CONDTYPE_VALUE, animEnemyTeamsStr          }, {ANIM_CONDTYPE_VALUE, NULL                       }, {ANIM_CONDTYPE_VALUE, NULL                       }, {ANIM_CONDTYPE_VALUE, NULL                       }, {ANIM_CONDTYPE_VALUE, animHealthLevelStr         }, {ANIM_CONDTYPE_VALUE, animFlailTypeStr           }, {ANIM_CONDTYPE_BITFLAGS, animGenBitFlagStr          }, {ANIM_CONDTYPE_VALUE, animAIStateStr             },
+	{ANIM_CONDTYPE_BITFLAGS, weaponStrings            }, {ANIM_CONDTYPE_BITFLAGS, animConditionPositionsStr}, {ANIM_CONDTYPE_BITFLAGS, weaponStrings            }, {ANIM_CONDTYPE_VALUE, NULL                     }, {ANIM_CONDTYPE_VALUE, animConditionMountedStr  }, {ANIM_CONDTYPE_BITFLAGS, animMoveTypesStr         }, {ANIM_CONDTYPE_VALUE, NULL                     }, {ANIM_CONDTYPE_VALUE, animConditionLeaningStr  }, {ANIM_CONDTYPE_VALUE, animConditionImpactPointsStr}, {ANIM_CONDTYPE_VALUE, NULL                     }, {ANIM_CONDTYPE_VALUE, NULL                     }, {ANIM_CONDTYPE_VALUE, NULL                     }, {ANIM_CONDTYPE_VALUE, NULL                     }, {ANIM_CONDTYPE_VALUE, animEnemyTeamsStr        }, {ANIM_CONDTYPE_VALUE, NULL                     }, {ANIM_CONDTYPE_VALUE, NULL                     }, {ANIM_CONDTYPE_VALUE, NULL                     }, {ANIM_CONDTYPE_VALUE, animHealthLevelStr       }, {ANIM_CONDTYPE_VALUE, animFlailTypeStr         }, {ANIM_CONDTYPE_BITFLAGS, animGenBitFlagStr        }, {ANIM_CONDTYPE_VALUE, animAIStateStr           },
 };
 
 //------------------------------------------------------------
@@ -283,7 +283,7 @@ long BG_StringHashValue(const char *fname) {
 	}
 
 	if (hash == -1) {
-		hash = 0;  // never return -1
+		hash = 0; // never return -1
 		Com_Printf("BG_StringHash WARNING: fname with empty string returning 0");
 	}
 
@@ -303,7 +303,7 @@ long BG_StringHashValue_Lwr(const char *fname) {
 	}
 
 	if (hash == -1) {
-		hash = 0;  // never return -1
+		hash = 0; // never return -1
 	}
 
 	return hash;
@@ -447,15 +447,15 @@ void BG_ParseConditionBits(char **text_pp, animStringItem_t *stringTable, int co
 		token = COM_ParseExt(text_pp, qfalse);
 
 		if (!token[0]) {
-			COM_RestoreParseSession(text_pp);  // go back to the previous token
-			endFlag = qtrue;   // done parsing indexes
+			COM_RestoreParseSession(text_pp); // go back to the previous token
+			endFlag = qtrue; // done parsing indexes
 			if (!strlen(currentString)) {
 				break;
 			}
 		}
 
 		if (!Q_stricmp(token, ", ")) {
-			endFlag = qtrue;   // end of indexes
+			endFlag = qtrue; // end of indexes
 		}
 
 		if (!Q_stricmp(token, "none"))    // first bit is always the "unused" bit
@@ -467,7 +467,7 @@ void BG_ParseConditionBits(char **text_pp, animStringItem_t *stringTable, int co
 		if (!Q_stricmp(token, "none, "))       // first bit is always the "unused" bit
 		{
 			COM_BitSet(result, 0);
-			endFlag = qtrue;   // end of indexes
+			endFlag = qtrue; // end of indexes
 			continue;
 		}
 
@@ -476,7 +476,7 @@ void BG_ParseConditionBits(char **text_pp, animStringItem_t *stringTable, int co
 		}
 
 		if (!endFlag && Q_stricmp(token, "AND") && Q_stricmp(token, "MINUS"))      // must be a index
-		{ // check for a comma(end of indexes)
+		{// check for a comma(end of indexes)
 			if (token[strlen(token) - 1] == ',') {
 				endFlag = qtrue;
 				token[strlen(token) - 1] = '\0';
@@ -500,6 +500,7 @@ void BG_ParseConditionBits(char **text_pp, animStringItem_t *stringTable, int co
 						minus = qtrue;
 						continue;
 					}
+
 					BG_AnimParseError("BG_AnimParseAnimScript: unexpected '%s'", token);
 				}
 			}
@@ -597,7 +598,7 @@ qboolean BG_ParseConditions(char **text_pp, animScriptItem_t *scriptItem) {
 
 				conditionValue[0] = BG_IndexForString(token, animConditionsTable[conditionIndex].values, qfalse);
 			} else {
-				conditionValue[0] = 1;     // not used, just check for a positive condition
+				conditionValue[0] = 1; // not used, just check for a positive condition
 			}
 
 			break;
@@ -691,7 +692,7 @@ static void BG_ParseCommands(char **input, animScriptItem_t *scriptItem, animMod
 			}
 
 			if (command->bodyPart[partIndex] != ANIM_BP_BOTH && partIndex++ < 1) {
-				continue;  // allow parsing of another bodypart
+				continue; // allow parsing of another bodypart
 			}
 		} else {
 			// unget the token
@@ -1112,7 +1113,7 @@ int BG_PlayAnim(playerState_t *ps, animModelInfo_t *animModelInfo, int animNum, 
 	if (forceDuration) {
 		duration = forceDuration;
 	} else {
-		duration = animModelInfo->animations[animNum]->duration + 50;  // account for lerping between anims
+		duration = animModelInfo->animations[animNum]->duration + 50; // account for lerping between anims
 	}
 
 	switch (bodyPart) {

@@ -481,7 +481,7 @@ void G_UpdateTeamMapData_Destruct(gentity_t *ent) {
 	mapEntityData_t *mEnt;
 
 	if (ent->s.teamNum == TEAM_AXIS) {
-		teamList = &mapEntityData[1];  // inverted
+		teamList = &mapEntityData[1]; // inverted
 		mEnt = G_FindMapEntityData(teamList, num);
 
 		if (!mEnt) {
@@ -497,7 +497,7 @@ void G_UpdateTeamMapData_Destruct(gentity_t *ent) {
 	} else {
 		if (ent->parent->target_ent && (ent->parent->target_ent->s.eType == ET_CONSTRUCTIBLE || ent->parent->target_ent->s.eType == ET_EXPLOSIVE)) {
 			if (ent->parent->spawnflags & ((1 << 6)|(1 << 4))) {
-				teamList = &mapEntityData[1];  // inverted
+				teamList = &mapEntityData[1]; // inverted
 				mEnt = G_FindMapEntityData(teamList, num);
 
 				if (!mEnt) {
@@ -515,7 +515,7 @@ void G_UpdateTeamMapData_Destruct(gentity_t *ent) {
 	}
 
 	if (ent->s.teamNum == TEAM_ALLIES) {
-		teamList = &mapEntityData[0];  // inverted
+		teamList = &mapEntityData[0]; // inverted
 		mEnt = G_FindMapEntityData(teamList, num);
 
 		if (!mEnt) {
@@ -531,7 +531,7 @@ void G_UpdateTeamMapData_Destruct(gentity_t *ent) {
 	} else {
 		if (ent->parent->target_ent && (ent->parent->target_ent->s.eType == ET_CONSTRUCTIBLE || ent->parent->target_ent->s.eType == ET_EXPLOSIVE)) {
 			if (ent->parent->spawnflags & ((1 << 6)|(1 << 4))) {
-				teamList = &mapEntityData[0];  // inverted
+				teamList = &mapEntityData[0]; // inverted
 				mEnt = G_FindMapEntityData(teamList, num);
 
 				if (!mEnt) {
@@ -680,10 +680,10 @@ void G_UpdateTeamMapData_LandMine(gentity_t *ent) {
 	int num = ent - g_entities;
 	mapEntityData_Team_t *teamList;
 	mapEntityData_t *mEnt;
-	int team = ent->s.teamNum & 3;   // ent->s.teamNum % 4
+	int team = ent->s.teamNum & 3; // ent->s.teamNum % 4
 
 	if (!(ent->s.teamNum < 4 || ent->s.teamNum >= 8)) {
-		return;                                                // must be armed..
+		return; // must be armed..
 
 	}
 	// inversed teamlists, we want to see the enemy mines

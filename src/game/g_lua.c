@@ -167,7 +167,7 @@ static int _et_G_LogPrint(lua_State *L) {
         if (g_logOptions.integer & LOGOPTS_REALTIME)
         {
             Com_sprintf(string, sizeof(string), "%s %s", G_GetRealTime(), text);
-      }
+    }
         else*/{
 			int min, tens, sec;
 
@@ -1434,70 +1434,70 @@ static int _et_G_SetGlobalFog(lua_State *L) {
 // et library initialisation array
 static const luaL_Reg etlib[] = {
 	// ET Library Calls
-	{"RegisterModname", _et_RegisterModname       },
-	{"FindSelf", _et_FindSelf              },
-	{"FindMod",  _et_FindMod               },
-	{"IPCSend",  _et_IPCSend               }, // Printing
+	{"RegisterModname", _et_RegisterModname     },
+	{"FindSelf", _et_FindSelf            },
+	{"FindMod",  _et_FindMod             },
+	{"IPCSend",  _et_IPCSend             }, // Printing
 	{"G_Print",  _et_G_Print},
 	{"G_LogPrint",  _et_G_LogPrint}, // Argument Handling
-	{"ConcatArgs",  _et_ConcatArgs            },
-	{"trap_Argc",   _et_trap_Argc             },
-	{"trap_Argv",   _et_trap_Argv             }, // Cvars
-	{"trap_Cvar_Get", _et_trap_Cvar_Get         },
-	{"trap_Cvar_Set", _et_trap_Cvar_Set         }, // Config Strings
-	{"trap_GetConfigstring", _et_trap_GetConfigstring  },
-	{"trap_SetConfigstring", _et_trap_SetConfigstring  }, // Server
+	{"ConcatArgs",  _et_ConcatArgs          },
+	{"trap_Argc",   _et_trap_Argc           },
+	{"trap_Argv",   _et_trap_Argv           }, // Cvars
+	{"trap_Cvar_Get", _et_trap_Cvar_Get       },
+	{"trap_Cvar_Set", _et_trap_Cvar_Set       }, // Config Strings
+	{"trap_GetConfigstring", _et_trap_GetConfigstring},
+	{"trap_SetConfigstring", _et_trap_SetConfigstring}, // Server
 	{"trap_SendConsoleCommand", _et_trap_SendConsoleCommand}, // Clients
 	{"trap_SendServerCommand", _et_trap_SendServerCommand},
-	{"trap_DropClient", _et_trap_DropClient       },
+	{"trap_DropClient", _et_trap_DropClient     },
 	{"ClientNumberFromString", _et_ClientNumberFromString}, // 	{"trap_SendMessage", _et_trap_SendMessage}, // 	{"trap_MessageStatus", _et_trap_MessageStatus},
-	{"G_Say", _et_G_Say                 },
-	{"MutePlayer",  _et_MutePlayer            },
-	{"UnmutePlayer", _et_UnmutePlayer          }, // Userinfo
-	{"trap_GetUserinfo", _et_trap_GetUserinfo      },
-	{"trap_SetUserinfo", _et_trap_SetUserinfo      },
-	{"ClientUserinfoChanged", _et_ClientUserinfoChanged }, // String Utility
-	{"Info_RemoveKey", _et_Info_RemoveKey        },
-	{"Info_SetValueForKey", _et_Info_SetValueForKey   },
-	{"Info_ValueForKey", _et_Info_ValueForKey      },
-	{"Q_CleanStr",  _et_Q_CleanStr            }, // ET Filesystem
-	{"trap_FS_FOpenFile", _et_trap_FS_FOpenFile     },
-	{"trap_FS_Read", _et_trap_FS_Read          },
-	{"trap_FS_Write", _et_trap_FS_Write         },
-	{"trap_FS_Rename", _et_trap_FS_Rename        },
-	{"trap_FS_FCloseFile", _et_trap_FS_FCloseFile    },
-	{"trap_FS_GetFileList", _et_trap_FS_GetFileList   }, // Indexes
-	{"G_SoundIndex", _et_G_SoundIndex          },
-	{"G_ModelIndex", _et_G_ModelIndex          }, // Sound
-	{"G_globalSound", _et_G_globalSound         },
-	{"G_Sound",  _et_G_Sound               },
-	{"G_ClientSound", _et_G_ClientSound         }, // Miscellaneous
-	{"trap_Milliseconds", _et_trap_Milliseconds     },
-	{"isBitSet", _et_isBitSet              },
-	{"G_Damage", _et_G_Damage              },
-	{"G_AddSkillPoints", _et_G_AddSkillPoints      },
-	{"G_LoseSkillPoints", _et_G_LoseSkillPoints     },
-	{"G_XP_Set", _et_G_XP_Set              },
-	{"G_ResetXP",   _et_G_ResetXP             },
-	{"AddWeaponToPlayer", _et_AddWeaponToPlayer     },
+	{"G_Say", _et_G_Say               },
+	{"MutePlayer",  _et_MutePlayer          },
+	{"UnmutePlayer", _et_UnmutePlayer        }, // Userinfo
+	{"trap_GetUserinfo", _et_trap_GetUserinfo    },
+	{"trap_SetUserinfo", _et_trap_SetUserinfo    },
+	{"ClientUserinfoChanged", _et_ClientUserinfoChanged}, // String Utility
+	{"Info_RemoveKey", _et_Info_RemoveKey      },
+	{"Info_SetValueForKey", _et_Info_SetValueForKey },
+	{"Info_ValueForKey", _et_Info_ValueForKey    },
+	{"Q_CleanStr",  _et_Q_CleanStr          }, // ET Filesystem
+	{"trap_FS_FOpenFile", _et_trap_FS_FOpenFile   },
+	{"trap_FS_Read", _et_trap_FS_Read        },
+	{"trap_FS_Write", _et_trap_FS_Write       },
+	{"trap_FS_Rename", _et_trap_FS_Rename      },
+	{"trap_FS_FCloseFile", _et_trap_FS_FCloseFile  },
+	{"trap_FS_GetFileList", _et_trap_FS_GetFileList }, // Indexes
+	{"G_SoundIndex", _et_G_SoundIndex        },
+	{"G_ModelIndex", _et_G_ModelIndex        }, // Sound
+	{"G_globalSound", _et_G_globalSound       },
+	{"G_Sound",  _et_G_Sound             },
+	{"G_ClientSound", _et_G_ClientSound       }, // Miscellaneous
+	{"trap_Milliseconds", _et_trap_Milliseconds   },
+	{"isBitSet", _et_isBitSet            },
+	{"G_Damage", _et_G_Damage            },
+	{"G_AddSkillPoints", _et_G_AddSkillPoints    },
+	{"G_LoseSkillPoints", _et_G_LoseSkillPoints   },
+	{"G_XP_Set", _et_G_XP_Set            },
+	{"G_ResetXP",   _et_G_ResetXP           },
+	{"AddWeaponToPlayer", _et_AddWeaponToPlayer   },
 	{"RemoveWeaponFromPlayer", _et_RemoveWeaponFromPlayer}, // Entities
-	{"G_CreateEntity", _et_G_Lua_CreateEntity    },
-	{"G_DeleteEntity", _et_G_Lua_DeleteEntity    },
-	{"G_TempEntity", _et_G_TempEntity          },
-	{"G_FreeEntity", _et_G_FreeEntity          },
-	{"G_EntitiesFree", _et_G_EntitiesFree        },
-	{"G_SetEntState", _et_G_SetEntState         },
-	{"trap_LinkEntity", _et_trap_LinkEntity       },
-	{"trap_UnlinkEntity", _et_trap_UnlinkEntity     },
-	{"G_GetSpawnVar", _et_G_GetSpawnVar         },
-	{"G_SetSpawnVar", _et_G_SetSpawnVar         },
-	{"gentity_get", _et_gentity_get           },
-	{"gentity_set", _et_gentity_set           },
-	{"G_AddEvent",  _et_G_AddEvent }, // Shaders
-	{"G_ShaderRemap", _et_G_ShaderRemap         },
+	{"G_CreateEntity", _et_G_Lua_CreateEntity  },
+	{"G_DeleteEntity", _et_G_Lua_DeleteEntity  },
+	{"G_TempEntity", _et_G_TempEntity        },
+	{"G_FreeEntity", _et_G_FreeEntity        },
+	{"G_EntitiesFree", _et_G_EntitiesFree      },
+	{"G_SetEntState", _et_G_SetEntState       },
+	{"trap_LinkEntity", _et_trap_LinkEntity     },
+	{"trap_UnlinkEntity", _et_trap_UnlinkEntity   },
+	{"G_GetSpawnVar", _et_G_GetSpawnVar       },
+	{"G_SetSpawnVar", _et_G_SetSpawnVar       },
+	{"gentity_get", _et_gentity_get         },
+	{"gentity_set", _et_gentity_set         },
+	{"G_AddEvent",  _et_G_AddEvent}, // Shaders
+	{"G_ShaderRemap", _et_G_ShaderRemap       },
 	{"G_ResetRemappedShaders", _et_G_ResetRemappedShaders},
-	{"G_ShaderRemapFlush", _et_G_ShaderRemapFlush    },
-	{"G_SetGlobalFog", _et_G_SetGlobalFog        }, {NULL},
+	{"G_ShaderRemapFlush", _et_G_ShaderRemapFlush  },
+	{"G_SetGlobalFog", _et_G_SetGlobalFog      }, {NULL},
 };
 
 /*************/
@@ -1718,9 +1718,9 @@ static void registerConfigstringConstants(lua_vm_t *vm) {
 
 	// bg_public.h
 	lua_regconstinteger(vm->L, CS_MUSIC);
-	lua_regconstinteger(vm->L, CS_MESSAGE);   // from the map worldspawn's message field
-	lua_regconstinteger(vm->L, CS_MOTD);      // g_motd string for server message of the day
-	lua_regconstinteger(vm->L, CS_WARMUP);    // server time when the match will be restarted
+	lua_regconstinteger(vm->L, CS_MESSAGE); // from the map worldspawn's message field
+	lua_regconstinteger(vm->L, CS_MOTD); // g_motd string for server message of the day
+	lua_regconstinteger(vm->L, CS_WARMUP); // server time when the match will be restarted
 	lua_regconstinteger(vm->L, CS_VOTE_TIME);
 	lua_regconstinteger(vm->L, CS_VOTE_STRING);
 	lua_regconstinteger(vm->L, CS_VOTE_YES);
@@ -1728,29 +1728,29 @@ static void registerConfigstringConstants(lua_vm_t *vm) {
 	lua_regconstinteger(vm->L, CS_GAME_VERSION);
 
 	lua_regconstinteger(vm->L, CS_LEVEL_START_TIME); // so the timer only shows the current level
-	lua_regconstinteger(vm->L, CS_INTERMISSION);    // when 1, intermission will start in a second or two
+	lua_regconstinteger(vm->L, CS_INTERMISSION); // when 1, intermission will start in a second or two
 	lua_regconstinteger(vm->L, CS_MULTI_INFO);
 	lua_regconstinteger(vm->L, CS_MULTI_MAPWINNER);
 	lua_regconstinteger(vm->L, CS_MULTI_OBJECTIVE);
 
 	lua_regconstinteger(vm->L, CS_SCREENFADE); // used to tell clients to fade their screen to black / normal
-	lua_regconstinteger(vm->L, CS_FOGVARS);   // used for saving the current state / settings of the fog
+	lua_regconstinteger(vm->L, CS_FOGVARS); // used for saving the current state / settings of the fog
 	lua_regconstinteger(vm->L, CS_SKYBOXORG); // this is where we should view the skybox from
 
 	lua_regconstinteger(vm->L, CS_TARGETEFFECT);
 	lua_regconstinteger(vm->L, CS_WOLFINFO);
-	lua_regconstinteger(vm->L, CS_FIRSTBLOOD);           // Team that has first blood
-	lua_regconstinteger(vm->L, CS_ROUNDSCORES1);         // Axis round wins
-	lua_regconstinteger(vm->L, CS_ROUNDSCORES2);         // Allied round wins
+	lua_regconstinteger(vm->L, CS_FIRSTBLOOD); // Team that has first blood
+	lua_regconstinteger(vm->L, CS_ROUNDSCORES1); // Axis round wins
+	lua_regconstinteger(vm->L, CS_ROUNDSCORES2); // Allied round wins
 	lua_regconstinteger(vm->L, CS_MAIN_AXIS_OBJECTIVE);
 	lua_regconstinteger(vm->L, CS_MAIN_ALLIES_OBJECTIVE); // Most important current objective
 	lua_regconstinteger(vm->L, CS_MUSIC_QUEUE);
 	lua_regconstinteger(vm->L, CS_SCRIPT_MOVER_NAMES);
 	lua_regconstinteger(vm->L, CS_CONSTRUCTION_NAMES);
 
-	lua_regconstinteger(vm->L, CS_VERSIONINFO);          // Versioning info for demo playback compatibility
-	lua_regconstinteger(vm->L, CS_REINFSEEDS);           // Reinforcement
-	lua_regconstinteger(vm->L, CS_SERVERTOGGLES);        // Shows current enable / disabled settings(for voting UI)
+	lua_regconstinteger(vm->L, CS_VERSIONINFO); // Versioning info for demo playback compatibility
+	lua_regconstinteger(vm->L, CS_REINFSEEDS); // Reinforcement
+	lua_regconstinteger(vm->L, CS_SERVERTOGGLES); // Shows current enable / disabled settings(for voting UI)
 	lua_regconstinteger(vm->L, CS_GLOBALFOGVARS);
 	lua_regconstinteger(vm->L, CS_AXIS_MAPS_XP);
 	lua_regconstinteger(vm->L, CS_ALLIED_MAPS_XP);
@@ -1786,67 +1786,67 @@ static void registerConfigstringConstants(lua_vm_t *vm) {
 }
 
 static void registerWeaponConstants(lua_vm_t *vm) {
-	lua_regconstinteger(vm->L, WP_NONE);                // 0
-	lua_regconstinteger(vm->L, WP_KNIFE);               // 1
-	lua_regconstinteger(vm->L, WP_LUGER);               // 2
-	lua_regconstinteger(vm->L, WP_MP40);                // 3
-	lua_regconstinteger(vm->L, WP_GRENADE_LAUNCHER);    // 4
-	lua_regconstinteger(vm->L, WP_PANZERFAUST);         // 5
-	lua_regconstinteger(vm->L, WP_FLAMETHROWER);        // 6
-	lua_regconstinteger(vm->L, WP_COLT);                // 7 - equivalent american weapon to german luger
-	lua_regconstinteger(vm->L, WP_THOMPSON);            // 8 - equivalent american weapon to german mp40
-	lua_regconstinteger(vm->L, WP_GRENADE_PINEAPPLE);   // 9
+	lua_regconstinteger(vm->L, WP_NONE); // 0
+	lua_regconstinteger(vm->L, WP_KNIFE); // 1
+	lua_regconstinteger(vm->L, WP_LUGER); // 2
+	lua_regconstinteger(vm->L, WP_MP40); // 3
+	lua_regconstinteger(vm->L, WP_GRENADE_LAUNCHER); // 4
+	lua_regconstinteger(vm->L, WP_PANZERFAUST); // 5
+	lua_regconstinteger(vm->L, WP_FLAMETHROWER); // 6
+	lua_regconstinteger(vm->L, WP_COLT); // 7 - equivalent american weapon to german luger
+	lua_regconstinteger(vm->L, WP_THOMPSON); // 8 - equivalent american weapon to german mp40
+	lua_regconstinteger(vm->L, WP_GRENADE_PINEAPPLE); // 9
 
-	lua_regconstinteger(vm->L, WP_STEN);                // 10 - silenced sten sub - machinegun
-	lua_regconstinteger(vm->L, WP_MEDIC_SYRINGE);       // 11 - broken out from CLASS_SPECIAL per Id request
-	lua_regconstinteger(vm->L, WP_AMMO);                // 12 - likewise
-	lua_regconstinteger(vm->L, WP_ARTY);                // 13
-	lua_regconstinteger(vm->L, WP_SILENCER);            // 14 - used to be sp5
-	lua_regconstinteger(vm->L, WP_DYNAMITE);            // 15
-	lua_regconstinteger(vm->L, WP_SMOKETRAIL);          // 16
-	lua_regconstinteger(vm->L, WP_MAPMORTAR);           // 17
-	lua_regconstinteger(vm->L, VERYBIGEXPLOSION);       // 18 - explosion effect for airplanes
-	lua_regconstinteger(vm->L, WP_MEDKIT);              // 19
+	lua_regconstinteger(vm->L, WP_STEN); // 10 - silenced sten sub - machinegun
+	lua_regconstinteger(vm->L, WP_MEDIC_SYRINGE); // 11 - broken out from CLASS_SPECIAL per Id request
+	lua_regconstinteger(vm->L, WP_AMMO); // 12 - likewise
+	lua_regconstinteger(vm->L, WP_ARTY); // 13
+	lua_regconstinteger(vm->L, WP_SILENCER); // 14 - used to be sp5
+	lua_regconstinteger(vm->L, WP_DYNAMITE); // 15
+	lua_regconstinteger(vm->L, WP_SMOKETRAIL); // 16
+	lua_regconstinteger(vm->L, WP_MAPMORTAR); // 17
+	lua_regconstinteger(vm->L, VERYBIGEXPLOSION); // 18 - explosion effect for airplanes
+	lua_regconstinteger(vm->L, WP_MEDKIT); // 19
 
-	lua_regconstinteger(vm->L, WP_BINOCULARS);          // 20
-	lua_regconstinteger(vm->L, WP_PLIERS);              // 21
-	lua_regconstinteger(vm->L, WP_SMOKE_MARKER);        // 22 - changed name to cause less confusion
-	lua_regconstinteger(vm->L, WP_KAR98);               // 23 - WolfXP weapons
-	lua_regconstinteger(vm->L, WP_CARBINE);             // 24
-	lua_regconstinteger(vm->L, WP_GARAND);              // 25
-	lua_regconstinteger(vm->L, WP_LANDMINE);            // 26
-	lua_regconstinteger(vm->L, WP_SATCHEL);             // 27
-	lua_regconstinteger(vm->L, WP_SATCHEL_DET);         // 28
-	lua_regconstinteger(vm->L, WP_SMOKE_BOMB);          // 29
+	lua_regconstinteger(vm->L, WP_BINOCULARS); // 20
+	lua_regconstinteger(vm->L, WP_PLIERS); // 21
+	lua_regconstinteger(vm->L, WP_SMOKE_MARKER); // 22 - changed name to cause less confusion
+	lua_regconstinteger(vm->L, WP_KAR98); // 23 - WolfXP weapons
+	lua_regconstinteger(vm->L, WP_CARBINE); // 24
+	lua_regconstinteger(vm->L, WP_GARAND); // 25
+	lua_regconstinteger(vm->L, WP_LANDMINE); // 26
+	lua_regconstinteger(vm->L, WP_SATCHEL); // 27
+	lua_regconstinteger(vm->L, WP_SATCHEL_DET); // 28
+	lua_regconstinteger(vm->L, WP_SMOKE_BOMB); // 29
 
-	lua_regconstinteger(vm->L, WP_MOBILE_MG42);         // 30
-	lua_regconstinteger(vm->L, WP_K43);                 // 31
-	lua_regconstinteger(vm->L, WP_FG42);                // 32
-	lua_regconstinteger(vm->L, WP_DUMMY_MG42);          // 33 - for storing heat on mounted mg42s...
-	lua_regconstinteger(vm->L, WP_MORTAR);              // 34
-	lua_regconstinteger(vm->L, WP_AKIMBO_COLT);         // 35
-	lua_regconstinteger(vm->L, WP_AKIMBO_LUGER);        // 36
+	lua_regconstinteger(vm->L, WP_MOBILE_MG42); // 30
+	lua_regconstinteger(vm->L, WP_K43); // 31
+	lua_regconstinteger(vm->L, WP_FG42); // 32
+	lua_regconstinteger(vm->L, WP_DUMMY_MG42); // 33 - for storing heat on mounted mg42s...
+	lua_regconstinteger(vm->L, WP_MORTAR); // 34
+	lua_regconstinteger(vm->L, WP_AKIMBO_COLT); // 35
+	lua_regconstinteger(vm->L, WP_AKIMBO_LUGER); // 36
 
-	lua_regconstinteger(vm->L, WP_GPG40);               // 37
-	lua_regconstinteger(vm->L, WP_M7);                  // 38
-	lua_regconstinteger(vm->L, WP_SILENCED_COLT);       // 39
+	lua_regconstinteger(vm->L, WP_GPG40); // 37
+	lua_regconstinteger(vm->L, WP_M7); // 38
+	lua_regconstinteger(vm->L, WP_SILENCED_COLT); // 39
 
-	lua_regconstinteger(vm->L, WP_GARAND_SCOPE);        // 40
-	lua_regconstinteger(vm->L, WP_K43_SCOPE);           // 41
-	lua_regconstinteger(vm->L, WP_FG42SCOPE);           // 42
-	lua_regconstinteger(vm->L, WP_MORTAR_SET);          // 43
-	lua_regconstinteger(vm->L, WP_MEDIC_ADRENALINE);    // 44
+	lua_regconstinteger(vm->L, WP_GARAND_SCOPE); // 40
+	lua_regconstinteger(vm->L, WP_K43_SCOPE); // 41
+	lua_regconstinteger(vm->L, WP_FG42SCOPE); // 42
+	lua_regconstinteger(vm->L, WP_MORTAR_SET); // 43
+	lua_regconstinteger(vm->L, WP_MEDIC_ADRENALINE); // 44
 	lua_regconstinteger(vm->L, WP_AKIMBO_SILENCEDCOLT); // 45
 	lua_regconstinteger(vm->L, WP_AKIMBO_SILENCEDLUGER); // 46
-	lua_regconstinteger(vm->L, WP_MOBILE_MG42_SET);     // 47
+	lua_regconstinteger(vm->L, WP_MOBILE_MG42_SET); // 47
 
 	// legacy weapons
-	lua_regconstinteger(vm->L, WP_KNIFE_KABAR);         // 48
-	lua_regconstinteger(vm->L, WP_MOBILE_BROWNING);     // 49
+	lua_regconstinteger(vm->L, WP_KNIFE_KABAR); // 48
+	lua_regconstinteger(vm->L, WP_MOBILE_BROWNING); // 49
 	lua_regconstinteger(vm->L, WP_MOBILE_BROWNING_SET); // 50
-	lua_regconstinteger(vm->L, WP_MORTAR2);             // 51
-	lua_regconstinteger(vm->L, WP_MORTAR2_SET);         // 52
-	lua_regconstinteger(vm->L, WP_BAZOOKA);             // 53
+	lua_regconstinteger(vm->L, WP_MORTAR2); // 51
+	lua_regconstinteger(vm->L, WP_MORTAR2_SET); // 52
+	lua_regconstinteger(vm->L, WP_BAZOOKA); // 53
 
 	lua_regconstinteger(vm->L, WP_NUM_WEAPONS);
 }

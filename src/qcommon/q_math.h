@@ -47,7 +47,7 @@ typedef vec_t vec5_t[5];
 typedef vec3_t axis_t[3];
 typedef vec_t mat3_t[9];
 typedef vec_t mat4_t[16];
-typedef vec_t quat_t[4];       // |x y z w |
+typedef vec_t quat_t[4]; // |x y z w |
 
 typedef int fixed4_t;
 typedef int fixed8_t;
@@ -273,7 +273,7 @@ static ID_INLINE float Q_fabs(float x) {
 
 #else
 float Q_fabs(float f);
-float Q_rsqrt(float f);        // reciprocal square root
+float Q_rsqrt(float f); // reciprocal square root
 #endif
 
 #define SQRTFAST(x) (1.0f / Q_rsqrt(x))
@@ -318,8 +318,8 @@ vec_t vec3_length_squared(const vec3_t v);
 vec_t vec3_distance(const vec3_t p1, const vec3_t p2);
 vec_t vec3_distance_squared(const vec3_t p1, const vec3_t p2);
 // Normalize
-vec_t vec3_norm(vec3_t v);        // returns vector length
-void vec3_norm_fast(vec3_t v);     // does NOT return vector length, uses rsqrt approximation
+vec_t vec3_norm(vec3_t v); // returns vector length
+void vec3_norm_fast(vec3_t v); // does NOT return vector length, uses rsqrt approximation
 vec_t vec3_norm2(const vec3_t v, vec3_t out);
 // Inverse
 void vec3_inv(vec3_t v);
@@ -427,7 +427,7 @@ qboolean mat4_inverse_self(mat4_t matrix);
 void mat4_from_angles(mat4_t m, vec_t pitch, vec_t yaw, vec_t roll);
 
 #define SinCos(rad, s, c)   \
-	(s) = sin((rad));     \
+	(s) = sin((rad)); \
 	(c) = cos((rad));
 #ifdef __LCC__
 #ifdef VectorCopy

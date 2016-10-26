@@ -113,7 +113,7 @@ typedef struct vmSymbol_s {
 	struct vmSymbol_s *next;
 	int symValue;
 	int profileCount;
-	char symName[1];       // variable sized
+	char symName[1]; // variable sized
 } vmSymbol_t;
 
 #define VM_OFFSET_PROGRAM_STACK     0
@@ -124,7 +124,7 @@ typedef struct vmSymbol_s {
 struct vm_s {
 	// DO NOT MOVE OR CHANGE THESE WITHOUT CHANGING THE VM_OFFSET_ * DEFINES
 	// USED BY THE ASM CODE
-	int programStack;              // the vm may be recursively entered
+	int programStack; // the vm may be recursively entered
 	intptr_t(*systemCall)(intptr_t *parms);
 	// ------------------------------------
 
@@ -144,11 +144,11 @@ struct vm_s {
 
 	byte *dataBase;
 	int dataMask;
-	int stackBottom;               // if programStack < stackBottom, error
+	int stackBottom; // if programStack < stackBottom, error
 	int numSymbols;
 	struct vmSymbol_s *symbols;
-	int callLevel;                 // for debug indenting
-	int breakFunction;             // increment breakCount on function entry to this
+	int callLevel; // for debug indenting
+	int breakFunction; // increment breakCount on function entry to this
 	int breakCount;
 	qboolean extract;
 };

@@ -1416,6 +1416,7 @@ qboolean Item_TextField_HandleKey(itemDef_t *item, int key) {
 					int i = 0, cliplen = 0;
 
 					Q_UTF8_ToUTF32(clipbuff, clipbuff32, &cliplen);
+
 					for (; i < cliplen; i++) {
 						if (Item_TextField_InsertToCursor(&valueLen, buff, clipbuff32[i], item, editPtr)) {
 							break;
@@ -1809,7 +1810,7 @@ void Item_SetTextExtents(itemDef_t *item, int *width, int *height, const char *t
 	// keeps us from computing the widths and heights more than once
 	if (*width == 0 || (item->type == ITEM_TYPE_OWNERDRAW && item->textalignment == ITEM_ALIGN_CENTER) ||
 	    item->textalignment == ITEM_ALIGN_CENTER2 ||
-	    item->type == ITEM_TYPE_TIMEOUT_COUNTER) { // int originalWidth = DC->textWidth(item->text, item->textscale, 0);
+	    item->type == ITEM_TYPE_TIMEOUT_COUNTER) {// int originalWidth = DC->textWidth(item->text, item->textscale, 0);
 		int originalWidth = DC->textWidth(textPtr, item->textscale, 0);
 
 		if (item->type == ITEM_TYPE_OWNERDRAW && (item->textalignment == ITEM_ALIGN_CENTER || item->textalignment == ITEM_ALIGN_RIGHT)) {
@@ -1955,7 +1956,7 @@ void Item_Text_AutoWrapped_Paint(itemDef_t *item) {
 				break;
 			}
 
-			y      += height + 5;
+			y += height + 5;
 			p = newLinePtr;
 			len = 0;
 			newLine = 0;
@@ -2151,11 +2152,11 @@ void Item_Text_Paint(itemDef_t *item) {
 
 			if (item->window.flags & WINDOW_TEXTASINT) {
 				COM_StripExtension(text, text, sizeof(text));
-				item->textRect.w = 0;  // force recalculation
+				item->textRect.w = 0; // force recalculation
 			} else if (item->window.flags & WINDOW_TEXTASFLOAT) {
 				char *s = va("%.2f", atof(text));
 				Q_strncpyz(text, s, sizeof(text));
-				item->textRect.w = 0;  // force recalculation
+				item->textRect.w = 0; // force recalculation
 			}
 
 			textPtr = text;
@@ -2746,7 +2747,7 @@ void Item_Model_Paint(itemDef_t *item) {
 	if (qtrue) {
 		float len = 0.5 * (maxs[2] - mins[2]);
 
-		origin[0] = len / 0.268;   // len / tan(fov / 2)
+		origin[0] = len / 0.268; // len / tan(fov / 2)
 		// origin[0] = len / tan(w / 2);
 	} else {
 		origin[0] = item->textscale;
@@ -2801,7 +2802,7 @@ void Item_Model_Paint(itemDef_t *item) {
 		modelPtr->oldframe += (backLerpWhole);
 
 		if ((modelPtr->oldframe - modelPtr->startframe) > modelPtr->numframes) {
-			modelPtr->oldframe = modelPtr->startframe + modelPtr->oldframe % modelPtr->numframes;  // todo: ignoring loopframes
+			modelPtr->oldframe = modelPtr->startframe + modelPtr->oldframe % modelPtr->numframes; // todo: ignoring loopframes
 		}
 
 		modelPtr->backlerp = modelPtr->backlerp - backLerpWhole;
@@ -2859,7 +2860,7 @@ void Item_ListBox_Paint(itemDef_t *item) {
 		x += size - 1;
 		DC->drawHandlePic(x, y, SCROLLBAR_SIZE, SCROLLBAR_SIZE, DC->Assets.scrollBarArrowRight);
 		// thumb
-		thumb = Item_ListBox_ThumbDrawPosition(item);  // Item_ListBox_ThumbPosition(item);
+		thumb = Item_ListBox_ThumbDrawPosition(item); // Item_ListBox_ThumbPosition(item);
 
 		if (thumb > x - SCROLLBAR_SIZE - 1) {
 			thumb = x - SCROLLBAR_SIZE - 1;

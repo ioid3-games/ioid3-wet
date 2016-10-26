@@ -125,7 +125,7 @@ void UI_DrawLoadPanel(qboolean ownerdraw, qboolean uihack) {
 		RegisterFont("courbd", 30, &uiInfo.uiDC.Assets.bg_loadscreenfont2);
 
 		BG_PanelButtonsSetup(loadpanelButtons);
-		C_PanelButtonsSetup(loadpanelButtons, Cui_WideXoffset());  // convert to possible widescreen coordinates..
+		C_PanelButtonsSetup(loadpanelButtons, Cui_WideXoffset()); // convert to possible widescreen coordinates..
 
 		bg_loadscreeninited = qtrue;
 	}

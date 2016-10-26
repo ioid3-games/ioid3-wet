@@ -329,10 +329,10 @@ Write a message / event to the demo file
 static void SV_DemoWriteMessage(msg_t *msg) {
 	int len;
 	// Write the entire message to the file, prefixed by the length
-	MSG_WriteByte(msg, demo_EOF); // append EOF(end - of - file or rather end - of - flux) to the message so that it will tell the demo parser when the demo will be read that the message ends here, and that it can proceed to the next message
+	MSG_WriteByte(msg, demo_EOF); // append EOF (end-of-file or rather end-of-flux) to the message so that it will tell the demo parser when the demo will be read that the message ends here, and that it can proceed to the next message
 	len = LittleLong(msg->cursize);
-	FS_Write(&len, 4, sv.demoFile);
-	FS_Write(msg->data, msg->cursize, sv.demoFile);
+	(void) FS_Write(&len, 4, sv.demoFile);
+	(void) FS_Write(msg->data, msg->cursize, sv.demoFile);
 	MSG_Clear(msg);
 }
 
@@ -483,7 +483,7 @@ void SV_DemoWriteClientUserinfo(client_t *client, const char *userinfo) {
 
 	if (strlen(userinfo) > 0) {
 		// do the filtering only if the string is not empty
-		SV_DemoFilterClientUserinfo(fuserinfo);  // filters out privacy keys such as ip, cl_guid, cl_voip
+		SV_DemoFilterClientUserinfo(fuserinfo); // filters out privacy keys such as ip, cl_guid, cl_voip
 	}
 
 	MSG_Init(&msg, buf, sizeof(buf));
@@ -792,10 +792,10 @@ static void SV_DemoStopPlayback(void) {
 		sv.demoState = DS_WAITINGSTOP;
 		Cvar_SetValue("sv_demoState", DS_WAITINGSTOP);
 #ifdef DEDICATED
-		Cbuf_AddText(va("map %s\n", Cvar_VariableString("mapname")));  // better to do a map command rather than map_restart if we do a mod switching with game_restart, map_restart will point to no map(because the config is completely unloaded)
+		Cbuf_AddText(va("map %s\n", Cvar_VariableString("mapname"))); // better to do a map command rather than map_restart if we do a mod switching with game_restart, map_restart will point to no map(because the config is completely unloaded)
 #else
 		// Update sv_maxclients latched value(since we will kill the server because it's not a dedicated server, we won't restart the map, so latched values won't be affected unless we force the refresh)
-		Cvar_Get("sv_maxclients", "8", 0);  // Get sv_maxclients value(force latched values to commit)
+		Cvar_Get("sv_maxclients", "8", 0); // Get sv_maxclients value(force latched values to commit)
 		sv_maxclients->modified = qfalse; // Set modified to false
 		// Kill the local server
 		Cvar_SetValue("sv_killserver", 1); // instead of sending a Cbuf_AddText("killserver") command, we here just set a special cvar which will kill the server at the next SV_Frame() iteration(smoother than force killing)
@@ -840,7 +840,7 @@ static void SV_DemoStartPlayback(void) {
 	char *map = (char *)malloc(MAX_QPATH * sizeof(char));
 	char *fs = (char *)malloc(MAX_QPATH * sizeof(char));
 	char *hostname = (char *)malloc(MAX_NAME_LENGTH * sizeof(char));
-	char *datetime = (char *)malloc(1024 * sizeof(char));  // there's no limit in the whole engine specifically designed for dates and time...
+	char *datetime = (char *)malloc(1024 * sizeof(char)); // there's no limit in the whole engine specifically designed for dates and time...
 	char *metadata; // = malloc(1024 * sizeof * metadata); // used to store the current metadata index
 
 	// Init vars with empty values(to avoid compilation warnings)
@@ -881,17 +881,17 @@ static void SV_DemoStartPlayback(void) {
 	metadata = "";
 
 	while (Q_stricmp(metadata, "endMeta")) {
-		metadata = MSG_ReadString(&msg);  // We read the meta data marker
+		metadata = MSG_ReadString(&msg); // We read the meta data marker
 
 		if (!Q_stricmp(metadata, "endMeta"))  // if the string is the special endMeta string, we already break
 		{
 			break;
-		} else if (!Q_stricmp(metadata, "clients")) { // democlients
+		} else if (!Q_stricmp(metadata, "clients")) {// democlients
 			// Check slots, time and map
 			clients = MSG_ReadByte(&msg); // number of democlients(sv_maxclients at the time of the recording)
 			if (sv_maxclients->integer < clients || // if we have less real slots than democlients slots or
 			    savedMaxClients < 0 || // if there's no savedMaxClients(so this means we didin't change sv_maxclients yet, and we always need to do so since we need to add sv_democlients)
-			    sv_maxclients->integer <= savedMaxClients) { // or if maxclients is below or equal to the previous value of maxclients(normally it can only be equal, but if we switch the mod with game_restart, it can get the default value of 8, which can be below, so we need to check that as well)
+			    sv_maxclients->integer <= savedMaxClients) {// or if maxclients is below or equal to the previous value of maxclients(normally it can only be equal, but if we switch the mod with game_restart, it can get the default value of 8, which can be below, so we need to check that as well)
 				Com_Printf("DEMO: Not enough demo slots, automatically increasing sv_democlients to %d and sv_maxclients to %d.\n", clients, sv_maxclients->integer + clients);
 				// save the old values of sv_maxclients, sv_democlients and bot_minplayers to later restore them
 				if (savedMaxClients < 0) // save only if it's the first value, the subsequent ones may be default values of the engine
@@ -910,7 +910,7 @@ static void SV_DemoStartPlayback(void) {
 				sv_maxclients->modified = qfalse;
 				*/
 			}
-		} else if (!Q_stricmp(metadata, "time")) { // server time
+		} else if (!Q_stricmp(metadata, "time")) {// server time
 			// reading server time(from the demo)
 			time = MSG_ReadLong(&msg);
 
@@ -990,7 +990,7 @@ static void SV_DemoStartPlayback(void) {
 	}
 	// Com_Error(ERR_FATAL, "DEBUG ERROR");
 	// g_doWarmup
-	if (!keepSaved) { // we memorize values only if it's the first time we launch the playback of this demo, else the values may have already been modified by the demo playback
+	if (!keepSaved) {// we memorize values only if it's the first time we launch the playback of this demo, else the values may have already been modified by the demo playback
 		// Memorize g_doWarmup
 		savedDoWarmup = Cvar_VariableIntegerValue("g_doWarmup");
 	}
@@ -1029,7 +1029,7 @@ static void SV_DemoStartPlayback(void) {
 
 		Cvar_SetValue("sv_autoDemo", 0); // disable sv_autoDemo else it will start a recording before we can replay a demo(since we restart the map)
 		//****  Automatic mod(fs_game) switching management ****
-		if ((Q_stricmp(Cvar_VariableString("fs_game"), fs) && strlen(fs)) || (!strlen(fs) && Q_stricmp(Cvar_VariableString("fs_game"), fs) && Q_stricmp(fs, BASEGAME))) { // change the game mod only if necessary - if it's different from the current gamemod and the new is not empty, OR the new is empty but it's not BASEGAME and it's different(we're careful because it will restart the game engine and so probably every client will get disconnected)
+		if ((Q_stricmp(Cvar_VariableString("fs_game"), fs) && strlen(fs)) || (!strlen(fs) && Q_stricmp(Cvar_VariableString("fs_game"), fs) && Q_stricmp(fs, BASEGAME))) {// change the game mod only if necessary - if it's different from the current gamemod and the new is not empty, OR the new is empty but it's not BASEGAME and it's different(we're careful because it will restart the game engine and so probably every client will get disconnected)
 
 			// Memorize the current mod(only if we are indeed switching mod, otherwise we will save basegame instead of empty strings and force a mod switching when stopping the demo when we haven't changed mod in the first place!)
 			if (strlen(Cvar_VariableString("fs_game"))) {
@@ -1074,8 +1074,8 @@ static void SV_DemoStartPlayback(void) {
 	}
 	// Start reading the first frame
 	Com_Printf("Playing demo %s.\n", sv.demoName); // log that the demo is started here
-	SV_SendServerCommand(NULL, "chat \"^3Demo replay started!\"");  // send a message to player
-	SV_SendServerCommand(NULL, "cp \"^3Demo replay started!\"");  // send a centerprint message to player
+	SV_SendServerCommand(NULL, "chat \"^3Demo replay started!\""); // send a message to player
+	SV_SendServerCommand(NULL, "cp \"^3Demo replay started!\""); // send a centerprint message to player
 	sv.demoState = DS_PLAYBACK; // set state to playback
 	Cvar_SetValue("sv_demoState", DS_PLAYBACK);
 	keepSaved = qfalse; // Don't save values anymore: the next time we stop playback, we will restore previous values(because now we are really launching the playback, so anything that might happen now is either a big bug or the end of demo, in any case we want to restore the values)
@@ -1152,7 +1152,7 @@ static void SV_DemoStartRecord(void) {
 
 		if (client->state >= CS_CONNECTED) {
 			// store client's userinfo(should be before clients configstrings since clients configstrings are derived from userinfo)
-			if (client->userinfo[0] != '\0') { // if player is connected and the configstring exists, we store it
+			if (client->userinfo[0] != '\0') {// if player is connected and the configstring exists, we store it
 				SV_DemoWriteClientUserinfo(client, (const char *)client->userinfo);
 			}
 		}
@@ -1241,7 +1241,7 @@ static void SV_DemoReadGameCommand(msg_t *msg) {
 
 	if (SV_CheckLastCmd(cmd, qfalse)) {
 		// check for duplicates: check that the engine did not already send this very same message resulting from an event(this means that engine gamecommands are never filtered, only demo gamecommands)
-		SV_GameSendServerCommand(-1, cmd);  // send this game command to all clients(-1)
+		SV_GameSendServerCommand(-1, cmd); // send this game command to all clients(-1)
 	}
 }
 
@@ -1297,7 +1297,7 @@ static void SV_DemoReadClientConfigString(msg_t *msg) {
 		SV_SetConfigstring(CS_PLAYERS + num, configstring);
 		// Set some infos about this user:
 		svs.clients[num].demoClient = qtrue; // to check if a client is a democlient, you can either rely on this variable, either you can check if num(index of client) is >= CS_PLAYERS + sv_democlients->integer && < CS_PLAYERS + sv_maxclients->integer(if it's not a configstring, remove CS_PLAYERS from your if)
-		Q_strncpyz(svs.clients[num].name, Info_ValueForKey(configstring, "n"), MAX_NAME_LENGTH);    // set the name(useful for internal functions such as status_f). Anyway userinfo will automatically set both name(server - side) and netname(gamecode - side).
+		Q_strncpyz(svs.clients[num].name, Info_ValueForKey(configstring, "n"), MAX_NAME_LENGTH); // set the name(useful for internal functions such as status_f). Anyway userinfo will automatically set both name(server - side) and netname(gamecode - side).
 
 
 		// DEMOCLIENT INITIAL TEAM MANAGEMENT
@@ -1341,9 +1341,9 @@ static void SV_DemoReadClientConfigString(msg_t *msg) {
 	} else if (Q_stricmp(sv.configstrings[CS_PLAYERS + num], configstring) && strlen(sv.configstrings[CS_PLAYERS + num]) && (!configstring || !strlen(configstring))) {
 		// client disconnect: different configstrings and the new one is empty, so the client is not there anymore, we drop him(also we check that the old config was not empty, else we would be disconnecting a player who is already dropped)
 		client = &svs.clients[num];
-		SV_DropClient(client, "disconnected");  // same as SV_Disconnect_f(client);
+		SV_DropClient(client, "disconnected"); // same as SV_Disconnect_f(client);
 		SV_SetConfigstring(CS_PLAYERS + num, configstring); // empty the configstring
-	} else { // In any other case(should there be?), we simply set the client configstring(which should not produce any error)
+	} else {// In any other case(should there be?), we simply set the client configstring(which should not produce any error)
 		SV_SetConfigstring(CS_PLAYERS + num, configstring);
 	}
 }
@@ -1377,7 +1377,7 @@ static void SV_DemoReadClientUserinfo(msg_t *msg) {
 		NET_StringToAdr("localhost", &client->netchan.remoteAddress, NA_LOOPBACK);
 	}
 	// Update the userinfo for both the server and gamecode
-	Cmd_TokenizeString(va("userinfo %s", userinfo));  // we need to prepend the userinfo command(or in fact any word) to tokenize the userinfo string to the second index because SV_UpdateUserinfo_f expects to fetch it with Argv(1)
+	Cmd_TokenizeString(va("userinfo %s", userinfo)); // we need to prepend the userinfo command(or in fact any word) to tokenize the userinfo string to the second index because SV_UpdateUserinfo_f expects to fetch it with Argv(1)
 	SV_UpdateUserinfo_f(client); // will update the server userinfo, automatically fill client_t fields and then transmit to the gamecode and call ClientUserinfoChanged() which will also update the gamecode's client_t from the new userinfo(eg: name [server - side] and netname [gamecode - side] will be both updated)
 
 
@@ -1551,7 +1551,7 @@ void SV_DemoReadRefreshPlayersHealth(void) {
 
 	// Update all players' health in HUD
 	for (i = 0; i < sv_democlients->integer; i++) {
-		SV_GentityUpdateHealthField(SV_GentityNum(i), SV_GameClientNum(i));  // Update the health with the value of playerState_t->stats[STAT_HEALTH]
+		SV_GentityUpdateHealthField(SV_GentityNum(i), SV_GameClientNum(i)); // Update the health with the value of playerState_t->stats[STAT_HEALTH]
 	}
 }
 
@@ -1584,7 +1584,7 @@ read_next_demo_frame: // used to read another whole demo frame
 
 	if (com_timescale->value < 1.0 && com_timescale->value > 0.0) {
 		// Check timescale: if slowed timescale(below 1.0), then we check that we pass one frame on 1.0 / com_timescale(eg: timescale = 0.5, 1.0 / 0.5=2, so we pass one frame on two)
-		if (currentframe %(int)(1.0 / com_timescale->value) != 0) { // if it's not yet the right time to read the frame, we just pass and wait for the next server frame to read this demo frame
+		if (currentframe %(int)(1.0 / com_timescale->value) != 0) {// if it's not yet the right time to read the frame, we just pass and wait for the next server frame to read this demo frame
 			return;
 		}
 	}
@@ -1623,10 +1623,10 @@ read_next_demo_event: // used to read next demo event
 			switch (cmd) // switch to the right processing depending on the type of the marker
 			{
 			default:
-				if (sv_demoTolerant->integer) {   // Error tolerance mode: if we encounter an unknown demo message, we just skip to the next(this may allow for retrocompatibility)
+				if (sv_demoTolerant->integer) {  // Error tolerance mode: if we encounter an unknown demo message, we just skip to the next(this may allow for retrocompatibility)
 					MSG_Clear(&msg);
 					goto read_next_demo_event;
-				} else {   // else we just drop the demo and throw a big fat error
+				} else {  // else we just drop the demo and throw a big fat error
 					Com_Error(ERR_FATAL, "SV_DemoReadFrame: Illegible demo message\n");
 					return;
 				}
@@ -1668,20 +1668,20 @@ read_next_demo_event: // used to read next demo event
 			case demo_endFrame:    // end of the frame - players and entities game status update: we commit every demo entity to the server, update the server time, then release the demo frame reading here to the next server(and demo) frame
 				Com_DPrintf("END OF FRAME");
 				// Update entities
-				SV_DemoReadRefreshEntities();    // load into memory the demo entities(overwriting any change the game may have done)
+				SV_DemoReadRefreshEntities(); // load into memory the demo entities(overwriting any change the game may have done)
 				// Update all players' health in HUD
 				SV_DemoReadRefreshPlayersHealth();
 				// Set the server time
-				svs.time = MSG_ReadLong(&msg);   // refresh server in - game time(overwriting any change the game may have done)
-				memsvtime = svs.time;    // keep memory of the last server time, in case we want to freeze the demo
+				svs.time = MSG_ReadLong(&msg); // refresh server in - game time(overwriting any change the game may have done)
+				memsvtime = svs.time; // keep memory of the last server time, in case we want to freeze the demo
 
-				if (com_timescale->value > 1.0) {   // Check for timescale: if timescale is faster(above 1.0), we read more frames at once(eg: timescale=2, we read 2 frames for one call of this function)
-					if (currentframe %(int)(com_timescale->value) != 0) {   // Check that we've read all the frames we needed
-						goto read_next_demo_frame;    // if not true, we read another frame
+				if (com_timescale->value > 1.0) {  // Check for timescale: if timescale is faster(above 1.0), we read more frames at once(eg: timescale=2, we read 2 frames for one call of this function)
+					if (currentframe %(int)(com_timescale->value) != 0) {  // Check that we've read all the frames we needed
+						goto read_next_demo_frame; // if not true, we read another frame
 					}
 				}
 
-				return;    // else we end the current demo frame
+				return; // else we end the current demo frame
 			case demo_endDemo:    // end of the demo file - just stop playback and restore saved cvars
 				Com_Printf("demo_endDemo...\n");
 				SV_DemoStopPlayback();

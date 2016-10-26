@@ -413,7 +413,7 @@ static void CM_RemoveDegenerateColumns(cGrid_t *grid) {
 		}
 
 		if (j != grid->height) {
-			continue;  // not degenerate
+			continue; // not degenerate
 		}
 
 		for (j = 0; j < grid->height; j++) {
@@ -543,7 +543,7 @@ static int CM_FindPlane(float *p1, float *p2, float *p3) {
 	// see if the points are close enough to an existing plane
 	for (i = 0; i < numPlanes; i++) {
 		if (DotProduct(plane, planes[i].plane) < 0) {
-			continue;  // allow backwards planes?
+			continue; // allow backwards planes?
 		}
 
 		d = DotProduct(p1, planes[i].plane) - planes[i].plane[3];
@@ -828,7 +828,7 @@ static qboolean CM_ValidateFacet(facet_t *facet) {
 	}
 
 	if (!w) {
-		return qfalse;     // winding was completely chopped away
+		return qfalse; // winding was completely chopped away
 	}
 	// see if the facet is unreasonably large
 	WindingBounds(w, bounds[0], bounds[1]);
@@ -836,7 +836,7 @@ static qboolean CM_ValidateFacet(facet_t *facet) {
 
 	for (j = 0; j < 3; j++) {
 		if (bounds[1][j] - bounds[0][j] > MAX_MAP_BOUNDS) {
-			return qfalse;     // we must be missing a plane
+			return qfalse; // we must be missing a plane
 		}
 
 		if (bounds[0][j] >= MAX_MAP_BOUNDS) {
@@ -848,7 +848,7 @@ static qboolean CM_ValidateFacet(facet_t *facet) {
 		}
 	}
 
-	return qtrue;      // winding is fine
+	return qtrue; // winding is fine
 }
 
 /*
@@ -943,7 +943,7 @@ void CM_AddFacetBevels(facet_t *facet) {
 		}
 
 		if (k < 3) {
-			continue;  // only test non - axial edges
+			continue; // only test non - axial edges
 		}
 		// try the six possible slanted axials from this edge
 		for (axis = 0; axis < 3; axis++) {
@@ -1015,6 +1015,7 @@ void CM_AddFacetBevels(facet_t *facet) {
 						VectorNegate(newplane, newplane);
 						newplane[3] = -newplane[3];
 					}
+
 					ChopWindingInPlace(&w2, newplane, newplane[3], 0.1f);
 
 					if (!w2) {
@@ -1147,7 +1148,7 @@ static void CM_PatchCollideFromGrid(cGrid_t *grid, patchCollide_t *pf, qboolean 
 
 			if (gridPlanes[i][j][0] == gridPlanes[i][j][1]) {
 				if (gridPlanes[i][j][0] == -1) {
-					continue;      // degenerate
+					continue; // degenerate
 				}
 
 				facet->surfacePlane = gridPlanes[i][j][0];
@@ -1341,7 +1342,7 @@ void CM_TraceThroughPatchCollide(traceWork_t *tw, const struct patchCollide_s *p
         {
             if (normal[n] > 0) v1[n] = tw->size[0][n];
             else v1[n] = tw->size[1][n];
-      }
+    }
         VectorNegate(normal, v2);
         offset = DotProduct(v1, v2);
        // offset = 0;
@@ -1354,25 +1355,25 @@ void CM_TraceThroughPatchCollide(traceWork_t *tw, const struct patchCollide_s *p
        // if completely in front of face, no intersection with the entire patch
         if (d1 > 0 && (d2 >= SURFACE_CLIP_EPSILON || d2 >= d1)) {
             continue;
-      }
+    }
 
        // if it doesn't cross the plane, the plane isn't relevant
         if (d1 <= 0 && d2 <= 0) {
             continue;
-      }
+    }
 
        // crosses face
         if (d1 > d2) {	// enter
             fraction = (d1 - SURFACE_CLIP_EPSILON) / (d1 - d2);
             if (fraction < 0) {
                 fraction = 0;
-          }
+        }
             for (j = 0; j < 3; j++)
                 point[j] = tw->start[j] + (tw->end[j] - tw->start[j]) * fraction;
-      }
+    }
         else {
             continue;
-      }
+    }
 
         for (j = 0; j < facet->numBorders; j++)
         {
@@ -1381,24 +1382,24 @@ void CM_TraceThroughPatchCollide(traceWork_t *tw, const struct patchCollide_s *p
             {
                 VectorNegate(planes->plane, normal);
                 planedist = -planes->plane[3];
-          }
+        }
             else
             {
                 VectorCopy(planes->plane, normal);
                 planedist = planes->plane[3];
-          }
+        }
             for (n = 0; n < 3; n++)
             {
                 if (normal[n] > 0) v1[n] = tw->size[0][n];
                 else v1[n] = tw->size[1][n];
-          }
+        }
             VectorNegate(normal, v2);
             offset = DotProduct(v1, v2);
            // offset = 0;
             planedist -= offset;
            // the hit point should be in front of the(inward facing) border plane
             if (DotProduct(point, normal) - planedist < -ON_EPSILON) break;
-      }
+    }
         if (j < facet->numBorders) continue;
 
         if (fraction < tw->trace.fraction)
@@ -1410,8 +1411,8 @@ void CM_TraceThroughPatchCollide(traceWork_t *tw, const struct patchCollide_s *p
             planes = &pc->planes[facet->surfacePlane];
             VectorCopy(planes->plane, tw->trace.plane.normal);
             tw->trace.plane.dist = planes->plane[3];
-      }
-  }
+    }
+}
 }
 */
 
@@ -1434,7 +1435,7 @@ void CM_TracePointThroughPatchCollide(traceWork_t *tw, const struct patchCollide
 	static cvar_t *cv;
 
 	if (!cm_playerCurveClip->integer && !tw->isPoint) {
-		return;    // FIXME: until I get player sized clipping working right
+		return; // FIXME: until I get player sized clipping working right
 	}
 	// determine the trace's relationship to all planes
 	planes = pc->planes;
@@ -1471,11 +1472,11 @@ void CM_TracePointThroughPatchCollide(traceWork_t *tw, const struct patchCollide
 		intersect = intersection[facet->surfacePlane];
 
 		if (intersect < 0) {
-			continue;      // surface is behind the starting point
+			continue; // surface is behind the starting point
 		}
 
 		if (intersect > tw->trace.fraction) {
-			continue;      // already hit something closer
+			continue; // already hit something closer
 		}
 
 		for (j = 0; j < facet->numBorders; j++) {

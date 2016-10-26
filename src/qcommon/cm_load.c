@@ -143,7 +143,7 @@ void CMod_LoadSubmodels(lump_t *l) {
 		}
 
 		if (i == 0) {
-			continue;  // world model doesn't need other info
+			continue; // world model doesn't need other info
 		}
 		// make a "leaf" just to hold the model's brushes and surfaces
 		out->leaf.numLeafBrushes = LittleLong(in->numBrushes);
@@ -519,7 +519,7 @@ void CMod_LoadPatches(lump_t *surfs, lump_t *verts) {
 	// scan through all the surfaces, but only load patches, not planar faces
 	for (i = 0; i < count; i++, in++) {
 		if (LittleLong(in->surfaceType) != MST_PATCH) {
-			continue;      // ignore other surfaces
+			continue; // ignore other surfaces
 		}
 		// FIXME: check for non-colliding patches
 
@@ -589,8 +589,7 @@ Loads in the map and all submodels.
 =======================================================================================================================================
 */
 void CM_LoadMap(const char *name, qboolean clientload, int *checksum) {
-	union
-	{
+	union {
 		int *i;
 		void *v;
 	} buf;

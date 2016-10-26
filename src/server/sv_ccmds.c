@@ -118,8 +118,8 @@ static void SV_Map_f(void) {
 	}
 
 	Cvar_Set("gamestate", va("%i", GS_INITIALIZE)); // reset gamestate on map / devmap
-	Cvar_Set("g_currentRound", "0");               // reset the current round
-	Cvar_Set("g_nextTimeLimit", "0");              // reset the next time limit
+	Cvar_Set("g_currentRound", "0"); // reset the current round
+	Cvar_Set("g_nextTimeLimit", "0"); // reset the next time limit
 
 	if (!Q_stricmp(cmd, "devmap")) {
 		cheat = qtrue;
@@ -305,7 +305,7 @@ static void SV_MapRestart_f(void) {
 			SV_DropClient(client, denied);
 
 			if (!isBot) {
-				Com_Printf("SV_MapRestart_f(%d): dropped client %i - denied!\n", delay, i);  // bk010125
+				Com_Printf("SV_MapRestart_f(%d): dropped client %i - denied!\n", delay, i); // bk010125
 			}
 
 			continue;

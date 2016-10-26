@@ -264,8 +264,7 @@ void Cbuf_Execute(void) {
  */
 void Cmd_Exec_f(void) {
 	char filename[MAX_QPATH];
-	union
-	{
+	union {
 		char *c;
 		void *v;
 	} f;
@@ -360,11 +359,11 @@ typedef struct cmd_function_s {
 	completionFunc_t complete;
 } cmd_function_t;
 static int cmd_argc;
-static char *cmd_argv[MAX_STRING_TOKENS];              // points into cmd_tokenized
-static char cmd_tokenized[BIG_INFO_STRING + MAX_STRING_TOKENS];        // will have 0 bytes inserted
-static char cmd_cmd[BIG_INFO_STRING];        // the original command we received (no token processing)
+static char *cmd_argv[MAX_STRING_TOKENS]; // points into cmd_tokenized
+static char cmd_tokenized[BIG_INFO_STRING + MAX_STRING_TOKENS]; // will have 0 bytes inserted
+static char cmd_cmd[BIG_INFO_STRING]; // the original command we received (no token processing)
 
-static cmd_function_t *cmd_functions;      // possible commands to execute
+static cmd_function_t *cmd_functions; // possible commands to execute
 
 /*
 =======================================================================================================================================
@@ -563,7 +562,7 @@ static void Cmd_TokenizeString2(const char *text_in, qboolean ignoreQuotes) {
 
 	while (1) {
 		if (cmd_argc == MAX_STRING_TOKENS) {
-			return;        // this is usually something malicious
+			return; // this is usually something malicious
 		}
 
 		while (1) {
@@ -573,13 +572,13 @@ static void Cmd_TokenizeString2(const char *text_in, qboolean ignoreQuotes) {
 			}
 
 			if (!*text) {
-				return;        // all tokens parsed
+				return; // all tokens parsed
 			}
 			// skip // comments
 			if (text[0] == '/' && text[1] == '/') {
 				// lets us put 'http:// ' in commandlines
 				if (text == text_in || (text > text_in && text[-1] != ':')) {
-					return;        // all tokens parsed
+					return; // all tokens parsed
 				}
 			}
 			// skip /* */ comments
@@ -589,12 +588,12 @@ static void Cmd_TokenizeString2(const char *text_in, qboolean ignoreQuotes) {
 				}
 
 				if (!*text) {
-					return;    // all tokens parsed
+					return; // all tokens parsed
 				}
 
 				text += 2;
 			} else {
-				break;         // we are ready to parse a token
+				break; // we are ready to parse a token
 			}
 		}
 		// handle quoted strings
@@ -611,7 +610,7 @@ static void Cmd_TokenizeString2(const char *text_in, qboolean ignoreQuotes) {
 			*textOut++ = 0;
 
 			if (!*text) {
-				return;    // all tokens parsed
+				return; // all tokens parsed
 			}
 
 			text++;
@@ -643,7 +642,7 @@ static void Cmd_TokenizeString2(const char *text_in, qboolean ignoreQuotes) {
 		*textOut++ = 0;
 
 		if (!*text) {
-			return;    // all tokens parsed
+			return; // all tokens parsed
 		}
 	}
 }
@@ -865,7 +864,7 @@ void Cmd_ExecuteString(const char *text) {
 	Cmd_TokenizeString(text);
 
 	if (!Cmd_Argc()) {
-		return;    // no tokens
+		return; // no tokens
 	}
 	// check registered command functions
 	for (prev = &cmd_functions; *prev; prev = &cmd->next) {
@@ -1031,7 +1030,7 @@ void Cmd_CleanHomepath_f(void) {
 
 			Q_strncpyz(tmp_whitelist, (force ? Cvar_VariableString("com_cleanwhitelist") : va("%s %s", Cvar_VariableString("com_cleanwhitelist"), whitelist)), sizeof(tmp_whitelist));
 			// Check if this file is in the whitelist
-			tokens = strtok(tmp_whitelist, ", ;");
+			tokens = strtok(tmp_whitelist, ",;");
 
 			while (tokens != NULL) {
 				if (strstr(pFiles[j], tokens)) {
@@ -1040,7 +1039,7 @@ void Cmd_CleanHomepath_f(void) {
 					break;
 				}
 
-				tokens = strtok(NULL, ", ;");
+				tokens = strtok(NULL, ",;");
 			}
 
 			if (whitelisted) {

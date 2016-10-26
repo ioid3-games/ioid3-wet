@@ -42,9 +42,9 @@
 
 #define ETL_DBMS_VERSION 1
 
-extern cvar_t *db_mode;    // 0 - disabled, 1 - sqlite3 memory db, 2 - sqlite3 file db
+extern cvar_t *db_mode; // 0 - disabled, 1 - sqlite3 memory db, 2 - sqlite3 file db
 extern cvar_t *db_url;
-extern sqlite3  *db;       // our sqlite3 database
+extern sqlite3  *db; // our sqlite3 database
 extern qboolean isDBActive; // general flag for active dbms(db_mode is latched)
 
 int DB_Init(void);

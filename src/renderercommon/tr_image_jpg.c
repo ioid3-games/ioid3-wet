@@ -50,15 +50,13 @@
  * out to our routines during JPEG decoding.
  * setjmp/longjmp buffer is added to make a custom JPEG manager struct.
  */
-typedef struct
-{
+typedef struct {
 	struct jpeg_error_mgr pub;
 	jmp_buf jmpbuf;
 } my_jpeg_error_mgr;
 
-static void R_JPGErrorExit(j_common_ptr cinfo)
-{
-	char              buffer[JMSG_LENGTH_MAX];
+static void R_JPGErrorExit(j_common_ptr cinfo) {
+	char buffer[JMSG_LENGTH_MAX];
 	my_jpeg_error_mgr *mgr = (my_jpeg_error_mgr *)cinfo->err;
 
 	(*cinfo->err->format_message)(cinfo, buffer);
@@ -71,8 +69,7 @@ static void R_JPGErrorExit(j_common_ptr cinfo)
 	longjmp(mgr->jmpbuf, 23);
 }
 
-static void R_JPGOutputMessage(j_common_ptr cinfo)
-{
+static void R_JPGOutputMessage(j_common_ptr cinfo) {
 	char buffer[JMSG_LENGTH_MAX];
 
 	/* Create the message */
@@ -82,12 +79,11 @@ static void R_JPGOutputMessage(j_common_ptr cinfo)
 	Ren_Print("%s\n", buffer);
 }
 
-void R_LoadJPG(const char *filename, unsigned char **pic, int *width, int *height, byte alphaByte)
-{
+void R_LoadJPG(const char *filename, unsigned char **pic, int *width, int *height, byte alphaByte) {
 	/* This struct contains the JPEG decompression parameters and pointers to
 	 * working space (which is allocated as needed by the JPEG library).
 	 */
-	struct jpeg_decompress_struct cinfo = { NULL };
+	struct jpeg_decompress_struct cinfo = {NULL};
 
 	/* We use our private extension JPEG error handler.
 	 * Note that this struct must live as long as the main JPEG parameter
@@ -96,14 +92,13 @@ void R_LoadJPG(const char *filename, unsigned char **pic, int *width, int *heigh
 	my_jpeg_error_mgr jerr;
 
 	/* More stuff */
-	JSAMPARRAY   buffer;        /* Output row buffer */
-	unsigned int row_stride;    /* physical row width in output buffer */
+	JSAMPARRAY   buffer; /* Output row buffer */
+	unsigned int row_stride; /* physical row width in output buffer */
 	unsigned int pixelcount, memcount;
 	unsigned int sindex, dindex;
 	byte         *out;
-	int          len;
-	union
-	{
+	int len;
+	union {
 		byte *b;
 		void *v;
 	} fbuffer;
@@ -116,8 +111,8 @@ void R_LoadJPG(const char *filename, unsigned char **pic, int *width, int *heigh
 	 */
 
 	len = ri.FS_ReadFile(( char * ) filename, &fbuffer.v);
-	if (!fbuffer.b || len < 0)
-	{
+
+	if (!fbuffer.b || len < 0) {
 		return;
 	}
 
@@ -128,16 +123,15 @@ void R_LoadJPG(const char *filename, unsigned char **pic, int *width, int *heigh
 	 * This routine fills in the contents of struct jerr, and returns jerr's
 	 * address which we place into the link field in cinfo.
 	 */
-	cinfo.err                 = jpeg_std_error(&jerr.pub);
-	cinfo.err->error_exit     = R_JPGErrorExit;
+	cinfo.err = jpeg_std_error(&jerr.pub);
+	cinfo.err->error_exit = R_JPGErrorExit;
 	cinfo.err->output_message = R_JPGOutputMessage;
 
 	/* Now we can initialize the JPEG decompression object. */
 	jpeg_create_decompress(&cinfo);
 
 	/* deep error handling */
-	if (setjmp(jerr.jmpbuf))
-	{
+	if (setjmp(jerr.jmpbuf)) {
 		// There was an error in jpeg decompression. Abort.
 		return;
 	}
@@ -186,8 +180,7 @@ void R_LoadJPG(const char *filename, unsigned char **pic, int *width, int *heigh
 	if (!cinfo.output_width || !cinfo.output_height
 	    || ((pixelcount * 4) / cinfo.output_width) / 4 != cinfo.output_height
 	    || pixelcount > 0x1FFFFFFF || cinfo.output_components != 3
-	    )
-	{
+	    ) {
 		// Free the memory to make sure we don't leak memory
 		ri.FS_FreeFile(fbuffer.v);
 		jpeg_destroy_decompress(&cinfo);
@@ -196,12 +189,12 @@ void R_LoadJPG(const char *filename, unsigned char **pic, int *width, int *heigh
 		         cinfo.output_width, cinfo.output_height, pixelcount * 4, cinfo.output_components);
 	}
 
-	memcount   = pixelcount * 4;
+	memcount = pixelcount * 4;
 	row_stride = cinfo.output_width * cinfo.output_components;
 
 	out = R_GetImageBuffer(memcount, BUFFER_IMAGE, filename);
 
-	*width  = cinfo.output_width;
+	*width = cinfo.output_width;
 	*height = cinfo.output_height;
 
 	/* Step 6: while (scan lines remain to be read) */
@@ -210,13 +203,12 @@ void R_LoadJPG(const char *filename, unsigned char **pic, int *width, int *heigh
 	/* Here we use the library's state variable cinfo.output_scanline as the
 	 * loop counter, so that we don't have to keep track ourselves.
 	 */
-	while (cinfo.output_scanline < cinfo.output_height)
-	{
+	while (cinfo.output_scanline < cinfo.output_height) {
 		/* jpeg_read_scanlines expects an array of pointers to scanlines.
 		 * Here the array is only one element long, but you could ask for
 		 * more than one scanline at a time if that's more convenient.
 		 */
-		buf    = ((out + (row_stride * cinfo.output_scanline)));
+		buf = ((out + (row_stride * cinfo.output_scanline)));
 		buffer = &buf;
 		( void ) jpeg_read_scanlines(&cinfo, buffer, 1);
 	}
@@ -227,14 +219,14 @@ void R_LoadJPG(const char *filename, unsigned char **pic, int *width, int *heigh
 	sindex = pixelcount * cinfo.output_components;
 	dindex = memcount;
 
-	do
-	{
+	do {
 		buf[--dindex] = 255;
 		buf[--dindex] = buf[--sindex];
 		buf[--dindex] = buf[--sindex];
 		buf[--dindex] = buf[--sindex];
 
 	}
+
 	while (sindex);
 
 	*pic = out;
@@ -268,11 +260,10 @@ void R_LoadJPG(const char *filename, unsigned char **pic, int *width, int *heigh
 
 /* Expanded data destination object for stdio output */
 
-typedef struct
-{
+typedef struct {
 	struct jpeg_destination_mgr pub; /* public fields */
 
-	byte *outfile;              /* target stream */
+	byte *outfile; /* target stream */
 	int size;
 } my_destination_mgr;
 
@@ -285,12 +276,11 @@ typedef my_destination_mgr *my_dest_ptr;
  */
 
 static void
-init_destination(j_compress_ptr cinfo)
-{
+init_destination(j_compress_ptr cinfo) {
 	my_dest_ptr dest = ( my_dest_ptr ) cinfo->dest;
 
 	dest->pub.next_output_byte = dest->outfile;
-	dest->pub.free_in_buffer   = dest->size;
+	dest->pub.free_in_buffer = dest->size;
 }
 
 
@@ -317,8 +307,7 @@ init_destination(j_compress_ptr cinfo)
  * write it out when emptying the buffer externally.
  */
 
-static boolean empty_output_buffer(j_compress_ptr cinfo)
-{
+static boolean empty_output_buffer(j_compress_ptr cinfo) {
 	my_dest_ptr dest = ( my_dest_ptr ) cinfo->dest;
 
 	jpeg_destroy_compress(cinfo);
@@ -339,8 +328,7 @@ static boolean empty_output_buffer(j_compress_ptr cinfo)
  * for error exit.
  */
 
-static void term_destination(j_compress_ptr cinfo)
-{
+static void term_destination(j_compress_ptr cinfo) {
 }
 
 /*
@@ -348,8 +336,7 @@ static void term_destination(j_compress_ptr cinfo)
  * The caller must have already opened the stream, and is responsible
  * for closing it after finishing compression.
  */
-static void jpegDest(j_compress_ptr cinfo, byte *outfile, int size)
-{
+static void jpegDest(j_compress_ptr cinfo, byte *outfile, int size) {
 	my_dest_ptr dest;
 
 	/* The destination object is made permanent so that multiple JPEG images
@@ -365,12 +352,12 @@ static void jpegDest(j_compress_ptr cinfo, byte *outfile, int size)
 		                                         sizeof(my_destination_mgr));
 	}
 
-	dest                          = ( my_dest_ptr ) cinfo->dest;
-	dest->pub.init_destination    = init_destination;
+	dest = ( my_dest_ptr ) cinfo->dest;
+	dest->pub.init_destination = init_destination;
 	dest->pub.empty_output_buffer = empty_output_buffer;
-	dest->pub.term_destination    = term_destination;
-	dest->outfile                 = outfile;
-	dest->size                    = size;
+	dest->pub.term_destination = term_destination;
+	dest->outfile = outfile;
+	dest->size = size;
 }
 
 /*
@@ -380,18 +367,17 @@ Encodes JPEG from image in image_buffer and writes to buffer.
 Expects RGB input data
 =================
 */
-size_t RE_SaveJPGToBuffer(byte *buffer, size_t bufSize, int quality, int image_width, int image_height, byte *image_buffer, int padding)
-{
+size_t RE_SaveJPGToBuffer(byte *buffer, size_t bufSize, int quality, int image_width, int image_height, byte *image_buffer, int padding) {
 	struct jpeg_compress_struct cinfo;
 	struct jpeg_error_mgr       jerr;
 	JSAMPROW                    row_pointer[1]; /* pointer to JSAMPLE row[s] */
 	my_dest_ptr                 dest;
-	int                         row_stride; /* physical row width in image buffer */
-	size_t                      outcount;
+	int row_stride; /* physical row width in image buffer */
+	size_t outcount;
 
 	/* Step 1: allocate and initialize JPEG compression object */
-	cinfo.err                 = jpeg_std_error(&jerr);
-	cinfo.err->error_exit     = R_JPGErrorExit;
+	cinfo.err = jpeg_std_error(&jerr);
+	cinfo.err->error_exit = R_JPGErrorExit;
 	cinfo.err->output_message = R_JPGOutputMessage;
 
 	/* Now we can initialize the JPEG compression object. */
@@ -402,16 +388,15 @@ size_t RE_SaveJPGToBuffer(byte *buffer, size_t bufSize, int quality, int image_w
 	jpegDest(&cinfo, buffer, bufSize);
 
 	/* Step 3: set parameters for compression */
-	cinfo.image_width      = image_width; /* image width and height, in pixels */
-	cinfo.image_height     = image_height;
-	cinfo.input_components = 3;         /* # of color components per pixel */
-	cinfo.in_color_space   = JCS_RGB;   /* colorspace of input image */
+	cinfo.image_width = image_width; /* image width and height, in pixels */
+	cinfo.image_height = image_height;
+	cinfo.input_components = 3; /* # of color components per pixel */
+	cinfo.in_color_space = JCS_RGB; /* colorspace of input image */
 
 	jpeg_set_defaults(&cinfo);
 	jpeg_set_quality(&cinfo, quality, TRUE /* limit to baseline-JPEG values */);
 	/* If quality is set high, disable chroma subsampling */
-	if (quality >= 85)
-	{
+	if (quality >= 85) {
 		cinfo.comp_info[0].h_samp_factor = 1;
 		cinfo.comp_info[0].v_samp_factor = 1;
 	}
@@ -423,8 +408,7 @@ size_t RE_SaveJPGToBuffer(byte *buffer, size_t bufSize, int quality, int image_w
 	/*           jpeg_write_scanlines(...); */
 	row_stride = image_width * cinfo.input_components + padding; /* JSAMPLEs per row in image_buffer */
 
-	while (cinfo.next_scanline < cinfo.image_height)
-	{
+	while (cinfo.next_scanline < cinfo.image_height) {
 		/* jpeg_write_scanlines expects an array of pointers to scanlines.
 		 * Here the array is only one element long, but you could pass
 		 * more than one scanline at a time if that's more convenient.
@@ -436,7 +420,7 @@ size_t RE_SaveJPGToBuffer(byte *buffer, size_t bufSize, int quality, int image_w
 	/* Step 6: Finish compression */
 	jpeg_finish_compress(&cinfo);
 
-	dest     = ( my_dest_ptr ) cinfo.dest;
+	dest = ( my_dest_ptr ) cinfo.dest;
 	outcount = dest->size - dest->pub.free_in_buffer;
 
 	/* Step 7: release JPEG compression object */
@@ -446,13 +430,12 @@ size_t RE_SaveJPGToBuffer(byte *buffer, size_t bufSize, int quality, int image_w
 	return outcount;
 }
 
-void RE_SaveJPG(char *filename, int quality, int image_width, int image_height, byte *image_buffer, int padding)
-{
+void RE_SaveJPG(char *filename, int quality, int image_width, int image_height, byte *image_buffer, int padding) {
 	byte   *out;
 	size_t bufSize;
 
 	bufSize = image_width * image_height * 3;
-	out     = ri.Hunk_AllocateTempMemory(bufSize);
+	out = ri.Hunk_AllocateTempMemory(bufSize);
 
 	bufSize = RE_SaveJPGToBuffer(out, bufSize, quality, image_width,
 	                             image_height, image_buffer, padding);

@@ -677,18 +677,18 @@ int PS_ReadLiteral(script_t *script, token_t *token) {
     if (!*script->script_p) {
         ScriptError(script, "end of file before trailing \'");
         return 0;
-  }
+}
    // if it is an escape character
     if (*script->script_p == '\\') {
         if (!PS_ReadEscapeCharacter(script, &token->string[1]))
         {
             return 0;
-      }
-  }
+    }
+}
     else
     {
         token->string[1] = *script->script_p++;
-  }
+}
    // check for trailing quote
     if (*script->script_p != '\'') {
         ScriptWarning(script, "too many characters in literal, ignored");
@@ -697,12 +697,12 @@ int PS_ReadLiteral(script_t *script, token_t *token) {
                *script->script_p != '\n')
         {
             script->script_p++;
-      }
+    }
         if (*script->script_p == '\'')
         {
             script->script_p++;
-      }
-  }
+    }
+}
    // store the trailing quote
     token->string[2] = *script->script_p++;
    // store trailing zero to end the string
@@ -1119,16 +1119,16 @@ int ScriptSkipTo(script_t *script, char *value) {
         if (!PS_ReadWhiteSpace(script))
         {
             return 0;
-      }
+    }
         if (*script->script_p == firstchar)
         {
             if (!strncmp(script->script_p, value, len))
             {
                 return 1;
-          }
-      }
+        }
+    }
         script->script_p++;
-  }
+}
     while (1);
 
     return 0; // never reached

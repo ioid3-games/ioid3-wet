@@ -74,18 +74,18 @@ typedef qboolean(*addToSnapshotCallback)(int entityNum, int clientNum);
 
 // don't add or remove fields to keep 2.60 compatibility
 typedef struct {
-	qboolean linked;               // qfalse if not in any good cluster
+	qboolean linked; // qfalse if not in any good cluster
 	int linkcount;
-	int svFlags;                   // SVF_NOCLIENT, SVF_BROADCAST, etc
-	int singleClient;              // only send to this client when SVF_SINGLECLIENT is set
+	int svFlags; // SVF_NOCLIENT, SVF_BROADCAST, etc
+	int singleClient; // only send to this client when SVF_SINGLECLIENT is set
 
-	qboolean bmodel;               // if false, assume an explicit mins / maxs bounding box
+	qboolean bmodel; // if false, assume an explicit mins / maxs bounding box
 	                               // only set by trap_SetBrushModel
 	vec3_t mins, maxs;
-	int contents;                  // CONTENTS_TRIGGER, CONTENTS_SOLID, CONTENTS_BODY, etc
+	int contents; // CONTENTS_TRIGGER, CONTENTS_SOLID, CONTENTS_BODY, etc
 	                               // a non - solid entity should set to 0
 
-	vec3_t absmin, absmax;         // derived from mins / maxs and origin + rotation
+	vec3_t absmin, absmax; // derived from mins / maxs and origin + rotation
 
 	// currentOrigin will be used for all collision detection and world linking.
 	// it will not necessarily be the same as the trajectory evaluation for the current
@@ -105,8 +105,8 @@ typedef struct {
 
 // the server looks at a sharedEntity, which is the start of the game's gentity_t structure
 typedef struct {
-	entityState_t s;               // communicated by server to clients
-	entityShared_t r;              // shared by both the server system and game
+	entityState_t s; // communicated by server to clients
+	entityShared_t r; // shared by both the server system and game
 } sharedEntity_t;
 
 // ===============================================================

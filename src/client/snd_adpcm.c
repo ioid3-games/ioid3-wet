@@ -49,15 +49,15 @@ static int stepsizeTable[89] = {
 
 void S_AdpcmEncode(short indata[], char outdata[], int len, struct adpcm_state *state) {
 	short *inp = indata; // Input buffer pointer
-	signed char *outp = (signed char *)outdata;     // output buffer pointer
-	int val;   // Current input sample value
-	int sign;  // Current adpcm sign bit
+	signed char *outp = (signed char *)outdata; // output buffer pointer
+	int val; // Current input sample value
+	int sign; // Current adpcm sign bit
 	int delta; // Current adpcm output value
-	int diff;  // Difference between val and sample
-	int index = state->index;       // Current step change index
+	int diff; // Difference between val and sample
+	int index = state->index; // Current step change index
 	int step = stepsizeTable[index]; // Stepsize
-	int valpred = state->sample;      // Predicted output value
-	int vpdiff;          // Current change to valpred
+	int valpred = state->sample; // Predicted output value
+	int vpdiff; // Current change to valpred
 	int outputbuffer = 0; // place to keep previous 4 - bit value
 	int bufferstep = 1; // toggle between outputbuffer / output
 
@@ -155,13 +155,13 @@ void S_AdpcmEncode(short indata[], char outdata[], int len, struct adpcm_state *
 
 static void S_AdpcmDecode(const char indata[], short *outdata, int len, struct adpcm_state *state) {
 	signed char *inp = (signed char *)indata; // Input buffer pointer
-	int outp = 0;  // output buffer pointer
-	int sign;      // Current adpcm sign bit
-	int delta;     // Current adpcm output value
-	int index = state->index;       // Current step change index
+	int outp = 0; // output buffer pointer
+	int sign; // Current adpcm sign bit
+	int delta; // Current adpcm output value
+	int index = state->index; // Current step change index
 	int step = stepsizeTable[index]; // Stepsize
-	int valpred = state->sample;      // Predicted value
-	int vpdiff;         // Current change to valpred
+	int valpred = state->sample; // Predicted value
+	int vpdiff; // Current change to valpred
 	int inputbuffer = 0; // place to keep next 4 - bit value
 	int bufferstep = 0; // toggle between inputbuffer / input
 
@@ -263,7 +263,7 @@ int S_AdpcmMemoryNeeded(const wavinfo_t *info) {
     blockCount = scaledSampleCount / PAINTBUFFER_SIZE;
     if (scaledSampleCount % PAINTBUFFER_SIZE) {
         blockCount++;
-  }
+}
 
    // calc memory needed to store the block headers
     headerMemory = blockCount * sizeof(adpcm_state_t);

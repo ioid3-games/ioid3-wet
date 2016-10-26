@@ -45,7 +45,7 @@
 #include "g_etbot_interface.h"
 #endif
 
-#define RESPAWN_NEVER       - 1
+#define RESPAWN_NEVER - 1
 #define RESPAWN_KEY          4
 #define RESPAWN_ARMOR        25
 #define RESPAWN_TEAM_WEAPON  30
@@ -78,7 +78,7 @@ int AddToClip(playerState_t *ps, int weapon, int ammomove, int outOfReserve) {
 
 	if (!ammomove)  // amount to add to the clip not specified
 	{
-		ammomove = maxclip - inclip;   // max amount that can be moved into the clip
+		ammomove = maxclip - inclip; // max amount that can be moved into the clip
 	} else if (ammomove > maxclip - inclip) {
 		ammomove = maxclip - inclip;
 	}
@@ -121,10 +121,10 @@ int Add_Ammo(gentity_t *ent, int weapon, int count, qboolean fillClip) {
 	if (ammoweap == WP_GRENADE_LAUNCHER)          // make sure if he picks up a grenade that he get's the "launcher" too
 	{
 		COM_BitSet(ent->client->ps.weapons, WP_GRENADE_LAUNCHER);
-		fillClip = qtrue;  // grenades always filter into the "clip"
+		fillClip = qtrue; // grenades always filter into the "clip"
 	} else if (ammoweap == WP_GRENADE_PINEAPPLE) {
 		COM_BitSet(ent->client->ps.weapons, WP_GRENADE_PINEAPPLE);
-		fillClip = qtrue;  // grenades always filter into the "clip"
+		fillClip = qtrue; // grenades always filter into the "clip"
 	} else if (ammoweap == WP_DYNAMITE) {
 		COM_BitSet(ent->client->ps.weapons, WP_DYNAMITE);
 		fillClip = qtrue;
@@ -141,13 +141,13 @@ int Add_Ammo(gentity_t *ent, int weapon, int count, qboolean fillClip) {
 		ent->client->ps.ammoclip[ammoweap] += count;
 
 		if (ent->client->ps.ammoclip[ammoweap] > maxammo) {
-			ent->client->ps.ammoclip[ammoweap] = maxammo;  // - ent->client->ps.ammoclip[BG_FindClipForWeapon(weapon)];
+			ent->client->ps.ammoclip[ammoweap] = maxammo; // - ent->client->ps.ammoclip[BG_FindClipForWeapon(weapon)];
 		}
 	} else {
 		ent->client->ps.ammo[ammoweap] += count;
 
 		if (ent->client->ps.ammo[ammoweap] > maxammo) {
-			ent->client->ps.ammo[ammoweap] = maxammo;  // - ent->client->ps.ammoclip[BG_FindClipForWeapon(weapon)];
+			ent->client->ps.ammo[ammoweap] = maxammo; // - ent->client->ps.ammoclip[BG_FindClipForWeapon(weapon)];
 		}
 	}
 
@@ -658,13 +658,11 @@ void RespawnItem(gentity_t *ent) {
 
 		master = ent->teammaster;
 
-		for (count = 0, ent = master; ent; ent = ent->teamchain, count++)
-			;
+		for (count = 0, ent = master; ent; ent = ent->teamchain, count++);
 
 		choice = rand() % count;
 
-		for (count = 0, ent = master; count < choice; ent = ent->teamchain, count++)
-			;
+		for (count = 0, ent = master; count < choice; ent = ent->teamchain, count++);
 	}
 
 	ent->r.contents = CONTENTS_TRIGGER;
@@ -702,7 +700,7 @@ void Touch_Item_Auto(gentity_t *ent, gentity_t *other, trace_t *trace) {
 
 	if (other->client->pers.autoActivate == PICKUP_FORCE)     // autoactivate probably forced by the "Cmd_Activate_f()" function
 	{
-		other->client->pers.autoActivate = PICKUP_ACTIVATE;     // so reset it.
+		other->client->pers.autoActivate = PICKUP_ACTIVATE; // so reset it.
 	}
 }
 
@@ -724,7 +722,7 @@ void Touch_Item(gentity_t *ent, gentity_t *other, trace_t *trace) {
 	}
 
 	if (other->health <= 0) {
-		return;    // dead people can't pickup
+		return; // dead people can't pickup
 	}
 	// the same pickup rules are used for client side and server side
 	if (!BG_CanItemBeGrabbed(&ent->s, &other->client->ps, other->client->sess.skill, other->client->sess.sessionTeam)) {
@@ -819,11 +817,11 @@ gentity_t *LaunchItem(gitem_t *item, vec3_t origin, vec3_t velocity, int ownerNu
 
 	dropped->classname = item->classname;
 	dropped->item = item;
-	VectorSet(dropped->r.mins, -ITEM_RADIUS, -ITEM_RADIUS, 0);             // so items sit on the ground
-	VectorSet(dropped->r.maxs, ITEM_RADIUS, ITEM_RADIUS, 2 * ITEM_RADIUS);   // so items sit on the ground
+	VectorSet(dropped->r.mins, -ITEM_RADIUS, -ITEM_RADIUS, 0); // so items sit on the ground
+	VectorSet(dropped->r.maxs, ITEM_RADIUS, ITEM_RADIUS, 2 * ITEM_RADIUS); // so items sit on the ground
 	dropped->r.contents = CONTENTS_TRIGGER|CONTENTS_ITEM;
 
-	dropped->clipmask = CONTENTS_SOLID|CONTENTS_MISSILECLIP;     // fix for items falling through grates
+	dropped->clipmask = CONTENTS_SOLID|CONTENTS_MISSILECLIP; // fix for items falling through grates
 
 	dropped->touch = Touch_Item_Auto;
 
@@ -863,7 +861,7 @@ gentity_t *LaunchItem(gitem_t *item, vec3_t origin, vec3_t velocity, int ownerNu
 	{
 		gentity_t *flag = &g_entities[g_entities[ownerNum].client->flagParent];
 
-		dropped->s.otherEntityNum = g_entities[ownerNum].client->flagParent;   // store the entitynum of our original flag spawner
+		dropped->s.otherEntityNum = g_entities[ownerNum].client->flagParent; // store the entitynum of our original flag spawner
 		dropped->s.density = 1;
 		dropped->think = Team_DroppedFlagThink;
 		dropped->nextthink = level.time + 30000;
@@ -940,9 +938,9 @@ void FinishSpawningItem(gentity_t *ent) {
 	ent->r.contents = CONTENTS_TRIGGER|CONTENTS_ITEM;
 	ent->touch = Touch_Item_Auto;
 	ent->s.eType = ET_ITEM;
-	ent->s.modelindex = ent->item - bg_itemlist;       // store item number in modelindex
+	ent->s.modelindex = ent->item - bg_itemlist; // store item number in modelindex
 
-	ent->s.otherEntityNum2 = 0;    // takes modelindex2's place in signaling a dropped item
+	ent->s.otherEntityNum2 = 0; // takes modelindex2's place in signaling a dropped item
 	// we don't use this(yet, anyway) so I'm taking it so you can specify a model for treasure items and clipboards
 	// ent->s.modelindex2 = 0; // zero indicates this isn't a dropped item
 	if (ent->model) {
@@ -1002,7 +1000,7 @@ void FinishSpawningItem(gentity_t *ent) {
 		for (i = 0; i < 4 && ent->item->world_model[i]; i++) {
 		}
 
-		ent->s.density = i - 1;  // store number of stages in 'density' for client(most will have '1')
+		ent->s.density = i - 1; // store number of stages in 'density' for client(most will have '1')
 	}
 
 	trap_LinkEntity(ent);
@@ -1027,7 +1025,7 @@ void G_SpawnItem(gentity_t *ent, gitem_t *item) {
 		ent->noise_index = G_SoundIndex(noise);
 	}
 
-	ent->physicsBounce = 0.50;     // items are bouncy
+	ent->physicsBounce = 0.50; // items are bouncy
 
 	if (ent->model) {
 		ent->s.modelindex2 = G_ModelIndex(ent->model);
@@ -1068,7 +1066,7 @@ void G_BounceItem(gentity_t *ent, trace_t *trace) {
 			G_SetAngle(ent, ent->s.angles);
 			trace->endpos[2] -= (tan(DEG2RAD(ent->s.angles[0])) * ITEM_RADIUS);
 		} else {
-			trace->endpos[2] += 1.0;   // make sure it is off ground
+			trace->endpos[2] += 1.0; // make sure it is off ground
 		}
 
 		SnapVector(trace->endpos);
@@ -1169,7 +1167,7 @@ void G_RunItem(gentity_t *ent) {
 		tr.fraction = 0;
 	}
 
-	trap_LinkEntity(ent);  // FIXME: avoid this for stationary?
+	trap_LinkEntity(ent); // FIXME: avoid this for stationary?
 
 	// check think function
 	G_RunThink(ent);

@@ -81,7 +81,7 @@ vec4_t g_color_table[32] = {
 	{1.0, 0.5, 0.0, 1.0}, // 8 - orange       8
 	{0.5, 0.5, 0.5, 1.0}, // 9 - md.grey      9
 	{0.75, 0.75, 0.75, 1.0}, // : - lt.grey      10     // lt grey for names
-	{0.75, 0.75, 0.75, 1.0}, // ; - lt.grey      11
+	{0.75, 0.75, 0.75, 1.0}, //; - lt.grey      11
 	{0.0, 0.5, 0.0, 1.0}, // < -md.green     12
 	{0.5, 0.5, 0.0, 1.0}, // = -md.yellow    13
 	{0.0, 0.0, 0.5, 1.0}, // > -md.blue      14
@@ -583,10 +583,10 @@ float Q_rsqrt(float number) {
 
 	x2 = number * 0.5F;
 	t.f = number;
-	t.i = 0x5f3759df - (t.i >> 1);                 // what the fuck?
+	t.i = 0x5f3759df - (t.i >> 1); // what the fuck?
 	y = t.f;
-	y = y * (threehalfs - (x2 * y * y));     // 1st iteration
-	// y = y * (threehalfs - (x2 * y * y));  // 2nd iteration, this can be removed
+	y = y * (threehalfs - (x2 * y * y)); // 1st iteration
+	// y = y * (threehalfs - (x2 * y * y)); // 2nd iteration, this can be removed
 
 	return y;
 }
@@ -750,13 +750,13 @@ int BoxOnPlaneSide2(vec3_t emins, vec3_t emaxs, struct cplane_s *p) {
         {
             corners[0][i] = emins[i];
             corners[1][i] = emaxs[i];
-      }
+    }
         else
         {
             corners[1][i] = emins[i];
             corners[0][i] = emaxs[i];
-      }
-  }
+    }
+}
     dist1 = DotProduct(p->normal, corners[0]) - p->dist;
     dist2 = DotProduct(p->normal, corners[1]) - p->dist;
     sides = 0;
@@ -821,7 +821,7 @@ int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, struct cplane_s *p) {
 		dist2 = p->normal[0] * emaxs[0] + p->normal[1] * emaxs[1] + p->normal[2] * emaxs[2];
 		break;
 	default:
-		dist1 = dist2 = 0;     // shut up compiler
+		dist1 = dist2 = 0; // shut up compiler
 		break;
 	}
 
@@ -2015,10 +2015,10 @@ void mat4_copy(const mat4_t in, mat4_t out) {
 		: "memory"
 	);
 #else
-	out[0] = in[0];       out[4] = in[4];       out[8] = in[8];       out[12] = in[12];
-	out[1] = in[1];       out[5] = in[5];       out[9] = in[9];       out[13] = in[13];
-	out[2] = in[2];       out[6] = in[6];       out[10] = in[10];       out[14] = in[14];
-	out[3] = in[3];       out[7] = in[7];       out[11] = in[11];       out[15] = in[15];
+	out[0] = in[0]; out[4] = in[4]; out[8] = in[8]; out[12] = in[12];
+	out[1] = in[1]; out[5] = in[5]; out[9] = in[9]; out[13] = in[13];
+	out[2] = in[2]; out[6] = in[6]; out[10] = in[10]; out[14] = in[14];
+	out[3] = in[3]; out[7] = in[7]; out[11] = in[11]; out[15] = in[15];
 #endif
 }
 
@@ -2027,10 +2027,10 @@ replacement for glOrtho
 see glspec30.pdf chapter 2.12 Coordinate Transformations
 */
 void MatrixOrthogonalProjection(mat4_t m, vec_t left, vec_t right, vec_t bottom, vec_t top, vec_t nearvec, vec_t farvec) {
-	m[0] = 2 / (right - left);  m[4] = 0;                   m[8] = 0;                   m[12] = -(right + left) / (right - left);
-	m[1] = 0;                   m[5] = 2 / (top - bottom);  m[9] = 0;                   m[13] = -(top + bottom) / (top - bottom);
-	m[2] = 0;                   m[6] = 0;                   m[10] = -2 / (farvec - nearvec);    m[14] = -(farvec + nearvec) / (farvec - nearvec);
-	m[3] = 0;                   m[7] = 0;                   m[11] = 0;                  m[15] = 1;
+	m[0] = 2 / (right - left); m[4] = 0; m[8] = 0; m[12] = -(right + left) / (right - left);
+	m[1] = 0; m[5] = 2 / (top - bottom); m[9] = 0; m[13] = -(top + bottom) / (top - bottom);
+	m[2] = 0; m[6] = 0; m[10] = -2 / (farvec - nearvec); m[14] = -(farvec + nearvec) / (farvec - nearvec);
+	m[3] = 0; m[7] = 0; m[11] = 0; m[15] = 1;
 }
 
 void mat4_transform_vec4(const mat4_t m, const vec4_t in, vec4_t out) {
@@ -2070,10 +2070,10 @@ void mat4_transform_vec4(const mat4_t m, const vec4_t in, vec4_t out) {
 }
 
 void mat4_reset_translate(mat4_t m, vec_t x, vec_t y, vec_t z) {
-	m[0] = 1;      m[4] = 0;      m[8] = 0;      m[12] = x;
-	m[1] = 0;      m[5] = 1;      m[9] = 0;      m[13] = y;
-	m[2] = 0;      m[6] = 0;      m[10] = 1;      m[14] = z;
-	m[3] = 0;      m[7] = 0;      m[11] = 0;      m[15] = 1;
+	m[0] = 1; m[4] = 0; m[8] = 0; m[12] = x;
+	m[1] = 0; m[5] = 1; m[9] = 0; m[13] = y;
+	m[2] = 0; m[6] = 0; m[10] = 1; m[14] = z;
+	m[3] = 0; m[7] = 0; m[11] = 0; m[15] = 1;
 }
 
 void mat4_reset_translate_vec3(mat4_t m, vec3_t position) {
@@ -2081,10 +2081,10 @@ void mat4_reset_translate_vec3(mat4_t m, vec3_t position) {
 }
 
 void mat4_reset_scale(mat4_t m, vec_t x, vec_t y, vec_t z) {
-	m[0] = x;      m[4] = 0;      m[8] = 0;      m[12] = 0;
-	m[1] = 0;      m[5] = y;      m[9] = 0;      m[13] = 0;
-	m[2] = 0;      m[6] = 0;      m[10] = z;      m[14] = 0;
-	m[3] = 0;      m[7] = 0;      m[11] = 0;      m[15] = 1;
+	m[0] = x; m[4] = 0; m[8] = 0; m[12] = 0;
+	m[1] = 0; m[5] = y; m[9] = 0; m[13] = 0;
+	m[2] = 0; m[6] = 0; m[10] = z; m[14] = 0;
+	m[3] = 0; m[7] = 0; m[11] = 0; m[15] = 1;
 }
 
 void mat4_mult(const mat4_t a, const mat4_t b, mat4_t out) {
@@ -2149,10 +2149,10 @@ void mat4_mult_self(mat4_t m, const mat4_t m2) {
 }
 
 void mat4_ident(mat4_t m) {
-	m[0] = 1;      m[4] = 0;      m[8] = 0;      m[12] = 0;
-	m[1] = 0;      m[5] = 1;      m[9] = 0;      m[13] = 0;
-	m[2] = 0;      m[6] = 0;      m[10] = 1;      m[14] = 0;
-	m[3] = 0;      m[7] = 0;      m[11] = 0;      m[15] = 1;
+	m[0] = 1; m[4] = 0; m[8] = 0; m[12] = 0;
+	m[1] = 0; m[5] = 1; m[9] = 0; m[13] = 0;
+	m[2] = 0; m[6] = 0; m[10] = 1; m[14] = 0;
+	m[3] = 0; m[7] = 0; m[11] = 0; m[15] = 1;
 }
 
 void mat4_transform_vec3(const mat4_t m, const vec3_t in, vec3_t out) {
@@ -2187,10 +2187,10 @@ void mat4_transpose(const mat4_t in, mat4_t out) {
 		: "memory"
 	);
 #else
-	out[0] = in[0];       out[1] = in[4];       out[2] = in[8];       out[3] = in[12];
-	out[4] = in[1];       out[5] = in[5];       out[6] = in[9];       out[7] = in[13];
-	out[8] = in[2];       out[9] = in[6];       out[10] = in[10];       out[11] = in[14];
-	out[12] = in[3];       out[13] = in[7];       out[14] = in[11];       out[15] = in[15];
+	out[0] = in[0]; out[1] = in[4]; out[2] = in[8]; out[3] = in[12];
+	out[4] = in[1]; out[5] = in[5]; out[6] = in[9]; out[7] = in[13];
+	out[8] = in[2]; out[9] = in[6]; out[10] = in[10]; out[11] = in[14];
+	out[12] = in[3]; out[13] = in[7]; out[14] = in[11]; out[15] = in[15];
 #endif
 }
 
@@ -2293,47 +2293,47 @@ void mat4_from_quat(mat4_t m, const quat_t q) {
 }
 
 void MatrixFromVectorsFLU(mat4_t m, const vec3_t forward, const vec3_t left, const vec3_t up) {
-	m[0] = forward[0];     m[4] = left[0];        m[8] = up[0];  m[12] = 0;
-	m[1] = forward[1];     m[5] = left[1];        m[9] = up[1];  m[13] = 0;
-	m[2] = forward[2];     m[6] = left[2];        m[10] = up[2];  m[14] = 0;
-	m[3] = 0;              m[7] = 0;              m[11] = 0;      m[15] = 1;
+	m[0] = forward[0]; m[4] = left[0]; m[8] = up[0]; m[12] = 0;
+	m[1] = forward[1]; m[5] = left[1]; m[9] = up[1]; m[13] = 0;
+	m[2] = forward[2]; m[6] = left[2]; m[10] = up[2]; m[14] = 0;
+	m[3] = 0; m[7] = 0; m[11] = 0; m[15] = 1;
 }
 
 void MatrixSetupTransformFromVectorsFLU(mat4_t m, const vec3_t forward, const vec3_t left, const vec3_t up, const vec3_t origin) {
-	m[0] = forward[0];     m[4] = left[0];        m[8] = up[0];  m[12] = origin[0];
-	m[1] = forward[1];     m[5] = left[1];        m[9] = up[1];  m[13] = origin[1];
-	m[2] = forward[2];     m[6] = left[2];        m[10] = up[2];  m[14] = origin[2];
-	m[3] = 0;              m[7] = 0;              m[11] = 0;      m[15] = 1;
+	m[0] = forward[0]; m[4] = left[0]; m[8] = up[0]; m[12] = origin[0];
+	m[1] = forward[1]; m[5] = left[1]; m[9] = up[1]; m[13] = origin[1];
+	m[2] = forward[2]; m[6] = left[2]; m[10] = up[2]; m[14] = origin[2];
+	m[3] = 0; m[7] = 0; m[11] = 0; m[15] = 1;
 }
 
 void MatrixToVectorsFLU(const mat4_t m, vec3_t forward, vec3_t left, vec3_t up) {
 
 	if (forward) {
-		forward[0] = m[0];     // cp * cy;
+		forward[0] = m[0]; // cp * cy;
 
-		forward[1] = m[1];     // cp * sy;
+		forward[1] = m[1]; // cp * sy;
 
-		forward[2] = m[2];     // - sp;
+		forward[2] = m[2]; // - sp;
 	}
 
 	if (left) {
-		left[0] = m[4];        // sr * sp * cy + cr * - sy;
-		left[1] = m[5];        // sr * sp * sy + cr * cy;
-		left[2] = m[6];        // sr * cp;
+		left[0] = m[4]; // sr * sp * cy + cr * - sy;
+		left[1] = m[5]; // sr * sp * sy + cr * cy;
+		left[2] = m[6]; // sr * cp;
 	}
 
 	if (up) {
-		up[0] = m[8];  // cr * sp * cy + - sr * - sy;
-		up[1] = m[9];  // cr * sp * sy + - sr * cy;
+		up[0] = m[8]; // cr * sp * cy + - sr * - sy;
+		up[1] = m[9]; // cr * sp * sy + - sr * cy;
 		up[2] = m[10]; // cr * cp;
 	}
 }
 
 void MatrixSetupTransformFromVectorsFRU(mat4_t m, const vec3_t forward, const vec3_t right, const vec3_t up, const vec3_t origin) {
-	m[0] = forward[0];     m[4] = -right[0];        m[8] = up[0];  m[12] = origin[0];
-	m[1] = forward[1];     m[5] = -right[1];        m[9] = up[1];  m[13] = origin[1];
-	m[2] = forward[2];     m[6] = -right[2];        m[10] = up[2];  m[14] = origin[2];
-	m[3] = 0;              m[7] = 0;                m[11] = 0;      m[15] = 1;
+	m[0] = forward[0]; m[4] = -right[0]; m[8] = up[0]; m[12] = origin[0];
+	m[1] = forward[1]; m[5] = -right[1]; m[9] = up[1]; m[13] = origin[1];
+	m[2] = forward[2]; m[6] = -right[2]; m[10] = up[2]; m[14] = origin[2];
+	m[3] = 0; m[7] = 0; m[11] = 0; m[15] = 1;
 }
 
 void MatrixToVectorsFRU(const mat4_t m, vec3_t forward, vec3_t right, vec3_t up) {
@@ -2507,8 +2507,8 @@ void mat4_from_angles(mat4_t m, vec_t pitch, vec_t yaw, vec_t roll) {
 	sr = sin(DEG2RAD(roll));
 	cr = cos(DEG2RAD(roll));
 
-	m[0] = cp * cy;  m[4] = (sr * sp * cy + cr * - sy);      m[8] = (cr * sp * cy + - sr * - sy);     m[12] = 0;
-	m[1] = cp * sy;  m[5] = (sr * sp * sy + cr * cy);       m[9] = (cr * sp * sy + - sr * cy);      m[13] = 0;
-	m[2] = -sp;    m[6] = sr * cp;                  m[10] = cr * cp;                  m[14] = 0;
-	m[3] = 0;      m[7] = 0;                      m[11] = 0;                      m[15] = 1;
+	m[0] = cp * cy; m[4] = (sr * sp * cy + cr * - sy); m[8] = (cr * sp * cy + - sr * - sy); m[12] = 0;
+	m[1] = cp * sy; m[5] = (sr * sp * sy + cr * cy); m[9] = (cr * sp * sy + - sr * cy); m[13] = 0;
+	m[2] = -sp; m[6] = sr * cp; m[10] = cr * cp; m[14] = 0;
+	m[3] = 0; m[7] = 0; m[11] = 0; m[15] = 1;
 }

@@ -44,7 +44,6 @@ typedef struct particle_s {
 	struct particle_s *next;
 	float time;
 	float endtime;
-
 	vec3_t org;
 	vec3_t vel;
 	vec3_t accel;
@@ -162,7 +161,7 @@ void CG_AddParticleToScene(cparticle_t *p, vec3_t org, float alpha) {
 			if (p->type == P_BUBBLE || p->type == P_BUBBLE_TURBULENT) {
 				if (org[2] > p->end) {
 					p->time = cg.time;
-					VectorCopy(org, p->org);  // fixes rare snow flakes that flicker on the ground
+					VectorCopy(org, p->org); // fixes rare snow flakes that flicker on the ground
 
 					p->org[2] = (p->start + crandom() * 4);
 
@@ -174,7 +173,7 @@ void CG_AddParticleToScene(cparticle_t *p, vec3_t org, float alpha) {
 			} else {
 				if (org[2] < p->end) {
 					p->time = cg.time;
-					VectorCopy(org, p->org);  // fixes rare snow flakes that flicker on the ground
+					VectorCopy(org, p->org); // fixes rare snow flakes that flicker on the ground
 
 					while (p->org[2] < p->end) {
 						p->org[2] += (p->start - p->end);
@@ -812,7 +811,7 @@ void CG_AddParticles(void) {
 	VectorCopy(cg.refdef_current->viewaxis[2], vup);
 
 	vectoangles(cg.refdef_current->viewaxis[0], rotate_ang);
-	roll       += ((cg.time - oldtime) * 0.1);
+	roll += ((cg.time - oldtime) * 0.1);
 	rotate_ang[ROLL] += (roll * 0.9);
 	AngleVectors(rotate_ang, rforward, rright, rup);
 
@@ -1470,7 +1469,7 @@ void CG_Particle_BleedExtended(qhandle_t pshader, vec3_t origin, int lifetime, i
 	p->startfade = cg.time + 100;
 	// changed calculation to prevent division by 0 for small size
 	p->width = size * (1.0 + random() * 0.5); // rand()%(int)(size * .5f) + size;
-	p->height = size * (1.0 + random() * 0.5);  // rand()%(int)(size * .5f) + size;
+	p->height = size * (1.0 + random() * 0.5); // rand()%(int)(size * .5f) + size;
 
 	p->endheight = p->height * 2;
 	p->endwidth = p->width * 2;

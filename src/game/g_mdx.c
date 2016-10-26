@@ -148,7 +148,7 @@ static void AnglesToAxisBroken(const short angles[2], vec3_t matrix[3]) {
 	}
 
 	sp = sintable[idx];
-	cp = sintable[(idx + 1024) & 0x0FFF];  // % 4096
+	cp = sintable[(idx + 1024) & 0x0FFF]; // % 4096
 
 	idx = angles[1] >> 4;
 
@@ -157,7 +157,7 @@ static void AnglesToAxisBroken(const short angles[2], vec3_t matrix[3]) {
 	}
 
 	sy = sintable[idx];
-	cy = sintable[(idx + 1024) & 0x0FFF];  // % 4096
+	cy = sintable[(idx + 1024) & 0x0FFF]; // % 4096
 
 	matrix[0][0] = cp * cy;
 	matrix[0][1] = cp * sy;
@@ -425,7 +425,7 @@ static void mdx_load(mdx_t *mdxModel, char *mem) {
 	free(mdxModel->frames);
 	ptr = malloc(mdxModel->frame_count * (sizeof(struct frame) + mdxModel->bone_count * sizeof(struct frame_bone)));
 	mdxModel->frames = (void *)ptr;
-	ptr       += mdxModel->frame_count * sizeof(struct frame);
+	ptr += mdxModel->frame_count * sizeof(struct frame);
 
 	for (i = 0; i < mdxModel->frame_count; i++) {
 		struct mdx_frame     	*frame = (void *) (frames + i * (sizeof(struct mdx_frame) + sizeof(struct mdx_frame_bone) * bone_count));
@@ -1117,7 +1117,6 @@ static void mdx_calculate_bone_lerp(
 	float backlerp;
 	struct bone       *oldBone, *bone;
 	struct frame_bone *oldFrameBone, *frameBone;
-
 	vec3_t point, oldpoint;
 
 	if (frameModel->bones[i].torso_weight) {
@@ -1438,7 +1437,7 @@ static void mdx_SwingAngles(float destination, float swingTolerance, float clamp
 			move = swing;
 			*swinging = qfalse;
 		} else {
-			*swinging = SWING_LEFT;    // left
+			*swinging = SWING_LEFT; // left
 		}
 
 		*angle = AngleMod(*angle +move);
@@ -1449,7 +1448,7 @@ static void mdx_SwingAngles(float destination, float swingTolerance, float clamp
 			move = swing;
 			*swinging = qfalse;
 		} else {
-			*swinging = SWING_RIGHT;   // right
+			*swinging = SWING_RIGHT; // right
 		}
 
 		*angle = AngleMod(*angle +move);
@@ -1674,15 +1673,15 @@ static void mdx_SetLerpFrame(gentity_t *ent, glerpFrame_t *lf, int newAnimation,
 		if ((lf == &ent->legsFrame) && (CROUCHING(oldAnim) != CROUCHING(anim))) {
 			if (anim->moveSpeed || (anim->movetype & ((1 << ANIM_MT_TURNLEFT)|(1 << ANIM_MT_TURNRIGHT)))) // if unknown movetype, go there faster
 			{
-				transitionMin = lf->frameTime + 200;   // slowly raise / drop
+				transitionMin = lf->frameTime + 200; // slowly raise / drop
 			} else {
-				transitionMin = lf->frameTime + 350;   // slowly raise / drop
+				transitionMin = lf->frameTime + 350; // slowly raise / drop
 			}
 		} else if (anim->moveSpeed) {
-			transitionMin = lf->frameTime + 120;   // always do some lerping(?)
+			transitionMin = lf->frameTime + 120; // always do some lerping(?)
 		} else   // not moving, so take your time
 		{
-			transitionMin = lf->frameTime + 170;   // always do some lerping(?)
+			transitionMin = lf->frameTime + 170; // always do some lerping(?)
 
 		}
 
@@ -1808,11 +1807,11 @@ static void mdx_RunLerpFrame(gentity_t *ent, glerpFrame_t *lf, int newAnimation,
 		if (!lf->animSpeedScale) {
 			// stopped on the ladder, so stay on the same frame
 			f = lf->frame - anim->firstFrame;
-			lf->frameTime += anim->frameLerp;      // don't wait too long before starting to move again
+			lf->frameTime += anim->frameLerp; // don't wait too long before starting to move again
 		} else if (lf->oldAnimationNumber != lf->animationNumber &&
 		        (!anim->moveSpeed || lf->oldFrame < anim->firstFrame || lf->oldFrame >= anim->firstFrame + anim->numFrames))    // added this so walking frames don't always get reset to 0, which can happen in the middle of a walking anim, which looks wierd
 		{
-			lf->frameTime = lf->animationTime;     // initial lerp
+			lf->frameTime = lf->animationTime; // initial lerp
 			if (oldAnim && anim->moveSpeed)  // keep locomotions going continuously
 			{
 				f = (lf->frame - oldAnim->firstFrame) + 1;
@@ -2259,7 +2258,7 @@ void mdx_tag_position(gentity_t *ent, grefEntity_t *refent, vec3_t org, char *ta
 	VectorMA(org, orientation.origin[1], refent->axis[1], org);
 	VectorMA(org, orientation.origin[2], refent->axis[2], org);
 
-	VectorMA(org, up_offset, orientation.axis[2], org);     // up
+	VectorMA(org, up_offset, orientation.axis[2], org); // up
 	VectorMA(org, forward_offset, orientation.axis[0], org); // forward
 }
 

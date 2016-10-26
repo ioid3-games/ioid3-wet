@@ -200,7 +200,7 @@ static bool has_prefix(const std::string& lhs, const std::string& rhs) {
 }
 
 void POParser::parse_header(const std::string& header) {
-	std::string            from_charset;
+	std::string from_charset;
 	std::string::size_type start = 0;
 
 	for (std::string::size_type i = 0; i < header.length(); ++i) {
@@ -254,7 +254,7 @@ POParser::is_empty_line() {
 
 	if (current_line.empty()) {
 		return true;
-	} else if (current_line[0] == '#') { // handle comments as empty lines
+	} else if (current_line[0] == '#') {// handle comments as empty lines
 		if (current_line.size() == 1 || (current_line.size() >= 2 && isspace(current_line[1]))) {
 			return true;
 		} else {

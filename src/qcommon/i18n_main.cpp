@@ -96,6 +96,7 @@ public:
 			FS_FCloseFile(fileHandle);
 		}
 	}
+
 	int underflow() {
 		if (gptr() < egptr()) // buffer not exhausted
 		{

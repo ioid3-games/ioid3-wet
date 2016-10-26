@@ -157,7 +157,7 @@ struct ET_FireTeam
 
 struct ET_FireTeamInfo
 {
-	enum { MaxMembers=64 };
+	enum {MaxMembers=64};
 	obBool m_InFireTeam;
 	GameEntity m_Leader;
 	GameEntity m_Members[MaxMembers];
@@ -165,8 +165,7 @@ struct ET_FireTeamInfo
 
 	ET_FireTeamInfo()
 		: m_InFireTeam(False)
-		, m_FireTeamNum(0)
-	{
+		, m_FireTeamNum(0) {
 	}
 };
 

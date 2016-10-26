@@ -40,7 +40,7 @@ scrollInfo_t scrollInfo;
 
 void (*captureFunc) (void *p) = NULL;
 void *captureData = NULL;
-itemDef_t *itemCapture = NULL;  // item that has the mouse captured(if any)
+itemDef_t *itemCapture = NULL; // item that has the mouse captured(if any)
 
 displayContextDef_t *DC = NULL;
 
@@ -50,8 +50,8 @@ qboolean g_editingField = qfalse;
 itemDef_t *g_bindItem = NULL;
 itemDef_t *g_editItem = NULL;
 
-menuDef_t Menus[MAX_MENUS];     // defined menus
-int menuCount = 0;        // how many
+menuDef_t Menus[MAX_MENUS]; // defined menus
+int menuCount = 0; // how many
 
 // a stack for modal menus only, stores the menus to come back to
 // (an item can be NULL, goes back to main menu/no action required)
@@ -998,7 +998,7 @@ void BG_PanelButton_RenderEdit(panel_button_t *button) {
 				s = va("^7%s ^ 0_", button->text);
 			}
 		} else {
-			s = va("^7%s ", button->text);  // space hack to make the text not blink
+			s = va("^7%s ", button->text); // space hack to make the text not blink
 		}
 
 		do {

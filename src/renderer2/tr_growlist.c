@@ -43,39 +43,32 @@ GROWLISTS
 
 // malloc / free all in one place for debugging
 
-void Com_InitGrowList(growList_t *list, int maxElements)
-{
-	list->maxElements     = maxElements;
+void Com_InitGrowList(growList_t *list, int maxElements) {
+	list->maxElements = maxElements;
 	list->currentElements = 0;
-	list->elements        = (void **)Com_Allocate(list->maxElements * sizeof(void *));
+	list->elements = (void **)Com_Allocate(list->maxElements * sizeof(void *));
 }
 
-void Com_DestroyGrowList(growList_t *list)
-{
+void Com_DestroyGrowList(growList_t *list) {
 	Com_Dealloc(list->elements);
 	memset(list, 0, sizeof(*list));
 }
 
-int Com_AddToGrowList(growList_t *list, void *data)
-{
+int Com_AddToGrowList(growList_t *list, void *data) {
 	void **old;
 
-	if (list->currentElements != list->maxElements)
-	{
+	if (list->currentElements != list->maxElements) {
 		list->elements[list->currentElements] = data;
 		return list->currentElements++;
 	}
-
 	// grow, reallocate and move
 	old = list->elements;
 
-	if (list->maxElements < 0)
-	{
+	if (list->maxElements < 0) {
 		Ren_Fatal("Com_AddToGrowList: maxElements = %i", list->maxElements);
 	}
 
-	if (list->maxElements == 0)
-	{
+	if (list->maxElements == 0) {
 		// initialize the list to hold 100 elements
 		Com_InitGrowList(list, 100);
 		return Com_AddToGrowList(list, data);
@@ -87,8 +80,7 @@ int Com_AddToGrowList(growList_t *list, void *data)
 
 	list->elements = (void **)Com_Allocate(list->maxElements * sizeof(void *));
 
-	if (!list->elements)
-	{
+	if (!list->elements) {
 		Ren_Drop("Growlist alloc failed");
 	}
 
@@ -99,25 +91,22 @@ int Com_AddToGrowList(growList_t *list, void *data)
 	return Com_AddToGrowList(list, data);
 }
 
-void *Com_GrowListElement(const growList_t *list, int index)
-{
-	if (index < 0 || index >= list->currentElements)
-	{
+void *Com_GrowListElement(const growList_t *list, int index) {
+	if (index < 0 || index >= list->currentElements) {
 		Ren_Drop("Com_GrowListElement: %i out of range of %i", index, list->currentElements);
 	}
+
 	return list->elements[index];
 }
 
-int Com_IndexForGrowListElement(const growList_t *list, const void *element)
-{
+int Com_IndexForGrowListElement(const growList_t *list, const void *element) {
 	int i;
 
-	for (i = 0; i < list->currentElements; i++)
-	{
-		if (list->elements[i] == element)
-		{
+	for (i = 0; i < list->currentElements; i++) {
+		if (list->elements[i] == element) {
 			return i;
 		}
 	}
+
 	return -1;
 }

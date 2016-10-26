@@ -155,7 +155,7 @@ void VM_PrepareInterpreter(vm_t *vm, vmHeader_t *header) {
 	int instruction = 0;
 	int *codeBase;
 
-	vm->codeBase = Hunk_Alloc(vm->codeLength * 4, h_high);           // we're now int aligned
+	vm->codeBase = Hunk_Alloc(vm->codeLength * 4, h_high); // we're now int aligned
 	// memcpy(vm->codeBase, (byte *)header + header->codeOffset, vm->codeLength);
 	// we don't need to translate the instructions, but we still need
 	// to find each instructions starting point for jumps
@@ -198,11 +198,11 @@ void VM_PrepareInterpreter(vm_t *vm, vmHeader_t *header) {
 		case OP_GEF:
 		case OP_BLOCK_COPY:
 			codeBase[pc + 0] = loadWord(&code[pc]);
-			pc        += 4;
+			pc += 4;
 			break;
 		case OP_ARG:
 			codeBase[pc + 0] = code[pc];
-			pc        += 1;
+			pc += 1;
 			break;
 		default:
 			break;
@@ -400,7 +400,7 @@ nextInstruction2:
 		switch (opcode) {
 #ifdef DEBUG_VM
 		default:
-			Com_Error(ERR_DROP, "VM_CallInterpreted: Bad VM instruction");   // this should be scanned on load!
+			Com_Error(ERR_DROP, "VM_CallInterpreted: Bad VM instruction"); // this should be scanned on load!
 #endif
 		case OP_BREAK:
 			vm->breakCount++;
@@ -599,7 +599,7 @@ nextInstruction2:
 			opStack -= 2;
 
 			if (r1 == r0) {
-				programCounter = r2;   // vm->instructionPointers[r2];
+				programCounter = r2; // vm->instructionPointers[r2];
 				goto nextInstruction;
 			} else {
 				programCounter += 4;
@@ -610,7 +610,7 @@ nextInstruction2:
 			opStack -= 2;
 
 			if (r1 != r0) {
-				programCounter = r2;   // vm->instructionPointers[r2];
+				programCounter = r2; // vm->instructionPointers[r2];
 				goto nextInstruction;
 			} else {
 				programCounter += 4;
@@ -621,7 +621,7 @@ nextInstruction2:
 			opStack -= 2;
 
 			if (r1 < r0) {
-				programCounter = r2;   // vm->instructionPointers[r2];
+				programCounter = r2; // vm->instructionPointers[r2];
 				goto nextInstruction;
 			} else {
 				programCounter += 4;
@@ -632,7 +632,7 @@ nextInstruction2:
 			opStack -= 2;
 
 			if (r1 <= r0) {
-				programCounter = r2;   // vm->instructionPointers[r2];
+				programCounter = r2; // vm->instructionPointers[r2];
 				goto nextInstruction;
 			} else {
 				programCounter += 4;
@@ -643,7 +643,7 @@ nextInstruction2:
 			opStack -= 2;
 
 			if (r1 > r0) {
-				programCounter = r2;   // vm->instructionPointers[r2];
+				programCounter = r2; // vm->instructionPointers[r2];
 				goto nextInstruction;
 			} else {
 				programCounter += 4;
@@ -654,7 +654,7 @@ nextInstruction2:
 			opStack -= 2;
 
 			if (r1 >= r0) {
-				programCounter = r2;   // vm->instructionPointers[r2];
+				programCounter = r2; // vm->instructionPointers[r2];
 				goto nextInstruction;
 			} else {
 				programCounter += 4;
@@ -665,7 +665,7 @@ nextInstruction2:
 			opStack -= 2;
 
 			if (((unsigned)r1) < ((unsigned)r0)) {
-				programCounter = r2;   // vm->instructionPointers[r2];
+				programCounter = r2; // vm->instructionPointers[r2];
 				goto nextInstruction;
 			} else {
 				programCounter += 4;
@@ -676,7 +676,7 @@ nextInstruction2:
 			opStack -= 2;
 
 			if (((unsigned)r1) <= ((unsigned)r0)) {
-				programCounter = r2;   // vm->instructionPointers[r2];
+				programCounter = r2; // vm->instructionPointers[r2];
 				goto nextInstruction;
 			} else {
 				programCounter += 4;
@@ -687,7 +687,7 @@ nextInstruction2:
 			opStack -= 2;
 
 			if (((unsigned)r1) > ((unsigned)r0)) {
-				programCounter = r2;   // vm->instructionPointers[r2];
+				programCounter = r2; // vm->instructionPointers[r2];
 				goto nextInstruction;
 			} else {
 				programCounter += 4;
@@ -698,7 +698,7 @@ nextInstruction2:
 			opStack -= 2;
 
 			if (((unsigned)r1) >= ((unsigned)r0)) {
-				programCounter = r2;   // vm->instructionPointers[r2];
+				programCounter = r2; // vm->instructionPointers[r2];
 				goto nextInstruction;
 			} else {
 				programCounter += 4;
@@ -707,7 +707,7 @@ nextInstruction2:
 
 		case OP_EQF:
 			if (((float *)opStack)[-1] == *(float *)opStack) {
-				programCounter = r2;   // vm->instructionPointers[r2];
+				programCounter = r2; // vm->instructionPointers[r2];
 				opStack -= 2;
 				goto nextInstruction;
 			} else {
@@ -718,7 +718,7 @@ nextInstruction2:
 
 		case OP_NEF:
 			if (((float *)opStack)[-1] != *(float *)opStack) {
-				programCounter = r2;   // vm->instructionPointers[r2];
+				programCounter = r2; // vm->instructionPointers[r2];
 				opStack -= 2;
 				goto nextInstruction;
 			} else {
@@ -729,7 +729,7 @@ nextInstruction2:
 
 		case OP_LTF:
 			if (((float *)opStack)[-1] < * (float *)opStack) {
-				programCounter = r2;   // vm->instructionPointers[r2];
+				programCounter = r2; // vm->instructionPointers[r2];
 				opStack -= 2;
 				goto nextInstruction;
 			} else {
@@ -740,7 +740,7 @@ nextInstruction2:
 
 		case OP_LEF:
 			if (((float *)opStack)[-1] <= *(float *)opStack) {
-				programCounter = r2;   // vm->instructionPointers[r2];
+				programCounter = r2; // vm->instructionPointers[r2];
 				opStack -= 2;
 				goto nextInstruction;
 			} else {
@@ -751,7 +751,7 @@ nextInstruction2:
 
 		case OP_GTF:
 			if (((float *)opStack)[-1] > * (float *)opStack) {
-				programCounter = r2;   // vm->instructionPointers[r2];
+				programCounter = r2; // vm->instructionPointers[r2];
 				opStack -= 2;
 				goto nextInstruction;
 			} else {
@@ -762,7 +762,7 @@ nextInstruction2:
 
 		case OP_GEF:
 			if (((float *)opStack)[-1] >= *(float *)opStack) {
-				programCounter = r2;   // vm->instructionPointers[r2];
+				programCounter = r2; // vm->instructionPointers[r2];
 				opStack -= 2;
 				goto nextInstruction;
 			} else {

@@ -61,7 +61,7 @@ int CM_PointLeafnum_r(const vec3_t p, int num) {
 		}
 	}
 
-	c_pointcontents++;     // optimize counter
+	c_pointcontents++; // optimize counter
 
 	return -1 - num;
 }
@@ -118,7 +118,7 @@ void CM_StoreBrushes(leafList_t *ll, int nodenum) {
 		b = &cm.brushes[brushnum];
 
 		if (b->checkcount == cm.checkcount) {
-			continue;  // already checked this brush in another leaf
+			continue; // already checked this brush in another leaf
 		}
 
 		b->checkcount = cm.checkcount;
@@ -372,7 +372,7 @@ void CM_FloodAreaConnections(void) {
 
 	for (i = 0; i < cm.numAreas; i++, area++) {
 		if (area->floodvalid == cm.floodvalid) {
-			continue;      // already flooded into
+			continue; // already flooded into
 		}
 
 		floodnum++;

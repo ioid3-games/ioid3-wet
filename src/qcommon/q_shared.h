@@ -79,7 +79,7 @@
 // Added after 272 release these are used by mod code
 #define MOD_VERSION_DATA_CHECK(x) (x && x >= 272 && x < 3000)
 #define MOD_CHECK_LEGACY(islegacy, versionNum, outputValue) outputValue = (islegacy == qtrue ? qtrue : qfalse); \
-	if (outputValue && MOD_VERSION_DATA_CHECK(versionNum)) { outputValue = versionNum; }
+	if (outputValue && MOD_VERSION_DATA_CHECK(versionNum)) {outputValue = versionNum;}
 
 #ifdef _MSC_VER
 #pragma warning(disable : 4018) // signed/unsigned mismatch
@@ -236,17 +236,16 @@ int Q_vsnprintf(char *str, size_t size, const char *format, va_list args);
 
 // Note ET:L uses BSD Library functions for this
 
-static ID_INLINE float idSqrt(float x)
-{
+static ID_INLINE float idSqrt(float x) {
     const float half = 0.5;
-    const float one  = 1.0;
-    float       B, y0, y1;
+    const float one = 1.0;
+    float B, y0, y1;
 
     // This'll NaN if it hits frsqrte. Handle both +0.0 and -0.0
     if (Q_fabs(x) == 0.0)
     {
         return x;
-    }
+  }
     B = x;
 
 #ifdef __GNUC__
@@ -339,7 +338,7 @@ static ID_INLINE float idSqrt(float x)
 
 typedef unsigned char byte;
 
-typedef enum { qfalse, qtrue }    qboolean;
+typedef enum {qfalse, qtrue}    qboolean;
 
 typedef union
 {
@@ -540,8 +539,8 @@ void *Hunk_Alloc(int size, ha_pref preference);
 typedef enum
 {
 	CIN_system = BIT(0),
-	CIN_loop   = BIT(1),
-	CIN_hold   = BIT(2),
+	CIN_loop = BIT(1),
+	CIN_hold = BIT(2),
 	CIN_silent = BIT(3),
 	CIN_shader = BIT(4)
 } CIN_Flags;
@@ -600,8 +599,7 @@ void COM_BitClear(int array[], int bitNum);
 #define TT_PUNCTUATION              5           // punctuation
 #endif
 
-typedef struct pc_token_s
-{
+typedef struct pc_token_s {
 	int type;
 	int subtype;
 	int intvalue;
@@ -616,7 +614,7 @@ typedef struct pc_token_s
 //void COM_MatchToken(char **buf_p, char *match);
 
 void SkipBracedSection(char **program);
-void SkipBracedSection_Depth(char **program, int depth);    // start at given depth if already
+void SkipBracedSection_Depth(char **program, int depth); // start at given depth if already
 void SkipRestOfLine(char **data);
 
 void Parse1DMatrix(char **buf_p, int x, float *m);
@@ -766,17 +764,16 @@ default values.
 #define CVAR_NONEXISTENT            2147483648U  // Cvar doesn't exist.
 
 // nothing outside the Cvar_*() functions should modify these fields!
-typedef struct cvar_s
-{
+typedef struct cvar_s {
 	char *name;
 	char *string;
-	char *resetString;              // cvar_restart will reset to this value
-	char *latchedString;            // for CVAR_LATCH vars
+	char *resetString; // cvar_restart will reset to this value
+	char *latchedString; // for CVAR_LATCH vars
 	int flags;
-	qboolean modified;              // set each time the cvar is changed
-	int modificationCount;          // incremented each time the cvar is changed
-	float value;                    // atof( string )
-	int integer;                    // atoi( string )
+	qboolean modified; // set each time the cvar is changed
+	int modificationCount; // incremented each time the cvar is changed
+	float value; // atof( string )
+	int integer; // atoi( string )
 	struct cvar_s *next;
 	struct cvar_s *prev;
 	struct cvar_s *hashNext;
@@ -790,8 +787,7 @@ typedef int cvarHandle_t;
 
 // the modules that run in the virtual machine can't access the cvar_t directly,
 // so they must ask for structured updates
-typedef struct
-{
+typedef struct {
 	cvarHandle_t handle;
 	int modificationCount;
 	float value;
@@ -826,40 +822,36 @@ PlaneTypeForNormal
 
 // plane_t structure
 // !!! if this is changed, it must be changed in asm code too !!!
-typedef struct cplane_s
-{
+typedef struct cplane_s {
 	vec3_t normal;
 	float dist;
-	byte type;              // for fast side tests: 0,1,2 = axial, 3 = nonaxial
-	byte signbits;          // signx + (signy<<1) + (signz<<2), used as lookup during collision
+	byte type; // for fast side tests: 0,1,2 = axial, 3 = nonaxial
+	byte signbits; // signx + (signy<<1) + (signz<<2), used as lookup during collision
 	byte pad[2];
 } cplane_t;
 
 // a trace is returned when a box is swept through the world
-typedef struct
-{
-	qboolean allsolid;      // if true, plane is not valid
-	qboolean startsolid;    // if true, the initial point was in a solid area
-	float fraction;         // time completed, 1.0 = didn't hit anything
-	vec3_t endpos;          // final position
-	cplane_t plane;         // surface normal at impact, transformed to world space
-	int surfaceFlags;       // surface hit
-	int contents;           // contents on other side of surface hit
-	int entityNum;          // entity the contacted sirface is a part of
+typedef struct {
+	qboolean allsolid; // if true, plane is not valid
+	qboolean startsolid; // if true, the initial point was in a solid area
+	float fraction; // time completed, 1.0 = didn't hit anything
+	vec3_t endpos; // final position
+	cplane_t plane; // surface normal at impact, transformed to world space
+	int surfaceFlags; // surface hit
+	int contents; // contents on other side of surface hit
+	int entityNum; // entity the contacted sirface is a part of
 } trace_t;
 
 // trace->entityNum can also be 0 to (MAX_GENTITIES-1)
 // or ENTITYNUM_NONE, ENTITYNUM_WORLD
 
 // markfragments are returned by re.MarkFragments()
-typedef struct
-{
+typedef struct {
 	int firstPoint;
 	int numPoints;
 } markFragment_t;
 
-typedef struct
-{
+typedef struct {
 	vec3_t origin;
 	vec3_t axis[3];
 } orientation_t;
@@ -952,8 +944,7 @@ typedef enum
 #define RESERVED_CONFIGSTRINGS  2   // game can't modify below this, only the system can
 
 #define MAX_GAMESTATE_CHARS 16000
-typedef struct
-{
+typedef struct {
 	int stringOffsets[MAX_CONFIGSTRINGS];
 	char stringData[MAX_GAMESTATE_CHARS];
 	int dataCount;
@@ -997,80 +988,77 @@ typedef enum
 // so if a playerState_t is transmitted, the entityState_t can be fully derived
 // from it.
 // NOTE: all fields in here must be 32 bits (or those within sub-structures)
-typedef struct playerState_s
-{
-	int commandTime;            // cmd->serverTime of last executed command
+typedef struct playerState_s {
+	int commandTime; // cmd->serverTime of last executed command
 	int pm_type;
-	int bobCycle;               // for view bobbing and footstep generation
-	int pm_flags;               // ducked, jump_held, etc
+	int bobCycle; // for view bobbing and footstep generation
+	int pm_flags; // ducked, jump_held, etc
 	int pm_time;
-
 	vec3_t origin;
 	vec3_t velocity;
 	int weaponTime;
-	int weaponDelay;            // for weapons that don't fire immediately when 'fire' is hit (grenades, venom, ...)
-	int grenadeTimeLeft;        // for delayed grenade throwing.  this is set to a #define for grenade
+	int weaponDelay; // for weapons that don't fire immediately when 'fire' is hit (grenades, venom, ...)
+	int grenadeTimeLeft; // for delayed grenade throwing.  this is set to a #define for grenade
 	// lifetime when the attack button goes down, then when attack is released
 	// this is the amount of time left before the grenade goes off (or if it
 	// gets to 0 while in players hand, it explodes)
 
 	int gravity;
-	float leanf;                // amount of 'lean' when player is looking around corner
+	float leanf; // amount of 'lean' when player is looking around corner
 
 	int speed;
-	int delta_angles[3];        // add to command angles to get view direction
+	int delta_angles[3]; // add to command angles to get view direction
 	// changed by spawns, rotating objects, and teleporters
 
-	int groundEntityNum;        // ENTITYNUM_NONE = in air
+	int groundEntityNum; // ENTITYNUM_NONE = in air
 
-	int legsTimer;              // don't change low priority animations until this runs out
-	int legsAnim;               // mask off ANIM_TOGGLEBIT
+	int legsTimer; // don't change low priority animations until this runs out
+	int legsAnim; // mask off ANIM_TOGGLEBIT
 
-	int torsoTimer;             // don't change low priority animations until this runs out
-	int torsoAnim;              // mask off ANIM_TOGGLEBIT
+	int torsoTimer; // don't change low priority animations until this runs out
+	int torsoAnim; // mask off ANIM_TOGGLEBIT
 
-	int movementDir;            // a number 0 to 7 that represents the reletive angle
+	int movementDir; // a number 0 to 7 that represents the reletive angle
 	// of movement to the view angle (axial and diagonals)
 	// when at rest, the value will remain unchanged
 	// used to twist the legs during strafing
 
-	int eFlags;                 // copied to entityState_t->eFlags
+	int eFlags; // copied to entityState_t->eFlags
 
-	int eventSequence;          // pmove generated events
+	int eventSequence; // pmove generated events
 	int events[MAX_EVENTS];
 	int eventParms[MAX_EVENTS];
-	int oldEventSequence;       // so we can see which events have been added since we last converted to entityState_t
+	int oldEventSequence; // so we can see which events have been added since we last converted to entityState_t
 
-	int externalEvent;          // events set on player from another source
+	int externalEvent; // events set on player from another source
 	int externalEventParm;
 	int externalEventTime;
 
-	int clientNum;              // ranges from 0 to MAX_CLIENTS-1
+	int clientNum; // ranges from 0 to MAX_CLIENTS-1
 
 	// weapon info
-	int weapon;                 // copied to entityState_t->weapon
+	int weapon; // copied to entityState_t->weapon
 	int weaponstate;
 
 	// item info
 	int item;
-
-	vec3_t viewangles;          // for fixed views
+	vec3_t viewangles; // for fixed views
 	int viewheight;
 
 	// damage feedback
-	int damageEvent;            // when it changes, latch the other parms
+	int damageEvent; // when it changes, latch the other parms
 	int damageYaw;
 	int damagePitch;
 	int damageCount;
 
 	int stats[MAX_STATS];
-	int persistant[MAX_PERSISTANT];                 // stats that aren't cleared on death
-	int powerups[MAX_POWERUPS];                     // level.time that the powerup runs out
-	int ammo[MAX_WEAPONS];                          // total amount of ammo
-	int ammoclip[MAX_WEAPONS];                      // ammo in clip
+	int persistant[MAX_PERSISTANT]; // stats that aren't cleared on death
+	int powerups[MAX_POWERUPS]; // level.time that the powerup runs out
+	int ammo[MAX_WEAPONS]; // total amount of ammo
+	int ammoclip[MAX_WEAPONS]; // ammo in clip
 	int holdable[MAX_HOLDABLE];
-	int holding;                                    // the current item in holdable[] that is selected (held)
-	int weapons[MAX_WEAPONS / (sizeof(int) * 8)];   // 64 bits for weapons held
+	int holding; // the current item in holdable[] that is selected (held)
+	int weapons[MAX_WEAPONS / (sizeof(int) * 8)]; // 64 bits for weapons held
 
 	// allow for individual bounding boxes
 	vec3_t mins, maxs;
@@ -1088,7 +1076,7 @@ typedef struct playerState_s
 	int nextWeapon;
 
 	// player class
-	int teamNum;                        // doesn't seem to be communicated over the net ..
+	int teamNum; // doesn't seem to be communicated over the net ..
 	                                    // -> it's in playerStateFields of msg.c
 	                                    // IMPORTANT NOTE: This is actually the player class !!!
 	                                    // (and we can't change playerState_s w/o breaking 2.60)
@@ -1096,10 +1084,10 @@ typedef struct playerState_s
 	// RF, burning effect is required for view blending effect
 	int onFireStart;
 
-	int serverCursorHint;               // what type of cursor hint the server is dictating
-	int serverCursorHintVal;            // a value (0-255) associated with the above
+	int serverCursorHint; // what type of cursor hint the server is dictating
+	int serverCursorHintVal; // a value (0-255) associated with the above
 
-	trace_t serverCursorHintTrace;      // not communicated over net, but used to store the current server-side cursorhint trace
+	trace_t serverCursorHintTrace; // not communicated over net, but used to store the current server-side cursorhint trace
 
 	// ----------------------------------------------------------------------
 	// So to use persistent variables here, which don't need to come from the server,
@@ -1109,33 +1097,33 @@ typedef struct playerState_s
 
 	// use the pmoveExt_t structure in bg_public.h to store this kind of data now (persistant on client, not network transmitted)
 
-	int ping;                       // server to game info for scoreboard
+	int ping; // server to game info for scoreboard
 	int pmove_framecount;
 	int entityEventSequence;
 
 	int sprintExertTime;
 
 	// value for all multiplayer classes with regenerating "class weapons" -- ie LT artillery, medic medpack, engineer build points, etc
-	int classWeaponTime;            // DOES get send over the network
-	int jumpTime;                   // used in MP to prevent jump accel
+	int classWeaponTime; // DOES get send over the network
+	int jumpTime; // used in MP to prevent jump accel
 
-	int weapAnim;                   // mask off ANIM_TOGGLEBIT, DOES get send over the network
+	int weapAnim; // mask off ANIM_TOGGLEBIT, DOES get send over the network
 
 	qboolean releasedFire;
 
-	float aimSpreadScaleFloat;      // the server-side aimspreadscale that lets it track finer changes but still only
+	float aimSpreadScaleFloat; // the server-side aimspreadscale that lets it track finer changes but still only
 	// transmit the 8bit int to the client
-	int aimSpreadScale;             // 0 - 255 increases with angular movement. DOES get send over the network
-	int lastFireTime;               // used by server to hold last firing frame briefly when randomly releasing trigger (AI)
+	int aimSpreadScale; // 0 - 255 increases with angular movement. DOES get send over the network
+	int lastFireTime; // used by server to hold last firing frame briefly when randomly releasing trigger (AI)
 	                                // Set, but never used?
 
-	int quickGrenTime;              // unused
-	int leanStopDebounceTime;       // unused
+	int quickGrenTime; // unused
+	int leanStopDebounceTime; // unused
 
 	// seems like heat and aimspread could be tied together somehow, however, they (appear to) change at different rates and
 	// I can't currently see how to optimize this to one server->client transmission "weapstatus" value.
-	int weapHeat[MAX_WEAPONS];          // some weapons can overheat.  this tracks (server-side) how hot each weapon currently is.
-	int curWeapHeat;                    // value for the currently selected weapon (for transmission to client). DOES get send over the network
+	int weapHeat[MAX_WEAPONS]; // some weapons can overheat.  this tracks (server-side) how hot each weapon currently is.
+	int curWeapHeat; // value for the currently selected weapon (for transmission to client). DOES get send over the network
 	int identifyClient;
 	int identifyClientHealth;
 
@@ -1187,8 +1175,7 @@ typedef enum
 } dtType_t;
 
 // usercmd_t is sent to the server each client frame
-typedef struct usercmd_s
-{
+typedef struct usercmd_s {
 	int serverTime;
 	byte buttons;
 	byte wbuttons;
@@ -1197,7 +1184,7 @@ typedef struct usercmd_s
 	int angles[3];
 
 	signed char forwardmove, rightmove, upmove;
-	byte doubleTap;             // only 3 bits used
+	byte doubleTap; // only 3 bits used
 
 	// in ET, this can be any entity, and it's used as an array
 	// index, so make sure it's unsigned
@@ -1227,13 +1214,12 @@ typedef enum
 	TR_LINEAR_PATH
 } trType_t;
 
-typedef struct
-{
+typedef struct {
 	trType_t trType;
 	int trTime;
-	int trDuration;             // if non 0, trTime + trDuration = stop time
+	int trDuration; // if non 0, trTime + trDuration = stop time
 	vec3_t trBase;
-	vec3_t trDelta;             // velocity, etc
+	vec3_t trDelta; // velocity, etc
 } trajectory_t;
 
 // entityState_t is the information conveyed from the server
@@ -1330,59 +1316,56 @@ typedef enum
 	// this avoids having to set eFlags and eventNum
 } entityType_t;
 
-typedef struct entityState_s
-{
-	int number;             // entity index
-	entityType_t eType;     // entityType_t
+typedef struct entityState_s {
+	int number; // entity index
+	entityType_t eType; // entityType_t
 	int eFlags;
 
-	trajectory_t pos;       // for calculating position
-	trajectory_t apos;      // for calculating angles
+	trajectory_t pos; // for calculating position
+	trajectory_t apos; // for calculating angles
 
 	int time;
 	int time2;
-
 	vec3_t origin;
 	vec3_t origin2;
-
 	vec3_t angles;
 	vec3_t angles2;
 
-	int otherEntityNum;     // shotgun sources, etc
+	int otherEntityNum; // shotgun sources, etc
 	int otherEntityNum2;
 
-	int groundEntityNum;    // -1 = in air
+	int groundEntityNum; // -1 = in air
 
-	int constantLight;      // r + (g<<8) + (b<<16) + (intensity<<24)
-	int dl_intensity;       // used for coronas
-	int loopSound;          // constantly loop this sound
+	int constantLight; // r + (g<<8) + (b<<16) + (intensity<<24)
+	int dl_intensity; // used for coronas
+	int loopSound; // constantly loop this sound
 
 	int modelindex;
 	int modelindex2;
-	int clientNum;          // 0 to (MAX_CLIENTS - 1), for players and corpses
+	int clientNum; // 0 to (MAX_CLIENTS - 1), for players and corpses
 	int frame;
 
-	int solid;              // for client side prediction, trap_linkentity sets this properly
+	int solid; // for client side prediction, trap_linkentity sets this properly
 
 	// old style events, in for compatibility only
 	int event;
 	int eventParm;
 
-	int eventSequence;      // pmove generated events
+	int eventSequence; // pmove generated events
 	int events[MAX_EVENTS];
 	int eventParms[MAX_EVENTS];
 
 	// for players
-	int powerups;           // bit flags. Used to store entState_t for non-player entities (so we know to draw them translucent clientsided)
-	int weapon;             // determines weapon and flash model, etc
+	int powerups; // bit flags. Used to store entState_t for non-player entities (so we know to draw them translucent clientsided)
+	int weapon; // determines weapon and flash model, etc
 	                        // OR fps to animate with (misc_gamemodel ents)
 	                        // which is the time in ms the model is updated (20 fps = default)
-	int legsAnim;           // mask off ANIM_TOGGLEBIT
-	int torsoAnim;          // mask off ANIM_TOGGLEBIT
+	int legsAnim; // mask off ANIM_TOGGLEBIT
+	int torsoAnim; // mask off ANIM_TOGGLEBIT
 
-	int density;            // for particle effects
+	int density; // for particle effects
 
-	int dmgFlags;           // to pass along additional information for damage effects for players/ Also used for cursorhints for non-player entities
+	int dmgFlags; // to pass along additional information for damage effects for players/ Also used for cursorhints for non-player entities
 
 	int onFireStart, onFireEnd;
 
@@ -1392,7 +1375,7 @@ typedef struct entityState_s
 	int effect1Time, effect2Time, effect3Time;
 
 	aistateEnum_t aiState;
-	int animMovetype;       // clients can't derive movetype of other clients for anim scripting system
+	int animMovetype; // clients can't derive movetype of other clients for anim scripting system
 } entityState_t;
 
 typedef enum
@@ -1418,33 +1401,30 @@ typedef enum
 #define GLYPHS_ASCII_PER_FONT GLYPH_ASCII_END - GLYPH_START + 1
 #define GLYPHS_UTF_PER_FONT GLYPH_UTF_END - GLYPH_START + 1
 #define GLYPHS_PER_FONT(ext) GLYPH_END(ext) + 1
-typedef struct
-{
-	int height;       // number of scan lines
-	int top;          // top of glyph in buffer
-	int bottom;       // bottom of glyph in buffer
-	int pitch;        // width for copying
-	int xSkip;        // x adjustment
-	int imageWidth;   // width of actual image
-	int imageHeight;  // height of actual image
-	float s;          // x offset in image where glyph starts
-	float t;          // y offset in image where glyph starts
+typedef struct {
+	int height; // number of scan lines
+	int top; // top of glyph in buffer
+	int bottom; // bottom of glyph in buffer
+	int pitch; // width for copying
+	int xSkip; // x adjustment
+	int imageWidth; // width of actual image
+	int imageHeight; // height of actual image
+	float s; // x offset in image where glyph starts
+	float t; // y offset in image where glyph starts
 	float s2;
 	float t2;
-	qhandle_t glyph;  // handle to the shader with the glyph
+	qhandle_t glyph; // handle to the shader with the glyph
 	char shaderName[32];
 } glyphInfo_t;
 
-typedef struct
-{
+typedef struct {
 	glyphInfo_t glyphs[GLYPHS_ASCII_PER_FONT];
 	float glyphScale;
 	char datName[MAX_QPATH];
 
 } fontInfo_t;
 
-typedef struct
-{
+typedef struct {
 	glyphInfo_t glyphs[GLYPHS_ASCII_PER_FONT];
 	float glyphScale;
 	char datName[MAX_QPATH];
@@ -1452,8 +1432,7 @@ typedef struct
 
 } fontInfo_extra_t;
 
-typedef struct
-{
+typedef struct {
 	void *fontData;
 	glyphInfo_t *(*GetGlyph)(void *fontdata, unsigned long codepoint);
 } fontHelper_t;
@@ -1464,17 +1443,16 @@ typedef struct
 // real time
 //=============================================
 
-typedef struct qtime_s
-{
-	int tm_sec;     /* seconds after the minute - [0,59] */
-	int tm_min;     /* minutes after the hour - [0,59] */
-	int tm_hour;    /* hours since midnight - [0,23] */
-	int tm_mday;    /* day of the month - [1,31] */
-	int tm_mon;     /* months since January - [0,11] */
-	int tm_year;    /* years since 1900 */
-	int tm_wday;    /* days since Sunday - [0,6] */
-	int tm_yday;    /* days since January 1 - [0,365] */
-	int tm_isdst;   /* daylight savings time flag */
+typedef struct qtime_s {
+	int tm_sec; /* seconds after the minute - [0,59] */
+	int tm_min; /* minutes after the hour - [0,59] */
+	int tm_hour; /* hours since midnight - [0,23] */
+	int tm_mday; /* day of the month - [1,31] */
+	int tm_mon; /* months since January - [0,11] */
+	int tm_year; /* years since 1900 */
+	int tm_wday; /* days since Sunday - [0,6] */
+	int tm_yday; /* days since January 1 - [0,365] */
+	int tm_isdst; /* daylight savings time flag */
 } qtime_t;
 
 // server browser sources
@@ -1482,8 +1460,8 @@ typedef struct qtime_s
 #define AS_GLOBAL       1
 #define AS_FAVORITES    2
 
-#define AS_LOCAL_ALL     -1
-#define AS_GLOBAL_ALL    -2
+#define AS_LOCAL_ALL -1
+#define AS_GLOBAL_ALL -2
 #define AS_FAVORITES_ALL -3
 
 // cinematic states
@@ -1528,12 +1506,11 @@ typedef enum
 	GS_RESET
 } gamestate_t;
 
-typedef struct rectDef_s
-{
-	float x;    // horiz position
-	float y;    // vert position
-	float w;    // width
-	float h;    // height;
+typedef struct rectDef_s {
+	float x; // horiz position
+	float y; // vert position
+	float w; // width
+	float h; // height;
 } rectDef_t;
 
 //typedef rectDef_t Rectangle;
@@ -1548,8 +1525,7 @@ float rint(float v);
 // FIXME remove this and use round() function (Math.h)
 #define ROUND_INT(x) (x >= 0 ? (int)(x + 0.5) : (int)(x - 0.5))
 
-typedef struct demoPlayInfo_s
-{
+typedef struct demoPlayInfo_s {
 	int firstTime;
 	int lastTime;
 } demoPlayInfo_t;
@@ -1581,7 +1557,7 @@ typedef struct demoPlayInfo_s
 	19, 18, 17, 16, 15, 14, 13, 12, 11, 10, \
 	9, 8, 7, 6, 5, 4, 3, 2, 1, 0
 #else
-#define NUMARGS(...)  (sizeof((int[]) { 0, ## __VA_ARGS__ }) / sizeof(int) - 1)
+#define NUMARGS(...)  (sizeof((int[]) {0, ## __VA_ARGS__}) / sizeof(int) - 1)
 #endif
 
 typedef int (*cmpFunc_t)(const void *a, const void *b);

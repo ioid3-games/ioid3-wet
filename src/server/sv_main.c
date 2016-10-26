@@ -38,25 +38,25 @@
 #include "sv_tracker.h"
 #endif
 
-serverStatic_t svs;            // persistant server info
-server_t sv;             // local server
-vm_t *gvm = NULL;    // game virtual machine
+serverStatic_t svs; // persistant server info
+server_t sv; // local server
+vm_t *gvm = NULL; // game virtual machine
 
-cvar_t *sv_fps = NULL;         // time rate for running non - clients
-cvar_t *sv_timeout;            // seconds without any message
-cvar_t *sv_zombietime;         // seconds to sink messages after disconnect
-cvar_t *sv_rconPassword;       // password for remote server commands
-cvar_t *sv_privatePassword;    // password for the privateClient slots
+cvar_t *sv_fps = NULL; // time rate for running non - clients
+cvar_t *sv_timeout; // seconds without any message
+cvar_t *sv_zombietime; // seconds to sink messages after disconnect
+cvar_t *sv_rconPassword; // password for remote server commands
+cvar_t *sv_privatePassword; // password for the privateClient slots
 cvar_t *sv_allowDownload;
 cvar_t *sv_maxclients;
-cvar_t *sv_democlients;        // number of slots reserved for playing a demo
+cvar_t *sv_democlients; // number of slots reserved for playing a demo
 
-cvar_t *sv_privateClients;     // number of clients reserved for password
+cvar_t *sv_privateClients; // number of clients reserved for password
 cvar_t *sv_hostname;
-cvar_t *sv_reconnectlimit;     // minimum seconds between connect messages
+cvar_t *sv_reconnectlimit; // minimum seconds between connect messages
 cvar_t *sv_tempbanmessage;
-cvar_t *sv_padPackets;         // add nop bytes to messages
-cvar_t *sv_killserver;         // menu system can set to 1 to shut server down
+cvar_t *sv_padPackets; // add nop bytes to messages
+cvar_t *sv_killserver; // menu system can set to 1 to shut server down
 cvar_t *sv_mapname;
 cvar_t *sv_mapChecksum;
 cvar_t *sv_serverid;
@@ -67,17 +67,17 @@ cvar_t *sv_maxPing;
 cvar_t *sv_gametype;
 cvar_t *sv_pure;
 cvar_t *sv_floodProtect;
-cvar_t *sv_lanForceRate;       // dedicated 1(LAN) server forces local client rates to 99999(bug #491)
+cvar_t *sv_lanForceRate; // dedicated 1(LAN) server forces local client rates to 99999(bug #491)
 cvar_t *sv_onlyVisibleClients;
 cvar_t *sv_friendlyFire;
 cvar_t *sv_maxlives;
 cvar_t *sv_needpass;
-cvar_t *sv_dl_timeout;         // seconds without any message when cl->state != CS_ACTIVE
+cvar_t *sv_dl_timeout; // seconds without any message when cl->state != CS_ACTIVE
 
-cvar_t *sv_showAverageBPS;     // net debugging
+cvar_t *sv_showAverageBPS; // net debugging
 
-cvar_t *sv_wwwDownload;        // server does a www dl redirect
-cvar_t *sv_wwwBaseURL;         // base URL for redirect
+cvar_t *sv_wwwDownload; // server does a www dl redirect
+cvar_t *sv_wwwBaseURL; // base URL for redirect
 // tell clients to perform their downloads while disconnected from the server
 // this gets you a better throughput, but you loose the ability to control the download usage
 cvar_t *sv_wwwDlDisconnected;
@@ -89,12 +89,12 @@ cvar_t *sv_fullmsg;
 cvar_t *sv_dlRate;
 
 // do we communicate with others ?
-cvar_t *sv_advert;     // 0 - no big brothers
+cvar_t *sv_advert; // 0 - no big brothers
                        // 1 - communicate with master server
                        // 2 - communicate with tracker
 
 // server attack protection
-cvar_t *sv_protect;    // 0 - unprotected
+cvar_t *sv_protect; // 0 - unprotected
                        // 1 - ioquake3 method(default)
                        // 2 - OpenWolf method
                        // 4 - prints attack info to console(when ioquake3 or OPenWolf method is set)
@@ -263,7 +263,7 @@ void SV_MasterHeartbeat(const char *message) {
 	                                                           NET_ENABLEV6 |
 #endif
 	                                                           NET_ENABLEV4))) {
-		return;    // only dedicated servers send heartbeats
+		return; // only dedicated servers send heartbeats
 
 	}
 	// if not time yet, don't send anything
@@ -359,7 +359,7 @@ void SV_MasterGameCompleteStatus() {
 	                                                           NET_ENABLEV6 |
 #endif
 	                                                           NET_ENABLEV4))) {
-		return;    // only dedicated servers send heartbeats
+		return; // only dedicated servers send heartbeats
 
 	}
 	// send to group masters
@@ -456,7 +456,7 @@ static long SVC_HashForAddress(netadr_t address) {
 	long hash = 0;
 
 	switch (address.type) {
-	case NA_IP:  ip = address.ip;  size = 4;
+	case NA_IP:  ip = address.ip; size = 4;
 		break;
 	case NA_IP6: ip = address.ip6; size = 16;
 		break;
@@ -529,6 +529,7 @@ static leakyBucket_t *SVC_BucketForAddress(netadr_t address, int burst, int peri
 
 		if (bucket->type == NA_BAD) {
 			bucket->type = address.type;
+
 			switch (address.type) {
 			case NA_IP:  Com_Memcpy(bucket->ipv._4, address.ip, 4);
 				break;
@@ -655,7 +656,7 @@ static void SVC_Status(netadr_t from, qboolean force) {
 			playerLength = strlen(player);
 
 			if (statusLength + playerLength >= sizeof(status)) {
-				break;     // can't hold any more
+				break; // can't hold any more
 			}
 
 			strcpy(status + statusLength, player);
@@ -961,7 +962,7 @@ static void SV_ConnectionlessPacket(netadr_t from, msg_t *msg) {
 	char *c;
 
 	MSG_BeginReadingOOB(msg);
-	MSG_ReadLong(msg);         // skip the - 1 marker
+	MSG_ReadLong(msg); // skip the - 1 marker
 
 	if (!Q_strncmp("connect", (char *)&msg->data[4], 7)) {
 		Huff_Decompress(msg, 12);
@@ -1005,7 +1006,7 @@ static void SV_ConnectionlessPacket(netadr_t from, msg_t *msg) {
 		Com_UpdateInfoPacket(from);
 	} else {
 		SV_WriteAttackLog(va("bad connectionless packet from %s:\n%s\n" // changed from Com_DPrintf to print in attack log
-		                    , NET_AdrToString(from), s));             // this was never reported to admins before so they might be confused
+		                    , NET_AdrToString(from), s)); // this was never reported to admins before so they might be confused
 	}                                                                 // note: if protect log isn't set we do Com_Printf
 }
 
@@ -1021,7 +1022,7 @@ void SV_PacketEvent(netadr_t from, msg_t *msg) {
 	// read the qport out of the message so we can fix up
 	// stupid address translating routers
 	MSG_BeginReadingOOB(msg);
-	MSG_ReadLong(msg);                 // sequence number
+	MSG_ReadLong(msg); // sequence number
 	qport = MSG_ReadShort(msg) & 0xffff;
 	// find which client the message is from
 	for (i = 0, cl = svs.clients; i < sv_maxclients->integer; i++, cl++) {
@@ -1131,7 +1132,7 @@ static void SV_CalcPings(void) {
 static void SV_CheckTimeouts(void) {
 	client_t *cl;
 	int i;
-	int droppoint = svs.time - 1000 * sv_timeout->integer;   // default 40 - used in game and while vid_restart
+	int droppoint = svs.time - 1000 * sv_timeout->integer; // default 40 - used in game and while vid_restart
 	int zombiepoint = svs.time - 1000 * sv_zombietime->integer; // default 2
 	int droppoint_dl = svs.time - 1000 * sv_dl_timeout->integer; // default 240
 
@@ -1148,7 +1149,7 @@ static void SV_CheckTimeouts(void) {
 		if (cl->state == CS_ZOMBIE && cl->lastPacketTime < zombiepoint) {
 			// using the client id cause the cl->name is empty at this point
 			Com_DPrintf("Going from CS_ZOMBIE to CS_FREE for client %d\n", i);
-			cl->state = CS_FREE;   // can now be reused
+			cl->state = CS_FREE; // can now be reused
 
 			continue;
 		}
@@ -1157,13 +1158,13 @@ static void SV_CheckTimeouts(void) {
 			// wait several frames so a debugger session doesn't cause a timeout
 			if (++cl->timeoutCount > 5) {
 				SV_DropClient(cl, va("game timed out %i\n", cl->state));
-				cl->state = CS_FREE;   // don't bother with zombie state
+				cl->state = CS_FREE; // don't bother with zombie state
 			}
 		} else if ((cl->state == CS_CONNECTED || cl->state == CS_PRIMED) && (cl->lastPacketTime < droppoint_dl || cl->lastValidGamestate < droppoint)) {
 			// wait several frames so a debugger session doesn't cause a timeout
 			if (++cl->timeoutCount > 5) {
 				SV_DropClient(cl, va("preparation timed out %i\n", cl->state));
-				cl->state = CS_FREE;   // don't bother with zombie state
+				cl->state = CS_FREE; // don't bother with zombie state
 			}
 		} else {
 			cl->timeoutCount = 0; // CS_FREE
@@ -1335,7 +1336,7 @@ void SV_Frame(int msec) {
 	// run the game simulation in chunks
 	while (sv.timeResidual >= frameMsec) {
 		sv.timeResidual -= frameMsec;
-		svs.time  += frameMsec;
+		svs.time += frameMsec;
 		// let everything in the world think and move
 		VM_Call(gvm, GAME_RUN_FRAME, svs.time);
 		// play / record demo frame(if enabled)

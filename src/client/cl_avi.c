@@ -112,7 +112,7 @@ static ID_INLINE void WRITE_4BYTES(int x) {
 	buffer[bufIndex + 1] = (byte) ((x >> 8) & 0xFF);
 	buffer[bufIndex + 2] = (byte) ((x >> 16) & 0xFF);
 	buffer[bufIndex + 3] = (byte) ((x >> 24) & 0xFF);
-	bufIndex      += 4;
+	bufIndex += 4;
 }
 
 /*
@@ -123,7 +123,7 @@ WRITE_2BYTES
 static ID_INLINE void WRITE_2BYTES(int x) {
 	buffer[bufIndex + 0] = (byte) ((x >> 0) & 0xFF);
 	buffer[bufIndex + 1] = (byte) ((x >> 8) & 0xFF);
-	bufIndex      += 2;
+	bufIndex += 2;
 }
 
 /*
@@ -133,7 +133,7 @@ WRITE_1BYTES
 
 static ID_INLINE void WRITE_1BYTES(int x) {
     buffer[bufIndex] = x;
-    bufIndex  += 1;
+    bufIndex += 1;
 }
 */
 
@@ -191,13 +191,13 @@ void CL_WriteAVIHeader(void) {
 			{
 				WRITE_STRING("hdrl");
 				WRITE_STRING("avih");
-				WRITE_4BYTES(56);  // "avih" "chunk." size
+				WRITE_4BYTES(56); // "avih" "chunk." size
 				WRITE_4BYTES(afd.framePeriod); // dwMicroSecPerFrame
-				WRITE_4BYTES(afd.maxRecordSize * afd.frameRate);   // dwMaxBytesPerSec
-				WRITE_4BYTES(0);   // dwReserved1
-				WRITE_4BYTES(0x110);   // dwFlags bits HAS_INDEX and IS_INTERLEAVED
-				WRITE_4BYTES(afd.numVideoFrames);  // dwTotalFrames
-				WRITE_4BYTES(0);   // dwInitialFrame
+				WRITE_4BYTES(afd.maxRecordSize * afd.frameRate); // dwMaxBytesPerSec
+				WRITE_4BYTES(0); // dwReserved1
+				WRITE_4BYTES(0x110); // dwFlags bits HAS_INDEX and IS_INTERLEAVED
+				WRITE_4BYTES(afd.numVideoFrames); // dwTotalFrames
+				WRITE_4BYTES(0); // dwInitialFrame
 
 				if (afd.audio) // dwStreams
 				{
@@ -206,65 +206,65 @@ void CL_WriteAVIHeader(void) {
 					WRITE_4BYTES(1);
 				}
 
-				WRITE_4BYTES(afd.maxRecordSize);   // dwSuggestedBufferSize
-				WRITE_4BYTES(afd.width);   // dwWidth
-				WRITE_4BYTES(afd.height);  // dwHeight
-				WRITE_4BYTES(0);   // dwReserved[0]
-				WRITE_4BYTES(0);   // dwReserved[1]
-				WRITE_4BYTES(0);   // dwReserved[2]
-				WRITE_4BYTES(0);   // dwReserved[3]
+				WRITE_4BYTES(afd.maxRecordSize); // dwSuggestedBufferSize
+				WRITE_4BYTES(afd.width); // dwWidth
+				WRITE_4BYTES(afd.height); // dwHeight
+				WRITE_4BYTES(0); // dwReserved[0]
+				WRITE_4BYTES(0); // dwReserved[1]
+				WRITE_4BYTES(0); // dwReserved[2]
+				WRITE_4BYTES(0); // dwReserved[3]
 
 				START_CHUNK("LIST");
 				{
 					WRITE_STRING("strl");
 					WRITE_STRING("strh");
-					WRITE_4BYTES(56);  // "strh" "chunk." size
+					WRITE_4BYTES(56); // "strh" "chunk." size
 					WRITE_STRING("vids");
 
 					if (afd.motionJpeg) {
 						WRITE_STRING("MJPG");
 					} else {
-						WRITE_4BYTES(0);   // BI_RGB
+						WRITE_4BYTES(0); // BI_RGB
 					}
 
-					WRITE_4BYTES(0);   // dwFlags
-					WRITE_4BYTES(0);   // dwPriority
-					WRITE_4BYTES(0);   // dwInitialFrame
+					WRITE_4BYTES(0); // dwFlags
+					WRITE_4BYTES(0); // dwPriority
+					WRITE_4BYTES(0); // dwInitialFrame
 
-					WRITE_4BYTES(1);   // dwTimescale
-					WRITE_4BYTES(afd.frameRate);   // dwDataRate
-					WRITE_4BYTES(0);   // dwStartTime
-					WRITE_4BYTES(afd.numVideoFrames);  // dwDataLength
+					WRITE_4BYTES(1); // dwTimescale
+					WRITE_4BYTES(afd.frameRate); // dwDataRate
+					WRITE_4BYTES(0); // dwStartTime
+					WRITE_4BYTES(afd.numVideoFrames); // dwDataLength
 
-					WRITE_4BYTES(afd.maxRecordSize);   // dwSuggestedBufferSize
-					WRITE_4BYTES(-1);  // dwQuality
-					WRITE_4BYTES(0);   // dwSampleSize
-					WRITE_2BYTES(0);   // rcFrame
-					WRITE_2BYTES(0);   // rcFrame
-					WRITE_2BYTES(afd.width);   // rcFrame
-					WRITE_2BYTES(afd.height);  // rcFrame
+					WRITE_4BYTES(afd.maxRecordSize); // dwSuggestedBufferSize
+					WRITE_4BYTES(-1); // dwQuality
+					WRITE_4BYTES(0); // dwSampleSize
+					WRITE_2BYTES(0); // rcFrame
+					WRITE_2BYTES(0); // rcFrame
+					WRITE_2BYTES(afd.width); // rcFrame
+					WRITE_2BYTES(afd.height); // rcFrame
 
 					WRITE_STRING("strf");
-					WRITE_4BYTES(40);  // "strf" "chunk." size
-					WRITE_4BYTES(40);  // biSize
-					WRITE_4BYTES(afd.width);   // biWidth
-					WRITE_4BYTES(afd.height);  // biHeight
-					WRITE_2BYTES(1);   // biPlanes
-					WRITE_2BYTES(24);  // biBitCount
+					WRITE_4BYTES(40); // "strf" "chunk." size
+					WRITE_4BYTES(40); // biSize
+					WRITE_4BYTES(afd.width); // biWidth
+					WRITE_4BYTES(afd.height); // biHeight
+					WRITE_2BYTES(1); // biPlanes
+					WRITE_2BYTES(24); // biBitCount
 
 					if (afd.motionJpeg) // biCompression
 					{
 						WRITE_STRING("MJPG");
-						WRITE_4BYTES(afd.width * afd.height);  // biSizeImage
+						WRITE_4BYTES(afd.width * afd.height); // biSizeImage
 					} else {
-						WRITE_4BYTES(0);   // BI_RGB
-						WRITE_4BYTES(afd.width * afd.height * 3);  // biSizeImage
+						WRITE_4BYTES(0); // BI_RGB
+						WRITE_4BYTES(afd.width * afd.height * 3); // biSizeImage
 					}
 
-					WRITE_4BYTES(0);   // biXPelsPetMeter
-					WRITE_4BYTES(0);   // biYPelsPetMeter
-					WRITE_4BYTES(0);   // biClrUsed
-					WRITE_4BYTES(0);   // biClrImportant
+					WRITE_4BYTES(0); // biXPelsPetMeter
+					WRITE_4BYTES(0); // biYPelsPetMeter
+					WRITE_4BYTES(0); // biClrUsed
+					WRITE_4BYTES(0); // biClrImportant
 				}
 
 				END_CHUNK();
@@ -274,35 +274,35 @@ void CL_WriteAVIHeader(void) {
 					{
 						WRITE_STRING("strl");
 						WRITE_STRING("strh");
-						WRITE_4BYTES(56);  // "strh" "chunk." size
+						WRITE_4BYTES(56); // "strh" "chunk." size
 						WRITE_STRING("auds");
-						WRITE_4BYTES(0);   // FCC
-						WRITE_4BYTES(0);   // dwFlags
-						WRITE_4BYTES(0);   // dwPriority
-						WRITE_4BYTES(0);   // dwInitialFrame
+						WRITE_4BYTES(0); // FCC
+						WRITE_4BYTES(0); // dwFlags
+						WRITE_4BYTES(0); // dwPriority
+						WRITE_4BYTES(0); // dwInitialFrame
 
 						WRITE_4BYTES(afd.a.sampleSize); // dwTimescale
-						WRITE_4BYTES(afd.a.sampleSize * afd.a.rate);   // dwDataRate
-						WRITE_4BYTES(0);   // dwStartTime
+						WRITE_4BYTES(afd.a.sampleSize * afd.a.rate); // dwDataRate
+						WRITE_4BYTES(0); // dwStartTime
 						WRITE_4BYTES(afd.a.totalBytes / afd.a.sampleSize); // dwDataLength
 
-						WRITE_4BYTES(0);   // dwSuggestedBufferSize
-						WRITE_4BYTES(-1);  // dwQuality
+						WRITE_4BYTES(0); // dwSuggestedBufferSize
+						WRITE_4BYTES(-1); // dwQuality
 						WRITE_4BYTES(afd.a.sampleSize); // dwSampleSize
-						WRITE_2BYTES(0);   // rcFrame
-						WRITE_2BYTES(0);   // rcFrame
-						WRITE_2BYTES(0);   // rcFrame
-						WRITE_2BYTES(0);   // rcFrame
+						WRITE_2BYTES(0); // rcFrame
+						WRITE_2BYTES(0); // rcFrame
+						WRITE_2BYTES(0); // rcFrame
+						WRITE_2BYTES(0); // rcFrame
 
 						WRITE_STRING("strf");
-						WRITE_4BYTES(18);  // "strf" "chunk." size
+						WRITE_4BYTES(18); // "strf" "chunk." size
 						WRITE_2BYTES(afd.a.format); // wFormatTag
-						WRITE_2BYTES(afd.a.channels);  // nChannels
-						WRITE_4BYTES(afd.a.rate);  // nSamplesPerSec
-						WRITE_4BYTES(afd.a.sampleSize * afd.a.rate);   // nAvgBytesPerSec
+						WRITE_2BYTES(afd.a.channels); // nChannels
+						WRITE_4BYTES(afd.a.rate); // nSamplesPerSec
+						WRITE_4BYTES(afd.a.sampleSize * afd.a.rate); // nAvgBytesPerSec
 						WRITE_2BYTES(afd.a.sampleSize); // nBlockAlign
-						WRITE_2BYTES(afd.a.bits);  // wBitsPerSample
-						WRITE_2BYTES(0);   // cbSize
+						WRITE_2BYTES(afd.a.bits); // wBitsPerSample
+						WRITE_2BYTES(0); // cbSize
 					}
 					END_CHUNK();
 				}
@@ -406,7 +406,7 @@ qboolean CL_OpenAVIForWriting(const char *fileName) {
 	START_CHUNK("idx1");
 	SafeFS_Write(buffer, bufIndex, afd.idxF);
 
-	afd.moviSize = 4;          // For the "movi"
+	afd.moviSize = 4; // For the "movi"
 	afd.fileOpen = qtrue;
 
 	return qtrue;
@@ -421,7 +421,7 @@ static qboolean CL_CheckFileSize(int bytesToAdd) {
 	unsigned int newFileSize = afd.fileSize +        // Current file size
 	                           bytesToAdd +          // What we want to add
 	                          (afd.numIndices * 16) + // The index
-	                           4;                     // The index size
+	                           4; // The index size
 
 	// I assume all the operating systems
 	// we target can handle a 2Gb file
@@ -473,10 +473,10 @@ void CL_WriteAVIVideoFrame(const byte *imageBuffer, int size) {
 	}
 	// Index
 	bufIndex = 0;
-	WRITE_STRING("00dc");      // dwIdentifier
-	WRITE_4BYTES(0x00000010);  // dwFlags(all frames are KeyFrames)
+	WRITE_STRING("00dc"); // dwIdentifier
+	WRITE_4BYTES(0x00000010); // dwFlags(all frames are KeyFrames)
 	WRITE_4BYTES(chunkOffset); // dwOffset
-	WRITE_4BYTES(size);        // dwLength
+	WRITE_4BYTES(size); // dwLength
 	SafeFS_Write(buffer, 16, afd.idxF);
 
 	afd.numIndices++;
@@ -533,10 +533,10 @@ void CL_WriteAVIAudioFrame(const byte *pcmBuffer, int size) {
 		afd.a.totalBytes += bytesInBuffer;
 		// Index
 		bufIndex = 0;
-		WRITE_STRING("01wb");  // dwIdentifier
-		WRITE_4BYTES(0);       // dwFlags
+		WRITE_STRING("01wb"); // dwIdentifier
+		WRITE_4BYTES(0); // dwFlags
 		WRITE_4BYTES(chunkOffset); // dwOffset
-		WRITE_4BYTES(bytesInBuffer);   // dwLength
+		WRITE_4BYTES(bytesInBuffer); // dwLength
 		SafeFS_Write(buffer, 16, afd.idxF);
 
 		afd.numIndices++;
@@ -577,7 +577,7 @@ qboolean CL_CloseAVI(void) {
 
 	afd.fileOpen = qfalse;
 
-	FS_Seek(afd.idxF, 4, FS_SEEK_SET);
+	(void) FS_Seek(afd.idxF, 4, FS_SEEK_SET);
 	bufIndex = 0;
 	WRITE_4BYTES(indexSize);
 	SafeFS_Write(buffer, bufIndex, afd.idxF);
@@ -606,7 +606,7 @@ qboolean CL_CloseAVI(void) {
 	// Remove temp index file
 	FS_HomeRemove(idxFileName);
 	// Write the real header
-	FS_Seek(afd.f, 0, FS_SEEK_SET);
+	(void) FS_Seek(afd.f, 0, FS_SEEK_SET);
 	CL_WriteAVIHeader();
 
 	bufIndex = 4;

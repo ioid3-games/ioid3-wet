@@ -171,7 +171,7 @@ hashtable_t HT_Create(
 	RESET_LIST(&table->all_items);
 	// Set functions
 	table->GetKey = (flags & HT_FLAG_CASE) ? _HT_GetKey : _HT_GetCIKey;
-	table->CompareKey = (flags & HT_FLAG_CASE) ? strcmp : Q_stricmp;  // Q_strcasecmp
+	table->CompareKey = (flags & HT_FLAG_CASE) ? strcmp : Q_stricmp; // Q_strcasecmp
 	if ((flags & HT_FLAG_INTABLE) == 0) {
 		table->KeyFromEntry = key_length ? _HT_KeyFromEntryPI : _HT_KeyFromEntryPP;
 	} else {

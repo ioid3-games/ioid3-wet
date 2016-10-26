@@ -104,12 +104,12 @@ IConv::convert(const std::string& text) {
 		size_t ret = tinygettext_iconv(cd, &inbuf, &inbytesleft, &outbuf, &outbytesleft);
 
 		if (ret == static_cast < size_t > (-1)) {
-			if (errno == EILSEQ || errno == EINVAL) { // invalid multibyte sequence
+			if (errno == EILSEQ || errno == EINVAL) {// invalid multibyte sequence
 				tinygettext_iconv(cd, NULL, NULL, NULL, NULL); // reset state
 
 				// FIXME: Could try to skip the invalid byte and continue
 				log_error << "error: tinygettext:iconv: invalid multibyte sequence in:  \"" << text << "\"" << std::endl;
-			} else if (errno == E2BIG) { // output buffer to small
+			} else if (errno == E2BIG) {// output buffer to small
 				assert(false && "tinygettext/iconv.cpp: E2BIG: This should never be reached");
 			} else if (errno == EBADF) {
 				assert(false && "tinygettext/iconv.cpp: EBADF: This should never be reached");

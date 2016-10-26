@@ -44,30 +44,29 @@
 #define PERS_SCORE              0   // !!! MUST NOT CHANGE, SERVER AND GAME BOTH REFERENCE !!!
 
 // advert control
-#define SVA_MASTER      0x0001  // 1  - master server
-#define SVA_TRACKER     0x0002  // 2  - tracker
+#define SVA_MASTER      0x0001  // 1 - master server
+#define SVA_TRACKER     0x0002  // 2 - tracker
 
 // server attack protection
-#define SVP_IOQ3        0x0001  // 1  - ioQuake3 way
-#define SVP_OWOLF       0x0002  // 2  - OpenWolf way
-#define SVP_CONSOLE     0x0004  // 4  - console print
+#define SVP_IOQ3        0x0001  // 1 - ioQuake3 way
+#define SVP_OWOLF       0x0002  // 2 - OpenWolf way
+#define SVP_CONSOLE     0x0004  // 4 - console print
 
 #define MAX_ENT_CLUSTERS    16
 
 #define MAX_BPS_WINDOW      20          // net debugging
 
-typedef struct svEntity_s
-{
+typedef struct svEntity_s {
 	struct worldSector_s *worldSector;
 	struct svEntity_s *nextEntityInWorldSector;
 
-	entityState_t baseline;         // for delta compression of initial sighting
-	int numClusters;                // if -1, use headnode instead
+	entityState_t baseline; // for delta compression of initial sighting
+	int numClusters; // if -1, use headnode instead
 	int clusternums[MAX_ENT_CLUSTERS];
-	int lastCluster;                // if all the clusters don't fit in clusternums
+	int lastCluster; // if all the clusters don't fit in clusternums
 	int areanum, areanum2;
-	int snapshotCounter;            // used to prevent double adding from portal views
-	int originCluster;              // calced upon linking, for origin only bmodel vis checks
+	int snapshotCounter; // used to prevent double adding from portal views
+	int originCluster; // calced upon linking, for origin only bmodel vis checks
 } svEntity_t;
 
 typedef enum
@@ -77,31 +76,30 @@ typedef enum
 	SS_GAME             // actively running
 } serverState_t;
 
-typedef struct
-{
+typedef struct {
 	serverState_t state;
-	qboolean restarting;                // if true, send configstring changes during SS_LOADING
-	int serverId;                       // changes each server start
-	int restartedServerId;              // serverId before a map_restart
-	int checksumFeed;                   // the feed key that we use to compute the pure checksum strings
+	qboolean restarting; // if true, send configstring changes during SS_LOADING
+	int serverId; // changes each server start
+	int restartedServerId; // serverId before a map_restart
+	int checksumFeed; // the feed key that we use to compute the pure checksum strings
 	// the serverId associated with the current checksumFeed (always <= serverId)
 	int checksumFeedServerId;
-	int snapshotCounter;                // incremented for each snapshot built
-	int timeResidual;                   // <= 1000 / sv_frame->value
-	int nextFrameTime;                  // when time > nextFrameTime, process world
+	int snapshotCounter; // incremented for each snapshot built
+	int timeResidual; // <= 1000 / sv_frame->value
+	int nextFrameTime; // when time > nextFrameTime, process world
 	char *configstrings[MAX_CONFIGSTRINGS];
 	qboolean configstringsmodified[MAX_CONFIGSTRINGS];
 	svEntity_t svEntities[MAX_GENTITIES];
 
-	char *entityParsePoint;             // used during game VM init
+	char *entityParsePoint; // used during game VM init
 
 	// the game virtual machine will update these on init and changes
 	sharedEntity_t *gentities;
 	int gentitySize;
-	int num_entities;                   // current number, <= MAX_GENTITIES
+	int num_entities; // current number, <= MAX_GENTITIES
 
 	playerState_t *gameClients;
-	int gameClientSize;                 // will be > sizeof(playerState_t) due to game private data
+	int gameClientSize; // will be > sizeof(playerState_t) due to game private data
 
 	int restartTime;
 
@@ -135,18 +133,17 @@ typedef struct
 
 } server_t;
 
-typedef struct
-{
+typedef struct {
 	int areabytes;
-	byte areabits[MAX_MAP_AREA_BYTES];  // portalarea visibility bits
+	byte areabits[MAX_MAP_AREA_BYTES]; // portalarea visibility bits
 	playerState_t ps;
 	int num_entities;
-	int first_entity;                   // into the circular sv_packet_entities[]
+	int first_entity; // into the circular sv_packet_entities[]
 	                                    // the entities MUST be in increasing state number
 	                                    // order, otherwise the delta compression will fail
-	int messageSent;                    // time the message was transmitted
-	int messageAcked;                   // time the message was acked
-	int messageSize;                    // used to rate drop packets
+	int messageSent; // time the message was transmitted
+	int messageAcked; // time the message was acked
+	int messageSize; // used to rate drop packets
 } clientSnapshot_t;
 
 typedef enum
@@ -158,77 +155,75 @@ typedef enum
 	CS_ACTIVE       // client is fully in game
 } clientState_t;
 
-typedef struct netchan_buffer_s
-{
+typedef struct netchan_buffer_s {
 	msg_t msg;
 	byte msgBuffer[MAX_MSGLEN];
 	char lastClientCommandString[MAX_STRING_CHARS];
 	struct netchan_buffer_s *next;
 } netchan_buffer_t;
 
-typedef struct client_s
-{
+typedef struct client_s {
 	clientState_t state;
-	char userinfo[MAX_INFO_STRING];         // name, etc
-	char userinfobuffer[MAX_INFO_STRING];   // used for buffering of user info
+	char userinfo[MAX_INFO_STRING]; // name, etc
+	char userinfobuffer[MAX_INFO_STRING]; // used for buffering of user info
 
 	char reliableCommands[MAX_RELIABLE_COMMANDS][MAX_STRING_CHARS];
-	int reliableSequence;                   // last added reliable message, not necesarily sent or acknowledged yet
-	int reliableAcknowledge;                // last acknowledged reliable message
-	int reliableSent;                       // last sent reliable message, not necesarily acknowledged yet
+	int reliableSequence; // last added reliable message, not necesarily sent or acknowledged yet
+	int reliableAcknowledge; // last acknowledged reliable message
+	int reliableSent; // last sent reliable message, not necesarily acknowledged yet
 	int messageAcknowledge;
 
 	int binaryMessageLength;
 	char binaryMessage[MAX_BINARY_MESSAGE];
 	qboolean binaryMessageOverflowed;
 
-	int gamestateMessageNum;                // netchan->outgoingSequence of gamestate
+	int gamestateMessageNum; // netchan->outgoingSequence of gamestate
 	int challenge;
 
 	usercmd_t lastUsercmd;
-	int lastMessageNum;                 // for delta compression
-	int lastClientCommand;              // reliable client message sequence
+	int lastMessageNum; // for delta compression
+	int lastClientCommand; // reliable client message sequence
 	char lastClientCommandString[MAX_STRING_CHARS];
-	sharedEntity_t *gentity;            // SV_GentityNum(clientnum)
-	char name[MAX_NAME_LENGTH];         // extracted from userinfo, high bits masked
+	sharedEntity_t *gentity; // SV_GentityNum(clientnum)
+	char name[MAX_NAME_LENGTH]; // extracted from userinfo, high bits masked
 
 	// downloading
-	char downloadName[MAX_QPATH];       // if not empty string, we are downloading
-	fileHandle_t download;              // file being downloaded
-	int downloadSize;                   // total bytes (can't use EOF because of paks)
-	int downloadCount;                  // bytes sent
-	int downloadClientBlock;            // last block we sent to the client, awaiting ack
-	int downloadCurrentBlock;           // current block number
-	int downloadXmitBlock;              // last block we xmited
-	unsigned char *downloadBlocks[MAX_DOWNLOAD_WINDOW];     // the buffers for the download blocks
+	char downloadName[MAX_QPATH]; // if not empty string, we are downloading
+	fileHandle_t download; // file being downloaded
+	int downloadSize; // total bytes (can't use EOF because of paks)
+	int downloadCount; // bytes sent
+	int downloadClientBlock; // last block we sent to the client, awaiting ack
+	int downloadCurrentBlock; // current block number
+	int downloadXmitBlock; // last block we xmited
+	unsigned char *downloadBlocks[MAX_DOWNLOAD_WINDOW]; // the buffers for the download blocks
 	int downloadBlockSize[MAX_DOWNLOAD_WINDOW];
-	qboolean downloadEOF;               // We have sent the EOF block
-	int downloadSendTime;               // time we last sent a package
-	int downloadAckTime;                // time we last got an ack from the client
+	qboolean downloadEOF; // We have sent the EOF block
+	int downloadSendTime; // time we last sent a package
+	int downloadAckTime; // time we last got an ack from the client
 
 	// www downloading
-	qboolean bDlOK;                     // passed from cl_wwwDownload CVAR_USERINFO, wether this client supports www dl
-	char downloadURL[MAX_OSPATH];       // the URL we redirected the client to
-	qboolean bWWWDl;                    // we have a www download going
-	qboolean bWWWing;                   // the client is doing an ftp/http download
-	qboolean bFallback;                 // last www download attempt failed, fallback to regular download
+	qboolean bDlOK; // passed from cl_wwwDownload CVAR_USERINFO, wether this client supports www dl
+	char downloadURL[MAX_OSPATH]; // the URL we redirected the client to
+	qboolean bWWWDl; // we have a www download going
+	qboolean bWWWing; // the client is doing an ftp/http download
+	qboolean bFallback; // last www download attempt failed, fallback to regular download
 	// NOTE: this is one-shot, multiple downloads would cause a www download to be attempted again
 
-	int deltaMessage;                   // frame last client usercmd message
-	int nextReliableTime;               // svs.time when another reliable command will be allowed
-	int nextReliableUserTime;           // svs.time when another userinfo change will be allowed
-	int lastPacketTime;                 // svs.time when packet was last received
-	int lastConnectTime;                // svs.time when connection started
-	int lastValidGamestate;             // svs.time when active in game
-	int lastSnapshotTime;               // svs.time of last sent snapshot
-	qboolean rateDelayed;               // true if lastSnapshotTime was set based on rate instead of snapshotMsec
-	int timeoutCount;                   // must timeout a few frames in a row so debugging doesn't break
-	clientSnapshot_t frames[PACKET_BACKUP];     // updates can be delta'd from here
+	int deltaMessage; // frame last client usercmd message
+	int nextReliableTime; // svs.time when another reliable command will be allowed
+	int nextReliableUserTime; // svs.time when another userinfo change will be allowed
+	int lastPacketTime; // svs.time when packet was last received
+	int lastConnectTime; // svs.time when connection started
+	int lastValidGamestate; // svs.time when active in game
+	int lastSnapshotTime; // svs.time of last sent snapshot
+	qboolean rateDelayed; // true if lastSnapshotTime was set based on rate instead of snapshotMsec
+	int timeoutCount; // must timeout a few frames in a row so debugging doesn't break
+	clientSnapshot_t frames[PACKET_BACKUP]; // updates can be delta'd from here
 	int ping;
-	int rate;                           // bytes / second
-	int snapshotMsec;                   // requests a snapshot every snapshotMsec unless rate choked
+	int rate; // bytes / second
+	int snapshotMsec; // requests a snapshot every snapshotMsec unless rate choked
 	int pureAuthentic;
-	qboolean gotCP;                     // additional flag to distinguish between a bad pure checksum, and no cp command at all
+	qboolean gotCP; // additional flag to distinguish between a bad pure checksum, and no cp command at all
 	netchan_t netchan;
 	// queuing outgoing fragmented messages to send them properly, without udp packet bursts
 	// in case large fragmented messages are stacking up
@@ -246,8 +241,7 @@ typedef struct client_s
 //=============================================================================
 
 #define STATFRAMES 100 // 5 seconds - assumed we run 20 fps
-typedef struct
-{
+typedef struct {
 	double active;
 	double idle;
 	int count;
@@ -266,21 +260,19 @@ typedef struct
  */
 #define MAX_CHALLENGES  2048
 
-typedef struct
-{
+typedef struct {
 	netadr_t adr;
 	int challenge;
-	int clientChallenge;            // challenge number coming from the client
-	int time;                       // time the last packet was sent to the autherize server
-	int pingTime;                   // time the challenge response was sent to client
-	int firstTime;                  // time the adr was first used
-	int firstPing;                  // Used for min and max ping checks
+	int clientChallenge; // challenge number coming from the client
+	int time; // time the last packet was sent to the autherize server
+	int pingTime; // time the challenge response was sent to client
+	int firstTime; // time the adr was first used
+	int firstPing; // Used for min and max ping checks
 	qboolean wasrefused;
 	qboolean connected;
 } challenge_t;
 
-typedef struct
-{
+typedef struct {
 	netadr_t adr;
 	int time;
 } receipt_t;
@@ -292,8 +284,7 @@ typedef struct
  */
 #define MAX_INFO_RECEIPTS  48
 
-typedef struct tempBan_s
-{
+typedef struct tempBan_s {
 	netadr_t adr;
 	int endtime;
 } tempBan_t;
@@ -304,22 +295,21 @@ typedef struct tempBan_s
 #define SERVER_PERFORMANCECOUNTER_SAMPLES   6
 
 // this structure will be cleared only when the game dll changes
-typedef struct
-{
-	qboolean initialized;                   // sv_init has completed
+typedef struct {
+	qboolean initialized; // sv_init has completed
 
-	int time;                               // will be strictly increasing across level changes
+	int time; // will be strictly increasing across level changes
 
-	int snapFlagServerBit;                  // ^= SNAPFLAG_SERVERCOUNT every SV_SpawnServer()
+	int snapFlagServerBit; // ^= SNAPFLAG_SERVERCOUNT every SV_SpawnServer()
 
-	client_t *clients;                      // [sv_maxclients->integer];
-	int numSnapshotEntities;                // sv_maxclients->integer*PACKET_BACKUP*MAX_PACKET_ENTITIES
-	int nextSnapshotEntities;               // next snapshotEntities to use
-	entityState_t *snapshotEntities;        // [numSnapshotEntities]
+	client_t *clients; // [sv_maxclients->integer];
+	int numSnapshotEntities; // sv_maxclients->integer*PACKET_BACKUP*MAX_PACKET_ENTITIES
+	int nextSnapshotEntities; // next snapshotEntities to use
+	entityState_t *snapshotEntities; // [numSnapshotEntities]
 	int nextHeartbeatTime;
 	challenge_t challenges[MAX_CHALLENGES]; // to prevent invalid IPs from connecting
 	receipt_t infoReceipts[MAX_INFO_RECEIPTS];
-	netadr_t redirectAddress;               // for rcon return messages
+	netadr_t redirectAddress; // for rcon return messages
 	tempBan_t tempBanAddresses[MAX_TEMPBAN_ADDRESSES];
 
 	int sampleTimes[SERVER_PERFORMANCECOUNTER_SAMPLES];
@@ -334,9 +324,9 @@ typedef struct
 
 //=============================================================================
 
-extern serverStatic_t svs;                  // persistant server info across maps
-extern server_t       sv;                   // cleared each map
-extern vm_t           *gvm;                 // game virtual machine
+extern serverStatic_t svs; // persistant server info across maps
+extern server_t sv; // cleared each map
+extern vm_t *gvm; // game virtual machine
 
 extern cvar_t *sv_fps;
 extern cvar_t *sv_timeout;
@@ -376,13 +366,13 @@ extern cvar_t *sv_floodProtect;
 extern cvar_t *sv_lanForceRate;
 extern cvar_t *sv_onlyVisibleClients;
 
-extern cvar_t *sv_showAverageBPS;           // net debugging
+extern cvar_t *sv_showAverageBPS; // net debugging
 
 // autodl
 extern cvar_t *sv_dl_timeout;
 
 extern cvar_t *sv_wwwDownload; // general flag to enable/disable www download redirects
-extern cvar_t *sv_wwwBaseURL;  // the base URL of all the files
+extern cvar_t *sv_wwwBaseURL; // the base URL of all the files
 // tell clients to perform their downloads while disconnected from the server
 // this gets you a better throughput, but you loose the ability to control the download usage
 extern cvar_t *sv_wwwDlDisconnected;
@@ -436,7 +426,7 @@ void SV_GentitySetHealthField(sharedEntity_t *gent, int value);
 void SV_GentityUpdateHealthField(sharedEntity_t *gent, playerState_t *player);
 
 // sv_main.c
-void SV_FinalCommand(const char *cmd, qboolean disconnect);   // added disconnect flag so map changes can use this function as well
+void SV_FinalCommand(const char *cmd, qboolean disconnect); // added disconnect flag so map changes can use this function as well
 void QDECL SV_SendServerCommand(client_t *cl, const char *fmt, ...) __attribute__ ((format(printf, 2, 3)));
 void SV_AddOperatorCommands(void);
 void SV_RemoveOperatorCommands(void);
@@ -446,12 +436,10 @@ void SV_MasterGameCompleteStatus(void);
 int SV_RateMsec(client_t *client);
 
 typedef struct leakyBucket_s leakyBucket_t;
-struct leakyBucket_s
-{
+struct leakyBucket_s {
 	netadrtype_t type;
 
-	union
-	{
+	union {
 		byte _4[4];
 		byte _6[16];
 	} ipv;

@@ -49,7 +49,7 @@ void Sys_Splash(qboolean show);
 #endif
 
 typedef struct {
-	HINSTANCE reflib_library;          // Handle to refresh DLL
+	HINSTANCE reflib_library; // Handle to refresh DLL
 	qboolean reflib_active;
 	HWND hWnd;
 	HWND hWndSplash;

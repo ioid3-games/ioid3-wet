@@ -47,47 +47,39 @@ image_t *r_imageHashTable[IMAGE_FILE_HASH_SIZE];
 // TODO: check if this fullpath shit is really needed for anything
 #define generateHashValue(fname) Q_GenerateHashValue(fname, IMAGE_FILE_HASH_SIZE, qtrue, qtrue)
 
-void R_GammaCorrect(byte *buffer, int bufSize)
-{
+void R_GammaCorrect(byte *buffer, int bufSize) {
 	int i;
 
-	for (i = 0; i < bufSize; i++)
-	{
+	for (i = 0; i < bufSize; i++) {
 		buffer[i] = s_gammatable[buffer[i]];
 	}
 }
 
-typedef struct
-{
+typedef struct {
 	char *name;
 	int minimize, maximize;
 } textureMode_t;
 
-textureMode_t modes[] =
-{
-	{ "GL_NEAREST",                GL_NEAREST,                GL_NEAREST },
-	{ "GL_LINEAR",                 GL_LINEAR,                 GL_LINEAR  },
-	{ "GL_NEAREST_MIPMAP_NEAREST", GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST },
-	{ "GL_LINEAR_MIPMAP_NEAREST",  GL_LINEAR_MIPMAP_NEAREST,  GL_LINEAR  },
-	{ "GL_NEAREST_MIPMAP_LINEAR",  GL_NEAREST_MIPMAP_LINEAR,  GL_NEAREST },
-	{ "GL_LINEAR_MIPMAP_LINEAR",   GL_LINEAR_MIPMAP_LINEAR,   GL_LINEAR  }
+textureMode_t modes[] = {
+	{"GL_NEAREST",                GL_NEAREST,                GL_NEAREST},
+	{"GL_LINEAR",                 GL_LINEAR,                 GL_LINEAR},
+	{"GL_NEAREST_MIPMAP_NEAREST", GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST},
+	{"GL_LINEAR_MIPMAP_NEAREST",  GL_LINEAR_MIPMAP_NEAREST,  GL_LINEAR},
+	{"GL_NEAREST_MIPMAP_LINEAR",  GL_NEAREST_MIPMAP_LINEAR,  GL_NEAREST},
+	{"GL_LINEAR_MIPMAP_LINEAR",   GL_LINEAR_MIPMAP_LINEAR,   GL_LINEAR}
 };
 
-void GL_TextureMode(const char *string)
-{
-	int     i;
+void GL_TextureMode(const char *string) {
+	int i;
 	image_t *image;
 
-	for (i = 0; i < 6; i++)
-	{
-		if (!Q_stricmp(modes[i].name, string))
-		{
+	for (i = 0; i < 6; i++) {
+		if (!Q_stricmp(modes[i].name, string)) {
 			break;
 		}
 	}
 
-	if (i == 6)
-	{
+	if (i == 6) {
 		Ren_Print("bad filter name\n");
 		return;
 	}
@@ -96,25 +88,18 @@ void GL_TextureMode(const char *string)
 	gl_filter_max = modes[i].maximize;
 
 	// bound texture anisotropy
-	if (glConfig2.textureAnisotropyAvailable)
-	{
-		if (r_ext_texture_filter_anisotropic->value > glConfig2.maxTextureAnisotropy)
-		{
+	if (glConfig2.textureAnisotropyAvailable) {
+		if (r_ext_texture_filter_anisotropic->value > glConfig2.maxTextureAnisotropy) {
 			ri.Cvar_Set("r_ext_texture_filter_anisotropic", va("%f", glConfig2.maxTextureAnisotropy));
-		}
-		else if (r_ext_texture_filter_anisotropic->value < 1.0)
-		{
+		} else if (r_ext_texture_filter_anisotropic->value < 1.0) {
 			ri.Cvar_Set("r_ext_texture_filter_anisotropic", "1.0");
 		}
 	}
-
 	// change all the existing mipmap texture objects
-	for (i = 0; i < tr.images.currentElements; i++)
-	{
+	for (i = 0; i < tr.images.currentElements; i++) {
 		image = (image_t *)Com_GrowListElement(&tr.images, i);
 
-		if (image->filterType == FT_DEFAULT)
-		{
+		if (image->filterType == FT_DEFAULT) {
 			GL_Bind(image);
 
 			// set texture filter
@@ -122,26 +107,22 @@ void GL_TextureMode(const char *string)
 			glTexParameterf(image->type, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 
 			// set texture anisotropy
-			if (glConfig2.textureAnisotropyAvailable)
-			{
+			if (glConfig2.textureAnisotropyAvailable) {
 				glTexParameterf(image->type, GL_TEXTURE_MAX_ANISOTROPY_EXT, r_ext_texture_filter_anisotropic->value);
 			}
 		}
 	}
 }
 
-int R_SumOfUsedImages(void)
-{
-	int     total = 0;
-	int     i;
+int R_SumOfUsedImages(void) {
+	int total = 0;
+	int i;
 	image_t *image;
 
-	for (i = 0; i < tr.images.currentElements; i++)
-	{
+	for (i = 0; i < tr.images.currentElements; i++) {
 		image = (image_t *)Com_GrowListElement(&tr.images, i);
 
-		if (image->frameUsed == tr.frameCount)
-		{
+		if (image->frameUsed == tr.frameCount) {
 			total += image->uploadWidth * image->uploadHeight;
 		}
 	}
@@ -149,37 +130,34 @@ int R_SumOfUsedImages(void)
 	return total;
 }
 
-void R_ImageList_f(void)
-{
-	int        i;
-	image_t    *image;
-	int        texels   = 0;
-	int        dataSize = 0;
-	int        imageDataSize;
+void R_ImageList_f(void) {
+	int i;
+	image_t *image;
+	int texels = 0;
+	int dataSize = 0;
+	int imageDataSize;
 	const char *yesno[] =
 	{
 		"no ", "yes"
 	};
 
-	Ren_Print("\n      -w-- -h-- -mm- -type-   -if-- wrap --name-------\n");
+	Ren_Print("\n -w-- -h-- -mm- -type- -if-- wrap --name-------\n");
 
-	for (i = 0; i < tr.images.currentElements; i++)
-	{
+	for (i = 0; i < tr.images.currentElements; i++) {
 		image = (image_t *)Com_GrowListElement(&tr.images, i);
 
 		Ren_Print("%4i: %4i %4i  %s   ",
 		          i, image->uploadWidth, image->uploadHeight, yesno[image->filterType == FT_DEFAULT]);
 
-		switch (image->type)
-		{
+		switch (image->type) {
 		case GL_TEXTURE_2D:
-			texels       += image->uploadWidth * image->uploadHeight;
+			texels += image->uploadWidth * image->uploadHeight;
 			imageDataSize = image->uploadWidth * image->uploadHeight;
 
 			Ren_Print("2D   ");
 			break;
 		case GL_TEXTURE_CUBE_MAP_ARB:
-			texels       += image->uploadWidth * image->uploadHeight * 6;
+			texels += image->uploadWidth * image->uploadHeight * 6;
 			imageDataSize = image->uploadWidth * image->uploadHeight * 6;
 
 			Ren_Print("CUBE ");
@@ -190,8 +168,7 @@ void R_ImageList_f(void)
 			break;
 		}
 
-		switch (image->internalFormat)
-		{
+		switch (image->internalFormat) {
 		case GL_RGB8:
 			Ren_Print("RGB8     ");
 			imageDataSize *= 3;
@@ -238,7 +215,7 @@ void R_ImageList_f(void)
 			break;
 		case GL_COMPRESSED_RGBA_ARB:
 			Ren_Print("ARB      ");
-			imageDataSize *= 4;     // FIXME
+			imageDataSize *= 4; // FIXME
 			break;
 		case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
 			Ren_Print("DXT1     ");
@@ -274,8 +251,7 @@ void R_ImageList_f(void)
 			break;
 		}
 
-		switch (image->wrapType)
-		{
+		switch (image->wrapType) {
 		case WT_REPEAT:
 			Ren_Print("rept  ");
 			break;
@@ -300,6 +276,7 @@ void R_ImageList_f(void)
 
 		Ren_Print(" %s\n", image->name);
 	}
+
 	Ren_Print(" ---------\n");
 	Ren_Print(" %i total texels (not including mipmaps)\n", texels);
 	Ren_Print(" %d.%02d MB total image memory\n", dataSize / (1024 * 1024),
@@ -322,51 +299,46 @@ If a larger shrinking is needed, use the mipmap function
 before or after.
 ================
 */
-static void R_ResampleTexture(unsigned *in, int inwidth, int inheight, unsigned *out, int outwidth, int outheight, qboolean normalMap)
-{
-	int      x, y;
+static void R_ResampleTexture(unsigned *in, int inwidth, int inheight, unsigned *out, int outwidth, int outheight, qboolean normalMap) {
+	int x, y;
 	unsigned *inrow, *inrow2;
 	unsigned fracstep, frac;
 	unsigned p1[2048], p2[2048];
 	byte     *pix1, *pix2, *pix3, *pix4;
-	float    inv127 = 1.0f / 127.0f;
-	vec3_t   n, n2, n3, n4;
+	float inv127 = 1.0f / 127.0f;
+	vec3_t n, n2, n3, n4;
 
 	// NOTE: limitation not needed anymore
 	//if(outwidth > 2048)
 	//  Ren_Drop( "ResampleTexture: max width");
 
-	if (outwidth < 1)
-	{
+	if (outwidth < 1) {
 		outwidth = 1;
 	}
 
 	fracstep = inwidth * 0x10000 / outwidth;
-	frac     = fracstep >> 2;
+	frac = fracstep >> 2;
 
-	for (x = 0; x < outwidth; x++)
-	{
+	for (x = 0; x < outwidth; x++) {
 		p1[x] = 4 * (frac >> 16);
 		frac += fracstep;
 	}
+
 	frac = 3 * (fracstep >> 2);
-	for (x = 0; x < outwidth; x++)
-	{
+
+	for (x = 0; x < outwidth; x++) {
 		p2[x] = 4 * (frac >> 16);
 		frac += fracstep;
 	}
 
-	if (normalMap)
-	{
-		for (y = 0; y < outheight; y++, out += outwidth)
-		{
-			inrow  = in + inwidth * (int)((y + 0.25) * inheight / outheight);
+	if (normalMap) {
+		for (y = 0; y < outheight; y++, out += outwidth) {
+			inrow = in + inwidth * (int)((y + 0.25) * inheight / outheight);
 			inrow2 = in + inwidth * (int)((y + 0.75) * inheight / outheight);
 
 			//frac = fracstep >> 1;
 
-			for (x = 0; x < outwidth; x++)
-			{
+			for (x = 0; x < outwidth; x++) {
 				pix1 = (byte *) inrow + p1[x];
 				pix2 = (byte *) inrow + p2[x];
 				pix3 = (byte *) inrow2 + p1[x];
@@ -392,8 +364,7 @@ static void R_ResampleTexture(unsigned *in, int inwidth, int inheight, unsigned 
 				VectorAdd(n, n3, n);
 				VectorAdd(n, n4, n);
 
-				if (!VectorNormalize(n))
-				{
+				if (!VectorNormalize(n)) {
 					VectorSet(n, 0, 0, 1);
 				}
 
@@ -403,18 +374,14 @@ static void R_ResampleTexture(unsigned *in, int inwidth, int inheight, unsigned 
 				((byte *) (out + x))[3] = (byte) (128 + 127 * 1.0);
 			}
 		}
-	}
-	else
-	{
-		for (y = 0; y < outheight; y++, out += outwidth)
-		{
-			inrow  = in + inwidth * (int)((y + 0.25) * inheight / outheight);
+	} else {
+		for (y = 0; y < outheight; y++, out += outwidth) {
+			inrow = in + inwidth * (int)((y + 0.25) * inheight / outheight);
 			inrow2 = in + inwidth * (int)((y + 0.75) * inheight / outheight);
 
 			//frac = fracstep >> 1;
 
-			for (x = 0; x < outwidth; x++)
-			{
+			for (x = 0; x < outwidth; x++) {
 				pix1 = (byte *) inrow + p1[x];
 				pix2 = (byte *) inrow + p2[x];
 				pix3 = (byte *) inrow2 + p1[x];
@@ -437,45 +404,33 @@ Scale up the pixel values in a texture to increase the
 lighting range
 ================
 */
-void R_LightScaleTexture(unsigned *in, int inwidth, int inheight, qboolean onlyGamma)
-{
-	if (onlyGamma)
-	{
-		if (!glConfig.deviceSupportsGamma)
-		{
-			int  i, c = inwidth * inheight;
+void R_LightScaleTexture(unsigned *in, int inwidth, int inheight, qboolean onlyGamma) {
+	if (onlyGamma) {
+		if (!glConfig.deviceSupportsGamma) {
+			int i, c = inwidth * inheight;
 			byte *p = (byte *) in;
 
-			for (i = 0; i < c; i++, p += 4)
-			{
+			for (i = 0; i < c; i++, p += 4) {
 				p[0] = s_gammatable[p[0]];
 				p[1] = s_gammatable[p[1]];
 				p[2] = s_gammatable[p[2]];
 			}
 		}
-	}
-	else
-	{
-		int  i, c = inwidth * inheight;
+	} else {
+		int i, c = inwidth * inheight;
 		byte *p = (byte *) in;
 
-		if (glConfig.deviceSupportsGamma)
-		{
+		if (glConfig.deviceSupportsGamma) {
 			// raynorpat: small optimization
-			if (r_intensity->value != 1.0f)
-			{
-				for (i = 0; i < c; i++, p += 4)
-				{
+			if (r_intensity->value != 1.0f) {
+				for (i = 0; i < c; i++, p += 4) {
 					p[0] = s_intensitytable[p[0]];
 					p[1] = s_intensitytable[p[1]];
 					p[2] = s_intensitytable[p[2]];
 				}
 			}
-		}
-		else
-		{
-			for (i = 0; i < c; i++, p += 4)
-			{
+		} else {
+			for (i = 0; i < c; i++, p += 4) {
 				p[0] = s_gammatable[s_intensitytable[p[0]]];
 				p[1] = s_gammatable[s_intensitytable[p[1]]];
 				p[2] = s_gammatable[s_intensitytable[p[2]]];
@@ -492,28 +447,25 @@ Operates in place, quartering the size of the texture
 Proper linear filter
 ================
 */
-static void R_MipMap2(unsigned *in, int inWidth, int inHeight)
-{
-	int      i, j, k;
+static void R_MipMap2(unsigned *in, int inWidth, int inHeight) {
+	int i, j, k;
 	byte     *outpix;
-	int      inWidthMask, inHeightMask;
-	int      total;
-	int      outWidth  = inWidth >> 1;
-	int      outHeight = inHeight >> 1;
+	int inWidthMask, inHeightMask;
+	int total;
+	int outWidth = inWidth >> 1;
+	int outHeight = inHeight >> 1;
 	unsigned *temp;
 
 	temp = (unsigned int *)ri.Hunk_AllocateTempMemory(outWidth * outHeight * 4);
 
-	inWidthMask  = inWidth - 1;
+	inWidthMask = inWidth - 1;
 	inHeightMask = inHeight - 1;
 
-	for (i = 0; i < outHeight; i++)
-	{
-		for (j = 0; j < outWidth; j++)
-		{
+	for (i = 0; i < outHeight; i++) {
+		for (j = 0; j < outWidth; j++) {
 			outpix = (byte *) (temp + i * outWidth + j);
-			for (k = 0; k < 4; k++)
-			{
+
+			for (k = 0; k < 4; k++) {
 				total =
 				    1 * ((byte *) &in[((i * 2 - 1) & inHeightMask) * inWidth + ((j * 2 - 1) & inWidthMask)])[k] +
 				    2 * ((byte *) &in[((i * 2 - 1) & inHeightMask) * inWidth + ((j * 2) & inWidthMask)])[k] +
@@ -547,45 +499,39 @@ R_MipMap
 Operates in place, quartering the size of the texture
 ================
 */
-static void R_MipMap(byte *in, int width, int height)
-{
-	int  i, j;
+static void R_MipMap(byte *in, int width, int height) {
+	int i, j;
 	byte *out;
-	int  row;
+	int row;
 
-	if (!r_simpleMipMaps->integer)
-	{
+	if (!r_simpleMipMaps->integer) {
 		R_MipMap2((unsigned *)in, width, height);
 		return;
 	}
 
-	if (width == 1 && height == 1)
-	{
+	if (width == 1 && height == 1) {
 		return;
 	}
 
-	row      = width * 4;
-	out      = in;
+	row = width * 4;
+	out = in;
 	width  >>= 1;
 	height >>= 1;
 
-	if (width == 0 || height == 0)
-	{
-		width += height;        // get largest
-		for (i = 0; i < width; i++, out += 4, in += 8)
-		{
+	if (width == 0 || height == 0) {
+		width += height; // get largest
+		for (i = 0; i < width; i++, out += 4, in += 8) {
 			out[0] = (in[0] + in[4]) >> 1;
 			out[1] = (in[1] + in[5]) >> 1;
 			out[2] = (in[2] + in[6]) >> 1;
 			out[3] = (in[3] + in[7]) >> 1;
 		}
+
 		return;
 	}
 
-	for (i = 0; i < height; i++, in += row)
-	{
-		for (j = 0; j < width; j++, out += 4, in += 8)
-		{
+	for (i = 0; i < height; i++, in += row) {
+		for (j = 0; j < width; j++, out += 4, in += 8) {
 			out[0] = (in[0] + in[4] + in[row + 0] + in[row + 4]) >> 2;
 			out[1] = (in[1] + in[5] + in[row + 1] + in[row + 5]) >> 2;
 			out[2] = (in[2] + in[6] + in[row + 2] + in[row + 6]) >> 2;
@@ -602,16 +548,14 @@ Operates in place, quartering the size of the texture
 ================
 */
 // *INDENT-OFF*
-static void R_MipNormalMap(byte *in, int width, int height)
-{
-	int    i, j;
+static void R_MipNormalMap(byte *in, int width, int height) {
+	int i, j;
 	byte   *out;
 	vec4_t n;
-	vec_t  length;
-	float  inv255 = 1.0f / 255.0f;
+	vec_t length;
+	float inv255 = 1.0f / 255.0f;
 
-	if (width == 1 && height == 1)
-	{
+	if (width == 1 && height == 1) {
 		return;
 	}
 
@@ -620,10 +564,8 @@ static void R_MipNormalMap(byte *in, int width, int height)
 	width  <<= 2;
 	height >>= 1;
 
-	for (i = 0; i < height; i++, in += width)
-	{
-		for (j = 0; j < width; j += 8, out += 4, in += 8)
-		{
+	for (i = 0; i < height; i++, in += width) {
+		for (j = 0; j < width; j += 8, out += 4, in += 8) {
 			n[0] = (in[0] * inv255 - 0.5) * 2.0 +
 			       (in[4] * inv255 - 0.5) * 2.0 +
 			       (in[width + 0] * inv255 - 0.5) * 2.0 +
@@ -646,14 +588,11 @@ static void R_MipNormalMap(byte *in, int width, int height)
 
 			length = VectorLength(n);
 
-			if (length)
-			{
+			if (length) {
 				n[0] /= length;
 				n[1] /= length;
 				n[2] /= length;
-			}
-			else
-			{
+			} else {
 				VectorSet(n, 0.0, 0.0, 1.0);
 			}
 
@@ -667,20 +606,17 @@ static void R_MipNormalMap(byte *in, int width, int height)
 }
 // *INDENT-ON*
 
-static void R_HeightMapToNormalMap(byte *in, int width, int height, float scale)
-{
-	int    x, y;
-	float  r, g, b;
-	float  c, cx, cy;
-	float  dcx, dcy;
-	float  inv255 = 1.0f / 255.0f;
+static void R_HeightMapToNormalMap(byte *in, int width, int height, float scale) {
+	int x, y;
+	float r, g, b;
+	float c, cx, cy;
+	float dcx, dcy;
+	float inv255 = 1.0f / 255.0f;
 	vec3_t n;
 	byte   *out = in;
 
-	for (y = 0; y < height; y++)
-	{
-		for (x = 0; x < width; x++)
-		{
+	for (y = 0; y < height; y++) {
+		for (x = 0; x < width; x++) {
 			// convert the pixel at x, y in the bump map to a normal (float)
 
 			// expand [0,255] texel values to the [0,1] range
@@ -691,14 +627,11 @@ static void R_HeightMapToNormalMap(byte *in, int width, int height, float scale)
 			c = (r + g + b) * inv255;
 
 			// expand the texel to its right
-			if (x == width - 1)
-			{
+			if (x == width - 1) {
 				r = in[4 * (y * width + x) + 0];
 				g = in[4 * (y * width + x) + 1];
 				b = in[4 * (y * width + x) + 2];
-			}
-			else
-			{
+			} else {
 				r = in[4 * (y * width + ((x + 1) % width)) + 0];
 				g = in[4 * (y * width + ((x + 1) % width)) + 1];
 				b = in[4 * (y * width + ((x + 1) % width)) + 2];
@@ -707,14 +640,11 @@ static void R_HeightMapToNormalMap(byte *in, int width, int height, float scale)
 			cx = (r + g + b) * inv255;
 
 			// expand the texel one up
-			if (y == height - 1)
-			{
+			if (y == height - 1) {
 				r = in[4 * (y * width + x) + 0];
 				g = in[4 * (y * width + x) + 1];
 				b = in[4 * (y * width + x) + 2];
-			}
-			else
-			{
+			} else {
 				r = in[4 * (((y + 1) % height) * width + x) + 0];
 				g = in[4 * (((y + 1) % height) * width + x) + 1];
 				b = in[4 * (((y + 1) % height) * width + x) + 2];
@@ -726,9 +656,9 @@ static void R_HeightMapToNormalMap(byte *in, int width, int height, float scale)
 			dcy = scale * (c - cy);
 
 			// normalize the vector
-			VectorSet(n, dcx, dcy, 1.0);    //scale);
-			if (!VectorNormalize(n))
-			{
+			VectorSet(n, dcx, dcy, 1.0); //scale);
+
+			if (!VectorNormalize(n)) {
 				VectorSet(n, 0, 0, 1);
 			}
 
@@ -739,28 +669,25 @@ static void R_HeightMapToNormalMap(byte *in, int width, int height, float scale)
 			*out++ = (byte) (128 + 127 * n[2]);
 
 			// put in no height as displacement map by default
-			*out++ = (byte) 0;  //(Q_bound(0, c * 255.0 / 3.0, 255));
+			*out++ = (byte) 0; //(Q_bound(0, c * 255.0 / 3.0, 255));
 		}
 	}
 }
 
-static void R_DisplaceMap(byte *in, byte *in2, int width, int height)
-{
-	int    x, y;
+static void R_DisplaceMap(byte *in, byte *in2, int width, int height) {
+	int x, y;
 	vec3_t n;
-	int    avg;
-	float  inv255 = 1.0f / 255.0f;
-	byte   *out   = in;
+	int avg;
+	float inv255 = 1.0f / 255.0f;
+	byte   *out = in;
 
-	for (y = 0; y < height; y++)
-	{
-		for (x = 0; x < width; x++)
-		{
+	for (y = 0; y < height; y++) {
+		for (x = 0; x < width; x++) {
 			n[0] = (in[4 * (y * width + x) + 0] * inv255 - 0.5) * 2.0;
 			n[1] = (in[4 * (y * width + x) + 1] * inv255 - 0.5) * 2.0;
 			n[2] = (in[4 * (y * width + x) + 2] * inv255 - 0.5) * 2.0;
 
-			avg  = 0;
+			avg = 0;
 			avg += in2[4 * (y * width + x) + 0];
 			avg += in2[4 * (y * width + x) + 1];
 			avg += in2[4 * (y * width + x) + 2];
@@ -774,34 +701,30 @@ static void R_DisplaceMap(byte *in, byte *in2, int width, int height)
 	}
 }
 
-static void R_AddNormals(byte *in, byte *in2, int width, int height)
-{
-	int    x, y;
+static void R_AddNormals(byte *in, byte *in2, int width, int height) {
+	int x, y;
 	vec3_t n;
 	byte   a;
 	vec3_t n2;
 	byte   a2;
-	float  inv255 = 1.0f / 255.0f;
-	byte   *out   = in;
+	float inv255 = 1.0f / 255.0f;
+	byte   *out = in;
 
-	for (y = 0; y < height; y++)
-	{
-		for (x = 0; x < width; x++)
-		{
+	for (y = 0; y < height; y++) {
+		for (x = 0; x < width; x++) {
 			n[0] = (in[4 * (y * width + x) + 0] * inv255 - 0.5) * 2.0;
 			n[1] = (in[4 * (y * width + x) + 1] * inv255 - 0.5) * 2.0;
 			n[2] = (in[4 * (y * width + x) + 2] * inv255 - 0.5) * 2.0;
-			a    = in[4 * (y * width + x) + 3];
+			a = in[4 * (y * width + x) + 3];
 
 			n2[0] = (in2[4 * (y * width + x) + 0] * inv255 - 0.5) * 2.0;
 			n2[1] = (in2[4 * (y * width + x) + 1] * inv255 - 0.5) * 2.0;
 			n2[2] = (in2[4 * (y * width + x) + 2] * inv255 - 0.5) * 2.0;
-			a2    = in2[4 * (y * width + x) + 3];
+			a2 = in2[4 * (y * width + x) + 3];
 
 			VectorAdd(n, n2, n);
 
-			if (!VectorNormalize(n))
-			{
+			if (!VectorNormalize(n)) {
 				VectorSet(n, 0, 0, 1);
 			}
 
@@ -813,29 +736,23 @@ static void R_AddNormals(byte *in, byte *in2, int width, int height)
 	}
 }
 
-static void R_InvertAlpha(byte *in, int width, int height)
-{
-	int  x, y;
+static void R_InvertAlpha(byte *in, int width, int height) {
+	int x, y;
 	byte *out = in;
 
-	for (y = 0; y < height; y++)
-	{
-		for (x = 0; x < width; x++)
-		{
+	for (y = 0; y < height; y++) {
+		for (x = 0; x < width; x++) {
 			out[4 * (y * width + x) + 3] = 255 - in[4 * (y * width + x) + 3];
 		}
 	}
 }
 
-static void R_InvertColor(byte *in, int width, int height)
-{
-	int  x, y;
+static void R_InvertColor(byte *in, int width, int height) {
+	int x, y;
 	byte *out = in;
 
-	for (y = 0; y < height; y++)
-	{
-		for (x = 0; x < width; x++)
-		{
+	for (y = 0; y < height; y++) {
+		for (x = 0; x < width; x++) {
 			out[4 * (y * width + x) + 0] = 255 - in[4 * (y * width + x) + 0];
 			out[4 * (y * width + x) + 1] = 255 - in[4 * (y * width + x) + 1];
 			out[4 * (y * width + x) + 2] = 255 - in[4 * (y * width + x) + 2];
@@ -843,16 +760,13 @@ static void R_InvertColor(byte *in, int width, int height)
 	}
 }
 
-static void R_MakeIntensity(byte *in, int width, int height)
-{
-	int  x, y;
+static void R_MakeIntensity(byte *in, int width, int height) {
+	int x, y;
 	byte *out = in;
 	byte red;
 
-	for (y = 0; y < height; y++)
-	{
-		for (x = 0; x < width; x++)
-		{
+	for (y = 0; y < height; y++) {
+		for (x = 0; x < width; x++) {
 			red = out[4 * (y * width + x) + 0];
 
 			out[4 * (y * width + x) + 1] = red;
@@ -862,17 +776,14 @@ static void R_MakeIntensity(byte *in, int width, int height)
 	}
 }
 
-static void R_MakeAlpha(byte *in, int width, int height)
-{
-	int  x, y;
+static void R_MakeAlpha(byte *in, int width, int height) {
+	int x, y;
 	byte *out = in;
-	int  avg;
+	int avg;
 
-	for (y = 0; y < height; y++)
-	{
-		for (x = 0; x < width; x++)
-		{
-			avg  = 0;
+	for (y = 0; y < height; y++) {
+		for (x = 0; x < width; x++) {
+			avg = 0;
 			avg += out[4 * (y * width + x) + 0];
 			avg += out[4 * (y * width + x) + 1];
 			avg += out[4 * (y * width + x) + 2];
@@ -893,8 +804,7 @@ R_BlendOverTexture
 Apply a color blend over a set of pixels
 ==================
 */
-static void R_BlendOverTexture(byte *data, int pixelCount, byte blend[4])
-{
+static void R_BlendOverTexture(byte *data, int pixelCount, byte blend[4]) {
 	int i;
 	int inverseAlpha = 255 - blend[3];
 	int premult[3];
@@ -903,47 +813,45 @@ static void R_BlendOverTexture(byte *data, int pixelCount, byte blend[4])
 	premult[1] = blend[1] * blend[3];
 	premult[2] = blend[2] * blend[3];
 
-	for (i = 0; i < pixelCount; i++, data += 4)
-	{
+	for (i = 0; i < pixelCount; i++, data += 4) {
 		data[0] = (data[0] * inverseAlpha + premult[0]) >> 9;
 		data[1] = (data[1] * inverseAlpha + premult[1]) >> 9;
 		data[2] = (data[2] * inverseAlpha + premult[2]) >> 9;
 	}
 }
 
-byte mipBlendColors[16][4] =
-{
-	{ 0,   0,   0,   0   }
+byte mipBlendColors[16][4] = {
+	{0,   0,   0,   0 }
 	,
-	{ 255, 0,   0,   128 }
+	{255, 0,   0,   128}
 	,
-	{ 0,   255, 0,   128 }
+	{0,   255, 0,   128}
 	,
-	{ 0,   0,   255, 128 }
+	{0,   0,   255, 128}
 	,
-	{ 255, 0,   0,   128 }
+	{255, 0,   0,   128}
 	,
-	{ 0,   255, 0,   128 }
+	{0,   255, 0,   128}
 	,
-	{ 0,   0,   255, 128 }
+	{0,   0,   255, 128}
 	,
-	{ 255, 0,   0,   128 }
+	{255, 0,   0,   128}
 	,
-	{ 0,   255, 0,   128 }
+	{0,   255, 0,   128}
 	,
-	{ 0,   0,   255, 128 }
+	{0,   0,   255, 128}
 	,
-	{ 255, 0,   0,   128 }
+	{255, 0,   0,   128}
 	,
-	{ 0,   255, 0,   128 }
+	{0,   255, 0,   128}
 	,
-	{ 0,   0,   255, 128 }
+	{0,   0,   255, 128}
 	,
-	{ 255, 0,   0,   128 }
+	{255, 0,   0,   128}
 	,
-	{ 0,   255, 0,   128 }
+	{0,   255, 0,   128}
 	,
-	{ 0,   0,   255, 128 }
+	{0,   0,   255, 128}
 	,
 };
 
@@ -952,75 +860,59 @@ byte mipBlendColors[16][4] =
 R_UploadImage
 ===============
 */
-void R_UploadImage(const byte **dataArray, int numData, image_t *image)
-{
-	const byte *data         = dataArray[0];
+void R_UploadImage(const byte **dataArray, int numData, image_t *image) {
+	const byte *data = dataArray[0];
 	byte       *scaledBuffer = NULL;
-	int        scaledWidth, scaledHeight;
-	int        i, c;
+	int scaledWidth, scaledHeight;
+	int i, c;
 	const byte *scan;
 	GLenum     target;
-	GLenum     format               = GL_RGBA;
-	GLenum     internalFormat       = GL_RGB;
-	float      rMax                 = 0, gMax = 0, bMax = 0;
-	vec4_t     zeroClampBorder      = { 0, 0, 0, 1 };
-	vec4_t     alphaZeroClampBorder = { 0, 0, 0, 0 };
+	GLenum     format = GL_RGBA;
+	GLenum     internalFormat = GL_RGB;
+	float rMax = 0, gMax = 0, bMax = 0;
+	vec4_t zeroClampBorder = {0, 0, 0, 1};
+	vec4_t alphaZeroClampBorder = {0, 0, 0, 0};
 
-	if (glConfig2.textureNPOTAvailable)
-	{
-		scaledWidth  = image->width;
+	if (glConfig2.textureNPOTAvailable) {
+		scaledWidth = image->width;
 		scaledHeight = image->height;
-	}
-	else
-	{
+	} else {
 		// convert to exact power of 2 sizes
-		for (scaledWidth = 1; scaledWidth < image->width; scaledWidth <<= 1)
-			;
-		for (scaledHeight = 1; scaledHeight < image->height; scaledHeight <<= 1)
-			;
+		for (scaledWidth = 1; scaledWidth < image->width; scaledWidth <<= 1);
+
+		for (scaledHeight = 1; scaledHeight < image->height; scaledHeight <<= 1);
 	}
 
-	if (r_roundImagesDown->integer && scaledWidth > image->width)
-	{
+	if (r_roundImagesDown->integer && scaledWidth > image->width) {
 		scaledWidth >>= 1;
 	}
-	if (r_roundImagesDown->integer && scaledHeight > image->height)
-	{
+
+	if (r_roundImagesDown->integer && scaledHeight > image->height) {
 		scaledHeight >>= 1;
 	}
-
 	// perform optional picmip operation
-	if (!(image->bits & IF_NOPICMIP))
-	{
+	if (!(image->bits & IF_NOPICMIP)) {
 		scaledWidth  >>= r_picmip->integer;
 		scaledHeight >>= r_picmip->integer;
 	}
-
 	// clamp to minimum size
-	if (scaledWidth < 1)
-	{
+	if (scaledWidth < 1) {
 		scaledWidth = 1;
 	}
-	if (scaledHeight < 1)
-	{
+
+	if (scaledHeight < 1) {
 		scaledHeight = 1;
 	}
-
 	// clamp to the current upper OpenGL limit
 	// scale both axis down equally so we don't have to
 	// deal with a half mip resampling
-	if (image->type == GL_TEXTURE_CUBE_MAP_ARB)
-	{
-		while (scaledWidth > glConfig2.maxCubeMapTextureSize || scaledHeight > glConfig2.maxCubeMapTextureSize)
-		{
+	if (image->type == GL_TEXTURE_CUBE_MAP_ARB) {
+		while (scaledWidth > glConfig2.maxCubeMapTextureSize || scaledHeight > glConfig2.maxCubeMapTextureSize) {
 			scaledWidth  >>= 1;
 			scaledHeight >>= 1;
 		}
-	}
-	else
-	{
-		while (scaledWidth > glConfig.maxTextureSize || scaledHeight > glConfig.maxTextureSize)
-		{
+	} else {
+		while (scaledWidth > glConfig.maxTextureSize || scaledHeight > glConfig.maxTextureSize) {
 			scaledWidth  >>= 1;
 			scaledHeight >>= 1;
 		}
@@ -1029,8 +921,7 @@ void R_UploadImage(const byte **dataArray, int numData, image_t *image)
 	scaledBuffer = (byte *)ri.Hunk_AllocateTempMemory(sizeof(byte) * scaledWidth * scaledHeight * 4);
 
 	// set target
-	switch (image->type)
-	{
+	switch (image->type) {
 	case GL_TEXTURE_CUBE_MAP_ARB:
 		target = GL_TEXTURE_CUBE_MAP_POSITIVE_X_ARB;
 		break;
@@ -1038,255 +929,174 @@ void R_UploadImage(const byte **dataArray, int numData, image_t *image)
 		target = GL_TEXTURE_2D;
 		break;
 	}
-
 	// scan the texture for each channel's max values
 	// and verify if the alpha channel is being used or not
-	c    = image->width * image->height;
+	c = image->width * image->height;
 	scan = data;
 
-	if (image->bits & (IF_DEPTH16 | IF_DEPTH24 | IF_DEPTH32))
-	{
+	if (image->bits & (IF_DEPTH16 | IF_DEPTH24 | IF_DEPTH32)) {
 		format = GL_DEPTH_COMPONENT;
 
-		if (image->bits & IF_DEPTH16)
-		{
+		if (image->bits & IF_DEPTH16) {
 			internalFormat = GL_DEPTH_COMPONENT16_ARB;
-		}
-		else if (image->bits & IF_DEPTH24)
-		{
+		} else if (image->bits & IF_DEPTH24) {
 			internalFormat = GL_DEPTH_COMPONENT24_ARB;
-		}
-		else if (image->bits & IF_DEPTH32)
-		{
+		} else if (image->bits & IF_DEPTH32) {
 			internalFormat = GL_DEPTH_COMPONENT32_ARB;
 		}
-	}
-	else if (image->bits & (IF_PACKED_DEPTH24_STENCIL8))
-	{
-		format         = GL_DEPTH_STENCIL_EXT;
+	} else if (image->bits & (IF_PACKED_DEPTH24_STENCIL8)) {
+		format = GL_DEPTH_STENCIL_EXT;
 		internalFormat = GL_DEPTH24_STENCIL8_EXT;
-	}
-	else if (glConfig2.textureFloatAvailable &&
-	         (image->bits & (IF_RGBA16F | IF_RGBA32F | IF_RGBA16 | IF_LA16F | IF_LA32F | IF_ALPHA16F | IF_ALPHA32F)))
-	{
-		if (image->bits & IF_RGBA16F)
-		{
+	} else if (glConfig2.textureFloatAvailable &&
+	         (image->bits & (IF_RGBA16F | IF_RGBA32F | IF_RGBA16 | IF_LA16F | IF_LA32F | IF_ALPHA16F | IF_ALPHA32F))) {
+		if (image->bits & IF_RGBA16F) {
 			internalFormat = GL_RGBA16F_ARB;
-		}
-		else if (image->bits & IF_RGBA32F)
-		{
+		} else if (image->bits & IF_RGBA32F) {
 			internalFormat = GL_RGBA32F_ARB;
-		}
-		else if (image->bits & IF_LA16F)
-		{
+		} else if (image->bits & IF_LA16F) {
 			internalFormat = GL_LUMINANCE_ALPHA16F_ARB;
-		}
-		else if (image->bits & IF_LA32F)
-		{
+		} else if (image->bits & IF_LA32F) {
 			internalFormat = GL_LUMINANCE_ALPHA32F_ARB;
-		}
-		else if (image->bits & IF_RGBA16)
-		{
+		} else if (image->bits & IF_RGBA16) {
 			internalFormat = GL_RGBA16;
-		}
-		else if (image->bits & IF_ALPHA16F)
-		{
+		} else if (image->bits & IF_ALPHA16F) {
 			internalFormat = GL_ALPHA16F_ARB;
-		}
-		else if (image->bits & IF_ALPHA32F)
-		{
+		} else if (image->bits & IF_ALPHA32F) {
 			internalFormat = GL_ALPHA32F_ARB;
 		}
-	}
-	else if (image->bits & IF_RGBE)
-	{
+	} else if (image->bits & IF_RGBE) {
 		internalFormat = GL_RGBA8;
-	}
-	else
-	{
+	} else {
 		int samples = 3;
 
 		// normalmaps have the displacement maps in the alpha channel
 		// samples 3 would cause an opaque alpha channel and odd displacements!
-		if (image->bits & IF_NORMALMAP)
-		{
-			if (image->bits & (IF_DISPLACEMAP | IF_ALPHATEST))
-			{
+		if (image->bits & IF_NORMALMAP) {
+			if (image->bits & (IF_DISPLACEMAP | IF_ALPHATEST)) {
 				samples = 4;
-			}
-			else
-			{
+			} else {
 				samples = 3;
 			}
-		}
-		else if (image->bits & IF_LIGHTMAP)
-		{
+		} else if (image->bits & IF_LIGHTMAP) {
 			samples = 3;
-		}
-		else
-		{
-			for (i = 0; i < c; i++)
-			{
-				if (scan[i * 4 + 0] > rMax)
-				{
+		} else {
+			for (i = 0; i < c; i++) {
+				if (scan[i * 4 + 0] > rMax) {
 					rMax = scan[i * 4 + 0];
 				}
-				if (scan[i * 4 + 1] > gMax)
-				{
+				if (scan[i * 4 + 1] > gMax) {
 					gMax = scan[i * 4 + 1];
 				}
-				if (scan[i * 4 + 2] > bMax)
-				{
+				if (scan[i * 4 + 2] > bMax) {
 					bMax = scan[i * 4 + 2];
 				}
-				if (scan[i * 4 + 3] != 255)
-				{
+				if (scan[i * 4 + 3] != 255) {
 					samples = 4;
 					break;
 				}
 			}
 		}
-
 		// select proper internal format
-		if (samples == 3)
-		{
-			if (glConfig.textureCompression == TC_S3TC && !(image->bits & IF_NOCOMPRESSION))
-			{
+		if (samples == 3) {
+			if (glConfig.textureCompression == TC_S3TC && !(image->bits & IF_NOCOMPRESSION)) {
 				internalFormat = GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
-			}
-			else
-			{
+			} else {
 				internalFormat = GL_RGB8;
 			}
-		}
-		else if (samples == 4)
-		{
-			if (image->bits & IF_ALPHA)
-			{
+		} else if (samples == 4) {
+			if (image->bits & IF_ALPHA) {
 				internalFormat = GL_ALPHA8;
-			}
-			else
-			{
-				if (glConfig.textureCompression == TC_S3TC && !(image->bits & IF_NOCOMPRESSION))
-				{
-					if (image->bits & IF_DISPLACEMAP)
-					{
+			} else {
+				if (glConfig.textureCompression == TC_S3TC && !(image->bits & IF_NOCOMPRESSION)) {
+					if (image->bits & IF_DISPLACEMAP) {
 						internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
-					}
-					else if (image->bits & IF_ALPHATEST)
-					{
+					} else if (image->bits & IF_ALPHATEST) {
 						internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
-					}
-					else
-					{
+					} else {
 						internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
 					}
-				}
-				else
-				{
+				} else {
 					internalFormat = GL_RGBA8;
 				}
 			}
 		}
 	}
 
-	for (i = 0; i < numData; i++)
-	{
+	for (i = 0; i < numData; i++) {
 		data = dataArray[i];
 
 		// copy or resample data as appropriate for first MIP level
-		if ((scaledWidth == image->width) && (scaledHeight == image->height))
-		{
+		if ((scaledWidth == image->width) && (scaledHeight == image->height)) {
 			Com_Memcpy(scaledBuffer, data, scaledWidth * scaledHeight * 4);
-		}
-		else
-		{
+		} else {
 			R_ResampleTexture((unsigned *)data, image->width, image->height, (unsigned *)scaledBuffer, scaledWidth, scaledHeight, (image->bits & IF_NORMALMAP));
 		}
 
-		if (!(image->bits & (IF_NORMALMAP | IF_RGBA16F | IF_RGBA32F | IF_LA16F | IF_LA32F)))
-		{
+		if (!(image->bits & (IF_NORMALMAP | IF_RGBA16F | IF_RGBA32F | IF_LA16F | IF_LA32F))) {
 			R_LightScaleTexture((unsigned *)scaledBuffer, scaledWidth, scaledHeight, image->filterType == FT_DEFAULT);
 		}
 
-		image->uploadWidth    = scaledWidth;
-		image->uploadHeight   = scaledHeight;
+		image->uploadWidth = scaledWidth;
+		image->uploadHeight = scaledHeight;
 		image->internalFormat = internalFormat;
 
-		switch (image->type)
-		{
+		switch (image->type) {
 		case GL_TEXTURE_CUBE_MAP_ARB:
 			glTexImage2D(target + i, 0, internalFormat, scaledWidth, scaledHeight, 0, format, GL_UNSIGNED_BYTE,
 			             scaledBuffer);
 			break;
 		default:
-			if (image->bits & IF_PACKED_DEPTH24_STENCIL8)
-			{
+			if (image->bits & IF_PACKED_DEPTH24_STENCIL8) {
 				glTexImage2D(target, 0, internalFormat, scaledWidth, scaledHeight, 0, format, GL_UNSIGNED_INT_24_8_EXT, NULL);
-			}
-			else
-			{
+			} else {
 				glTexImage2D(target, 0, internalFormat, scaledWidth, scaledHeight, 0, format, GL_UNSIGNED_BYTE, scaledBuffer);
 			}
+
 			break;
 		}
 
-		if (image->filterType == FT_DEFAULT)
-		{
-			if (glConfig2.framebufferObjectAvailable)
-			{
+		if (image->filterType == FT_DEFAULT) {
+			if (glConfig2.framebufferObjectAvailable) {
 				glGenerateMipmapEXT(image->type);
-				glTexParameteri(image->type, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);   // default to trilinear
-			}
-			else if (glConfig2.generateMipmapAvailable)
-			{
+				glTexParameteri(image->type, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR); // default to trilinear
+			} else if (glConfig2.generateMipmapAvailable) {
 				// raynorpat: if hardware mipmap generation is available, use it
 				//glHint(GL_GENERATE_MIPMAP_HINT_SGIS, GL_NICEST);	// make sure its nice
 				glTexParameteri(image->type, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
-				glTexParameteri(image->type, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);   // default to trilinear
+				glTexParameteri(image->type, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR); // default to trilinear
 			}
 		}
 
-		if (!glConfig2.framebufferObjectAvailable && !glConfig2.generateMipmapAvailable)
-		{
-			if (image->filterType == FT_DEFAULT && !(image->bits & (IF_DEPTH16 | IF_DEPTH24 | IF_DEPTH32 | IF_PACKED_DEPTH24_STENCIL8)))
-			{
+		if (!glConfig2.framebufferObjectAvailable && !glConfig2.generateMipmapAvailable) {
+			if (image->filterType == FT_DEFAULT && !(image->bits & (IF_DEPTH16 | IF_DEPTH24 | IF_DEPTH32 | IF_PACKED_DEPTH24_STENCIL8))) {
 				int mipLevel = 0;
 				int mipWidth = scaledWidth, mipHeight = scaledHeight;
 
-				while (mipWidth > 1 || mipHeight > 1)
-				{
-					if (image->bits & IF_NORMALMAP)
-					{
+				while (mipWidth > 1 || mipHeight > 1) {
+					if (image->bits & IF_NORMALMAP) {
 						R_MipNormalMap(scaledBuffer, mipWidth, mipHeight);
-					}
-					else
-					{
+					} else {
 						R_MipMap(scaledBuffer, mipWidth, mipHeight);
 					}
 
 					mipWidth  >>= 1;
 					mipHeight >>= 1;
 
-					if (mipWidth < 1)
-					{
+					if (mipWidth < 1) {
 						mipWidth = 1;
 					}
 
-					if (mipHeight < 1)
-					{
+					if (mipHeight < 1) {
 						mipHeight = 1;
 					}
 
 					mipLevel++;
 
-					if (r_colorMipLevels->integer && !(image->bits & IF_NORMALMAP))
-					{
+					if (r_colorMipLevels->integer && !(image->bits & IF_NORMALMAP)) {
 						R_BlendOverTexture(scaledBuffer, mipWidth * mipHeight, mipBlendColors[mipLevel]);
 					}
 
-					switch (image->type)
-					{
+					switch (image->type) {
 					case GL_TEXTURE_CUBE_MAP_ARB:
 						glTexImage2D(target + i, mipLevel, internalFormat, mipWidth, mipHeight, 0, format, GL_UNSIGNED_BYTE,
 						             scaledBuffer);
@@ -1304,12 +1114,10 @@ void R_UploadImage(const byte **dataArray, int numData, image_t *image)
 	GL_CheckErrors();
 
 	// set filter type
-	switch (image->filterType)
-	{
+	switch (image->filterType) {
 	case FT_DEFAULT:
 		// set texture anisotropy
-		if (glConfig2.textureAnisotropyAvailable)
-		{
+		if (glConfig2.textureAnisotropyAvailable) {
 			glTexParameterf(image->type, GL_TEXTURE_MAX_ANISOTROPY_EXT, r_ext_texture_filter_anisotropic->value);
 		}
 
@@ -1334,8 +1142,7 @@ void R_UploadImage(const byte **dataArray, int numData, image_t *image)
 	GL_CheckErrors();
 
 	// set wrap type
-	switch (image->wrapType)
-	{
+	switch (image->wrapType) {
 	case WT_REPEAT:
 		glTexParameterf(image->type, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameterf(image->type, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -1367,8 +1174,7 @@ void R_UploadImage(const byte **dataArray, int numData, image_t *image)
 
 	GL_CheckErrors();
 
-	if (scaledBuffer != 0)
-	{
+	if (scaledBuffer != 0) {
 		ri.Hunk_FreeTempMemory(scaledBuffer);
 	}
 }
@@ -1378,15 +1184,13 @@ void R_UploadImage(const byte **dataArray, int numData, image_t *image)
 R_AllocImage
 ================
 */
-image_t *R_AllocImage(const char *name, qboolean linkIntoHashTable)
-{
+image_t *R_AllocImage(const char *name, qboolean linkIntoHashTable) {
 	image_t *image;
 	long    hash;
-	char    buffer[1024];
+	char buffer[1024];
 
 	//if(strlen(name) >= MAX_QPATH)
-	if (strlen(name) >= 1024)
-	{
+	if (strlen(name) >= 1024) {
 		Ren_Drop("R_AllocImage: \"%s\" image name is too long\n", name);
 		return NULL;
 	}
@@ -1400,11 +1204,10 @@ image_t *R_AllocImage(const char *name, qboolean linkIntoHashTable)
 
 	Q_strncpyz(image->name, name, sizeof(image->name));
 
-	if (linkIntoHashTable)
-	{
+	if (linkIntoHashTable) {
 		Q_strncpyz(buffer, name, sizeof(buffer));
-		hash                   = generateHashValue(buffer);
-		image->next            = r_imageHashTable[hash];
+		hash = generateHashValue(buffer);
+		image->next = r_imageHashTable[hash];
 		r_imageHashTable[hash] = image;
 	}
 
@@ -1417,24 +1220,23 @@ R_CreateImage
 ================
 */
 image_t *R_CreateImage(const char *name,
-                       const byte *pic, int width, int height, int bits, filterType_t filterType, wrapType_t wrapType)
-{
+                       const byte *pic, int width, int height, int bits, filterType_t filterType, wrapType_t wrapType) {
 	image_t *image;
 
 	image = R_AllocImage(name, qtrue);
-	if (!image)
-	{
+
+	if (!image) {
 		return NULL;
 	}
 
 	image->type = GL_TEXTURE_2D;
 
-	image->width  = width;
+	image->width = width;
 	image->height = height;
 
-	image->bits       = bits;
+	image->bits = bits;
 	image->filterType = filterType;
-	image->wrapType   = wrapType;
+	image->wrapType = wrapType;
 
 	GL_Bind(image);
 
@@ -1453,24 +1255,23 @@ R_CreateCubeImage
 */
 image_t *R_CreateCubeImage(const char *name,
                            const byte *pic[6],
-                           int width, int height, int bits, filterType_t filterType, wrapType_t wrapType)
-{
+                           int width, int height, int bits, filterType_t filterType, wrapType_t wrapType) {
 	image_t *image;
 
 	image = R_AllocImage(name, qtrue);
-	if (!image)
-	{
+
+	if (!image) {
 		return NULL;
 	}
 
 	image->type = GL_TEXTURE_CUBE_MAP_ARB;
 
-	image->width  = width;
+	image->width = width;
 	image->height = height;
 
-	image->bits       = bits;
+	image->bits = bits;
 	image->filterType = filterType;
-	image->wrapType   = wrapType;
+	image->wrapType = wrapType;
 
 	GL_Bind(image);
 
@@ -1484,28 +1285,27 @@ image_t *R_CreateCubeImage(const char *name,
 static void R_LoadImage(char **buffer, byte **pic, int *width, int *height, int *bits, const char *materialName);
 //image_t *R_LoadDDSImage(const char *name, int bits, filterType_t filterType, wrapType_t wrapType);
 
-static qboolean ParseHeightMap(char **text, byte **pic, int *width, int *height, int *bits, const char *materialName)
-{
-	char  *token;
+static qboolean ParseHeightMap(char **text, byte **pic, int *width, int *height, int *bits, const char *materialName) {
+	char *token;
 	float scale;
 
 	token = COM_ParseExt2(text, qfalse);
-	if (token[0] != '(')
-	{
+
+	if (token[0] != '(') {
 		Ren_Warning("WARNING: expecting '(', found '%s' for heightMap\n", token);
 		return qfalse;
 	}
 
 	R_LoadImage(text, pic, width, height, bits, materialName);
-	if (!pic)
-	{
+
+	if (!pic) {
 		Ren_Warning("WARNING: failed loading of image for heightMap\n");
 		return qfalse;
 	}
 
 	token = COM_ParseExt2(text, qfalse);
-	if (token[0] != ',')
-	{
+
+	if (token[0] != ',') {
 		Ren_Warning("WARNING: no matching ',' found for heightMap\n");
 		return qfalse;
 	}
@@ -1514,8 +1314,8 @@ static qboolean ParseHeightMap(char **text, byte **pic, int *width, int *height,
 	scale = atof(token);
 
 	token = COM_ParseExt2(text, qfalse);
-	if (token[0] != ')')
-	{
+
+	if (token[0] != ')') {
 		Ren_Warning("WARNING: expecting ')', found '%s' for heightMap\n", token);
 		return qfalse;
 	}
@@ -1528,48 +1328,46 @@ static qboolean ParseHeightMap(char **text, byte **pic, int *width, int *height,
 	return qtrue;
 }
 
-static qboolean ParseDisplaceMap(char **text, byte **pic, int *width, int *height, int *bits, const char *materialName)
-{
+static qboolean ParseDisplaceMap(char **text, byte **pic, int *width, int *height, int *bits, const char *materialName) {
 	char *token;
 	byte *pic2;
-	int  width2, height2;
+	int width2, height2;
 
 	token = COM_ParseExt2(text, qfalse);
-	if (token[0] != '(')
-	{
+
+	if (token[0] != '(') {
 		Ren_Warning("WARNING: expecting '(', found '%s' for displaceMap\n", token);
 		return qfalse;
 	}
 
 	R_LoadImage(text, pic, width, height, bits, materialName);
-	if (!pic)
-	{
+
+	if (!pic) {
 		Ren_Warning("WARNING: failed loading of first image for displaceMap\n");
 		return qfalse;
 	}
 
 	token = COM_ParseExt2(text, qfalse);
-	if (token[0] != ',')
-	{
+
+	if (token[0] != ',') {
 		Ren_Warning("WARNING: no matching ',' found for displaceMap\n");
 		return qfalse;
 	}
 
 	R_LoadImage(text, &pic2, &width2, &height2, bits, materialName);
-	if (!pic2)
-	{
+
+	if (!pic2) {
 		Ren_Warning("WARNING: failed loading of second image for displaceMap\n");
 		return qfalse;
 	}
 
 	token = COM_ParseExt2(text, qfalse);
-	if (token[0] != ')')
-	{
+
+	if (token[0] != ')') {
 		Ren_Warning("WARNING: expecting ')', found '%s' for displaceMap\n", token);
 	}
 
-	if (*width != width2 || *height != height2)
-	{
+	if (*width != width2 || *height != height2) {
 		Ren_Warning("WARNING: images for displaceMap have different dimensions (%i x %i != %i x %i)\n",
 		            *width, *height, width2, height2);
 		Com_Dealloc(pic2);
@@ -1587,48 +1385,46 @@ static qboolean ParseDisplaceMap(char **text, byte **pic, int *width, int *heigh
 	return qtrue;
 }
 
-static qboolean ParseAddNormals(char **text, byte **pic, int *width, int *height, int *bits, const char *materialName)
-{
+static qboolean ParseAddNormals(char **text, byte **pic, int *width, int *height, int *bits, const char *materialName) {
 	char *token;
 	byte *pic2;
-	int  width2, height2;
+	int width2, height2;
 
 	token = COM_ParseExt2(text, qfalse);
-	if (token[0] != '(')
-	{
+
+	if (token[0] != '(') {
 		Ren_Warning("WARNING: expecting '(', found '%s' for addNormals\n", token);
 		return qfalse;
 	}
 
 	R_LoadImage(text, pic, width, height, bits, materialName);
-	if (!pic)
-	{
+
+	if (!pic) {
 		Ren_Warning("WARNING: failed loading of first image for addNormals\n");
 		return qfalse;
 	}
 
 	token = COM_ParseExt2(text, qfalse);
-	if (token[0] != ',')
-	{
+
+	if (token[0] != ',') {
 		Ren_Warning("WARNING: no matching ',' found for addNormals\n");
 		return qfalse;
 	}
 
 	R_LoadImage(text, &pic2, &width2, &height2, bits, materialName);
-	if (!pic2)
-	{
+
+	if (!pic2) {
 		Ren_Warning("WARNING: failed loading of second image for addNormals\n");
 		return qfalse;
 	}
 
 	token = COM_ParseExt2(text, qfalse);
-	if (token[0] != ')')
-	{
+
+	if (token[0] != ')') {
 		Ren_Warning("WARNING: expecting ')', found '%s' for addNormals\n", token);
 	}
 
-	if (*width != width2 || *height != height2)
-	{
+	if (*width != width2 || *height != height2) {
 		Ren_Warning("WARNING: images for addNormals have different dimensions (%i x %i != %i x %i)\n",
 		            *width, *height, width2, height2);
 
@@ -1646,27 +1442,26 @@ static qboolean ParseAddNormals(char **text, byte **pic, int *width, int *height
 	return qtrue;
 }
 
-static qboolean ParseInvertAlpha(char **text, byte **pic, int *width, int *height, int *bits, const char *materialName)
-{
+static qboolean ParseInvertAlpha(char **text, byte **pic, int *width, int *height, int *bits, const char *materialName) {
 	char *token;
 
 	token = COM_ParseExt2(text, qfalse);
-	if (token[0] != '(')
-	{
+
+	if (token[0] != '(') {
 		Ren_Warning("WARNING: expecting '(', found '%s' for invertAlpha\n", token);
 		return qfalse;
 	}
 
 	R_LoadImage(text, pic, width, height, bits, materialName);
-	if (!pic)
-	{
+
+	if (!pic) {
 		Ren_Warning("WARNING: failed loading of image for invertAlpha\n");
 		return qfalse;
 	}
 
 	token = COM_ParseExt2(text, qfalse);
-	if (token[0] != ')')
-	{
+
+	if (token[0] != ')') {
 		Ren_Warning("WARNING: expecting ')', found '%s' for invertAlpha\n", token);
 		return qfalse;
 	}
@@ -1676,27 +1471,26 @@ static qboolean ParseInvertAlpha(char **text, byte **pic, int *width, int *heigh
 	return qtrue;
 }
 
-static qboolean ParseInvertColor(char **text, byte **pic, int *width, int *height, int *bits, const char *materialName)
-{
+static qboolean ParseInvertColor(char **text, byte **pic, int *width, int *height, int *bits, const char *materialName) {
 	char *token;
 
 	token = COM_ParseExt2(text, qfalse);
-	if (token[0] != '(')
-	{
+
+	if (token[0] != '(') {
 		Ren_Warning("WARNING: expecting '(', found '%s' for invertColor\n", token);
 		return qfalse;
 	}
 
 	R_LoadImage(text, pic, width, height, bits, materialName);
-	if (!pic)
-	{
+
+	if (!pic) {
 		Ren_Warning("WARNING: failed loading of image for invertColor\n");
 		return qfalse;
 	}
 
 	token = COM_ParseExt2(text, qfalse);
-	if (token[0] != ')')
-	{
+
+	if (token[0] != ')') {
 		Ren_Warning("WARNING: expecting ')', found '%s' for invertColor\n", token);
 		return qfalse;
 	}
@@ -1706,27 +1500,26 @@ static qboolean ParseInvertColor(char **text, byte **pic, int *width, int *heigh
 	return qtrue;
 }
 
-static qboolean ParseMakeIntensity(char **text, byte **pic, int *width, int *height, int *bits, const char *materialName)
-{
+static qboolean ParseMakeIntensity(char **text, byte **pic, int *width, int *height, int *bits, const char *materialName) {
 	char *token;
 
 	token = COM_ParseExt2(text, qfalse);
-	if (token[0] != '(')
-	{
+
+	if (token[0] != '(') {
 		Ren_Warning("WARNING: expecting '(', found '%s' for makeIntensity\n", token);
 		return qfalse;
 	}
 
 	R_LoadImage(text, pic, width, height, bits, materialName);
-	if (!pic)
-	{
+
+	if (!pic) {
 		Ren_Warning("WARNING: failed loading of image for makeIntensity\n");
 		return qfalse;
 	}
 
 	token = COM_ParseExt2(text, qfalse);
-	if (token[0] != ')')
-	{
+
+	if (token[0] != ')') {
 		Ren_Warning("WARNING: expecting ')', found '%s' for makeIntensity\n", token);
 		return qfalse;
 	}
@@ -1739,27 +1532,26 @@ static qboolean ParseMakeIntensity(char **text, byte **pic, int *width, int *hei
 	return qtrue;
 }
 
-static qboolean ParseMakeAlpha(char **text, byte **pic, int *width, int *height, int *bits, const char *materialName)
-{
+static qboolean ParseMakeAlpha(char **text, byte **pic, int *width, int *height, int *bits, const char *materialName) {
 	char *token;
 
 	token = COM_ParseExt2(text, qfalse);
-	if (token[0] != '(')
-	{
+
+	if (token[0] != '(') {
 		Ren_Warning("WARNING: expecting '(', found '%s' for makeAlpha\n", token);
 		return qfalse;
 	}
 
 	R_LoadImage(text, pic, width, height, bits, materialName);
-	if (!pic)
-	{
+
+	if (!pic) {
 		Ren_Warning("WARNING: failed loading of image for makeAlpha\n");
 		return qfalse;
 	}
 
 	token = COM_ParseExt2(text, qfalse);
-	if (token[0] != ')')
-	{
+
+	if (token[0] != ')') {
 		Ren_Warning("WARNING: expecting ')', found '%s' for makeAlpha\n", token);
 		return qfalse;
 	}
@@ -1772,22 +1564,20 @@ static qboolean ParseMakeAlpha(char **text, byte **pic, int *width, int *height,
 	return qtrue;
 }
 
-typedef struct
-{
+typedef struct {
 	char *ext;
 	void (*ImageLoader)(const char *, unsigned char **, int *, int *, byte);
 } imageExtToLoaderMap_t;
 
 // Note that the ordering indicates the order of preference used
 // when there are multiple images of different formats available
-static imageExtToLoaderMap_t imageLoaders[] =
-{
-	{ "png",  R_LoadPNG },
-	{ "tga",  R_LoadTGA },
-	{ "jpg",  R_LoadJPG },
-	{ "jpeg", R_LoadJPG },
-	{ "pcx",  R_LoadPCX },
-	{ "bmp",  R_LoadBMP }
+static imageExtToLoaderMap_t imageLoaders[] = {
+	{"png",  R_LoadPNG},
+	{"tga",  R_LoadTGA},
+	{"jpg",  R_LoadJPG},
+	{"jpeg", R_LoadJPG},
+	{"pcx",  R_LoadPCX},
+	{"bmp",  R_LoadBMP}
 };
 
 static int numImageLoaders = sizeof(imageLoaders) / sizeof(imageLoaders[0]);
@@ -1799,19 +1589,16 @@ R_GetImageBuffer
 This is a hack to get the common imageloaders working properly
 =================
 */
-void *R_GetImageBuffer(int size, bufferMemType_t bufferType, const char *filename)
-{
+void *R_GetImageBuffer(int size, bufferMemType_t bufferType, const char *filename) {
 	void *buf = NULL;
 
-	if (bufferType != BUFFER_IMAGE)
-	{
+	if (bufferType != BUFFER_IMAGE) {
 		Ren_Fatal("R_GetImageBuffer in the new renderer is called improperly\n");
 	}
 
 	buf = Com_Allocate(size);
 
-	if (!buf)
-	{
+	if (!buf) {
 		Ren_Drop("R_GetImageBuffer: unable to allocate buffer for image %s with size: %i\n", filename, size);
 	}
 
@@ -1826,117 +1613,89 @@ Loads any of the supported image types into a canonical
 32 bit format.
 =================
 */
-static void R_LoadImage(char **buffer, byte **pic, int *width, int *height, int *bits, const char *materialName)
-{
+static void R_LoadImage(char **buffer, byte **pic, int *width, int *height, int *bits, const char *materialName) {
 	char *token;
 
-	*pic    = NULL;
-	*width  = 0;
+	*pic = NULL;
+	*width = 0;
 	*height = 0;
 
 	token = COM_ParseExt2(buffer, qfalse);
-	if (!token[0])
-	{
+
+	if (!token[0]) {
 		Ren_Warning("WARNING: NULL parameter in R_LoadImage for material/shader '%s'\n", materialName);
 		return;
 	}
-
 	//Ren_Print("R_LoadImage: token '%s'\n", token);
 
 	// heightMap(<map>, <float>)  Turns a grayscale height map into a normal map. <float> varies the bumpiness
-	if (!Q_stricmp(token, "heightMap"))
-	{
-		if (!ParseHeightMap(buffer, pic, width, height, bits, materialName))
-		{
-			if (materialName && materialName[0] != '\0')
-			{
+	if (!Q_stricmp(token, "heightMap")) {
+		if (!ParseHeightMap(buffer, pic, width, height, bits, materialName)) {
+			if (materialName && materialName[0] != '\0') {
 				Ren_Warning("WARNING: failed to parse heightMap(<map>, <float>) expression for shader '%s'\n", materialName);
 			}
 		}
 	}
 	// displaceMap(<map>, <map>)  Sets the alpha channel to an average of the second image's RGB channels.
-	else if (!Q_stricmp(token, "displaceMap"))
-	{
-		if (!ParseDisplaceMap(buffer, pic, width, height, bits, materialName))
-		{
-			if (materialName && materialName[0] != '\0')
-			{
+	else if (!Q_stricmp(token, "displaceMap")) {
+		if (!ParseDisplaceMap(buffer, pic, width, height, bits, materialName)) {
+			if (materialName && materialName[0] != '\0') {
 				Ren_Warning("WARNING: failed to parse displaceMap(<map>, <map>) expression for shader '%s'\n", materialName);
 			}
 		}
 	}
 	// addNormals(<map>, <map>)  Adds two normal maps together. Result is normalized.
-	else if (!Q_stricmp(token, "addNormals"))
-	{
-		if (!ParseAddNormals(buffer, pic, width, height, bits, materialName))
-		{
-			if (materialName && materialName[0] != '\0')
-			{
+	else if (!Q_stricmp(token, "addNormals")) {
+		if (!ParseAddNormals(buffer, pic, width, height, bits, materialName)) {
+			if (materialName && materialName[0] != '\0') {
 				Ren_Warning("WARNING: failed to parse addNormals(<map>, <map>) expression for shader '%s'\n", materialName);
 			}
 		}
 	}
 	// smoothNormals(<map>)  Does a box filter on the normal map, and normalizes the result.
-	else if (!Q_stricmp(token, "smoothNormals"))
-	{
+	else if (!Q_stricmp(token, "smoothNormals")) {
 		Ren_Warning("WARNING: smoothNormals(<map>) keyword not supported\n");
 	}
 	// add(<map>, <map>)  Adds two images without normalizing the result
-	else if (!Q_stricmp(token, "add"))
-	{
+	else if (!Q_stricmp(token, "add")) {
 		Ren_Warning("WARNING: add(<map>, <map>) keyword not supported\n");
 	}
 	// scale(<map>, <float> [,float] [,float] [,float])  Scales the RGBA by the specified factors. Defaults to 0.
-	else if (!Q_stricmp(token, "scale"))
-	{
+	else if (!Q_stricmp(token, "scale")) {
 		Ren_Warning("WARNING: scale(<map>, <float> [,float] [,float] [,float]) keyword not supported\n");
 	}
 	// invertAlpha(<map>)  Inverts the alpha channel (0 becomes 1, 1 becomes 0)
-	else if (!Q_stricmp(token, "invertAlpha"))
-	{
-		if (!ParseInvertAlpha(buffer, pic, width, height, bits, materialName))
-		{
-			if (materialName && materialName[0] != '\0')
-			{
+	else if (!Q_stricmp(token, "invertAlpha")) {
+		if (!ParseInvertAlpha(buffer, pic, width, height, bits, materialName)) {
+			if (materialName && materialName[0] != '\0') {
 				Ren_Warning("WARNING: failed to parse invertAlpha(<map>) expression for shader '%s'\n", materialName);
 			}
 		}
 	}
 	// invertColor(<map>)  Inverts the R, G, and B channels
-	else if (!Q_stricmp(token, "invertColor"))
-	{
-		if (!ParseInvertColor(buffer, pic, width, height, bits, materialName))
-		{
-			if (materialName && materialName[0] != '\0')
-			{
+	else if (!Q_stricmp(token, "invertColor")) {
+		if (!ParseInvertColor(buffer, pic, width, height, bits, materialName)) {
+			if (materialName && materialName[0] != '\0') {
 				Ren_Warning("WARNING: failed to parse invertColor(<map>) expression for shader '%s'\n", materialName);
 			}
 		}
 	}
 	// makeIntensity(<map>)  Copies the red channel to the G, B, and A channels
-	else if (!Q_stricmp(token, "makeIntensity"))
-	{
-		if (!ParseMakeIntensity(buffer, pic, width, height, bits, materialName))
-		{
-			if (materialName && materialName[0] != '\0')
-			{
+	else if (!Q_stricmp(token, "makeIntensity")) {
+		if (!ParseMakeIntensity(buffer, pic, width, height, bits, materialName)) {
+			if (materialName && materialName[0] != '\0') {
 				Ren_Warning("WARNING: failed to parse makeIntensity(<map>) expression for shader '%s'\n", materialName);
 			}
 		}
 	}
 	// makeAlpha(<map>)  Sets the alpha channel to an average of the RGB channels. Sets the RGB channels to white.
-	else if (!Q_stricmp(token, "makeAlpha"))
-	{
-		if (!ParseMakeAlpha(buffer, pic, width, height, bits, materialName))
-		{
-			if (materialName && materialName[0] != '\0')
-			{
+	else if (!Q_stricmp(token, "makeAlpha")) {
+		if (!ParseMakeAlpha(buffer, pic, width, height, bits, materialName)) {
+			if (materialName && materialName[0] != '\0') {
 				Ren_Warning("WARNING: failed to parse makeAlpha(<map>) expression for shader '%s'\n", materialName);
 			}
 		}
-	}
-	else
-	{
+	} else {
 		//qboolean   orgNameFailed = qfalse;
 		int i;
 		//const char *ext;
@@ -1945,12 +1704,9 @@ static void R_LoadImage(char **buffer, byte **pic, int *width, int *height, int 
 		byte alphaByte;
 
 		// clear alpha of normalmaps for displacement mapping
-		if (*bits & IF_NORMALMAP)
-		{
+		if (*bits & IF_NORMALMAP) {
 			alphaByte = 0x00;
-		}
-		else
-		{
+		} else {
 			alphaByte = 0xFF;
 		}
 		/*
@@ -1958,8 +1714,7 @@ static void R_LoadImage(char **buffer, byte **pic, int *width, int *height, int 
 
 		ext = COM_GetExtension(filename);
 
-		if (*ext)
-		{
+		if (*ext) {
 		    // look for the correct loader and use it
 		    for (i = 0; i < numImageLoaders; i++)
 		    {
@@ -1968,8 +1723,8 @@ static void R_LoadImage(char **buffer, byte **pic, int *width, int *height, int 
 		            // load
 		            imageLoaders[i].ImageLoader(filename, pic, width, height, alphaByte);
 		            break;
-		        }
-		    }
+		      }
+		  }
 
 		    // a loader was found
 		    if (i < numImageLoaders)
@@ -1980,18 +1735,16 @@ static void R_LoadImage(char **buffer, byte **pic, int *width, int *height, int 
 		            // try again without the extension
 		            orgNameFailed = qtrue;
 		            COM_StripExtension(token, filename, MAX_QPATH);
-		        }
+		      }
 		        else
 		        {
 		            // something loaded
 		            return;
-		        }
-		    }
+		      }
+		  }
 		}
-
 		// try and find a suitable match using all the image formats supported
-		for (i = 0; i < numImageLoaders; i++)
-		{
+		for (i = 0; i < numImageLoaders; i++) {
 		    char *altName = va("%s.%s", filename, imageLoaders[i].ext);
 
 		    // load
@@ -2002,9 +1755,9 @@ static void R_LoadImage(char **buffer, byte **pic, int *width, int *height, int 
 		        if (orgNameFailed)
 		        {
 		            //Ren_Developer( "WARNING: %s not present, using %s instead\n", token, altName);
-		        }
+		      }
 		        break;
-		    }
+		  }
 		}
 		*/
 		Q_strncpyz(filename, token, MAX_QPATH);
@@ -2013,37 +1766,31 @@ static void R_LoadImage(char **buffer, byte **pic, int *width, int *height, int 
 
 		// Try and find a suitable match using all the image formats supported
 		// Searching is done in this order: tga, jp(e)g, png, pcx, bmp
-		for (i = 0; i < numImageLoaders; i++)
-		{
+		for (i = 0; i < numImageLoaders; i++) {
 			altName = va("%s.%s", filename, imageLoaders[i].ext);
 
 			// Check if file exists
-			if (ri.FS_FOpenFileRead(altName, NULL, qfalse))
-			{
+			if (ri.FS_FOpenFileRead(altName, NULL, qfalse)) {
 				// Load
 				imageLoaders[i].ImageLoader(altName, pic, width, height, alphaByte);
 			}
 
-			if (*pic)
-			{
+			if (*pic) {
 				break;
 			}
 		}
 
-		if (*pic == NULL)
-		{
+		if (*pic == NULL) {
 			// Loader failed, most likely because the file isn't there
 			Ren_Developer("WARNING: %s not present in any supported image format\n", filename);
 		}
 	}
 }
 
-void R_ImageCopyBack(image_t *image, int x, int y, int width, int height)
-{
+void R_ImageCopyBack(image_t *image, int x, int y, int width, int height) {
 	GL_Bind(image);
 
-	if (glIsTexture(image->texnum) == GL_FALSE)
-	{
+	if (glIsTexture(image->texnum) == GL_FALSE) {
 		glReadBuffer(GL_BACK);
 
 		glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, x, y, width, height, 0);
@@ -2054,9 +1801,7 @@ void R_ImageCopyBack(image_t *image, int x, int y, int width, int height)
 
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	}
-	else
-	{
+	} else {
 		//Fast path
 		glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, x, y, width, height);
 	}
@@ -2070,19 +1815,17 @@ Finds or loads the given image.
 Returns NULL if it fails, not a default image.
 ==============
 */
-image_t *R_FindImageFile(const char *imageName, int bits, filterType_t filterType, wrapType_t wrapType, const char *materialName)
-{
+image_t *R_FindImageFile(const char *imageName, int bits, filterType_t filterType, wrapType_t wrapType, const char *materialName) {
 	image_t *image = NULL;
-	int     width  = 0, height = 0;
-	byte    *pic   = NULL;
+	int width = 0, height = 0;
+	byte    *pic = NULL;
 	long    hash;
-	char    buffer[1024];
-	//char          ddsName[1024];
-	char          *buffer_p;
+	char buffer[1024];
+	//char ddsName[1024];
+	char *buffer_p;
 	unsigned long diff;
 
-	if (!imageName)
-	{
+	if (!imageName) {
 		return NULL;
 	}
 
@@ -2092,47 +1835,42 @@ image_t *R_FindImageFile(const char *imageName, int bits, filterType_t filterTyp
 	//Ren_Print("R_FindImageFile: buffer '%s'\n", buffer);
 
 	// see if the image is already loaded
-	for (image = r_imageHashTable[hash]; image; image = image->next)
-	{
-		if (!Q_stricmpn(buffer, image->name, sizeof(image->name)))
-		{
+	for (image = r_imageHashTable[hash]; image; image = image->next) {
+		if (!Q_stricmpn(buffer, image->name, sizeof(image->name))) {
 			// the white image can be used with any set of parms, but other mismatches are errors
-			if (Q_stricmp(buffer, "_white"))
-			{
+			if (Q_stricmp(buffer, "_white")) {
 				diff = bits ^ image->bits;
 
 				/*
 				   if(diff & IF_NOMIPMAPS)
 				   {
 				   Ren_Developer( "WARNING: reused image %s with mixed mipmap parm\n", name);
-				   }
+				 }
 				 */
 
-				if (diff & IF_NOPICMIP)
-				{
+				if (diff & IF_NOPICMIP) {
 					Ren_Developer("WARNING: reused image '%s' with mixed allowPicmip parm for shader '%s\n", imageName, materialName);
 				}
 
-				if (image->wrapType != wrapType)
-				{
+				if (image->wrapType != wrapType) {
 					Ren_Print("WARNING: reused image '%s' with mixed glWrapType parm for shader '%s'\n", imageName, materialName);
 				}
 			}
+
 			return image;
 		}
 	}
 
 #if 0
-	if (glConfig.textureCompression == TC_S3TC && !(bits & IF_NOCOMPRESSION) && Q_stricmpn(imageName, "fonts", 5))
-	{
+	if (glConfig.textureCompression == TC_S3TC && !(bits & IF_NOCOMPRESSION) && Q_stricmpn(imageName, "fonts", 5)) {
 		Q_strncpyz(ddsName, imageName, sizeof(ddsName));
 		COM_StripExtension(ddsName, ddsName, sizeof(ddsName));
 		Q_strcat(ddsName, sizeof(ddsName), ".dds");
 
 		// try to load a customized .dds texture
 		image = R_LoadDDSImage(ddsName, bits, filterType, wrapType);
-		if (image != NULL)
-		{
+
+		if (image != NULL) {
 			Ren_Print("found custom .dds '%s'\n", ddsName);
 			return image;
 		}
@@ -2140,8 +1878,7 @@ image_t *R_FindImageFile(const char *imageName, int bits, filterType_t filterTyp
 #endif
 
 #if 0
-	else if (r_tryCachedDDSImages->integer && !(bits & IF_NOCOMPRESSION) && Q_strncasecmp(name, "fonts", 5))
-	{
+	else if (r_tryCachedDDSImages->integer && !(bits & IF_NOCOMPRESSION) && Q_strncasecmp(name, "fonts", 5)) {
 		Q_strncpyz(ddsName, "dds/", sizeof(ddsName));
 		Q_strcat(ddsName, sizeof(ddsName), name);
 		COM_StripExtension(ddsName, ddsName, sizeof(ddsName));
@@ -2149,8 +1886,8 @@ image_t *R_FindImageFile(const char *imageName, int bits, filterType_t filterTyp
 
 		// try to load a cached .dds texture from the XreaL/<mod>/dds/ folder
 		image = R_LoadDDSImage(ddsName, bits, filterType, wrapType);
-		if (image != NULL)
-		{
+
+		if (image != NULL) {
 			Ren_Print("found cached .dds '%s'\n", ddsName);
 			return image;
 		}
@@ -2160,21 +1897,19 @@ image_t *R_FindImageFile(const char *imageName, int bits, filterType_t filterTyp
 	// load the pic from disk
 	buffer_p = &buffer[0];
 	R_LoadImage(&buffer_p, &pic, &width, &height, &bits, materialName);
-	if (pic == NULL)
-	{
+
+	if (pic == NULL) {
 		return NULL;
 	}
 
-	if (bits & IF_LIGHTMAP)
-	{
+	if (bits & IF_LIGHTMAP) {
 		R_ProcessLightmap(pic, 4, width, height, pic);
 
 		bits |= IF_NOCOMPRESSION;
 	}
 
 #if 0
-	//if(r_tryCachedDDSImages->integer && !(bits & IF_NOCOMPRESSION) && Q_strncasecmp(name, "fonts", 5))
-	{
+	//if(r_tryCachedDDSImages->integer && !(bits & IF_NOCOMPRESSION) && Q_strncasecmp(name, "fonts", 5)) {
 		// try to cache a .dds texture to the XreaL/<mod>/dds/ folder
 		SavePNG(ddsName, pic, width, height, 4, qtrue);
 	}
@@ -2185,8 +1920,7 @@ image_t *R_FindImageFile(const char *imageName, int bits, filterType_t filterTyp
 	return image;
 }
 
-static ID_INLINE void R_SwapPixel(byte *inout, int x, int y, int x2, int y2, int width, int height)
-{
+static ID_INLINE void R_SwapPixel(byte *inout, int x, int y, int x2, int y2, int width, int height) {
 	byte color[4];
 	byte color2[4];
 
@@ -2211,52 +1945,42 @@ static ID_INLINE void R_SwapPixel(byte *inout, int x, int y, int x2, int y2, int
 	inout[4 * (y2 * width + x2) + 3] = color[3];
 }
 
-static void R_Flip(byte *in, int width, int height)
-{
+static void R_Flip(byte *in, int width, int height) {
 	int x, y;
 
-	for (y = 0; y < height; y++)
-	{
-		for (x = 0; x < width / 2; x++)
-		{
+	for (y = 0; y < height; y++) {
+		for (x = 0; x < width / 2; x++) {
 			R_SwapPixel(in, x, y, (width - 1 - x), y, width, height);
 		}
 	}
 }
 
-static void R_Flop(byte *in, int width, int height)
-{
+static void R_Flop(byte *in, int width, int height) {
 	int x, y;
 
-	for (y = 0; y < height / 2; y++)
-	{
-		for (x = 0; x < width; x++)
-		{
+	for (y = 0; y < height / 2; y++) {
+		for (x = 0; x < width; x++) {
 			R_SwapPixel(in, x, y, x, (height - 1 - y), width, height);
 		}
 	}
 }
 
-static void R_Rotate(byte *in, int width, int height, int degrees)
-{
+static void R_Rotate(byte *in, int width, int height, int degrees) {
 	byte color[4];
-	int  x, y, x2, y2;
+	int x, y, x2, y2;
 	byte *out, *tmp;
 
 	tmp = (byte *)Com_Allocate(width * height * 4);
 
 	// rotate into tmp buffer
-	for (y = 0; y < height; y++)
-	{
-		for (x = 0; x < width; x++)
-		{
+	for (y = 0; y < height; y++) {
+		for (x = 0; x < width; x++) {
 			color[0] = in[4 * (y * width + x) + 0];
 			color[1] = in[4 * (y * width + x) + 1];
 			color[2] = in[4 * (y * width + x) + 2];
 			color[3] = in[4 * (y * width + x) + 3];
 
-			if (degrees == 90)
-			{
+			if (degrees == 90) {
 				x2 = y;
 				y2 = (height - (1 + x));
 
@@ -2264,9 +1988,7 @@ static void R_Rotate(byte *in, int width, int height, int degrees)
 				tmp[4 * (y2 * width + x2) + 1] = color[1];
 				tmp[4 * (y2 * width + x2) + 2] = color[2];
 				tmp[4 * (y2 * width + x2) + 3] = color[3];
-			}
-			else if (degrees == -90)
-			{
+			} else if (degrees == -90) {
 				x2 = (width - (1 + y));
 				y2 = x;
 
@@ -2274,9 +1996,7 @@ static void R_Rotate(byte *in, int width, int height, int degrees)
 				tmp[4 * (y2 * width + x2) + 1] = color[1];
 				tmp[4 * (y2 * width + x2) + 2] = color[2];
 				tmp[4 * (y2 * width + x2) + 3] = color[3];
-			}
-			else
-			{
+			} else {
 				tmp[4 * (y * width + x) + 0] = color[0];
 				tmp[4 * (y * width + x) + 1] = color[1];
 				tmp[4 * (y * width + x) + 2] = color[2];
@@ -2285,13 +2005,11 @@ static void R_Rotate(byte *in, int width, int height, int degrees)
 
 		}
 	}
-
 	// copy back to input
 	out = in;
-	for (y = 0; y < height; y++)
-	{
-		for (x = 0; x < width; x++)
-		{
+
+	for (y = 0; y < height; y++) {
+		for (x = 0; x < width; x++) {
 			out[4 * (y * width + x) + 0] = tmp[4 * (y * width + x) + 0];
 			out[4 * (y * width + x) + 1] = tmp[4 * (y * width + x) + 1];
 			out[4 * (y * width + x) + 2] = tmp[4 * (y * width + x) + 2];
@@ -2325,25 +2043,21 @@ R_SubImageCpy(dest, 0, 0, 4, 4, src, 2, 2, channels, qtrue);
 [________]
 ===============
 */
-void R_SubImageCpy(byte *dest, size_t destx, size_t desty, size_t destw, size_t desth, byte *src, size_t srcw, size_t srch, size_t bytes, qboolean in)
-{
+void R_SubImageCpy(byte *dest, size_t destx, size_t desty, size_t destw, size_t desth, byte *src, size_t srcw, size_t srch, size_t bytes, qboolean in) {
 	size_t s_rowBytes = srcw * bytes;
 	size_t d_rowBytes = destw * bytes;
-	byte   *d         = dest + ((destx * bytes) + (desty * d_rowBytes));
-	byte   *d_max     = dest + (destw * desth * bytes) - s_rowBytes;
-	byte   *s         = src;
-	byte   *s_max     = src + (srcw * srch * bytes) - s_rowBytes;
+	byte   *d = dest + ((destx * bytes) + (desty * d_rowBytes));
+	byte   *d_max = dest + (destw * desth * bytes) - s_rowBytes;
+	byte   *s = src;
+	byte   *s_max = src + (srcw * srch * bytes) - s_rowBytes;
 
-	while ((s <= s_max) && (d <= d_max))
-	{
-		if (in)
-		{
+	while ((s <= s_max) && (d <= d_max)) {
+		if (in) {
 			memcpy(d, s, s_rowBytes);
-		}
-		else
-		{
+		} else {
 			memcpy(s, d, s_rowBytes);
 		}
+
 		d += d_rowBytes;
 		s += s_rowBytes;
 	}
@@ -2359,14 +2073,13 @@ Returns NULL if it fails, not a default image.
 fear the use of goto
 ==============
 */
-image_t *R_FindCubeImage(const char *imageName, int bits, filterType_t filterType, wrapType_t wrapType, const char *materialName)
-{
-	int         i;
-	image_t     *image = NULL;
-	int         width  = 0, height = 0;
+image_t *R_FindCubeImage(const char *imageName, int bits, filterType_t filterType, wrapType_t wrapType, const char *materialName) {
+	int i;
+	image_t *image = NULL;
+	int width = 0, height = 0;
 	byte        *pic[6];
 	long        hash;
-	static char *openglSuffices[6] = { "px", "nx", "py", "ny", "pz", "nz" };
+	static char *openglSuffices[6] = {"px", "nx", "py", "ny", "pz", "nz"};
 
 	/*
 	    convert $1_forward.tga -flip -rotate 90 $1_px.png
@@ -2379,10 +2092,10 @@ image_t *R_FindCubeImage(const char *imageName, int bits, filterType_t filterTyp
 	    convert $1_down.tga -flop -rotate -90 $1_nz.png
 	 */
 
-	static char     *doom3Suffices[6] = { "forward", "back", "left", "right", "up", "down" };
-	static qboolean doom3FlipX[6]     = { qtrue, qtrue, qfalse, qtrue, qtrue, qfalse };
-	static qboolean doom3FlipY[6]     = { qfalse, qfalse, qtrue, qfalse, qfalse, qtrue };
-	static int      doom3Rot[6]       = { 90, -90, 0, 0, 90, -90 };
+	static char *doom3Suffices[6] = {"forward", "back", "left", "right", "up", "down"};
+	static qboolean doom3FlipX[6] = {qtrue, qtrue, qfalse, qtrue, qtrue, qfalse};
+	static qboolean doom3FlipY[6] = {qfalse, qfalse, qtrue, qfalse, qfalse, qtrue};
+	static int doom3Rot[6] = {90, -90, 0, 0, 90, -90};
 
 	/*
 	    convert $1_rt.tga -flip -rotate 90 $1_px.tga
@@ -2394,17 +2107,16 @@ image_t *R_FindCubeImage(const char *imageName, int bits, filterType_t filterTyp
 	    convert $1_up.tga -flip -rotate 90 $1_pz.tga
 	    convert $1_dn.tga -flop -rotate -90 $1_nz.tga
 	 */
-	static char     *quakeSuffices[6] = { "rt", "lf", "bk", "ft", "up", "dn" };
-	static qboolean quakeFlipX[6]     = { qtrue, qtrue, qfalse, qtrue, qtrue, qfalse };
-	static qboolean quakeFlipY[6]     = { qfalse, qfalse, qtrue, qfalse, qfalse, qtrue };
-	static int      quakeRot[6]       = { 90, -90, 0, 0, 90, -90 };
-	int             bitsIgnore        = IF_NONE;
-	char            buffer[1024], filename[1024];
+	static char *quakeSuffices[6] = {"rt", "lf", "bk", "ft", "up", "dn"};
+	static qboolean quakeFlipX[6] = {qtrue, qtrue, qfalse, qtrue, qtrue, qfalse};
+	static qboolean quakeFlipY[6] = {qfalse, qfalse, qtrue, qfalse, qfalse, qtrue};
+	static int quakeRot[6] = {90, -90, 0, 0, 90, -90};
+	int bitsIgnore = IF_NONE;
+	char buffer[1024], filename[1024];
 	//char ddsName[1024];
 	char *filename_p;
 
-	if (!imageName)
-	{
+	if (!imageName) {
 		return NULL;
 	}
 
@@ -2412,25 +2124,22 @@ image_t *R_FindCubeImage(const char *imageName, int bits, filterType_t filterTyp
 	hash = generateHashValue(buffer);
 
 	// see if the image is already loaded
-	for (image = r_imageHashTable[hash]; image; image = image->next)
-	{
-		if (!Q_stricmp(buffer, image->name))
-		{
+	for (image = r_imageHashTable[hash]; image; image = image->next) {
+		if (!Q_stricmp(buffer, image->name)) {
 			return image;
 		}
 	}
 
 #if 0
-	if (glConfig.textureCompression == TC_S3TC && !(bits & IF_NOCOMPRESSION) && Q_stricmpn(imageName, "fonts", 5))
-	{
+	if (glConfig.textureCompression == TC_S3TC && !(bits & IF_NOCOMPRESSION) && Q_stricmpn(imageName, "fonts", 5)) {
 		Q_strncpyz(ddsName, imageName, sizeof(ddsName));
 		COM_StripExtension(ddsName, ddsName, sizeof(ddsName));
 		Q_strcat(ddsName, sizeof(ddsName), ".dds");
 
 		// try to load a customized .dds texture
 		image = R_LoadDDSImage(ddsName, bits, filterType, wrapType);
-		if (image != NULL)
-		{
+
+		if (image != NULL) {
 			Ren_Print("found custom .dds '%s'\n", ddsName);
 			return image;
 		}
@@ -2438,8 +2147,7 @@ image_t *R_FindCubeImage(const char *imageName, int bits, filterType_t filterTyp
 #endif
 
 #if 0
-	else if (r_tryCachedDDSImages->integer && !(bits & IF_NOCOMPRESSION) && Q_strncasecmp(name, "fonts", 5))
-	{
+	else if (r_tryCachedDDSImages->integer && !(bits & IF_NOCOMPRESSION) && Q_strncasecmp(name, "fonts", 5)) {
 		Q_strncpyz(ddsName, "dds/", sizeof(ddsName));
 		Q_strcat(ddsName, sizeof(ddsName), name);
 		COM_StripExtension(ddsName, ddsName, sizeof(ddsName));
@@ -2447,83 +2155,74 @@ image_t *R_FindCubeImage(const char *imageName, int bits, filterType_t filterTyp
 
 		// try to load a cached .dds texture from the XreaL/<mod>/dds/ folder
 		image = R_LoadDDSImage(ddsName, bits, filterType, wrapType);
-		if (image != NULL)
-		{
+
+		if (image != NULL) {
 			Ren_Print("found cached .dds '%s'\n", ddsName);
 			return image;
 		}
 	}
 #endif
 
-	for (i = 0; i < 6; i++)
-	{
+	for (i = 0; i < 6; i++) {
 		pic[i] = NULL;
 	}
 
-	for (i = 0; i < 6; i++)
-	{
+	for (i = 0; i < 6; i++) {
 		Com_sprintf(filename, sizeof(filename), "%s_%s", buffer, openglSuffices[i]);
 
 		filename_p = &filename[0];
 		R_LoadImage(&filename_p, &pic[i], &width, &height, &bitsIgnore, materialName);
 
-		if (!pic[i] || width != height)
-		{
+		if (!pic[i] || width != height) {
 			image = NULL;
 			goto tryDoom3Suffices;
 		}
 	}
+
 	goto createCubeImage;
 
 tryDoom3Suffices:
-	for (i = 0; i < 6; i++)
-	{
+	for (i = 0; i < 6; i++) {
 		Com_sprintf(filename, sizeof(filename), "%s_%s", buffer, doom3Suffices[i]);
 
 		filename_p = &filename[0];
 		R_LoadImage(&filename_p, &pic[i], &width, &height, &bitsIgnore, materialName);
 
-		if (!pic[i] || width != height)
-		{
+		if (!pic[i] || width != height) {
 			image = NULL;
 			goto tryQuakeSuffices;
 		}
 
-		if (doom3FlipX[i])
-		{
+		if (doom3FlipX[i]) {
 			R_Flip(pic[i], width, height);
 		}
 
-		if (doom3FlipY[i])
-		{
+		if (doom3FlipY[i]) {
 			R_Flop(pic[i], width, height);
 		}
 
 		R_Rotate(pic[i], width, height, doom3Rot[i]);
 	}
+
 	goto createCubeImage;
 
 tryQuakeSuffices:
-	for (i = 0; i < 6; i++)
-	{
+	for (i = 0; i < 6; i++) {
 		Com_sprintf(filename, sizeof(filename), "%s_%s", buffer, quakeSuffices[i]);
 
 		filename_p = &filename[0];
 		R_LoadImage(&filename_p, &pic[i], &width, &height, &bitsIgnore, materialName);
 
-		if (!pic[i] || width != height)
-		{
+		if (!pic[i] || width != height) {
 			image = NULL;
 			goto skipCubeImage;
 		}
 
-		if (quakeFlipX[i])
-		{
+		if (quakeFlipX[i]) {
 			R_Flip(pic[i], width, height);
 		}
 
-		if (quakeFlipY[i])
-		{
+		if (quakeFlipY[i]) {
 			R_Flop(pic[i], width, height);
 		}
 
@@ -2534,13 +2233,12 @@ createCubeImage:
 	image = R_CreateCubeImage((char *)buffer, (const byte **)pic, width, height, bits, filterType, wrapType);
 
 skipCubeImage:
-	for (i = 0; i < 6; i++)
-	{
-		if (pic[i])
-		{
+	for (i = 0; i < 6; i++) {
+		if (pic[i]) {
 			Com_Dealloc(pic[i]);
 		}
 	}
+
 	return image;
 }
 
@@ -2549,12 +2247,10 @@ skipCubeImage:
 R_InitFogTable
 =================
 */
-void R_InitFogTable(void)
-{
+void R_InitFogTable(void) {
 	int i;
 
-	for (i = 0; i < FOG_TABLE_SIZE; i++)
-	{
+	for (i = 0; i < FOG_TABLE_SIZE; i++) {
 		tr.fogTable[i] = pow((float)i / (FOG_TABLE_SIZE - 1), DEFAULT_FOG_EXP_DENSITY);
 	}
 }
@@ -2568,29 +2264,26 @@ This is called for each texel of the fog texture on startup
 and for each vertex of transparent shaders in fog dynamically
 ================
 */
-float R_FogFactor(float s, float t)
-{
+float R_FogFactor(float s, float t) {
 	float d;
 
 	s -= 1.0 / 512;
-	if (s < 0)
-	{
+
+	if (s < 0) {
 		return 0;
-	}
-	if (t < 1.0 / 32)
-	{
-		return 0;
-	}
-	if (t < 31.0 / 32)
-	{
-		s *= (t - 1.0f / 32.0f) / (30.0f / 32.0f);
 	}
 
+	if (t < 1.0 / 32) {
+		return 0;
+	}
+
+	if (t < 31.0 / 32) {
+		s *= (t - 1.0f / 32.0f) / (30.0f / 32.0f);
+	}
 	// we need to leave a lot of clamp range
 	s *= 8;
 
-	if (s > 1.0)
-	{
+	if (s > 1.0) {
 		s = 1.0;
 	}
 
@@ -2606,9 +2299,8 @@ R_CreateFogImage
 */
 #define FOG_S   256
 #define FOG_T   32
-static void R_CreateFogImage(void)
-{
-	int   x, y;
+static void R_CreateFogImage(void) {
+	int x, y;
 	byte  *data;
 	float d;
 	float borderColor[4];
@@ -2616,10 +2308,8 @@ static void R_CreateFogImage(void)
 	data = (byte *)ri.Hunk_AllocateTempMemory(FOG_S * FOG_T * 4);
 
 	// S is distance, T is depth
-	for (x = 0; x < FOG_S; x++)
-	{
-		for (y = 0; y < FOG_T; y++)
-		{
+	for (x = 0; x < FOG_S; x++) {
+		for (y = 0; y < FOG_T; y++) {
 			d = R_FogFactor((x + 0.5f) / FOG_S, (y + 0.5f) / FOG_T);
 
 			data[(y * FOG_S + x) * 4 + 0] = data[(y * FOG_S + x) * 4 + 1] = data[(y * FOG_S + x) * 4 + 2] = 255;
@@ -2646,17 +2336,15 @@ R_CreateDefaultImage
 ==================
 */
 #define DEFAULT_SIZE    128
-static void R_CreateDefaultImage(void)
-{
-	int  x, y;
+static void R_CreateDefaultImage(void) {
+	int x, y;
 	byte data[DEFAULT_SIZE][DEFAULT_SIZE][4];
 
 	// the default image will be a box, to allow you to see the mapping coordinates
 	Com_Memset(data, 0, sizeof(data));
-	for (x = 0; x < DEFAULT_SIZE; x++)
-	{
-		for (y = 0; y < 2; y++)
-		{
+
+	for (x = 0; x < DEFAULT_SIZE; x++) {
+		for (y = 0; y < 2; y++) {
 			data[y][x][0] = 255;
 			data[y][x][1] = 128;
 			data[y][x][2] = 0;
@@ -2682,21 +2370,19 @@ static void R_CreateDefaultImage(void)
 	tr.defaultImage = R_CreateImage("_default", (byte *) data, DEFAULT_SIZE, DEFAULT_SIZE, IF_NOPICMIP, FT_DEFAULT, WT_REPEAT);
 }
 
-static void R_CreateRandomNormalsImage(void)
-{
-	int  x, y;
+static void R_CreateRandomNormalsImage(void) {
+	int x, y;
 	byte data[DEFAULT_SIZE][DEFAULT_SIZE][4];
 
 	// the default image will be a box, to allow you to see the mapping coordinates
 	Com_Memset(data, 32, sizeof(data));
-	for (x = 0; x < DEFAULT_SIZE; x++)
-	{
-		for (y = 0; y < DEFAULT_SIZE; y++)
-		{
-			vec3_t n;
-			float  r, angle;
 
-			r     = random();
+	for (x = 0; x < DEFAULT_SIZE; x++) {
+		for (y = 0; y < DEFAULT_SIZE; y++) {
+			vec3_t n;
+			float r, angle;
+
+			r = random();
 			angle = 2.0 * M_PI * r; // / 360.0;
 
 			VectorSet(n, cos(angle), sin(angle), r);
@@ -2710,11 +2396,11 @@ static void R_CreateRandomNormalsImage(void)
 			data[y][x][3] = 255;
 		}
 	}
+
 	tr.randomNormalsImage = R_CreateImage("_randomNormals", (byte *) data, DEFAULT_SIZE, DEFAULT_SIZE, IF_NOPICMIP, FT_DEFAULT, WT_REPEAT);
 }
 
-static void R_CreateNoFalloffImage(void)
-{
+static void R_CreateNoFalloffImage(void) {
 	byte data[DEFAULT_SIZE][DEFAULT_SIZE][4];
 
 	// we use a solid white image instead of disabling texturing
@@ -2723,49 +2409,44 @@ static void R_CreateNoFalloffImage(void)
 }
 
 #define ATTENUATION_XY_SIZE 128
-static void R_CreateAttenuationXYImage(void)
-{
+static void R_CreateAttenuationXYImage(void) {
 	float d;
-	int   x, y;
+	int x, y;
 	byte  data[ATTENUATION_XY_SIZE][ATTENUATION_XY_SIZE][4];
-	int   b;
+	int b;
 
 	// make a centered inverse-square falloff blob for dynamic lighting
-	for (x = 0; x < ATTENUATION_XY_SIZE; x++)
-	{
-		for (y = 0; y < ATTENUATION_XY_SIZE; y++)
-		{
+	for (x = 0; x < ATTENUATION_XY_SIZE; x++) {
+		for (y = 0; y < ATTENUATION_XY_SIZE; y++) {
 			d = (ATTENUATION_XY_SIZE / 2 - 0.5f - x) * (ATTENUATION_XY_SIZE / 2 - 0.5f - x) +
 			    (ATTENUATION_XY_SIZE / 2 - 0.5f - y) * (ATTENUATION_XY_SIZE / 2 - 0.5f - y);
 			b = 4000 / d;
-			if (b > 255)
-			{
+
+			if (b > 255) {
 				b = 255;
-			}
-			else if (b < 75)
-			{
+			} else if (b < 75) {
 				b = 0;
 			}
+
 			data[y][x][0] = data[y][x][1] = data[y][x][2] = b;
 			data[y][x][3] = 255;
 		}
 	}
+
 	tr.attenuationXYImage =
 	    R_CreateImage("_attenuationXY", (byte *) data, ATTENUATION_XY_SIZE, ATTENUATION_XY_SIZE, IF_NOPICMIP, FT_LINEAR,
 	                  WT_CLAMP);
 }
 
-image_t *R_CreateCubeRenderImage(const char *name, int color, int width, int height, int bits, filterType_t filterType, wrapType_t wrapType)
-{
-	int     i;
+image_t *R_CreateCubeRenderImage(const char *name, int color, int width, int height, int bits, filterType_t filterType, wrapType_t wrapType) {
+	int i;
 	byte    *data[6];
 	image_t *ret = NULL;
 
-	for (i = 0; i < 6; i++)
-	{
+	for (i = 0; i < 6; i++) {
 		data[i] = (byte *)ri.Hunk_AllocateTempMemory(width * height * 4);
-		if (!data[i])
-		{
+
+		if (!data[i]) {
 			Ren_Fatal("R_CreateCubeRenderImage: failed to create cube render image for %s\n", name);
 			return NULL;
 		}
@@ -2775,22 +2456,20 @@ image_t *R_CreateCubeRenderImage(const char *name, int color, int width, int hei
 
 	ret = R_CreateCubeImage(name, (const byte **)data, width, height, IF_NOPICMIP | bits, filterType, wrapType);
 
-	for (i = 5; i >= 0; i--)
-	{
+	for (i = 5; i >= 0; i--) {
 		ri.Hunk_FreeTempMemory(data[i]);
 	}
 
 	return ret;
 }
 
-image_t *R_CreateRenderImageSize(const char *name, int width, int height, int bits, filterType_t filterType, wrapType_t wrapType)
-{
+image_t *R_CreateRenderImageSize(const char *name, int width, int height, int bits, filterType_t filterType, wrapType_t wrapType) {
 	byte    *data = NULL;
-	image_t *ret  = NULL;
+	image_t *ret = NULL;
 
 	data = (byte *)ri.Hunk_AllocateTempMemory(width * height * 4);
-	if (!data)
-	{
+
+	if (!data) {
 		Ren_Fatal("R_CreateRenderImageSize: Cannot allocate render image: %s\n", name);
 		return NULL;
 	}
@@ -2802,23 +2481,18 @@ image_t *R_CreateRenderImageSize(const char *name, int width, int height, int bi
 	return ret;
 }
 
-image_t *R_CreateRenderImage(const char *name, qboolean quat, int bits, filterType_t filterType, wrapType_t wrapType)
-{
+image_t *R_CreateRenderImage(const char *name, qboolean quat, int bits, filterType_t filterType, wrapType_t wrapType) {
 	int width, height;
 
-	if (glConfig2.textureNPOTAvailable)
-	{
-		width  = glConfig.vidWidth;
+	if (glConfig2.textureNPOTAvailable) {
+		width = glConfig.vidWidth;
 		height = glConfig.vidHeight;
-	}
-	else
-	{
-		width  = NearestPowerOfTwo(glConfig.vidWidth);
+	} else {
+		width = NearestPowerOfTwo(glConfig.vidWidth);
 		height = NearestPowerOfTwo(glConfig.vidHeight);
 	}
 
-	if (quat)
-	{
+	if (quat) {
 		width  *= 0.25f;
 		height *= 0.25f;
 	}
@@ -2826,221 +2500,156 @@ image_t *R_CreateRenderImage(const char *name, qboolean quat, int bits, filterTy
 	return R_CreateRenderImageSize(name, width, height, bits, filterType, wrapType);
 }
 
-static void R_CreateContrastRenderFBOImage(void)
-{
-	if (r_hdrRendering->integer && glConfig2.textureFloatAvailable)
-	{
+static void R_CreateContrastRenderFBOImage(void) {
+	if (r_hdrRendering->integer && glConfig2.textureFloatAvailable) {
 		tr.contrastRenderFBOImage = R_CreateRenderImage("_contrastRenderFBO", qtrue, IF_NOCOMPRESSION | IF_RGBA16F, FT_LINEAR, WT_CLAMP);
-	}
-	else
-	{
+	} else {
 		tr.contrastRenderFBOImage = R_CreateRenderImage("_contrastRenderFBO", qtrue, IF_NOCOMPRESSION, FT_LINEAR, WT_CLAMP);
 	}
 }
 
-static void R_CreateBloomRenderFBOImage(void)
-{
+static void R_CreateBloomRenderFBOImage(void) {
 	int i;
-	for (i = 0; i < 2; i++)
-	{
-		if (r_hdrRendering->integer && glConfig2.textureFloatAvailable)
-		{
+
+	for (i = 0; i < 2; i++) {
+		if (r_hdrRendering->integer && glConfig2.textureFloatAvailable) {
 			tr.bloomRenderFBOImage[i] = R_CreateRenderImage(va("_bloomRenderFBO%d", i), qtrue, IF_NOCOMPRESSION | IF_RGBA16F, FT_LINEAR, WT_CLAMP);
-		}
-		else
-		{
+		} else {
 			tr.bloomRenderFBOImage[i] = R_CreateRenderImage(va("_bloomRenderFBO%d", i), qtrue, IF_NOCOMPRESSION, FT_LINEAR, WT_CLAMP);
 		}
 	}
 }
 
-static void R_CreateCurrentRenderImage(void)
-{
+static void R_CreateCurrentRenderImage(void) {
 	tr.currentRenderImage = R_CreateRenderImage("_currentRender", qfalse, IF_NOCOMPRESSION, FT_NEAREST, WT_CLAMP);
 }
 
-static void R_CreateDepthRenderImage(void)
-{
+static void R_CreateDepthRenderImage(void) {
 	tr.depthRenderImage = R_CreateRenderImage("_depthRender", qfalse, IF_DEPTH24, FT_NEAREST, WT_CLAMP);
 }
 
-static void R_CreatePortalRenderImage(void)
-{
-	if (r_hdrRendering->integer && glConfig2.textureFloatAvailable)
-	{
+static void R_CreatePortalRenderImage(void) {
+	if (r_hdrRendering->integer && glConfig2.textureFloatAvailable) {
 		tr.portalRenderImage = R_CreateRenderImage("_portalRender", qfalse, IF_RGBA16F, FT_NEAREST, WT_CLAMP);
-	}
-	else
-	{
+	} else {
 		tr.portalRenderImage = R_CreateRenderImage("_portalRender", qfalse, IF_NOCOMPRESSION, FT_NEAREST, WT_CLAMP);
 	}
 }
 
-static void R_CreateOcclusionRenderFBOImage(void)
-{
+static void R_CreateOcclusionRenderFBOImage(void) {
 	tr.occlusionRenderFBOImage = R_CreateRenderImage("_occlusionFBORender", qfalse, IF_NOCOMPRESSION, FT_NEAREST, WT_CLAMP);
 }
 
-static void R_CreateDepthToColorFBOImages(void)
-{
+static void R_CreateDepthToColorFBOImages(void) {
 
 	//FIXME which one should we use? Read up!
 	/*
-	tr.depthToColorBackFacesFBOImage  = R_CreateRenderImage("_depthToColorBackFacesFBORender", qfalse, IF_ALPHA32F, FT_NEAREST, WT_CLAMP);
+	tr.depthToColorBackFacesFBOImage = R_CreateRenderImage("_depthToColorBackFacesFBORender", qfalse, IF_ALPHA32F, FT_NEAREST, WT_CLAMP);
 	tr.depthToColorFrontFacesFBOImage = R_CreateRenderImage("_depthToColorFrontFacesFBORender", qfalse, IF_ALPHA32F, FT_NEAREST, WT_CLAMP);
 	 */
-	tr.depthToColorBackFacesFBOImage  = R_CreateRenderImage("_depthToColorBackFacesFBORender", qfalse, IF_NOCOMPRESSION, FT_NEAREST, WT_CLAMP);
+	tr.depthToColorBackFacesFBOImage = R_CreateRenderImage("_depthToColorBackFacesFBORender", qfalse, IF_NOCOMPRESSION, FT_NEAREST, WT_CLAMP);
 	tr.depthToColorFrontFacesFBOImage = R_CreateRenderImage("_depthToColorFrontFacesFBORender", qfalse, IF_NOCOMPRESSION, FT_NEAREST, WT_CLAMP);
 }
 
 // clean up this mess some day ...
-static void R_CreateDownScaleFBOImages(void)
-{
-	if (r_hdrRendering->integer && glConfig2.textureFloatAvailable)
-	{
+static void R_CreateDownScaleFBOImages(void) {
+	if (r_hdrRendering->integer && glConfig2.textureFloatAvailable) {
 		tr.downScaleFBOImage_quarter = R_CreateRenderImage("_downScaleFBOImage_quarter", qtrue, IF_RGBA16F, FT_NEAREST, WT_CLAMP);
-	}
-	else
-	{
+	} else {
 		tr.downScaleFBOImage_quarter = R_CreateRenderImage("_downScaleFBOImage_quarter", qtrue, IF_NOCOMPRESSION, FT_NEAREST, WT_CLAMP);
 	}
 
-	if (r_hdrRendering->integer && glConfig2.textureFloatAvailable)
-	{
+	if (r_hdrRendering->integer && glConfig2.textureFloatAvailable) {
 		tr.downScaleFBOImage_64x64 = R_CreateRenderImageSize("_downScaleFBOImage_64x64", 64, 64, IF_RGBA16F, FT_NEAREST, WT_CLAMP);
-	}
-	else
-	{
+	} else {
 		tr.downScaleFBOImage_64x64 = R_CreateRenderImageSize("_downScaleFBOImage_64x64", 64, 64, IF_NOCOMPRESSION, FT_NEAREST, WT_CLAMP);
 	}
 
 #if 0
-	if (r_hdrRendering->integer && glConfig2.textureFloatAvailable)
-	{
+	if (r_hdrRendering->integer && glConfig2.textureFloatAvailable) {
 		tr.downScaleFBOImage_16x16 = R_CreateRenderImageSize("_downScaleFBOImage_16x16", 16, 16, IF_RGBA16F, FT_NEAREST, WT_CLAMP);
-	}
-	else
-	{
+	} else {
 		tr.downScaleFBOImage_16x16 = R_CreateRenderImageSize("_downScaleFBOImage_16x16", 16, 16, IF_NOCOMPRESSION, FT_NEAREST, WT_CLAMP);
 	}
 
-	if (r_hdrRendering->integer && glConfig2.textureFloatAvailable)
-	{
+	if (r_hdrRendering->integer && glConfig2.textureFloatAvailable) {
 		tr.downScaleFBOImage_4x4 = R_CreateRenderImageSize("_downScaleFBOImage_4x4", 4, 4, IF_RGBA16F, FT_NEAREST, WT_CLAMP);
-	}
-	else
-	{
+	} else {
 		tr.downScaleFBOImage_4x4 = R_CreateRenderImageSize("_downScaleFBOImage_4x4", 4, 4, IF_NOCOMPRESSION, FT_NEAREST, WT_CLAMP);
 	}
 
-	if (r_hdrRendering->integer && glConfig2.textureFloatAvailable)
-	{
+	if (r_hdrRendering->integer && glConfig2.textureFloatAvailable) {
 		tr.downScaleFBOImage_1x1 = R_CreateRenderImageSize("_downScaleFBOImage_1x1", 1, 1, IF_RGBA16F, FT_NEAREST, WT_CLAMP);
-	}
-	else
-	{
+	} else {
 		tr.downScaleFBOImage_1x1 = R_CreateRenderImageSize("_downScaleFBOImage_1x1", 1, 1, IF_NOCOMPRESSION, FT_NEAREST, WT_CLAMP);
 	}
 #endif
 }
 
-static void R_CreateDeferredRenderFBOImages(void)
-{
+static void R_CreateDeferredRenderFBOImages(void) {
 	tr.deferredNormalFBOImage = R_CreateRenderImage("_deferredNormalFBO", qfalse, IF_NOCOMPRESSION, FT_NEAREST, WT_CLAMP);
 
-	if (HDR_ENABLED())
-	{
+	if (HDR_ENABLED()) {
 		tr.lightRenderFBOImage = R_CreateRenderImage("_lightRenderFBO", qfalse, IF_RGBA16F, FT_NEAREST, WT_CLAMP);
-	}
-	else
-	{
+	} else {
 		tr.lightRenderFBOImage = R_CreateRenderImage("_lightRenderFBO", qfalse, IF_NOCOMPRESSION, FT_NEAREST, WT_CLAMP);
 	}
 
-	if (HDR_ENABLED())
-	{
+	if (HDR_ENABLED()) {
 		tr.deferredRenderFBOImage = R_CreateRenderImage("_deferredRenderFBO", qfalse, IF_RGBA16F, FT_NEAREST, WT_CLAMP);
-	}
-	else
-	{
+	} else {
 		tr.deferredRenderFBOImage = R_CreateRenderImage("_deferredRenderFBO", qfalse, IF_NOCOMPRESSION, FT_NEAREST, WT_CLAMP);
 	}
 }
 
-static void R_CreateShadowMapFBOImage(void)
-{
-	int          i, size, bits;
+static void R_CreateShadowMapFBOImage(void) {
+	int i, size, bits;
 	filterType_t filter = FT_NEAREST;
 
-	if (!glConfig2.textureFloatAvailable || r_shadows->integer < SHADOWING_ESM16)
-	{
+	if (!glConfig2.textureFloatAvailable || r_shadows->integer < SHADOWING_ESM16) {
 		return;
 	}
 
-	if (r_shadowMapLinearFilter->integer)
-	{
+	if (r_shadowMapLinearFilter->integer) {
 		filter = FT_LINEAR;
 	}
 
-	for (i = 0; i < MAX_SHADOWMAPS; i++)
-	{
+	for (i = 0; i < MAX_SHADOWMAPS; i++) {
 		size = shadowMapResolutions[i];
 
 		// we can do the most expensive filtering types with OpenGL 3 hardware
-		if (r_shadows->integer == SHADOWING_ESM32)
-		{
+		if (r_shadows->integer == SHADOWING_ESM32) {
 			bits = IF_ALPHA32F;
-		}
-		else if (r_shadows->integer == SHADOWING_VSM32)
-		{
+		} else if (r_shadows->integer == SHADOWING_VSM32) {
 			bits = IF_LA32F;
-		}
-		else if (r_shadows->integer == SHADOWING_EVSM32)
-		{
-			if (r_evsmPostProcess->integer)
-			{
+		} else if (r_shadows->integer == SHADOWING_EVSM32) {
+			if (r_evsmPostProcess->integer) {
 				bits = IF_ALPHA32F;
-			}
-			else
-			{
+			} else {
 				bits = IF_RGBA32F;
 			}
-		}
-		else
-		{
+		} else {
 			bits = IF_RGBA16F;
 		}
 
 		tr.shadowMapFBOImage[i] = R_CreateRenderImageSize(va("_shadowMapFBO%d", i), size, size, bits, filter, WT_EDGE_CLAMP);
 	}
-
 	// sun shadow maps
-	for (i = 0; i < MAX_SHADOWMAPS; i++)
-	{
+	for (i = 0; i < MAX_SHADOWMAPS; i++) {
 		size = sunShadowMapResolutions[i];
 
 		// we can do the most expensive filtering types with OpenGL 3 hardware
-		if (r_shadows->integer == SHADOWING_ESM32)
-		{
+		if (r_shadows->integer == SHADOWING_ESM32) {
 			bits = IF_ALPHA32F;
-		}
-		else if (r_shadows->integer == SHADOWING_VSM32)
-		{
+		} else if (r_shadows->integer == SHADOWING_VSM32) {
 			bits = IF_LA32F;
-		}
-		else if (r_shadows->integer == SHADOWING_EVSM32)
-		{
-			if (r_evsmPostProcess->integer)
-			{
+		} else if (r_shadows->integer == SHADOWING_EVSM32) {
+			if (r_evsmPostProcess->integer) {
 				bits = IF_DEPTH24;
-			}
-			else
-			{
+			} else {
 				bits = IF_RGBA32F;
 			}
-		}
-		else
-		{
+		} else {
 			bits = IF_RGBA16F;
 		}
 
@@ -3048,46 +2657,32 @@ static void R_CreateShadowMapFBOImage(void)
 	}
 }
 
-static void R_CreateShadowCubeFBOImage(void)
-{
-	int          j, size, bits;
+static void R_CreateShadowCubeFBOImage(void) {
+	int j, size, bits;
 	filterType_t filter = FT_NEAREST;
 
-	if (!glConfig2.textureFloatAvailable || r_shadows->integer < SHADOWING_ESM16)
-	{
+	if (!glConfig2.textureFloatAvailable || r_shadows->integer < SHADOWING_ESM16) {
 		return;
 	}
 
-	if (r_shadowMapLinearFilter->integer)
-	{
+	if (r_shadowMapLinearFilter->integer) {
 		filter = FT_LINEAR;
 	}
 
-	for (j = 0; j < 5; j++)
-	{
+	for (j = 0; j < 5; j++) {
 		size = shadowMapResolutions[j];
 
-		if (r_shadows->integer == SHADOWING_ESM32)
-		{
+		if (r_shadows->integer == SHADOWING_ESM32) {
 			bits = IF_ALPHA32F;
-		}
-		else if (r_shadows->integer == SHADOWING_VSM32)
-		{
+		} else if (r_shadows->integer == SHADOWING_VSM32) {
 			bits = IF_LA32F;
-		}
-		else if (r_shadows->integer == SHADOWING_EVSM32)
-		{
-			if (r_evsmPostProcess->integer)
-			{
+		} else if (r_shadows->integer == SHADOWING_EVSM32) {
+			if (r_evsmPostProcess->integer) {
 				bits = IF_ALPHA32F;
-			}
-			else
-			{
+			} else {
 				bits = IF_RGBA32F;
 			}
-		}
-		else
-		{
+		} else {
 			bits = IF_RGBA16F;
 		}
 
@@ -3095,10 +2690,9 @@ static void R_CreateShadowCubeFBOImage(void)
 	}
 }
 
-static void R_CreateColorCubeImages(void)
-{
+static void R_CreateColorCubeImages(void) {
 	tr.blackCubeImage = R_CreateCubeRenderImage("_blackCube", 0, REF_CUBEMAP_SIZE, REF_CUBEMAP_SIZE, 0, FT_LINEAR, WT_EDGE_CLAMP);
-	tr.autoCubeImage  = R_CreateCubeRenderImage("_autoCube", 0, REF_CUBEMAP_SIZE, REF_CUBEMAP_SIZE, 0, FT_LINEAR, WT_EDGE_CLAMP);
+	tr.autoCubeImage = R_CreateCubeRenderImage("_autoCube", 0, REF_CUBEMAP_SIZE, REF_CUBEMAP_SIZE, 0, FT_LINEAR, WT_EDGE_CLAMP);
 	tr.whiteCubeImage = R_CreateCubeRenderImage("_whiteCube", 0xFF, REF_CUBEMAP_SIZE, REF_CUBEMAP_SIZE, 0, FT_LINEAR, WT_EDGE_CLAMP);
 }
 
@@ -3107,9 +2701,8 @@ static void R_CreateColorCubeImages(void)
 R_CreateBuiltinImages
 ==================
 */
-void R_CreateBuiltinImages(void)
-{
-	int   x, y;
+void R_CreateBuiltinImages(void) {
+	int x, y;
 	byte  data[DEFAULT_SIZE][DEFAULT_SIZE][4];
 	byte  *out;
 	float s, value;
@@ -3126,68 +2719,62 @@ void R_CreateBuiltinImages(void)
 	tr.blackImage = R_CreateImage("_black", (byte *) data, 8, 8, IF_NOPICMIP, FT_LINEAR, WT_REPEAT);
 
 	// red
-	for (x = 0; x < DEFAULT_SIZE; x++)
-	{
-		for (y = 0; y < DEFAULT_SIZE; y++)
-		{
+	for (x = 0; x < DEFAULT_SIZE; x++) {
+		for (y = 0; y < DEFAULT_SIZE; y++) {
 			data[y][x][0] = 255;
 			data[y][x][1] = 0;
 			data[y][x][2] = 0;
 			data[y][x][3] = 255;
 		}
 	}
+
 	tr.redImage = R_CreateImage("_red", (byte *) data, 8, 8, IF_NOPICMIP, FT_LINEAR, WT_REPEAT);
 
 	// green
-	for (x = 0; x < DEFAULT_SIZE; x++)
-	{
-		for (y = 0; y < DEFAULT_SIZE; y++)
-		{
+	for (x = 0; x < DEFAULT_SIZE; x++) {
+		for (y = 0; y < DEFAULT_SIZE; y++) {
 			data[y][x][0] = 0;
 			data[y][x][1] = 255;
 			data[y][x][2] = 0;
 			data[y][x][3] = 255;
 		}
 	}
+
 	tr.greenImage = R_CreateImage("_green", (byte *) data, 8, 8, IF_NOPICMIP, FT_LINEAR, WT_REPEAT);
 
 	// blue
-	for (x = 0; x < DEFAULT_SIZE; x++)
-	{
-		for (y = 0; y < DEFAULT_SIZE; y++)
-		{
+	for (x = 0; x < DEFAULT_SIZE; x++) {
+		for (y = 0; y < DEFAULT_SIZE; y++) {
 			data[y][x][0] = 0;
 			data[y][x][1] = 0;
 			data[y][x][2] = 255;
 			data[y][x][3] = 255;
 		}
 	}
+
 	tr.blueImage = R_CreateImage("_blue", (byte *) data, 8, 8, IF_NOPICMIP, FT_LINEAR, WT_REPEAT);
 
 	// generate a default normalmap with a zero heightmap
-	for (x = 0; x < DEFAULT_SIZE; x++)
-	{
-		for (y = 0; y < DEFAULT_SIZE; y++)
-		{
+	for (x = 0; x < DEFAULT_SIZE; x++) {
+		for (y = 0; y < DEFAULT_SIZE; y++) {
 			data[y][x][0] = 128;
 			data[y][x][1] = 128;
 			data[y][x][2] = 255;
 			data[y][x][3] = 0;
 		}
 	}
+
 	tr.flatImage = R_CreateImage("_flat", (byte *) data, 8, 8, IF_NOPICMIP | IF_NORMALMAP, FT_LINEAR, WT_REPEAT);
 
-	for (x = 0; x < 32; x++)
-	{
+	for (x = 0; x < 32; x++) {
 		// scratchimage is usually used for cinematic drawing
 		tr.scratchImage[x] = R_CreateImage("_scratch", (byte *) data, DEFAULT_SIZE, DEFAULT_SIZE, IF_NONE, FT_LINEAR, WT_CLAMP);
 	}
 
 	out = &data[0][0][0];
-	for (y = 0; y < DEFAULT_SIZE; y++)
-	{
-		for (x = 0; x < DEFAULT_SIZE; x++, out += 4)
-		{
+
+	for (y = 0; y < DEFAULT_SIZE; y++) {
+		for (x = 0; x < DEFAULT_SIZE; x++, out += 4) {
 			s = (((float)x + 0.5f) * (2.0f / DEFAULT_SIZE) - 1.0f);
 
 			s = Q_fabs(s) - (1.0f / DEFAULT_SIZE);
@@ -3228,63 +2815,48 @@ void R_CreateBuiltinImages(void)
 R_SetColorMappings
 ===============
 */
-void R_SetColorMappings(void)
-{
-	int   i, j;
+void R_SetColorMappings(void) {
+	int i, j;
 	float g;
-	int   inf;
-	int   shift;
+	int inf;
+	int shift;
 
 	tr.mapOverBrightBits = r_mapOverBrightBits->integer;
 
 	// setup the overbright lighting
 	tr.overbrightBits = r_overBrightBits->integer;
 
-	if (!glConfig.deviceSupportsGamma)
-	{
-		tr.overbrightBits = 0;  // need hardware gamma for overbright
+	if (!glConfig.deviceSupportsGamma) {
+		tr.overbrightBits = 0; // need hardware gamma for overbright
 	}
-
 	// never overbright in windowed mode
-	if (!glConfig.isFullscreen)
-	{
+	if (!glConfig.isFullscreen) {
 		tr.overbrightBits = 0;
 	}
-
 	// allow 2 overbright bits in 24 bit, but only 1 in 16 bit
-	if (glConfig.colorBits > 16)
-	{
-		if (tr.overbrightBits > 2)
-		{
+	if (glConfig.colorBits > 16) {
+		if (tr.overbrightBits > 2) {
 			tr.overbrightBits = 2;
 		}
-	}
-	else
-	{
-		if (tr.overbrightBits > 1)
-		{
+	} else {
+		if (tr.overbrightBits > 1) {
 			tr.overbrightBits = 1;
 		}
 	}
 
-	if (tr.overbrightBits < 0)
-	{
+	if (tr.overbrightBits < 0) {
 		tr.overbrightBits = 0;
 	}
 
 	tr.identityLight = 1.0f / (1 << tr.overbrightBits);
 
-	if (r_intensity->value <= 1)
-	{
+	if (r_intensity->value <= 1) {
 		ri.Cvar_Set("r_intensity", "1");
 	}
 
-	if (r_gamma->value < 0.5f)
-	{
+	if (r_gamma->value < 0.5f) {
 		ri.Cvar_Set("r_gamma", "0.5");
-	}
-	else if (r_gamma->value > 3.0f)
-	{
+	} else if (r_gamma->value > 3.0f) {
 		ri.Cvar_Set("r_gamma", "3.0");
 	}
 
@@ -3292,38 +2864,30 @@ void R_SetColorMappings(void)
 
 	shift = tr.overbrightBits;
 
-	for (i = 0; i < 256; i++)
-	{
-		if (g == 1)
-		{
+	for (i = 0; i < 256; i++) {
+		if (g == 1) {
 			inf = i;
-		}
-		else
-		{
+		} else {
 			inf = 255 * pow(i / 255.0f, 1.0f / g) + 0.5f;
 		}
 
 		inf <<= shift;
 
-		if (inf < 0)
-		{
+		if (inf < 0) {
 			inf = 0;
 		}
 
-		if (inf > 255)
-		{
+		if (inf > 255) {
 			inf = 255;
 		}
 
 		s_gammatable[i] = inf;
 	}
 
-	for (i = 0; i < 256; i++)
-	{
+	for (i = 0; i < 256; i++) {
 		j = i * r_intensity->value;
 
-		if (j > 255)
-		{
+		if (j > 255) {
 			j = 255;
 		}
 
@@ -3331,10 +2895,10 @@ void R_SetColorMappings(void)
 	}
 
 	/*
-	if (glConfig.deviceSupportsGamma)
-	{
+	if (glConfig.deviceSupportsGamma) {
 	    GLimp_SetGamma(s_gammatable, s_gammatable, s_gammatable);
 	}
+
 	*/
 }
 
@@ -3343,10 +2907,9 @@ void R_SetColorMappings(void)
 R_InitImages
 ===============
 */
-void R_InitImages(void)
-{
-	const char *charsetImage  = "gfx/2d/consolechars";
-	const char *grainImage    = "gfx/2d/camera/grain.png";
+void R_InitImages(void) {
+	const char *charsetImage = "gfx/2d/consolechars";
+	const char *grainImage = "gfx/2d/camera/grain.png";
 	const char *vignetteImage = "gfx/2d/camera/vignette.png";
 
 	Ren_Developer("------- R_InitImages -------\n");
@@ -3363,20 +2926,20 @@ void R_InitImages(void)
 	R_CreateBuiltinImages();
 
 	tr.charsetImage = R_FindImageFile(charsetImage, IF_NOCOMPRESSION | IF_NOPICMIP, FT_DEFAULT, WT_CLAMP, NULL);
-	if (!tr.charsetImage)
-	{
+
+	if (!tr.charsetImage) {
 		Ren_Warning("R_InitImages: could not load '%s'\n", charsetImage);
 	}
 
 	tr.grainImage = R_FindImageFile(grainImage, IF_NOCOMPRESSION | IF_NOPICMIP, FT_DEFAULT, WT_REPEAT, NULL);
-	if (!tr.grainImage)
-	{
+
+	if (!tr.grainImage) {
 		Ren_Warning("R_InitImages: could not load '%s'\n", grainImage);
 	}
 
 	tr.vignetteImage = R_FindImageFile(vignetteImage, IF_NOCOMPRESSION | IF_NOPICMIP, FT_DEFAULT, WT_CLAMP, NULL);
-	if (!tr.vignetteImage)
-	{
+
+	if (!tr.vignetteImage) {
 		Ren_Warning("R_InitImages: could not load '%s'\n", vignetteImage);
 	}
 }
@@ -3386,15 +2949,13 @@ void R_InitImages(void)
 R_ShutdownImages
 ===============
 */
-void R_ShutdownImages(void)
-{
-	int     i;
+void R_ShutdownImages(void) {
+	int i;
 	image_t *image;
 
 	Ren_Developer("------- R_ShutdownImages -------\n");
 
-	for (i = 0; i < tr.images.currentElements; i++)
-	{
+	for (i = 0; i < tr.images.currentElements; i++) {
 		image = (image_t *)Com_GrowListElement(&tr.images, i);
 
 		glDeleteTextures(1, &image->texnum);
@@ -3410,19 +2971,16 @@ void R_ShutdownImages(void)
 	FreeVertexHashTable(tr.cubeHashTable);
 }
 
-int RE_GetTextureId(const char *name)
-{
-	int     i;
+int RE_GetTextureId(const char *name) {
+	int i;
 	image_t *image;
 
 	Ren_Developer(S_COLOR_YELLOW "RE_GetTextureId [%s].\n", name);
 
-	for (i = 0; i < tr.images.currentElements; i++)
-	{
+	for (i = 0; i < tr.images.currentElements; i++) {
 		image = (image_t *)Com_GrowListElement(&tr.images, i);
 
-		if (!strcmp(name, image->name))
-		{
+		if (!strcmp(name, image->name)) {
 			return i;
 		}
 	}

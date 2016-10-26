@@ -292,7 +292,7 @@ Called by BodySink
 void BodyUnlink(gentity_t *ent) {
 	gentity_t *tent;
 
-	tent = G_TempEntity(ent->r.currentOrigin, EV_BODY_DP);    // so clients will memset them off
+	tent = G_TempEntity(ent->r.currentOrigin, EV_BODY_DP); // so clients will memset them off
 
 	tent->s.otherEntityNum2 = ent->s.number;
 	tent->r.svFlags = SVF_BROADCAST; // send to everyone
@@ -304,7 +304,7 @@ void BodyUnlink(gentity_t *ent) {
 void G_BodyDP(gentity_t *ent) {
 	gentity_t *tent;
 
-	tent = G_TempEntity(ent->r.currentOrigin, EV_BODY_DP);    // so clients will memset them off
+	tent = G_TempEntity(ent->r.currentOrigin, EV_BODY_DP); // so clients will memset them off
 
 	tent->s.otherEntityNum2 = ent->s.number;
 	tent->r.svFlags = SVF_BROADCAST; // send to everyone
@@ -396,7 +396,7 @@ static void G_StepSlideCorpse(gentity_t *ent, vec3_t newOrigin) {
 			VectorCopy(trace.endpos, ent->s.pos.trBase);
 		}
 
-		return;    // we got exactly where we wanted to go first try
+		return; // we got exactly where we wanted to go first try
 	}
 
 	VectorCopy(ent->s.pos.trBase, down);
@@ -419,7 +419,7 @@ static void G_StepSlideCorpse(gentity_t *ent, vec3_t newOrigin) {
 	trap_TraceCapsule(&trace, start, ent->r.mins, ent->r.maxs, up, ent->s.number, MASK_PLAYERSOLID);
 
 	if (trace.allsolid) {
-		return;    // can't step up
+		return; // can't step up
 	}
 	// try slidemove from this position
 	VectorCopy(trace.endpos, ent->s.pos.trBase);
@@ -481,10 +481,10 @@ void CopyToBodyQue(gentity_t *ent) {
 	}
 
 	body->s = ent->s;
-	body->s.eFlags = EF_DEAD;      // clear EF_TALK, etc
+	body->s.eFlags = EF_DEAD; // clear EF_TALK, etc
 
 	if (ent->client->ps.eFlags & EF_HEADSHOT) {
-		body->s.eFlags |= EF_HEADSHOT;         // make sure the dead body draws no head(if killed that way)
+		body->s.eFlags |= EF_HEADSHOT; // make sure the dead body draws no head(if killed that way)
 	}
 
 	body->s.eType = ET_CORPSE;
@@ -495,7 +495,7 @@ void CopyToBodyQue(gentity_t *ent) {
 	body->s.number = body - g_entities;
 	body->timestamp = level.time;
 	body->physicsObject = qtrue;
-	body->physicsBounce = 0;       // don't bounce
+	body->physicsBounce = 0; // don't bounce
 	// body->physicsSlide = qfalse;
 	// body->physicsFlush = qfalse;
 
@@ -719,7 +719,7 @@ void limbo(gentity_t *ent, qboolean makeCorpse) {
 		if (makeCorpse) {
 			G_DropLimboHealth(ent);
 			G_DropLimboAmmo(ent);
-			CopyToBodyQue(ent);  // make a nice looking corpse
+			CopyToBodyQue(ent); // make a nice looking corpse
 		} else {
 			trap_UnlinkEntity(ent);
 		}
@@ -1169,11 +1169,11 @@ void SetWolfSpawnWeapons(gclient_t *client) {
 		AddWeaponToPlayer(client, WP_SMOKE_BOMB, GetAmmoTableData(WP_SMOKE_BOMB)->defaultStartingAmmo, GetAmmoTableData(WP_SMOKE_BOMB)->defaultStartingClip, qfalse);
 		// See if we already have a satchel charge placed - NOTE: maybe we want to change this so the thing voids on death
 		if (G_FindSatchel(&g_entities[client->ps.clientNum])) {
-			AddWeaponToPlayer(client, WP_SATCHEL, 0, 0, qfalse);       // Big Bang \o / 
-			AddWeaponToPlayer(client, WP_SATCHEL_DET, 0, 1, qfalse);   // Big Red Button for tha Big Bang
+			AddWeaponToPlayer(client, WP_SATCHEL, 0, 0, qfalse); // Big Bang \o / 
+			AddWeaponToPlayer(client, WP_SATCHEL_DET, 0, 1, qfalse); // Big Red Button for tha Big Bang
 		} else {
-			AddWeaponToPlayer(client, WP_SATCHEL, 0, 1, qfalse);       // Big Bang \o / 
-			AddWeaponToPlayer(client, WP_SATCHEL_DET, 0, 0, qfalse);   // Big Red Button for tha Big Bang
+			AddWeaponToPlayer(client, WP_SATCHEL, 0, 1, qfalse); // Big Bang \o / 
+			AddWeaponToPlayer(client, WP_SATCHEL_DET, 0, 0, qfalse); // Big Red Button for tha Big Bang
 		}
 	}
 
@@ -2482,10 +2482,10 @@ void ClientSpawn(gentity_t *ent, qboolean revived, qboolean teamChange, qboolean
 
         if (clientMismatchedVersion) {
             trap_DropClient(ent - g_entities, va("Client / Server game mismatch: '%s / %s'", clientMismatchedVersion, GAME_VERSION_DATED));
-      } else {
+    } else {
             client->sess.versionOK = qtrue;
-      }
-  }
+    }
+}
 #endif*/
 
 	// find a spawn point
@@ -2494,7 +2494,7 @@ void ClientSpawn(gentity_t *ent, qboolean revived, qboolean teamChange, qboolean
 	if (revived) {
 		spawnPoint = ent;
 		VectorCopy(ent->r.currentOrigin, spawn_origin);
-		spawn_origin[2] += 9;  // spawns seem to be sunk into ground?
+		spawn_origin[2] += 9; // spawns seem to be sunk into ground?
 		VectorCopy(ent->s.angles, spawn_angles);
 	} else {
 		// let's just be sure it does the right thing at all times.(well maybe not the right thing, but at least not the bad thing!)

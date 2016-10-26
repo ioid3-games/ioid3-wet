@@ -34,8 +34,7 @@
 
 #include "tr_common.h"
 
-typedef struct
-{
+typedef struct {
 	char id[2];
 	unsigned fileSize;
 	unsigned reserved0;
@@ -54,85 +53,77 @@ typedef struct
 	unsigned char palette[256][4];
 } BMPHeader_t;
 
-void R_LoadBMP(const char *name, byte **pic, int *width, int *height, byte alphaByte)
-{
-	int      columns, rows;
+void R_LoadBMP(const char *name, byte **pic, int *width, int *height, byte alphaByte) {
+	int columns, rows;
 	unsigned numPixels;
 	byte     *pixbuf;
-	int      row, column;
+	int row, column;
 	byte     *buf_p;
 	byte     *end;
-	union
-	{
+	union {
 		byte *b;
 		void *v;
 	} buffer;
-	int         length;
+	int length;
 	BMPHeader_t bmpHeader;
 	byte        *bmpRGBA;
 
 	*pic = NULL;
 
-	if (width)
-	{
+	if (width) {
 		*width = 0;
 	}
 
-	if (height)
-	{
+	if (height) {
 		*height = 0;
 	}
-
 	// load the file
 	length = ri.FS_ReadFile(( char * ) name, &buffer.v);
-	if (!buffer.b || length < 0)
-	{
+
+	if (!buffer.b || length < 0) {
 		return;
 	}
 
-	if (length < 54)
-	{
+	if (length < 54) {
 		Ren_Drop("LoadBMP: header too short (%s)\n", name);
 	}
 
 	buf_p = buffer.b;
-	end   = buffer.b + length;
+	end = buffer.b + length;
 
-	bmpHeader.id[0]            = *buf_p++;
-	bmpHeader.id[1]            = *buf_p++;
-	bmpHeader.fileSize         = LittleLong(*( int * ) buf_p);
-	buf_p                     += 4;
-	bmpHeader.reserved0        = LittleLong(*( int * ) buf_p);
-	buf_p                     += 4;
+	bmpHeader.id[0] = *buf_p++;
+	bmpHeader.id[1] = *buf_p++;
+	bmpHeader.fileSize = LittleLong(*( int * ) buf_p);
+	buf_p += 4;
+	bmpHeader.reserved0 = LittleLong(*( int * ) buf_p);
+	buf_p += 4;
 	bmpHeader.bitmapDataOffset = LittleLong(*( int * ) buf_p);
-	buf_p                     += 4;
+	buf_p += 4;
 	bmpHeader.bitmapHeaderSize = LittleLong(*( int * ) buf_p);
-	buf_p                     += 4;
-	bmpHeader.width            = LittleLong(*( int * ) buf_p);
-	buf_p                     += 4;
-	bmpHeader.height           = LittleLong(*( int * ) buf_p);
-	buf_p                     += 4;
-	bmpHeader.planes           = LittleShort(*( short * ) buf_p);
-	buf_p                     += 2;
-	bmpHeader.bitsPerPixel     = LittleShort(*( short * ) buf_p);
-	buf_p                     += 2;
-	bmpHeader.compression      = LittleLong(*( int * ) buf_p);
-	buf_p                     += 4;
-	bmpHeader.bitmapDataSize   = LittleLong(*( int * ) buf_p);
-	buf_p                     += 4;
-	bmpHeader.hRes             = LittleLong(*( int * ) buf_p);
-	buf_p                     += 4;
-	bmpHeader.vRes             = LittleLong(*( int * ) buf_p);
-	buf_p                     += 4;
-	bmpHeader.colors           = LittleLong(*( int * ) buf_p);
-	buf_p                     += 4;
-	bmpHeader.importantColors  = LittleLong(*( int * ) buf_p);
-	buf_p                     += 4;
+	buf_p += 4;
+	bmpHeader.width = LittleLong(*( int * ) buf_p);
+	buf_p += 4;
+	bmpHeader.height = LittleLong(*( int * ) buf_p);
+	buf_p += 4;
+	bmpHeader.planes = LittleShort(*( short * ) buf_p);
+	buf_p += 2;
+	bmpHeader.bitsPerPixel = LittleShort(*( short * ) buf_p);
+	buf_p += 2;
+	bmpHeader.compression = LittleLong(*( int * ) buf_p);
+	buf_p += 4;
+	bmpHeader.bitmapDataSize = LittleLong(*( int * ) buf_p);
+	buf_p += 4;
+	bmpHeader.hRes = LittleLong(*( int * ) buf_p);
+	buf_p += 4;
+	bmpHeader.vRes = LittleLong(*( int * ) buf_p);
+	buf_p += 4;
+	bmpHeader.colors = LittleLong(*( int * ) buf_p);
+	buf_p += 4;
+	bmpHeader.importantColors = LittleLong(*( int * ) buf_p);
+	buf_p += 4;
 
-	if (bmpHeader.bitsPerPixel == 8)
-	{
-		if (buf_p + sizeof(bmpHeader.palette) > end)
-		{
+	if (bmpHeader.bitsPerPixel == 8) {
+		if (buf_p + sizeof(bmpHeader.palette) > end) {
 			Ren_Drop("LoadBMP: header too short (%s)\n", name);
 		}
 
@@ -140,32 +131,29 @@ void R_LoadBMP(const char *name, byte **pic, int *width, int *height, byte alpha
 		buf_p += sizeof(bmpHeader.palette);
 	}
 
-	if (buffer.b + bmpHeader.bitmapDataOffset > end)
-	{
+	if (buffer.b + bmpHeader.bitmapDataOffset > end) {
 		Ren_Drop("LoadBMP: invalid offset value in header (%s)\n", name);
 	}
 
 	buf_p = buffer.b + bmpHeader.bitmapDataOffset;
 
-	if (bmpHeader.id[0] != 'B' && bmpHeader.id[1] != 'M')
-	{
+	if (bmpHeader.id[0] != 'B' && bmpHeader.id[1] != 'M') {
 		Ren_Drop("LoadBMP: only Windows-style BMP files supported (%s)\n", name);
 	}
-	if (bmpHeader.fileSize != length)
-	{
+
+	if (bmpHeader.fileSize != length) {
 		Ren_Drop("LoadBMP: header size does not match file size (%u vs. %u) (%s)\n", bmpHeader.fileSize, length, name);
 	}
-	if (bmpHeader.compression != 0)
-	{
+
+	if (bmpHeader.compression != 0) {
 		Ren_Drop("LoadBMP: only uncompressed BMP files supported (%s)\n", name);
 	}
-	if (bmpHeader.bitsPerPixel < 8)
-	{
+
+	if (bmpHeader.bitsPerPixel < 8) {
 		Ren_Drop("LoadBMP: monochrome and 4-bit BMP files not supported (%s)\n", name);
 	}
 
-	switch (bmpHeader.bitsPerPixel)
-	{
+	switch (bmpHeader.bitsPerPixel) {
 	case 8:
 	case 16:
 	case 24:
@@ -177,50 +165,46 @@ void R_LoadBMP(const char *name, byte **pic, int *width, int *height, byte alpha
 	}
 
 	columns = bmpHeader.width;
-	rows    = bmpHeader.height;
-	if (rows < 0)
-	{
+	rows = bmpHeader.height;
+
+	if (rows < 0) {
 		rows = -rows;
 	}
+
 	numPixels = columns * rows;
 
 	if (columns <= 0 || !rows || numPixels > 0x1FFFFFFF // 4*1FFFFFFF == 0x7FFFFFFC < 0x7FFFFFFF
-	    || ((numPixels * 4) / columns) / 4 != rows)
-	{
+	    || ((numPixels * 4) / columns) / 4 != rows) {
 		Ren_Drop("LoadBMP: %s has an invalid image size\n", name);
 	}
-	if (buf_p + numPixels * bmpHeader.bitsPerPixel / 8 > end)
-	{
+
+	if (buf_p + numPixels * bmpHeader.bitsPerPixel / 8 > end) {
 		Ren_Drop("LoadBMP: file truncated (%s)\n", name);
 	}
 
-	if (width)
-	{
+	if (width) {
 		*width = columns;
 	}
-	if (height)
-	{
+
+	if (height) {
 		*height = rows;
 	}
 
 	bmpRGBA = R_GetImageBuffer(numPixels * 4, BUFFER_IMAGE, name);
-	*pic    = bmpRGBA;
+	*pic = bmpRGBA;
 
 
-	for (row = rows - 1; row >= 0; row--)
-	{
+	for (row = rows - 1; row >= 0; row--) {
 		pixbuf = bmpRGBA + row * columns * 4;
 
-		for (column = 0; column < columns; column++)
-		{
-			unsigned char  red, green, blue, alpha;
-			int            palIndex;
+		for (column = 0; column < columns; column++) {
+			unsigned char red, green, blue, alpha;
+			int palIndex;
 			unsigned short shortPixel;
 
-			switch (bmpHeader.bitsPerPixel)
-			{
+			switch (bmpHeader.bitsPerPixel) {
 			case 8:
-				palIndex  = *buf_p++;
+				palIndex = *buf_p++;
 				*pixbuf++ = bmpHeader.palette[palIndex][2];
 				*pixbuf++ = bmpHeader.palette[palIndex][1];
 				*pixbuf++ = bmpHeader.palette[palIndex][0];
@@ -228,27 +212,27 @@ void R_LoadBMP(const char *name, byte **pic, int *width, int *height, byte alpha
 				break;
 			case 16:
 				shortPixel = *( unsigned short * ) pixbuf;
-				pixbuf    += 2;
-				*pixbuf++  = (shortPixel & (31 << 10)) >> 7;
-				*pixbuf++  = (shortPixel & (31 << 5)) >> 2;
-				*pixbuf++  = (shortPixel & (31)) << 3;
-				*pixbuf++  = 0xff;
+				pixbuf += 2;
+				*pixbuf++ = (shortPixel & (31 << 10)) >> 7;
+				*pixbuf++ = (shortPixel & (31 << 5)) >> 2;
+				*pixbuf++ = (shortPixel & (31)) << 3;
+				*pixbuf++ = 0xff;
 				break;
 
 			case 24:
-				blue      = *buf_p++;
-				green     = *buf_p++;
-				red       = *buf_p++;
+				blue = *buf_p++;
+				green = *buf_p++;
+				red = *buf_p++;
 				*pixbuf++ = red;
 				*pixbuf++ = green;
 				*pixbuf++ = blue;
 				*pixbuf++ = 255;
 				break;
 			case 32:
-				blue      = *buf_p++;
-				green     = *buf_p++;
-				red       = *buf_p++;
-				alpha     = *buf_p++;
+				blue = *buf_p++;
+				green = *buf_p++;
+				red = *buf_p++;
+				alpha = *buf_p++;
 				*pixbuf++ = red;
 				*pixbuf++ = green;
 				*pixbuf++ = blue;

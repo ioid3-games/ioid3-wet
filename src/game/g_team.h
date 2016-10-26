@@ -50,7 +50,7 @@
 #define WOLF_SP_RECOVER         2      // recovering enemy - held spawnpoint
 #define WOLF_CP_PROTECT_BONUS   3      // protect a capture point by shooting target near it
 #define WOLF_SP_PROTECT_BONUS   1      // protect a spawnpoint
-#define WOLF_FRIENDLY_PENALTY   - 3     // penalty for fragging teammate
+#define WOLF_FRIENDLY_PENALTY - 3     // penalty for fragging teammate
 #define WOLF_FRAG_BONUS         1      // score for fragging enemy soldier
 #define WOLF_DYNAMITE_PLANT     5      // planted dynamite at objective
 #define WOLF_DYNAMITE_DIFFUSE   5      // diffused dynamite at objective

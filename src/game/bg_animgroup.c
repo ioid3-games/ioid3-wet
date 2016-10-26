@@ -143,8 +143,8 @@ static qboolean BG_RAG_ParseAnimation(int handle, animation_t *animation) {
 	}
 	// calculate the duration
 	animation->duration = animation->initialLerp
-	                 + animation->frameLerp * animation->numFrames
-	                 + animation->animBlend;
+	 + animation->frameLerp * animation->numFrames
+	 + animation->animBlend;
 	// get the nameHash
 	animation->nameHash = BG_StringHashValue(animation->name);
 	// hacky - ish stuff

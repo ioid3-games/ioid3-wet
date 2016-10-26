@@ -53,25 +53,25 @@
 #define MAX_AUDIO_PRELOAD 500  // in ms
 
 typedef struct {
-	ogg_sync_state oy;          /* sync and verify incoming physical bitstream */
+	ogg_sync_state oy; /* sync and verify incoming physical bitstream */
 	ogg_stream_state os_audio;
 	ogg_stream_state os_video;
 
-	vorbis_dsp_state vd;        /* central working state for the packet->PCM decoder */
-	vorbis_info vi;             /* struct that stores all the static vorbis bitstream settings */
-	vorbis_comment vc;          /* struct that stores all the bitstream user comments */
+	vorbis_dsp_state vd; /* central working state for the packet->PCM decoder */
+	vorbis_info vi; /* struct that stores all the static vorbis bitstream settings */
+	vorbis_comment vc; /* struct that stores all the bitstream user comments */
 
-	theora_info th_info;       // dump_video.c(example decoder): ti
+	theora_info th_info; // dump_video.c(example decoder): ti
 	theora_comment th_comment; // dump_video.c(example decoder): tc
-	theora_state th_state;     // dump_video.c(example decoder): td
+	theora_state th_state; // dump_video.c(example decoder): td
 
 	yuv_buffer th_yuvbuffer;
 
-	ogg_int64_t VFrameCount;       // output video - stream
+	ogg_int64_t VFrameCount; // output video - stream
 	ogg_int64_t Vtime_unit;
-	int currentTime;               // input from Run - function
+	int currentTime; // input from Run - function
 
-	byte audioBuffer[SIZEOF_RAWBUFF];           // audio buffer
+	byte audioBuffer[SIZEOF_RAWBUFF]; // audio buffer
 } cin_ogv_t;
 
 #define g_ogm((cin_ogv_t *)cin->data)
@@ -209,8 +209,8 @@ static int OGV_FindSizeShift(int x, int y) {
         if (x == (y >> i))
         {
             return i;
-      }
-  }
+    }
+}
 
     return -1;
 }
@@ -227,7 +227,7 @@ static qboolean OGV_CheckFrame(yuv_buffer *yuv, theora_info *info) {
     if (yWShift < 0 || uvWShift < 0 || yHShift < 0 || uvHShift < 0) {
         Com_Error(ERR_DROP, "Theora unexpected resolution in a yuv - Frame\n");
         return qfalse;
-  }
+}
 
     return qtrue;
 }
@@ -413,7 +413,7 @@ qboolean OGV_StartRead(cinematic_t *cin) {
 	cin->data = Com_Allocate(sizeof(cin_ogv_t));
 	Com_Memset(cin->data, 0, sizeof(cin_ogv_t));
 
-	ogg_sync_init(&g_ogm->oy);  /* Now we can read pages */
+	ogg_sync_init(&g_ogm->oy); /* Now we can read pages */
 
 	// FIXME? can serialno be 0 in ogg? (better way to check inited?)
 	// TODO: support for more than one audio stream? / detect files with one stream(or without correct ones)
@@ -528,7 +528,7 @@ void OGV_StopVideo(cinematic_t *cin) {
 
 		vorbis_dsp_clear(&g_ogm->vd);
 		vorbis_comment_clear(&g_ogm->vc);
-		vorbis_info_clear(&g_ogm->vi);  /* must be called last(comment from vorbis example code) */
+		vorbis_info_clear(&g_ogm->vi); /* must be called last(comment from vorbis example code) */
 
 		ogg_stream_clear(&g_ogm->os_audio);
 		ogg_stream_clear(&g_ogm->os_video);

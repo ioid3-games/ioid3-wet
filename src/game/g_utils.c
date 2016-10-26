@@ -517,18 +517,18 @@ void G_UseTargets(gentity_t *ent, gentity_t *activator) {
 			if (t->use) {
 				// G_Printf("ent->classname %s ent->targetname %s t->targetname %s t->s.number %d\n", ent->classname, ent->targetname, t->targetname, t->s.number);
 
-				t->flags |= (ent->flags & FL_KICKACTIVATE);  // If 'ent' was kicked to activate, pass this along to it's targets.
+				t->flags |= (ent->flags & FL_KICKACTIVATE); // If 'ent' was kicked to activate, pass this along to it's targets.
 				                                             // 		It may become handy to put a "KICKABLE" flag in ents so that it knows whether to pass this along or not
 				                                             // 		Right now, the only situation where it would be weird would be an invisible_user that is a 'button' near
 				                                             // 		a rotating door that it triggers. Kick the switch and the door next to it flies open.
 
-				t->flags |= (ent->flags & FL_SOFTACTIVATE);  // likewise for soft activation
+				t->flags |= (ent->flags & FL_SOFTACTIVATE); // likewise for soft activation
 
 				if (activator && ((Q_stricmp(t->classname, "func_door") == 0) || (Q_stricmp(t->classname, "func_door_rotating") == 0)
 			)
 			) {
 					// check door usage rules before allowing any entity to trigger a door open
-					G_TryDoor(t, ent, activator);        // (door, other, activator)
+					G_TryDoor(t, ent, activator); // (door, other, activator)
 				} else {
 					G_UseEntity(t, ent, activator);
 				}
@@ -688,7 +688,7 @@ void G_FreeEntity(gentity_t *ed) {
 		ed->free(ed);
 	}
 
-	trap_UnlinkEntity(ed);      // unlink from world
+	trap_UnlinkEntity(ed); // unlink from world
 
 	if (ed->neverFree) {
 		return;
@@ -748,7 +748,7 @@ gentity_t *G_TempEntity(vec3_t origin, int event) {
 	e->freeAfterEvent = qtrue;
 
 	VectorCopy(origin, snapped);
-	SnapVector(snapped);       // save network bandwidth
+	SnapVector(snapped); // save network bandwidth
 	G_SetOrigin(e, snapped);
 	// find cluster for PVS
 	trap_LinkEntity(e);

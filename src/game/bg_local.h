@@ -55,7 +55,6 @@ typedef struct {
 	qboolean groundPlane;
 	trace_t groundTrace;
 	float impactSpeed;
-
 	vec3_t previous_origin;
 	vec3_t previous_velocity;
 	int previous_waterlevel;

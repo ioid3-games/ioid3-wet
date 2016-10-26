@@ -341,9 +341,9 @@ void PC_PrintDefine(define_t *define) {
     printf("define->flags = %d\n", define->flags);
     printf("define->builtin = %d\n", define->builtin);
     printf("define->numparms = %d\n", define->numparms);
-   // token_t *parms;                // define parameters
-   // token_t *tokens;                   // macro tokens(possibly containing parm tokens)
-   // struct define_s *next;         // next defined macro in a list
+   // token_t *parms; // define parameters
+   // token_t *tokens; // macro tokens(possibly containing parm tokens)
+   // struct define_s *next; // next defined macro in a list
 }
 */
 #if DEFINEHASHING
@@ -358,9 +358,9 @@ void PC_PrintDefineHashTable(define_t **definehash) {
         for (d = definehash[i]; d; d = d->hashnext)
         {
             Com_Printf(" %s", d->name);
-      }
+    }
         Com_Printf("\n");
-  }
+}
 }
 */
 
@@ -464,7 +464,7 @@ void PC_AddBuiltinDefines(source_t *source) {
 		{"__LINE__", BUILTIN_LINE},
 	{"__FILE__", BUILTIN_FILE},
 	{"__DATE__", BUILTIN_DATE},
-	{"__TIME__", BUILTIN_TIME}, // {  "__STDC__", BUILTIN_STDC}, {NULL, 0          }
+	{"__TIME__", BUILTIN_TIME}, // { "__STDC__", BUILTIN_STDC}, {NULL, 0        }
 	};
 
 	for (i = 0; builtin[i].string; i++) {
@@ -1350,20 +1350,20 @@ int PC_OperatorPriority(int op) {
 #define MAX_VALUES      64
 #define MAX_OPERATORS   64
 #define AllocValue(val)                               \
-	if (numvalues >= MAX_VALUES) {                     \
-		SourceError(source, "out of value space\n");      \
-		error = 1;                                      \
-		break;                                          \
+	if (numvalues >= MAX_VALUES) {                    \
+		SourceError(source, "out of value space\n"); \
+		error = 1; \
+		break; \
 	}                                                   \
 	else {\
 		val = &value_heap[numvalues++];}
 #define FreeValue(val)
 
 #define AllocOperator(op)                             \
-	if (numoperators >= MAX_OPERATORS) {               \
-		SourceError(source, "out of operator space\n");   \
-		error = 1;                                      \
-		break;                                          \
+	if (numoperators >= MAX_OPERATORS) {              \
+		SourceError(source, "out of operator space\n"); \
+		error = 1; \
+		break; \
 	}                                                   \
 	else {\
 		op = &operator_heap[numoperators++];}
@@ -2271,20 +2271,20 @@ int PC_Directive_evalfloat (source_t *source) {
 }
 
 directive_t directives[20] = {
-	{"if", PC_Directive_if      },
-	{"ifdef", PC_Directive_ifdef   },
-	{"ifndef", PC_Directive_ifndef  },
-	{"elif", PC_Directive_elif    },
-	{"else", PC_Directive_else    },
-	{"endif", PC_Directive_endif   },
-	{"include", PC_Directive_include },
-	{"define", PC_Directive_define  },
-	{"undef", PC_Directive_undef   },
-	{"line", PC_Directive_line    },
-	{"error", PC_Directive_error   },
-	{"pragma", PC_Directive_pragma  },
-	{"eval", PC_Directive_eval    },
-	{"evalfloat", PC_Directive_evalfloat}, {NULL, NULL                 }
+	{"if", PC_Directive_if    },
+	{"ifdef", PC_Directive_ifdef },
+	{"ifndef", PC_Directive_ifndef},
+	{"elif", PC_Directive_elif  },
+	{"else", PC_Directive_else  },
+	{"endif", PC_Directive_endif },
+	{"include", PC_Directive_include},
+	{"define", PC_Directive_define},
+	{"undef", PC_Directive_undef },
+	{"line", PC_Directive_line  },
+	{"error", PC_Directive_error },
+	{"pragma", PC_Directive_pragma},
+	{"eval", PC_Directive_eval  },
+	{"evalfloat", PC_Directive_evalfloat}, {NULL, NULL               }
 };
 
 int PC_ReadDirective(source_t *source) {
@@ -2373,7 +2373,7 @@ int PC_DollarDirective_evalfloat (source_t *source) {
 
 directive_t dollardirectives[20] = {
 	{"evalint", PC_DollarDirective_evalint},
-	{"evalfloat", PC_DollarDirective_evalfloat}, {NULL, NULL                       }
+	{"evalfloat", PC_DollarDirective_evalfloat}, {NULL, NULL                     }
 };
 
 int PC_ReadDollarDirective(source_t *source) {
@@ -2656,7 +2656,7 @@ void PC_SetIncludePath(source_t *source, char *path) {
     if (len > 0 && source->includepath[len - 1] != '\\' &&
         source->includepath[len - 1] != '/') {
         strcat(source->includepath, va("%c", PATH_SEP));
-  }
+}
 }
  */
 

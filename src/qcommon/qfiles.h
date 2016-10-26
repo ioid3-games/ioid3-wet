@@ -59,8 +59,8 @@ typedef struct {
 	int codeLength;
 	int dataOffset;
 	int dataLength;
-	int litLength;             // (dataLength - litLength) should be byteswapped on load
-	int bssLength;             // zero filled memory appended to datalength
+	int litLength; // (dataLength - litLength) should be byteswapped on load
+	int bssLength; // zero filled memory appended to datalength
 } vmHeader_t;
 
 /*
@@ -92,7 +92,7 @@ typedef struct md3Frame_s {
 } md3Frame_t;
 
 typedef struct md3Tag_s {
-	char name[MAX_QPATH];          // tag name
+	char name[MAX_QPATH]; // tag name
 	vec3_t origin;
 	vec3_t axis[3];
 } md3Tag_t;
@@ -110,22 +110,22 @@ typedef struct md3Tag_s {
 typedef struct {
 	int ident;
 
-	char name[MAX_QPATH];      // polyset name
+	char name[MAX_QPATH]; // polyset name
 	int flags;
-	int numFrames;             // all surfaces in a model should have the same
-	int numShaders;            // all surfaces in a model should have the same
+	int numFrames; // all surfaces in a model should have the same
+	int numShaders; // all surfaces in a model should have the same
 	int numVerts;
 	int numTriangles;
 	int ofsTriangles;
-	int ofsShaders;            // offset from start of md3Surface_t
-	int ofsSt;                 // texture coords are common for all frames
-	int ofsXyzNormals;         // numVerts * numFrames
-	int ofsEnd;                // next surface follows
+	int ofsShaders; // offset from start of md3Surface_t
+	int ofsSt; // texture coords are common for all frames
+	int ofsXyzNormals; // numVerts * numFrames
+	int ofsEnd; // next surface follows
 } md3Surface_t;
 
 typedef struct {
 	char name[MAX_QPATH];
-	int shaderIndex;           // for in - game use
+	int shaderIndex; // for in - game use
 } md3Shader_t;
 
 typedef struct {
@@ -145,16 +145,16 @@ typedef struct {
 	int ident;
 	int version;
 
-	char name[MAX_QPATH];      // model name
+	char name[MAX_QPATH]; // model name
 	int flags;
 	int numFrames;
 	int numTags;
 	int numSurfaces;
 	int numSkins;
-	int ofsFrames;             // offset for first frame
-	int ofsTags;               // numFrames * numTags
-	int ofsSurfaces;           // first surface, others follow
-	int ofsEnd;                // end of file
+	int ofsFrames; // offset for first frame
+	int ofsTags; // numFrames * numTags
+	int ofsSurfaces; // first surface, others follow
+	int ofsEnd; // end of file
 } md3Header_t;
 
 /*
@@ -194,11 +194,11 @@ MDC file format
 // 2 - changed tag structure so it only lists the names once
 
 typedef struct {
-	unsigned int ofsVec;                   // offset direction from the last base frame
+	unsigned int ofsVec; // offset direction from the last base frame
 } mdcXyzCompressed_t;
 
 typedef struct {
-	char name[MAX_QPATH];          // tag name
+	char name[MAX_QPATH]; // tag name
 } mdcTagName_t;
 
 #define MDC_TAG_ANGLE_SCALE(360.0 / 32700.0)
@@ -224,38 +224,38 @@ typedef struct {
 typedef struct {
 	int ident;
 
-	char name[MAX_QPATH];      // polyset name
+	char name[MAX_QPATH]; // polyset name
 	int flags;
-	int numCompFrames;         // all surfaces in a model should have the same
-	int numBaseFrames;         // ditto
-	int numShaders;            // all surfaces in a model should have the same
+	int numCompFrames; // all surfaces in a model should have the same
+	int numBaseFrames; // ditto
+	int numShaders; // all surfaces in a model should have the same
 	int numVerts;
 	int numTriangles;
 	int ofsTriangles;
-	int ofsShaders;            // offset from start of md3Surface_t
-	int ofsSt;                 // texture coords are common for all frames
-	int ofsXyzNormals;         // numVerts * numBaseFrames
-	int ofsXyzCompressed;      // numVerts * numCompFrames
-	int ofsFrameBaseFrames;    // numFrames
-	int ofsFrameCompFrames;    // numFrames
-	int ofsEnd;                // next surface follows
+	int ofsShaders; // offset from start of md3Surface_t
+	int ofsSt; // texture coords are common for all frames
+	int ofsXyzNormals; // numVerts * numBaseFrames
+	int ofsXyzCompressed; // numVerts * numCompFrames
+	int ofsFrameBaseFrames; // numFrames
+	int ofsFrameCompFrames; // numFrames
+	int ofsEnd; // next surface follows
 } mdcSurface_t;
 
 typedef struct {
 	int ident;
 	int version;
 
-	char name[MAX_QPATH];      // model name
+	char name[MAX_QPATH]; // model name
 	int flags;
 	int numFrames;
 	int numTags;
 	int numSurfaces;
 	int numSkins;
-	int ofsFrames;             // offset for first frame, stores the bounds and localOrigin
-	int ofsTagNames;           // numTags
-	int ofsTags;               // numFrames * numTags
-	int ofsSurfaces;           // first surface, others follow
-	int ofsEnd;                // end of file
+	int ofsFrames; // offset for first frame, stores the bounds and localOrigin
+	int ofsTagNames; // numTags
+	int ofsTags; // numFrames * numTags
+	int ofsSurfaces; // first surface, others follow
+	int ofsEnd; // end of file
 } mdcHeader_t;
 
 /*
@@ -275,7 +275,7 @@ MDS file format(Wolfenstein Skeletal Format)
 #define MDS_TRANSLATION_SCALE  (1.0 / 64)
 
 typedef struct {
-	int boneIndex;             // these are indexes into the boneReferences, float boneWeight;          // not the global per - frame bone list
+	int boneIndex; // these are indexes into the boneReferences, float boneWeight; // not the global per - frame bone list
 	vec3_t offset;
 } mdsWeight_t;
 
@@ -283,9 +283,9 @@ typedef struct {
 	vec3_t normal;
 	vec2_t texCoords;
 	int numWeights;
-	int fixedParent;           // stay equi - distant from this parent
+	int fixedParent; // stay equi - distant from this parent
 	float fixedDist;
-	mdsWeight_t weights[1];    // variable sized
+	mdsWeight_t weights[1]; // variable sized
 } mdsVertex_t;
 
 typedef struct {
@@ -295,16 +295,16 @@ typedef struct {
 typedef struct {
 	int ident;
 
-	char name[MAX_QPATH];          // polyset name
+	char name[MAX_QPATH]; // polyset name
 	char shader[MAX_QPATH];
-	int shaderIndex;               // for in - game use
+	int shaderIndex; // for in - game use
 	int minLod;
-	int ofsHeader;                 // this will be a negative number
+	int ofsHeader; // this will be a negative number
 	int numVerts;
 	int ofsVerts;
 	int numTriangles;
 	int ofsTriangles;
-	int ofsCollapseMap;            // numVerts * int
+	int ofsCollapseMap; // numVerts * int
 
 	// Bone references are a set of ints representing all the bones
 	// present in any vertex weights for this surface. This is
@@ -313,46 +313,46 @@ typedef struct {
 	// to re - interpolate all the bones for each surface.
 	int numBoneReferences;
 	int ofsBoneReferences;
-	int ofsEnd;                    // next surface follows
+	int ofsEnd; // next surface follows
 } mdsSurface_t;
 
 typedef struct {
-	short angles[4];           // to be converted to axis at run - time(this is also better for lerping)
-	short ofsAngles[2];        // PITCH / YAW, head in this direction from parent to go to the offset position
+	short angles[4]; // to be converted to axis at run - time(this is also better for lerping)
+	short ofsAngles[2]; // PITCH / YAW, head in this direction from parent to go to the offset position
 } mdsBoneFrameCompressed_t;
 
 // NOTE: this only used at run - time
 typedef struct {
-	float matrix[3][3];            // 3x3 rotation
-	vec3_t translation;            // translation vector
+	float matrix[3][3]; // 3x3 rotation
+	vec3_t translation; // translation vector
 } mdsBoneFrame_t;
 
 typedef struct {
-	vec3_t bounds[2];              // bounds of all surfaces of all LOD's for this frame
-	vec3_t localOrigin;            // midpoint of bounds, used for sphere cull
-	float radius;                  // dist from localOrigin to corner
-	vec3_t parentOffset;           // one bone is an ascendant of all other bones, it starts the hierachy at this position
-	mdsBoneFrameCompressed_t bones[1];             // [numBones]
+	vec3_t bounds[2]; // bounds of all surfaces of all LOD's for this frame
+	vec3_t localOrigin; // midpoint of bounds, used for sphere cull
+	float radius; // dist from localOrigin to corner
+	vec3_t parentOffset; // one bone is an ascendant of all other bones, it starts the hierachy at this position
+	mdsBoneFrameCompressed_t bones[1]; // [numBones]
 } mdsFrame_t;
 
 typedef struct {
 	int numSurfaces;
-	int ofsSurfaces;               // first surface, others follow
-	int ofsEnd;                    // next lod follows
+	int ofsSurfaces; // first surface, others follow
+	int ofsEnd; // next lod follows
 } mdsLOD_t;
 
 typedef struct {
-	char name[MAX_QPATH];          // name of tag
+	char name[MAX_QPATH]; // name of tag
 	float torsoWeight;
-	int boneIndex;                 // our index in the bones
+	int boneIndex; // our index in the bones
 } mdsTag_t;
 
 #define BONEFLAG_TAG        1      // this bone is actually a tag
 
 typedef struct {
-	char name[MAX_QPATH];          // name of bone
-	int parent;                    // not sure if this is required, no harm throwing it in
-	float torsoWeight;             // scale torso rotation about torsoParent by this
+	char name[MAX_QPATH]; // name of bone
+	int parent; // not sure if this is required, no harm throwing it in
+	float torsoWeight; // scale torso rotation about torsoParent by this
 	float parentDist;
 	int flags;
 } mdsBoneInfo_t;
@@ -361,21 +361,21 @@ typedef struct {
 	int ident;
 	int version;
 
-	char name[MAX_QPATH];          // model name
+	char name[MAX_QPATH]; // model name
 	float lodScale;
 	float lodBias;
 	// frames and bones are shared by all levels of detail
 	int numFrames;
 	int numBones;
-	int ofsFrames;                 // md4Frame_t[numFrames]
-	int ofsBones;                  // mdsBoneInfo_t[numBones]
-	int torsoParent;               // index of bone that is the parent of the torso
+	int ofsFrames; // md4Frame_t[numFrames]
+	int ofsBones; // mdsBoneInfo_t[numBones]
+	int torsoParent; // index of bone that is the parent of the torso
 	int numSurfaces;
 	int ofsSurfaces;
 	// tag data
 	int numTags;
-	int ofsTags;                   // mdsTag_t[numTags]
-	int ofsEnd;                    // end of file
+	int ofsTags; // mdsTag_t[numTags]
+	int ofsEnd; // end of file
 } mdsHeader_t;
 
 /*
@@ -398,7 +398,7 @@ version history:
 #define MDM_TRANSLATION_SCALE  (1.0 / 64)
 
 typedef struct {
-	int boneIndex;             // these are indexes into the boneReferences, float boneWeight;          // not the global per - frame bone list
+	int boneIndex; // these are indexes into the boneReferences, float boneWeight; // not the global per - frame bone list
 	vec3_t offset;
 } mdmWeight_t;
 
@@ -406,7 +406,7 @@ typedef struct {
 	vec3_t normal;
 	vec2_t texCoords;
 	int numWeights;
-	mdmWeight_t weights[1];    // variable sized
+	mdmWeight_t weights[1]; // variable sized
 } mdmVertex_t;
 
 typedef struct {
@@ -416,16 +416,16 @@ typedef struct {
 typedef struct {
 	int ident;
 
-	char name[MAX_QPATH];          // polyset name
+	char name[MAX_QPATH]; // polyset name
 	char shader[MAX_QPATH];
-	int shaderIndex;               // for in - game use
+	int shaderIndex; // for in - game use
 	int minLod;
-	int ofsHeader;                 // this will be a negative number
+	int ofsHeader; // this will be a negative number
 	int numVerts;
 	int ofsVerts;
 	int numTriangles;
 	int ofsTriangles;
-	int ofsCollapseMap;          // numVerts * int
+	int ofsCollapseMap; // numVerts * int
 
 	// Bone references are a set of ints representing all the bones
 	// present in any vertex weights for this surface. This is
@@ -434,50 +434,50 @@ typedef struct {
 	// to re - interpolate all the bones for each surface.
 	int numBoneReferences;
 	int ofsBoneReferences;
-	int ofsEnd;                    // next surface follows
+	int ofsEnd; // next surface follows
 } mdmSurface_t;
 
 /*typedef struct {
-    vec3_t bounds[2];         // bounds of all surfaces of all LOD's for this frame
-    vec3_t localOrigin;       // midpoint of bounds, used for sphere cull
-    float radius;            // dist from localOrigin to corner
-    vec3_t parentOffset;      // one bone is an ascendant of all other bones, it starts the hierachy at this position
+    vec3_t bounds[2]; // bounds of all surfaces of all LOD's for this frame
+    vec3_t localOrigin; // midpoint of bounds, used for sphere cull
+    float radius; // dist from localOrigin to corner
+    vec3_t parentOffset; // one bone is an ascendant of all other bones, it starts the hierachy at this position
 } mdmFrame_t; */
 
 typedef struct {
 	int numSurfaces;
-	int ofsSurfaces;               // first surface, others follow
-	int ofsEnd;                    // next lod follows
+	int ofsSurfaces; // first surface, others follow
+	int ofsEnd; // next lod follows
 } mdmLOD_t;
 
 /*typedef struct {
-    char name[MAX_QPATH];   // name of tag
+    char name[MAX_QPATH]; // name of tag
     float torsoWeight;
-	int boneIndex;         // our index in the bones
+	int boneIndex; // our index in the bones
 
     int numBoneReferences;
 	int ofsBoneReferences;
 
-    int ofsEnd;            // next tag follows
+    int ofsEnd; // next tag follows
 } mdmTag_t; */
 
 // Tags always only have one parent bone
 typedef struct {
-	char name[MAX_QPATH];          // name of tag
+	char name[MAX_QPATH]; // name of tag
 	vec3_t axis[3];
 	int boneIndex;
 	vec3_t offset;
 	int numBoneReferences;
 	int ofsBoneReferences;
-	int ofsEnd;                    // next tag follows
+	int ofsEnd; // next tag follows
 } mdmTag_t;
 
 typedef struct {
 	int ident;
 	int version;
 
-	char name[MAX_QPATH];          // model name
-	/*  char bonesfile[MAX_QPATH];  // bone file
+	char name[MAX_QPATH]; // model name
+	/*  char bonesfile[MAX_QPATH]; // bone file
 
 	#ifdef UTILS
 	    int skel;
@@ -490,14 +490,14 @@ typedef struct {
 	float lodBias;
 	// frames and bones are shared by all levels of detail
 	/*  int numFrames;
-	    int ofsFrames;         // mdmFrame_t[numFrames]
+	    int ofsFrames; // mdmFrame_t[numFrames]
 	*/
 	int numSurfaces;
 	int ofsSurfaces;
 	// tag data
 	int numTags;
 	int ofsTags;
-	int ofsEnd;                    // end of file
+	int ofsEnd; // end of file
 } mdmHeader_t;
 
 /*
@@ -515,28 +515,28 @@ version history:
 #define MDX_MAX_BONES       128
 
 typedef struct {
-	vec3_t bounds[2];              // bounds of this frame
-	vec3_t localOrigin;            // midpoint of bounds, used for sphere cull
-	float radius;                  // dist from localOrigin to corner
-	vec3_t parentOffset;           // one bone is an ascendant of all other bones, it starts the hierachy at this position
+	vec3_t bounds[2]; // bounds of this frame
+	vec3_t localOrigin; // midpoint of bounds, used for sphere cull
+	float radius; // dist from localOrigin to corner
+	vec3_t parentOffset; // one bone is an ascendant of all other bones, it starts the hierachy at this position
 } mdxFrame_t;
 
 typedef struct {
-	short angles[4];               // to be converted to axis at run - time(this is also better for lerping)
-	short ofsAngles[2];            // PITCH / YAW, head in this direction from parent to go to the offset position
+	short angles[4]; // to be converted to axis at run - time(this is also better for lerping)
+	short ofsAngles[2]; // PITCH / YAW, head in this direction from parent to go to the offset position
 } mdxBoneFrameCompressed_t;
 
 // NOTE: this only used at run - time
 // FIXME: do we really need this?
 typedef struct {
-	float matrix[3][3];            // 3x3 rotation
-	vec3_t translation;            // translation vector
+	float matrix[3][3]; // 3x3 rotation
+	vec3_t translation; // translation vector
 } mdxBoneFrame_t;
 
 typedef struct {
-	char name[MAX_QPATH];          // name of bone
-	int parent;                    // not sure if this is required, no harm throwing it in
-	float torsoWeight;             // scale torso rotation about torsoParent by this
+	char name[MAX_QPATH]; // name of bone
+	int parent; // not sure if this is required, no harm throwing it in
+	float torsoWeight; // scale torso rotation about torsoParent by this
 	float parentDist;
 	int flags;
 } mdxBoneInfo_t;
@@ -545,15 +545,15 @@ typedef struct {
 	int ident;
 	int version;
 
-	char name[MAX_QPATH];          // model name
+	char name[MAX_QPATH]; // model name
 
 	// bones are shared by all levels of detail
 	int numFrames;
 	int numBones;
-	int ofsFrames;                 // (mdxFrame_t + mdxBoneFrameCompressed_t[numBones]) * numframes
-	int ofsBones;                  // mdxBoneInfo_t[numBones]
-	int torsoParent;               // index of bone that is the parent of the torso
-	int ofsEnd;                    // end of file
+	int ofsFrames; // (mdxFrame_t + mdxBoneFrameCompressed_t[numBones]) * numframes
+	int ofsBones; // mdxBoneInfo_t[numBones]
+	int torsoParent; // index of bone that is the parent of the torso
+	int ofsEnd; // end of file
 } mdxHeader_t;
 
 /*
@@ -569,8 +569,8 @@ Actor X - .PSK / .PSA skeletal triangle model file format
 typedef struct {
 	char ident[20];
 	int flags;
-	int dataSize;              // sizeof(struct)
-	int numData;               // number of structs put into this data chunk
+	int dataSize; // sizeof(struct)
+	int numData; // number of structs put into this data chunk
 } axChunkHeader_t;
 
 typedef struct {
@@ -582,7 +582,7 @@ typedef struct {
 	unsigned short unknownA;
 	float st[2];
 	byte materialIndex;
-	byte reserved;                 // we don't care about this one
+	byte reserved; // we don't care about this one
 	unsigned short unknownB;
 } axVertex_t;
 
@@ -595,7 +595,7 @@ typedef struct {
 
 typedef struct {
 	char name[64];
-	int shaderIndex;               // for in - game use
+	int shaderIndex; // for in - game use
 	unsigned int polyFlags;
 	int auxMaterial;
 	unsigned int auxFlags;
@@ -604,8 +604,8 @@ typedef struct {
 } axMaterial_t;
 
 typedef struct {
-	float quat[4];                 // x y z w
-	float position[3];             // x y z
+	float quat[4]; // x y z w
+	float position[3]; // x y z
 	float length;
 	float xSize;
 	float ySize;
@@ -629,7 +629,7 @@ typedef struct {
 typedef struct {
 	char name[64];
 	char group[64];
-	int numBones;                  // same as numChannels
+	int numBones; // same as numChannels
 	int rootInclude;
 	int keyCompressionStyle;
 	int keyQuotum;
@@ -689,8 +689,8 @@ typedef struct {
 #define MAX_VALUE           1024
 
 // the editor uses these predefined yaw angles to orient entities up or down
-#define ANGLE_UP            - 1
-#define ANGLE_DOWN          - 2
+#define ANGLE_UP - 1
+#define ANGLE_DOWN - 2
 
 #define LIGHTMAP_WIDTH      128
 #define LIGHTMAP_HEIGHT     128
@@ -752,15 +752,15 @@ typedef struct {
 
 typedef struct {
 	int planeNum;
-	int children[2];           // negative numbers are - (leafs + 1), not nodes
-	int mins[3];               // for frustom culling
+	int children[2]; // negative numbers are - (leafs + 1), not nodes
+	int mins[3]; // for frustom culling
 	int maxs[3];
 } dnode_t;
 
 typedef struct {
-	int cluster;                   // - 1 = opaque cluster(do I still store these?)
+	int cluster; // - 1 = opaque cluster(do I still store these?)
 	int area;
-	int mins[3];                   // for frustum culling
+	int mins[3]; // for frustum culling
 	int maxs[3];
 	int firstLeafSurface;
 	int numLeafSurfaces;
@@ -769,20 +769,20 @@ typedef struct {
 } dleaf_t;
 
 typedef struct {
-	int planeNum;                  // positive plane side faces out of the leaf
+	int planeNum; // positive plane side faces out of the leaf
 	int shaderNum;
 } dbrushside_t;
 
 typedef struct {
 	int firstSide;
 	int numSides;
-	int shaderNum;             // the shader that determines the contents flags
+	int shaderNum; // the shader that determines the contents flags
 } dbrush_t;
 
 typedef struct {
 	char shader[MAX_QPATH];
 	int brushNum;
-	int visibleSide;           // the brush side that ray tests need to clip against(-1 == none)
+	int visibleSide; // the brush side that ray tests need to clip against(-1 == none)
 } dfog_t;
 
 typedef struct {
@@ -802,17 +802,16 @@ typedef struct {
 	int fogNum;
 	int surfaceType;
 	int firstVert;
-	int numVerts;                  // num verts + foliage origins(for cleaner lighting code in q3map)
+	int numVerts; // num verts + foliage origins(for cleaner lighting code in q3map)
 	int firstIndex;
 	int numIndexes;
 	int lightmapNum;
 	int lightmapX, lightmapY;
 	int lightmapWidth, lightmapHeight;
-
 	vec3_t lightmapOrigin;
-	vec3_t lightmapVecs[3];        // for patches, [0] and [1] are lodbounds
-	int patchWidth;                // num foliage instances
-	int patchHeight;               // num foliage mesh verts
+	vec3_t lightmapVecs[3]; // for patches, [0] and [1] are lodbounds
+	int patchWidth; // num foliage instances
+	int patchHeight; // num foliage mesh verts
 } dsurface_t;
 
 // added so the dsurface_t struct(and thereby the bsp format) isn't changed for something that doesn't need to be stored in the bsp

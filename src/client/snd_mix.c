@@ -153,7 +153,7 @@ void S_TransferStereo16(unsigned long *pbuf, int endtime) {
 		// write a linear blast of samples
 		S_WriteLinearBlastStereo16();
 
-		snd_p    += snd_linear_count;
+		snd_p += snd_linear_count;
 		ls_paintedtime += (snd_linear_count >> 1);
 
 		if (CL_VideoRecording()) {
@@ -349,7 +349,7 @@ static void S_PaintChannelFrom16_altivec(channel_t *ch, const sfx_t *sc, int cou
 					sampleData1 = vec_perm(s0, s1, loadPermute1);
 
 					merge0 = vec_mule(sampleData0, volume_vec);
-					merge0 = vec_sra(merge0, volume_shift);   /* Shift down to proper range */
+					merge0 = vec_sra(merge0, volume_shift); /* Shift down to proper range */
 
 					merge1 = vec_mulo(sampleData0, volume_vec);
 					merge1 = vec_sra(merge1, volume_shift);
@@ -358,7 +358,7 @@ static void S_PaintChannelFrom16_altivec(channel_t *ch, const sfx_t *sc, int cou
 					d1 = vec_add(merge1, d1);
 
 					merge0 = vec_mule(sampleData1, volume_vec);
-					merge0 = vec_sra(merge0, volume_shift);   /* Shift down to proper range */
+					merge0 = vec_sra(merge0, volume_shift); /* Shift down to proper range */
 
 					merge1 = vec_mulo(sampleData1, volume_vec);
 					merge1 = vec_sra(merge1, volume_shift);

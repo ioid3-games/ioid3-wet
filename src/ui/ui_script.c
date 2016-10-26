@@ -499,7 +499,7 @@ void Script_ConditionalScript(itemDef_t *item, qboolean *bAbort, char **args) {
 					Item_RunScript(item, bAbort, script1);
 				} else {
 					if (r_oldMode == r_mode) {
-						trap_Cvar_Set("r_oldMode", "");  // clear it
+						trap_Cvar_Set("r_oldMode", ""); // clear it
 					}
 
 					Item_RunScript(item, bAbort, script2);
@@ -653,7 +653,7 @@ void Script_Play(itemDef_t *item, qboolean *bAbort, char **args) {
 	const char *val = NULL;
 
 	if (String_Parse(args, &val)) {
-		DC->startLocalSound(DC->registerSound(val, qfalse), CHAN_LOCAL_SOUND);         // all sounds are not 3d
+		DC->startLocalSound(DC->registerSound(val, qfalse), CHAN_LOCAL_SOUND); // all sounds are not 3d
 	}
 }
 
@@ -871,7 +871,7 @@ void Script_ToggleCvarBit(itemDef_t *item, qboolean *bAbort, char **args) {
 		DC->getCVarString(cvar, buff, 256);
 		value = atoi(buff);
 		bitvalue = atoi(val);
-		value   ^= bitvalue;
+		value ^= bitvalue;
 		DC->setCVar(cvar, va("%i", value));
 	}
 }
@@ -881,49 +881,49 @@ void Script_Skip(itemDef_t *item, qboolean *bAbort, char **args) {
 }
 
 commandDef_t commandList[] = {
-	{"fadein", &Script_FadeIn           }, // group / name
-	{"fadeout", &Script_FadeOut          }, // group / name
-	{"show", &Script_Show             }, // group / name
-	{"hide", &Script_Hide             }, // group / name
-	{"setcolor", &Script_SetColor         }, // works on this
-	{"open", &Script_Open             }, // menu
-	{"fadeinmenu", &Script_FadeInMenu       }, // menu
-	{"fadeoutmenu", &Script_FadeOutMenu      }, // menu
+	{"fadein", &Script_FadeIn         }, // group / name
+	{"fadeout", &Script_FadeOut        }, // group / name
+	{"show", &Script_Show           }, // group / name
+	{"hide", &Script_Hide           }, // group / name
+	{"setcolor", &Script_SetColor       }, // works on this
+	{"open", &Script_Open           }, // menu
+	{"fadeinmenu", &Script_FadeInMenu     }, // menu
+	{"fadeoutmenu", &Script_FadeOutMenu    }, // menu
 
-	{"conditionalopen", &Script_ConditionalOpen  }, // cvar menu menu
+	{"conditionalopen", &Script_ConditionalOpen}, // cvar menu menu
 	// opens first menu if cvar is true[non-zero], second if false
 	{"conditionalscript", &Script_ConditionalScript}, // as conditonalopen, but then executes scripts
 
-	{"close", &Script_Close            }, // menu
-	{"closeall", &Script_CloseAll         },
+	{"close", &Script_Close          }, // menu
+	{"closeall", &Script_CloseAll       },
 	{"closeallothermenus", &Script_CloseAllOtherMenus},
-	{"setbackground", &Script_SetBackground    }, // works on this
-	{"setitemcolor", &Script_SetItemColor     }, // group / name
-	{"setmenuitemcolor", &Script_SetMenuItemColor }, // group / name
-	{"setteamcolor", &Script_SetTeamColor     }, // sets this background color to team color
-	{"setfocus", &Script_SetFocus         }, // sets this background color to team color
-	{"clearfocus", &Script_ClearFocus       },
-	{"setplayermodel", &Script_SetPlayerModel   }, // sets this background color to team color
-	{"setplayerhead", &Script_SetPlayerHead    }, // sets this background color to team color
-	{"transition", &Script_Transition       }, // group / name
-	{"setcvar", &Script_SetCvar          }, // group / name
-	{"clearcvar", &Script_ClearCvar        },
-	{"copycvar", &Script_CopyCvar         },
-	{"exec", &Script_Exec             }, // group / name
-	{"execnow", &Script_ExecNOW          }, // group / name
-	{"play", &Script_Play             }, // group / name
-	{"playlooped", &Script_playLooped       }, // group / name
-	{"orbit", &Script_Orbit            }, // group / name
-	{"addlistitem", &Script_AddListItem      }, // special command to add text items to list box
-	{"checkautoupdate", &Script_CheckAutoUpdate  },
-	{"getautoupdate", &Script_GetAutoUpdate    },
-	{"setmenufocus", &Script_SetMenuFocus     }, // focus menu
-	{"execwolfconfig", &Script_ExecWolfConfig   }, // executes etconfig.cfg
-	{"setEditFocus", &Script_SetEditFocus     },
-	{"abort", &Script_Abort            },
-	{"getclipboard", &Script_GetClipboard     },
-	{"togglecvarbit", &Script_ToggleCvarBit    },
-	{"none", &Script_Skip             }, // skip execution(used as a placeholder)
+	{"setbackground", &Script_SetBackground  }, // works on this
+	{"setitemcolor", &Script_SetItemColor   }, // group / name
+	{"setmenuitemcolor", &Script_SetMenuItemColor}, // group / name
+	{"setteamcolor", &Script_SetTeamColor   }, // sets this background color to team color
+	{"setfocus", &Script_SetFocus       }, // sets this background color to team color
+	{"clearfocus", &Script_ClearFocus     },
+	{"setplayermodel", &Script_SetPlayerModel }, // sets this background color to team color
+	{"setplayerhead", &Script_SetPlayerHead  }, // sets this background color to team color
+	{"transition", &Script_Transition     }, // group / name
+	{"setcvar", &Script_SetCvar        }, // group / name
+	{"clearcvar", &Script_ClearCvar      },
+	{"copycvar", &Script_CopyCvar       },
+	{"exec", &Script_Exec           }, // group / name
+	{"execnow", &Script_ExecNOW        }, // group / name
+	{"play", &Script_Play           }, // group / name
+	{"playlooped", &Script_playLooped     }, // group / name
+	{"orbit", &Script_Orbit          }, // group / name
+	{"addlistitem", &Script_AddListItem    }, // special command to add text items to list box
+	{"checkautoupdate", &Script_CheckAutoUpdate},
+	{"getautoupdate", &Script_GetAutoUpdate  },
+	{"setmenufocus", &Script_SetMenuFocus   }, // focus menu
+	{"execwolfconfig", &Script_ExecWolfConfig }, // executes etconfig.cfg
+	{"setEditFocus", &Script_SetEditFocus   },
+	{"abort", &Script_Abort          },
+	{"getclipboard", &Script_GetClipboard   },
+	{"togglecvarbit", &Script_ToggleCvarBit  },
+	{"none", &Script_Skip           }, // skip execution(used as a placeholder)
 };
 
 int scriptCommandCount = sizeof(commandList) / sizeof(commandDef_t);
@@ -945,7 +945,7 @@ void Item_RunScript(itemDef_t *item, qboolean *bAbort, const char *s) {
 
 		while (1) {
 			const char *command = NULL;
-			// expect command then arguments, ; ends command, NULL ends script
+			// expect command then arguments,; ends command, NULL ends script
 			if (!String_Parse(&p, &command)) {
 				return;
 			}

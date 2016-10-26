@@ -34,6 +34,6 @@
 int32_t puff(uint8_t *dest, /* pointer to destination pointer */
              uint32_t *destlen, /* amount of output space */
              uint8_t *source, /* pointer to source data pointer */
-             uint32_t *sourcelen);  /* amount of input available */
+             uint32_t *sourcelen); /* amount of input available */
 
 #endif //#ifndef INCLUDE_PUFF_H

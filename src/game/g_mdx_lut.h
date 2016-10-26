@@ -65,7 +65,7 @@ static const float sintable[4096] = {
 // 	for (i = 0; i <= 4095; i++) {
 // 		printf("/*%4d*/ %.32e, \n", i, sintable[i]);
 // 	}
-// }
+//}
 
 	/*
 	The output of the program was then captured and pasted into place below

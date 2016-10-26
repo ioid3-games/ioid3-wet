@@ -147,17 +147,17 @@ static void S_AL_ClearError(qboolean quiet) {
 
 typedef struct alSfx_s {
 	char filename[MAX_QPATH];
-	ALuint buffer;                     // OpenAL buffer
-	snd_info_t info;                   // information for this sound like rate, sample count..
+	ALuint buffer; // OpenAL buffer
+	snd_info_t info; // information for this sound like rate, sample count..
 
-	qboolean isDefault;                // Couldn't be loaded - use default FX
-	qboolean isDefaultChecked;         // Sound has been check if it isDefault
-	qboolean inMemory;                 // Sound is stored in memory
-	qboolean isLocked;                 // Sound is locked(can not be unloaded)
-	int lastUsedTime;                  // Time last used
-	int loopCnt;                       // number of loops using this sfx
-	int loopActiveCnt;                 // number of playing loops using this sfx
-	int masterLoopSrc;                 // All other sources looping this buffer are synced to this master src
+	qboolean isDefault; // Couldn't be loaded - use default FX
+	qboolean isDefaultChecked; // Sound has been check if it isDefault
+	qboolean inMemory; // Sound is stored in memory
+	qboolean isLocked; // Sound is locked(can not be unloaded)
+	int lastUsedTime; // Time last used
+	int loopCnt; // number of loops using this sfx
+	int loopActiveCnt; // number of playing loops using this sfx
+	int masterLoopSrc; // All other sources looping this buffer are synced to this master src
 } alSfx_t;
 static qboolean alBuffersInitialised = qfalse;
 
@@ -578,25 +578,25 @@ static ALuint S_AL_BufferGet(sfxHandle_t sfx) {
 }
 
 typedef struct src_s {
-	ALuint alSource;           // OpenAL source object
-	sfxHandle_t sfx;           // Sound effect in use
-	int lastUsedTime;          // Last time used
-	alSrcPriority_t priority;  // Priority
-	int entity;                // Owning entity (-1 if none)
-	int channel;               // Associated channel (-1 if none)
+	ALuint alSource; // OpenAL source object
+	sfxHandle_t sfx; // Sound effect in use
+	int lastUsedTime; // Last time used
+	alSrcPriority_t priority; // Priority
+	int entity; // Owning entity (-1 if none)
+	int channel; // Associated channel (-1 if none)
 
-	qboolean isActive;         // Is this source currently in use?
-	qboolean isPlaying;        // Is this source currently playing, or stopped?
-	qboolean isLocked;         // This is locked (un-allocatable)
-	qboolean isLooping;        // Is this a looping effect(attached to an entity)
-	qboolean isTracking;       // Is this object tracking its owner
-	float curGain;             // gain employed if source is within maxdistance.
-	float scaleGain;           // Last gain value for this source. 0 if muted.
-	float lastTimePos;         // On stopped loops, the last position in the buffer
-	int lastSampleTime;        // Time when this was stopped
-	vec3_t loopSpeakerPos;     // Origin of the loop speaker
+	qboolean isActive; // Is this source currently in use?
+	qboolean isPlaying; // Is this source currently playing, or stopped?
+	qboolean isLocked; // This is locked (un-allocatable)
+	qboolean isLooping; // Is this a looping effect(attached to an entity)
+	qboolean isTracking; // Is this object tracking its owner
+	float curGain; // gain employed if source is within maxdistance.
+	float scaleGain; // Last gain value for this source. 0 if muted.
+	float lastTimePos; // On stopped loops, the last position in the buffer
+	int lastSampleTime; // Time when this was stopped
+	vec3_t loopSpeakerPos; // Origin of the loop speaker
 
-	qboolean local;            // Is this local (relative to the cam)
+	qboolean local; // Is this local (relative to the cam)
 } src_t;
 #ifdef __APPLE__
 #define MAX_SRC 64
@@ -611,7 +611,7 @@ static vec3_t lastListenerOrigin = {0.0f, 0.0f, 0.0f};
 
 typedef struct sentity_s {
 	vec3_t origin;
-	qboolean srcAllocated;                       // If a src_t has been allocated to this entity
+	qboolean srcAllocated; // If a src_t has been allocated to this entity
 	int srcIndex;
 	int volume;
 	qboolean loopAddedThisFrame;
