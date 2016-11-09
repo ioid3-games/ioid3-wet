@@ -241,10 +241,10 @@ struct gentity_s {
 	struct gclient_s *client; // NULL if not a client
 
 	qboolean inuse;
-	vec3_t instantVelocity; // per entity instantaneous velocity, set per frame
+	vec3_t instantVelocity;         // per entity instantaneous velocity, set per frame
 
-	char *classname; // set in QuakeEd
-	int spawnflags; // set in QuakeEd
+	const char *classname;          // set in QuakeEd
+	int spawnflags;                 // set in QuakeEd
 
 	qboolean neverFree; // if true, FreeEntity will only unlink
 	// bodyque uses this

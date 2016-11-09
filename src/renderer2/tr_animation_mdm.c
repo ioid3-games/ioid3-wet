@@ -55,48 +55,50 @@ frame.
 
 static float frontlerp, backlerp;
 static float torsoFrontlerp, torsoBacklerp;
-//static int *boneRefs; // unused
-static mdxBoneFrame_t bones[MDX_MAX_BONES], rawBones[MDX_MAX_BONES], oldBones[MDX_MAX_BONES];
-static char validBones[MDX_MAX_BONES];
-static char newBones[MDX_MAX_BONES];
-static mdxBoneFrame_t *bonePtr, *bone, *parentBone;
+//static int                      *boneRefs; // unused
+static mdxBoneFrame_t           bones[MDX_MAX_BONES], rawBones[MDX_MAX_BONES], oldBones[MDX_MAX_BONES];
+static char                     validBones[MDX_MAX_BONES];
+static char                     newBones[MDX_MAX_BONES];
+static mdxBoneFrame_t           *bonePtr, *bone, *parentBone;
 static mdxBoneFrameCompressed_t *cBonePtr, *cTBonePtr, *cOldBonePtr, *cOldTBonePtr, *cBoneList, *cOldBoneList, *cBoneListTorso,
 *cOldBoneListTorso;
 static mdxBoneInfo_t *boneInfo, *thisBoneInfo, *parentBoneInfo;
-static mdxFrame_t *frame, *torsoFrame;
-static mdxFrame_t *oldFrame, *oldTorsoFrame;
-static int frameSize;
+static mdxFrame_t    *frame, *torsoFrame;
+static mdxFrame_t    *oldFrame, *oldTorsoFrame;
+static int           frameSize;
 static short         *sh, *sh2;
-static float *pf;
-static int ingles[3], tingles[3];
-static vec3_t angles, tangles, torsoParentOffset, torsoAxis[3]; //, tmpAxis[3]; // unused
-static vec3_t vec, v2, dir;
-static float diff; //, a1, a2; // unused
-static int render_count;
-static float lodRadius, lodScale;
-static int32_t *pCollapseMap;
-static int32_t collapse[MDM_MAX_VERTS], *pCollapse;
-//static int p0, p1, p2; // unused
+static float         *pf;
+static int           ingles[3], tingles[3];
+static vec3_t        angles, tangles, torsoParentOffset, torsoAxis[3]; //, tmpAxis[3];   // unused
+static vec3_t        vec, v2, dir;
+static float         diff;      //, a1, a2;   // unused
+static int           render_count;
+static float         lodRadius, lodScale;
+static int32_t       *pCollapseMap;
+static int32_t       collapse[MDM_MAX_VERTS], *pCollapse;
+//static int           p0, p1, p2; // unused
 static qboolean    isTorso, fullTorso;
-static vec4_t m1[4], m2[4];
-static vec3_t t;
+static vec4_t      m1[4], m2[4];
+static vec3_t      t;
 static refEntity_t lastBoneEntity;
 
 static int totalrv, totalrt, totalv, totalt;
 
 //-----------------------------------------------------------------------------
 
-static float RB_ProjectRadius(float r, vec3_t location) {
-	float pr;
-	float dist;
-	float c;
+static float RB_ProjectRadius(float r, vec3_t location)
+{
+	float  pr;
+	float  dist;
+	float  c;
 	vec3_t p;
-	float projected[4];
+	float  projected[4];
 
-	c = DotProduct(backEnd.viewParms.orientation.axis[0], backEnd.viewParms.orientation.origin);
+	c    = DotProduct(backEnd.viewParms.orientation.axis[0], backEnd.viewParms.orientation.origin);
 	dist = DotProduct(backEnd.viewParms.orientation.axis[0], location) - c;
 
-	if (dist <= 0) {
+	if (dist <= 0)
+	{
 		return 0;
 	}
 
@@ -118,26 +120,30 @@ static float RB_ProjectRadius(float r, vec3_t location) {
 
 	pr = projected[1] / projected[3];
 
-	if (pr > 1.0f) {
+	if (pr > 1.0f)
+	{
 		pr = 1.0f;
 	}
 
 	return pr;
 }
 
-static int R_CullModel(trRefEntity_t *ent) {
+static int R_CullModel(trRefEntity_t *ent)
+{
 	mdxHeader_t *oldFrameHeader, *newFrameHeader;
-	mdxFrame_t *oldFrame, *newFrame;
-	int i;
-	vec3_t v;
-	vec3_t transformed;
+	mdxFrame_t  *oldFrame, *newFrame;
+	int         i;
+	vec3_t      v;
+	vec3_t      transformed;
 
 	newFrameHeader = R_GetModelByHandle(ent->e.frameModel)->mdx;
 	oldFrameHeader = R_GetModelByHandle(ent->e.oldframeModel)->mdx;
 
-	if (!newFrameHeader || !oldFrameHeader) {
+	if (!newFrameHeader || !oldFrameHeader)
+	{
 		return CULL_OUT;
 	}
+
 	// compute frame pointers
 	newFrame = (mdxFrame_t *) ((byte *) newFrameHeader + newFrameHeader->ofsFrames +
 	                           ent->e.frame * (int)(sizeof(mdxBoneFrameCompressed_t)) * newFrameHeader->numBones +
@@ -147,14 +153,17 @@ static int R_CullModel(trRefEntity_t *ent) {
 	                           ent->e.oldframe * sizeof(mdxFrame_t));
 
 	// calculate a bounding box in the current coordinate system
-	for (i = 0; i < 3; i++) {
+	for (i = 0; i < 3; i++)
+	{
 		ent->localBounds[0][i] = oldFrame->bounds[0][i] < newFrame->bounds[0][i] ? oldFrame->bounds[0][i] : newFrame->bounds[0][i];
 		ent->localBounds[1][i] = oldFrame->bounds[1][i] > newFrame->bounds[1][i] ? oldFrame->bounds[1][i] : newFrame->bounds[1][i];
 	}
+
 	// setup world bounds for intersection tests
 	ClearBounds(ent->worldBounds[0], ent->worldBounds[1]);
 
-	for (i = 0; i < 8; i++) {
+	for (i = 0; i < 8; i++)
+	{
 		v[0] = ent->localBounds[i & 1][0];
 		v[1] = ent->localBounds[(i >> 1) & 1][1];
 		v[2] = ent->localBounds[(i >> 2) & 1][2];
@@ -164,10 +173,14 @@ static int R_CullModel(trRefEntity_t *ent) {
 
 		AddPointToBounds(transformed, ent->worldBounds[0], ent->worldBounds[1]);
 	}
+
 	// cull bounding sphere ONLY if this is not an upscaled entity
-	if (!ent->e.nonNormalizedAxes) {
-		if (ent->e.frame == ent->e.oldframe && ent->e.frameModel == ent->e.oldframeModel) {
-			switch (R_CullLocalPointAndRadius(newFrame->localOrigin, newFrame->radius)) {
+	if (!ent->e.nonNormalizedAxes)
+	{
+		if (ent->e.frame == ent->e.oldframe && ent->e.frameModel == ent->e.oldframeModel)
+		{
+			switch (R_CullLocalPointAndRadius(newFrame->localOrigin, newFrame->radius))
+			{
 			case CULL_OUT:
 				tr.pc.c_sphere_cull_mdx_out++;
 				return CULL_OUT;
@@ -178,32 +191,43 @@ static int R_CullModel(trRefEntity_t *ent) {
 				tr.pc.c_sphere_cull_mdx_clip++;
 				break;
 			}
-		} else {
+		}
+		else
+		{
 			int sphereCull, sphereCullB;
 
 			sphereCull = R_CullLocalPointAndRadius(newFrame->localOrigin, newFrame->radius);
-
-			if (newFrame == oldFrame) {
+			if (newFrame == oldFrame)
+			{
 				sphereCullB = sphereCull;
-			} else {
+			}
+			else
+			{
 				sphereCullB = R_CullLocalPointAndRadius(oldFrame->localOrigin, oldFrame->radius);
 			}
 
-			if (sphereCull == sphereCullB) {
-				if (sphereCull == CULL_OUT) {
+			if (sphereCull == sphereCullB)
+			{
+				if (sphereCull == CULL_OUT)
+				{
 					tr.pc.c_sphere_cull_mdx_out++;
 					return CULL_OUT;
-				} else if (sphereCull == CULL_IN) {
+				}
+				else if (sphereCull == CULL_IN)
+				{
 					tr.pc.c_sphere_cull_mdx_in++;
 					return CULL_IN;
-				} else {
+				}
+				else
+				{
 					tr.pc.c_sphere_cull_mdx_clip++;
 				}
 			}
 		}
 	}
 
-	switch (R_CullLocalBox(ent->localBounds)) {
+	switch (R_CullLocalBox(ent->localBounds))
+	{
 	case CULL_IN:
 		tr.pc.c_box_cull_mdx_in++;
 		return CULL_IN;
@@ -219,44 +243,53 @@ static int R_CullModel(trRefEntity_t *ent) {
 	}
 }
 
-static float RB_CalcMDMLod(refEntity_t *refent, vec3_t origin, float radius, float modelBias, float modelScale) {
+static float RB_CalcMDMLod(refEntity_t *refent, vec3_t origin, float radius, float modelBias, float modelScale)
+{
 	float flod;
 	float projectedRadius;
 
 	// compute projected bounding sphere and use that as a criteria for selecting LOD
 
 	projectedRadius = RB_ProjectRadius(radius, origin);
-
-	if (projectedRadius != 0) {
+	if (projectedRadius != 0)
+	{
 		//ri.Printf (PRINT_ALL, "projected radius: %f\n", projectedRadius);
 		flod = projectedRadius * r_lodScale->value * modelScale;
-	} else {
+	}
+	else
+	{
 		// object intersects near view plane, e.g. view weapon
 		flod = 1.0f;
 	}
 
-	if (refent->reFlags & REFLAG_FORCE_LOD) {
+	if (refent->reFlags & REFLAG_FORCE_LOD)
+	{
 		flod *= 0.5;
 	}
 	// like reflag_force_lod, but separate for the moment
-	if (refent->reFlags & REFLAG_DEAD_LOD) {
+	if (refent->reFlags & REFLAG_DEAD_LOD)
+	{
 		flod *= 0.8;
 	}
 
 	flod -= 0.25 * (r_lodBias->value) + modelBias;
 
-	if (flod < 0.0) {
+	if (flod < 0.0)
+	{
 		flod = 0.0;
-	} else if (flod > 1.0f) {
+	}
+	else if (flod > 1.0f)
+	{
 		flod = 1.0f;
 	}
 
 	return flod;
 }
 
-static int RB_CalcMDMLodIndex(refEntity_t *ent, vec3_t origin, float radius, float modelBias, float modelScale, mdmSurfaceIntern_t *mdmSurface) {
+static int RB_CalcMDMLodIndex(refEntity_t *ent, vec3_t origin, float radius, float modelBias, float modelScale, mdmSurfaceIntern_t *mdmSurface)
+{
 	float flod;
-	int lod;
+	int   lod;
 
 	flod = RB_CalcMDMLod(ent, origin, radius, modelBias, modelScale);
 
@@ -264,17 +297,22 @@ static int RB_CalcMDMLodIndex(refEntity_t *ent, vec3_t origin, float radius, flo
 
 	// allow dead skeletal bodies to go below minlod (experiment)
 #if 0
-	if (ent->reFlags & REFLAG_DEAD_LOD) {
-		if (flod < 0.35) {
+	if (ent->reFlags & REFLAG_DEAD_LOD)
+	{
+		if (flod < 0.35)
+		{
 			// allow dead to lod down to 35% (even if below surf->minLod) (%35 is arbitrary and probably not good generally.
 			// worked for the blackguard/infantry as a test though)
 			flod = 0.35;
 		}
-	} else {
+	}
+	else
+	{
 		int render_count = ROUND_INT((float)mdmSurface->numVerts * flod);
-
-		if (render_count < mdmSurface->minLod) {
-			if (!(ent->reFlags & REFLAG_DEAD_LOD)) {
+		if (render_count < mdmSurface->minLod)
+		{
+			if (!(ent->reFlags & REFLAG_DEAD_LOD))
+			{
 				flod = (float)mdmSurface->minLod / mdmSurface->numVerts;
 			}
 		}
@@ -282,13 +320,16 @@ static int RB_CalcMDMLodIndex(refEntity_t *ent, vec3_t origin, float radius, flo
 #endif
 
 	//for(lod = 0; lod < MD3_MAX_LODS; lod++)
-	for (lod = MD3_MAX_LODS - 1; lod >= 0; lod--) {
-		if (flod <= mdmLODResolutions[lod]) {
+	for (lod = MD3_MAX_LODS - 1; lod >= 0; lod--)
+	{
+		if (flod <= mdmLODResolutions[lod])
+		{
 			break;
 		}
 	}
 
-	if (lod < 0) {
+	if (lod < 0)
+	{
 		lod = 0;
 	}
 
@@ -296,17 +337,18 @@ static int RB_CalcMDMLodIndex(refEntity_t *ent, vec3_t origin, float radius, flo
 }
 
 /*
-static int R_ComputeFogNum(trRefEntity_t * ent) {
-    int i, j;
-    fog_t *fog;
-    mdxHeader_t *header;
-    mdxFrame_t *mdxFrame;
-    vec3_t localOrigin;
+static int R_ComputeFogNum(trRefEntity_t * ent)
+{
+    int             i, j;
+    fog_t          *fog;
+    mdxHeader_t    *header;
+    mdxFrame_t     *mdxFrame;
+    vec3_t          localOrigin;
 
     if(tr.refdef.rdflags & RDF_NOWORLDMODEL)
     {
         return 0;
-  }
+    }
 
     header = R_GetModelByHandle(ent->e.frameModel)->mdx;
 
@@ -325,30 +367,34 @@ static int R_ComputeFogNum(trRefEntity_t * ent) {
             if(localOrigin[j] - mdxFrame->radius >= fog->bounds[1][j])
             {
                 break;
-          }
+            }
             if(localOrigin[j] + mdxFrame->radius <= fog->bounds[0][j])
             {
                 break;
-          }
-      }
+            }
+        }
         if(j == 3)
         {
             return i;
-      }
-  }
+        }
+    }
 
     return 0;
 }
 */
 
-static shader_t *GetMDMSurfaceShader(const trRefEntity_t *ent, mdmSurfaceIntern_t *mdmSurface) {
+static shader_t *GetMDMSurfaceShader(const trRefEntity_t *ent, mdmSurfaceIntern_t *mdmSurface)
+{
 	shader_t *shader = NULL;
 
-	if (ent->e.customShader) {
+	if (ent->e.customShader)
+	{
 		shader = R_GetShaderByHandle(ent->e.customShader);
-	} else if (ent->e.customSkin > 0 && ent->e.customSkin < tr.numSkins) {
+	}
+	else if (ent->e.customSkin > 0 && ent->e.customSkin < tr.numSkins)
+	{
 		skin_t *skin;
-		int j;
+		int    j;
 
 		skin = R_GetSkinByHandle(ent->e.customSkin);
 
@@ -360,41 +406,48 @@ static shader_t *GetMDMSurfaceShader(const trRefEntity_t *ent, mdmSurfaceIntern_
 
 		// match the surface name to something in the skin file
 		shader = tr.defaultShader;
-
-		for (j = 0; j < skin->numSurfaces; j++) {
+		for (j = 0; j < skin->numSurfaces; j++)
+		{
 			// the names have both been lowercased
-			if (!strcmp(skin->surfaces[j]->name, mdmSurface->name)) {
+			if (!strcmp(skin->surfaces[j]->name, mdmSurface->name))
+			{
 				shader = skin->surfaces[j]->shader;
 				break;
 			}
 		}
 #else
-		if (ent->e.renderfx & RF_BLINK) {
-			char *s = va("%s_b", surface->name); // append '_b' for 'blink'
+		if (ent->e.renderfx & RF_BLINK)
+		{
+			char *s = va("%s_b", surface->name);            // append '_b' for 'blink'
 
 			hash = Com_HashKey(s, strlen(s));
-
-			for (j = 0; j < skin->numSurfaces; j++) {
-				if (hash != skin->surfaces[j]->hash) {
+			for (j = 0; j < skin->numSurfaces; j++)
+			{
+				if (hash != skin->surfaces[j]->hash)
+				{
 					continue;
 				}
-				if (!strcmp(skin->surfaces[j]->name, s)) {
+				if (!strcmp(skin->surfaces[j]->name, s))
+				{
 					shader = skin->surfaces[j]->shader;
 					break;
 				}
 			}
 		}
 
-		if (shader == tr.defaultShader) {
+		if (shader == tr.defaultShader)
+		{
 			// blink reference in skin was not found
 			hash = Com_HashKey(surface->name, sizeof(surface->name));
-
-			for (j = 0; j < skin->numSurfaces; j++) {
+			for (j = 0; j < skin->numSurfaces; j++)
+			{
 				// the names have both been lowercased
-				if (hash != skin->surfaces[j]->hash) {
+				if (hash != skin->surfaces[j]->hash)
+				{
 					continue;
 				}
-				if (!strcmp(skin->surfaces[j]->name, surface->name)) {
+				if (!strcmp(skin->surfaces[j]->name, surface->name))
+				{
 					shader = skin->surfaces[j]->shader;
 					break;
 				}
@@ -402,98 +455,127 @@ static shader_t *GetMDMSurfaceShader(const trRefEntity_t *ent, mdmSurfaceIntern_
 		}
 #endif
 
-		if (shader == tr.defaultShader) {
+		if (shader == tr.defaultShader)
+		{
 			Ren_Developer("GetMDMSurfaceShader WARNING: no shader for surface %s in skin %s\n", mdmSurface->name, skin->name);
-		} else if (shader->defaultShader) {
+		}
+		else if (shader->defaultShader)
+		{
 			Ren_Developer("GetMDMSurfaceShader WARNING: shader %s in skin %s not found\n", shader->name, skin->name);
 		}
-	} else {
+	}
+	else
+	{
 		shader = R_GetShaderByHandle(mdmSurface->shaderIndex);
 	}
 
 	return shader;
 }
 
-void R_MDM_AddAnimSurfaces(trRefEntity_t *ent) {
-	mdmModel_t *mdm = tr.currentModel->mdm;
+void R_MDM_AddAnimSurfaces(trRefEntity_t *ent)
+{
+	mdmModel_t         *mdm = tr.currentModel->mdm;
 	mdmSurfaceIntern_t *mdmSurface;
-	shader_t *shader = 0;
-	int i, fogNum;
+	shader_t           *shader = 0;
+	int                i, fogNum;
 	qboolean           personalModel = qfalse;
 
 	// don't add third_person objects if not in a portal
-	if ((ent->e.renderfx & RF_THIRD_PERSON) && !tr.viewParms.isPortal) {
+	if ((ent->e.renderfx & RF_THIRD_PERSON) && !tr.viewParms.isPortal)
+	{
 		personalModel = qtrue;
 	}
+
 	// cull the entire model if merged bounding box of both frames
 	// is outside the view frustum.
 	ent->cull = (cullResult_t)R_CullModel(ent);
-
-	if (ent->cull == CULL_OUT) {
+	if (ent->cull == CULL_OUT)
+	{
 		return;
 	}
+
 	// set up lighting now that we know we aren't culled
-	if (!personalModel || r_shadows->integer > SHADOWING_BLOB) {
+	if (!personalModel || r_shadows->integer > SHADOWING_BLOB)
+	{
 		R_SetupEntityLighting(&tr.refdef, ent, NULL);
 	}
+
 	// see if we are in a fog volume
 	fogNum = R_FogWorldBox(ent->worldBounds);
 
 	// draw all surfaces
-	if (r_vboModels->integer && mdm->numVBOSurfaces && glConfig2.vboVertexSkinningAvailable) // && ent->e.skeleton.type == SK_ABSOLUTE)) {
-		int i;
+	if (r_vboModels->integer && mdm->numVBOSurfaces && glConfig2.vboVertexSkinningAvailable) // && ent->e.skeleton.type == SK_ABSOLUTE))
+	{
+		int             i;
 		srfVBOMDMMesh_t *vboSurface;
-		shader_t *shader;
+		shader_t        *shader;
 
-		for (i = 0; i < mdm->numVBOSurfaces; i++) {
+		for (i = 0; i < mdm->numVBOSurfaces; i++)
+		{
 			vboSurface = mdm->vboSurfaces[i];
 			mdmSurface = vboSurface->mdmSurface;
 
 			shader = GetMDMSurfaceShader(ent, mdmSurface);
 
 			// don't add third_person objects if not viewing through a portal
-			if (!personalModel) {
+			if (!personalModel)
+			{
 				R_AddDrawSurf((surfaceType_t *)vboSurface, shader, -1, fogNum);
 			}
 		}
-	} else {
-		for (i = 0, mdmSurface = mdm->surfaces; i < mdm->numSurfaces; i++, mdmSurface++) {
+	}
+	else
+	{
+		for (i = 0, mdmSurface = mdm->surfaces; i < mdm->numSurfaces; i++, mdmSurface++)
+		{
 			shader = GetMDMSurfaceShader(ent, mdmSurface);
 
 			// don't add third_person objects if not viewing through a portal
-			if (!personalModel) {
+			if (!personalModel)
+			{
 				R_AddDrawSurf((surfaceType_t *)mdmSurface, shader, -1, fogNum);
 			}
 		}
 	}
 }
 
-void R_AddMDMInteractions(trRefEntity_t *ent, trRefLight_t *light) {
-	int i;
-	mdmModel_t *model = 0;
+void R_AddMDMInteractions(trRefEntity_t *ent, trRefLight_t *light)
+{
+	int                i;
+	mdmModel_t         *model      = 0;
 	mdmSurfaceIntern_t *mdmSurface = 0;
-	shader_t *shader = 0;
+	shader_t           *shader     = 0;
 	qboolean           personalModel;
 	byte               cubeSideBits;
-	interactionType_t iaType = IA_DEFAULT;
+	interactionType_t  iaType = IA_DEFAULT;
 
 	// cull the entire model if merged bounding box of both frames
 	// is outside the view frustum and we don't care about proper shadowing
-	if (ent->cull == CULL_OUT) {
-		if (r_shadows->integer <= SHADOWING_BLOB || light->l.noShadows) {
+	if (ent->cull == CULL_OUT)
+	{
+		if (r_shadows->integer <= SHADOWING_BLOB || light->l.noShadows)
+		{
 			return;
-		} else {
+		}
+		else
+		{
 			iaType = IA_SHADOWONLY;
 		}
 	}
+
 	// avoid drawing of certain objects
 #if defined(USE_REFENTITY_NOSHADOWID)
-	if (light->l.inverseShadows) {
-		if (iaType != IA_LIGHTONLY && (light->l.noShadowID && (light->l.noShadowID != ent->e.noShadowID))) {
+	if (light->l.inverseShadows)
+	{
+		if (iaType != IA_LIGHTONLY && (light->l.noShadowID && (light->l.noShadowID != ent->e.noShadowID)))
+		{
 			return;
 		}
-	} else {
-		if (iaType != IA_LIGHTONLY && (light->l.noShadowID && (light->l.noShadowID == ent->e.noShadowID))) {
+	}
+	else
+	{
+		if (iaType != IA_LIGHTONLY && (light->l.noShadowID && (light->l.noShadowID == ent->e.noShadowID)))
+		{
 			return;
 		}
 	}
@@ -505,13 +587,17 @@ void R_AddMDMInteractions(trRefEntity_t *ent, trRefLight_t *light) {
 	model = tr.currentModel->mdm;
 
 	// do a quick AABB cull
-	if (!BoundsIntersect(light->worldBounds[0], light->worldBounds[1], ent->worldBounds[0], ent->worldBounds[1])) {
+	if (!BoundsIntersect(light->worldBounds[0], light->worldBounds[1], ent->worldBounds[0], ent->worldBounds[1]))
+	{
 		tr.pc.c_dlightSurfacesCulled += model->numSurfaces;
 		return;
 	}
+
 	// do a more expensive and precise light frustum cull
-	if (!r_noLightFrustums->integer) {
-		if (R_CullLightWorldBounds(light, ent->worldBounds) == CULL_OUT) {
+	if (!r_noLightFrustums->integer)
+	{
+		if (R_CullLightWorldBounds(light, ent->worldBounds) == CULL_OUT)
+		{
 			tr.pc.c_dlightSurfacesCulled += model->numSurfaces;
 			return;
 		}
@@ -520,44 +606,53 @@ void R_AddMDMInteractions(trRefEntity_t *ent, trRefLight_t *light) {
 	cubeSideBits = R_CalcLightCubeSideBits(light, ent->worldBounds);
 
 	// generate interactions with all surfaces
-	if (r_vboModels->integer && model->numVBOSurfaces && glConfig2.vboVertexSkinningAvailable) {
-		int i;
+	if (r_vboModels->integer && model->numVBOSurfaces && glConfig2.vboVertexSkinningAvailable)
+	{
+		int             i;
 		srfVBOMDMMesh_t *vboSurface;
-		shader_t *shader;
+		shader_t        *shader;
 
 		// static VBOs are fine for lighting and shadow mapping
-		for (i = 0; i < model->numVBOSurfaces; i++) {
+		for (i = 0; i < model->numVBOSurfaces; i++)
+		{
 			vboSurface = model->vboSurfaces[i];
 			mdmSurface = vboSurface->mdmSurface;
 
 			shader = GetMDMSurfaceShader(ent, mdmSurface);
 
 			// skip all surfaces that don't matter for lighting only pass
-			if (shader->isSky || (!shader->interactLight && shader->noShadows)) {
+			if (shader->isSky || (!shader->interactLight && shader->noShadows))
+			{
 				continue;
 			}
 
 			// we will add shadows even if the main object isn't visible in the view
 
 			// don't add third_person objects if not viewing through a portal
-			if (!personalModel) {
+			if (!personalModel)
+			{
 				R_AddLightInteraction(light, (surfaceType_t *)vboSurface, shader, cubeSideBits, iaType);
 				tr.pc.c_dlightSurfaces++;
 			}
 		}
-	} else {
-		for (i = 0, mdmSurface = model->surfaces; i < model->numSurfaces; i++, mdmSurface++) {
+	}
+	else
+	{
+		for (i = 0, mdmSurface = model->surfaces; i < model->numSurfaces; i++, mdmSurface++)
+		{
 			shader = GetMDMSurfaceShader(ent, mdmSurface);
 
 			// skip all surfaces that don't matter for lighting only pass
-			if (shader->isSky || (!shader->interactLight && shader->noShadows)) {
+			if (shader->isSky || (!shader->interactLight && shader->noShadows))
+			{
 				continue;
 			}
 
 			// we will add shadows even if the main object isn't visible in the view
 
 			// don't add third_person objects if not viewing through a portal
-			if (!personalModel) {
+			if (!personalModel)
+			{
 				R_AddLightInteraction(light, (surfaceType_t *)mdmSurface, shader, cubeSideBits, iaType);
 				tr.pc.c_dlightSurfaces++;
 			}
@@ -565,49 +660,57 @@ void R_AddMDMInteractions(trRefEntity_t *ent, trRefLight_t *light) {
 	}
 }
 
-static ID_INLINE void LocalMatrixTransformVector(vec3_t in, vec3_t mat[3], vec3_t out) {
+static ID_INLINE void LocalMatrixTransformVector(vec3_t in, vec3_t mat[3], vec3_t out)
+{
 	out[0] = in[0] * mat[0][0] + in[1] * mat[0][1] + in[2] * mat[0][2];
 	out[1] = in[0] * mat[1][0] + in[1] * mat[1][1] + in[2] * mat[1][2];
 	out[2] = in[0] * mat[2][0] + in[1] * mat[2][1] + in[2] * mat[2][2];
 }
 
-static ID_INLINE void LocalMatrixTransformVectorTranslate(vec3_t in, vec3_t mat[3], vec3_t tr, vec3_t out) {
+static ID_INLINE void LocalMatrixTransformVectorTranslate(vec3_t in, vec3_t mat[3], vec3_t tr, vec3_t out)
+{
 	out[0] = in[0] * mat[0][0] + in[1] * mat[0][1] + in[2] * mat[0][2] + tr[0];
 	out[1] = in[0] * mat[1][0] + in[1] * mat[1][1] + in[2] * mat[1][2] + tr[1];
 	out[2] = in[0] * mat[2][0] + in[1] * mat[2][1] + in[2] * mat[2][2] + tr[2];
 }
 
-static ID_INLINE void LocalScaledMatrixTransformVector(vec3_t in, float s, vec3_t mat[3], vec3_t out) {
+static ID_INLINE void LocalScaledMatrixTransformVector(vec3_t in, float s, vec3_t mat[3], vec3_t out)
+{
 	out[0] = (1.0f - s) * in[0] + s * (in[0] * mat[0][0] + in[1] * mat[0][1] + in[2] * mat[0][2]);
 	out[1] = (1.0f - s) * in[1] + s * (in[0] * mat[1][0] + in[1] * mat[1][1] + in[2] * mat[1][2]);
 	out[2] = (1.0f - s) * in[2] + s * (in[0] * mat[2][0] + in[1] * mat[2][1] + in[2] * mat[2][2]);
 }
 
-static ID_INLINE void LocalScaledMatrixTransformVectorTranslate(vec3_t in, float s, vec3_t mat[3], vec3_t tr, vec3_t out) {
+static ID_INLINE void LocalScaledMatrixTransformVectorTranslate(vec3_t in, float s, vec3_t mat[3], vec3_t tr, vec3_t out)
+{
 	out[0] = (1.0f - s) * in[0] + s * (in[0] * mat[0][0] + in[1] * mat[0][1] + in[2] * mat[0][2] + tr[0]);
 	out[1] = (1.0f - s) * in[1] + s * (in[0] * mat[1][0] + in[1] * mat[1][1] + in[2] * mat[1][2] + tr[1]);
 	out[2] = (1.0f - s) * in[2] + s * (in[0] * mat[2][0] + in[1] * mat[2][1] + in[2] * mat[2][2] + tr[2]);
 }
 
-static ID_INLINE void LocalScaledMatrixTransformVectorFullTranslate(vec3_t in, float s, vec3_t mat[3], vec3_t tr, vec3_t out) {
+static ID_INLINE void LocalScaledMatrixTransformVectorFullTranslate(vec3_t in, float s, vec3_t mat[3], vec3_t tr, vec3_t out)
+{
 	out[0] = (1.0f - s) * in[0] + s * (in[0] * mat[0][0] + in[1] * mat[0][1] + in[2] * mat[0][2]) + tr[0];
 	out[1] = (1.0f - s) * in[1] + s * (in[0] * mat[1][0] + in[1] * mat[1][1] + in[2] * mat[1][2]) + tr[1];
 	out[2] = (1.0f - s) * in[2] + s * (in[0] * mat[2][0] + in[1] * mat[2][1] + in[2] * mat[2][2]) + tr[2];
 }
 
-static ID_INLINE void LocalAddScaledMatrixTransformVectorFullTranslate(vec3_t in, float s, vec3_t mat[3], vec3_t tr, vec3_t out) {
+static ID_INLINE void LocalAddScaledMatrixTransformVectorFullTranslate(vec3_t in, float s, vec3_t mat[3], vec3_t tr, vec3_t out)
+{
 	out[0] += s * (in[0] * mat[0][0] + in[1] * mat[0][1] + in[2] * mat[0][2]) + tr[0];
 	out[1] += s * (in[0] * mat[1][0] + in[1] * mat[1][1] + in[2] * mat[1][2]) + tr[1];
 	out[2] += s * (in[0] * mat[2][0] + in[1] * mat[2][1] + in[2] * mat[2][2]) + tr[2];
 }
 
-static ID_INLINE void LocalAddScaledMatrixTransformVectorTranslate(vec3_t in, float s, vec3_t mat[3], vec3_t tr, vec3_t out) {
+static ID_INLINE void LocalAddScaledMatrixTransformVectorTranslate(vec3_t in, float s, vec3_t mat[3], vec3_t tr, vec3_t out)
+{
 	out[0] += s * (in[0] * mat[0][0] + in[1] * mat[0][1] + in[2] * mat[0][2] + tr[0]);
 	out[1] += s * (in[0] * mat[1][0] + in[1] * mat[1][1] + in[2] * mat[1][2] + tr[1]);
 	out[2] += s * (in[0] * mat[2][0] + in[1] * mat[2][1] + in[2] * mat[2][2] + tr[2]);
 }
 
-static ID_INLINE void LocalAddScaledMatrixTransformVector(vec3_t in, float s, vec3_t mat[3], vec3_t out) {
+static ID_INLINE void LocalAddScaledMatrixTransformVector(vec3_t in, float s, vec3_t mat[3], vec3_t out)
+{
 	out[0] += s * (in[0] * mat[0][0] + in[1] * mat[0][1] + in[2] * mat[0][2]);
 	out[1] += s * (in[0] * mat[1][0] + in[1] * mat[1][1] + in[2] * mat[1][2]);
 	out[2] += s * (in[0] * mat[2][0] + in[1] * mat[2][1] + in[2] * mat[2][2]);
@@ -616,30 +719,31 @@ static ID_INLINE void LocalAddScaledMatrixTransformVector(vec3_t in, float s, ve
 static float LAVangle;
 static float sp, sy, cp, cy, sr, cr;
 
-static ID_INLINE void LocalAngleVector(vec3_t angles, vec3_t forward) {
+static ID_INLINE void LocalAngleVector(vec3_t angles, vec3_t forward)
+{
 	LAVangle = angles[YAW] * (M_PI * 2 / 360);
-	sy = sin(LAVangle);
-	cy = cos(LAVangle);
+	sy       = sin(LAVangle);
+	cy       = cos(LAVangle);
 	LAVangle = angles[PITCH] * (M_PI * 2 / 360);
-	sp = sin(LAVangle);
-	cp = cos(LAVangle);
+	sp       = sin(LAVangle);
+	cp       = cos(LAVangle);
 
 	forward[0] = cp * cy;
-
 	forward[1] = cp * sy;
-
 	forward[2] = -sp;
 }
 
-static ID_INLINE void LocalVectorMA(vec3_t org, float dist, vec3_t vec, vec3_t out) {
+static ID_INLINE void LocalVectorMA(vec3_t org, float dist, vec3_t vec, vec3_t out)
+{
 	out[0] = org[0] + dist * vec[0];
 	out[1] = org[1] + dist * vec[1];
 	out[2] = org[2] + dist * vec[2];
 }
 
-#define ANGLES_SHORT_TO_FLOAT(pf, sh)     {*(pf++) = SHORT2ANGLE(*(sh++)); *(pf++) = SHORT2ANGLE(*(sh++)); *(pf++) = SHORT2ANGLE(*(sh++));}
+#define ANGLES_SHORT_TO_FLOAT(pf, sh)     { *(pf++) = SHORT2ANGLE(*(sh++)); *(pf++) = SHORT2ANGLE(*(sh++)); *(pf++) = SHORT2ANGLE(*(sh++)); }
 
-static ID_INLINE void SLerp_Normal(vec3_t from, vec3_t to, float tt, vec3_t out) {
+static ID_INLINE void SLerp_Normal(vec3_t from, vec3_t to, float tt, vec3_t out)
+{
 	float ft = 1.0 - tt;
 
 	out[0] = from[0] * ft + to[0] * tt;
@@ -654,7 +758,8 @@ static ID_INLINE void SLerp_Normal(vec3_t from, vec3_t to, float tt, vec3_t out)
 #define SIN_TABLE(i)      tr.sinTable[(i) >> FUNCTABLE_SHIFT];
 #define COS_TABLE(i)      tr.sinTable[(((i) >> FUNCTABLE_SHIFT) + (FUNCTABLE_SIZE / 4)) & FUNCTABLE_MASK];
 
-static ID_INLINE void LocalIngleVector(int ingles[3], vec3_t forward) {
+static ID_INLINE void LocalIngleVector(int ingles[3], vec3_t forward)
+{
 	sy = SIN_TABLE(ingles[YAW] & 65535);
 	cy = COS_TABLE(ingles[YAW] & 65535);
 	sp = SIN_TABLE(ingles[PITCH] & 65535);
@@ -666,13 +771,12 @@ static ID_INLINE void LocalIngleVector(int ingles[3], vec3_t forward) {
 	//cp = cos( SHORT2ANGLE( ingles[ PITCH ] ) *  (M_PI*2 / 360) );
 
 	forward[0] = cp * cy;
-
 	forward[1] = cp * sy;
-
 	forward[2] = -sp;
 }
 
-static void InglesToAxis(int ingles[3], vec3_t axis[3]) {
+static void InglesToAxis(int ingles[3], vec3_t axis[3])
+{
 	// get sine/cosines for angles
 	sy = SIN_TABLE(ingles[YAW] & 65535);
 	cy = COS_TABLE(ingles[YAW] & 65535);
@@ -701,7 +805,8 @@ static void InglesToAxis(int ingles[3], vec3_t axis[3]) {
 ===============================================================================
 */
 
-static ID_INLINE void Matrix4Multiply(const vec4_t a[4], const vec4_t b[4], vec4_t dst[4]) {
+static ID_INLINE void Matrix4Multiply(const vec4_t a[4], const vec4_t b[4], vec4_t dst[4])
+{
 	dst[0][0] = a[0][0] * b[0][0] + a[0][1] * b[1][0] + a[0][2] * b[2][0] + a[0][3] * b[3][0];
 	dst[0][1] = a[0][0] * b[0][1] + a[0][1] * b[1][1] + a[0][2] * b[2][1] + a[0][3] * b[3][1];
 	dst[0][2] = a[0][0] * b[0][2] + a[0][1] * b[1][2] + a[0][2] * b[2][2] + a[0][3] * b[3][2];
@@ -724,141 +829,159 @@ static ID_INLINE void Matrix4Multiply(const vec4_t a[4], const vec4_t b[4], vec4
 }
 
 // const usage would require an explicit cast, non ANSI C - see unix/const-arg.c
-static ID_INLINE void Matrix4MultiplyInto3x3AndTranslation(/*const */ vec4_t a[4], /*const */ vec4_t b[4], vec3_t dst[3], vec3_t t) {
+static ID_INLINE void Matrix4MultiplyInto3x3AndTranslation(/*const */ vec4_t a[4], /*const */ vec4_t b[4], vec3_t dst[3], vec3_t t)
+{
 	dst[0][0] = a[0][0] * b[0][0] + a[0][1] * b[1][0] + a[0][2] * b[2][0] + a[0][3] * b[3][0];
 	dst[0][1] = a[0][0] * b[0][1] + a[0][1] * b[1][1] + a[0][2] * b[2][1] + a[0][3] * b[3][1];
 	dst[0][2] = a[0][0] * b[0][2] + a[0][1] * b[1][2] + a[0][2] * b[2][2] + a[0][3] * b[3][2];
-	t[0] = a[0][0] * b[0][3] + a[0][1] * b[1][3] + a[0][2] * b[2][3] + a[0][3] * b[3][3];
+	t[0]      = a[0][0] * b[0][3] + a[0][1] * b[1][3] + a[0][2] * b[2][3] + a[0][3] * b[3][3];
 
 	dst[1][0] = a[1][0] * b[0][0] + a[1][1] * b[1][0] + a[1][2] * b[2][0] + a[1][3] * b[3][0];
 	dst[1][1] = a[1][0] * b[0][1] + a[1][1] * b[1][1] + a[1][2] * b[2][1] + a[1][3] * b[3][1];
 	dst[1][2] = a[1][0] * b[0][2] + a[1][1] * b[1][2] + a[1][2] * b[2][2] + a[1][3] * b[3][2];
-	t[1] = a[1][0] * b[0][3] + a[1][1] * b[1][3] + a[1][2] * b[2][3] + a[1][3] * b[3][3];
+	t[1]      = a[1][0] * b[0][3] + a[1][1] * b[1][3] + a[1][2] * b[2][3] + a[1][3] * b[3][3];
 
 	dst[2][0] = a[2][0] * b[0][0] + a[2][1] * b[1][0] + a[2][2] * b[2][0] + a[2][3] * b[3][0];
 	dst[2][1] = a[2][0] * b[0][1] + a[2][1] * b[1][1] + a[2][2] * b[2][1] + a[2][3] * b[3][1];
 	dst[2][2] = a[2][0] * b[0][2] + a[2][1] * b[1][2] + a[2][2] * b[2][2] + a[2][3] * b[3][2];
-	t[2] = a[2][0] * b[0][3] + a[2][1] * b[1][3] + a[2][2] * b[2][3] + a[2][3] * b[3][3];
+	t[2]      = a[2][0] * b[0][3] + a[2][1] * b[1][3] + a[2][2] * b[2][3] + a[2][3] * b[3][3];
 }
 
-static ID_INLINE void Matrix4Transpose(const vec4_t matrix[4], vec4_t transpose[4]) {
+static ID_INLINE void Matrix4Transpose(const vec4_t matrix[4], vec4_t transpose[4])
+{
 	int i, j;
 
-	for (i = 0; i < 4; i++) {
-		for (j = 0; j < 4; j++) {
+	for (i = 0; i < 4; i++)
+	{
+		for (j = 0; j < 4; j++)
+		{
 			transpose[i][j] = matrix[j][i];
 		}
 	}
 }
 
-static ID_INLINE void Matrix4FromAxis(const vec3_t axis[3], vec4_t dst[4]) {
+static ID_INLINE void Matrix4FromAxis(const vec3_t axis[3], vec4_t dst[4])
+{
 	int i, j;
 
-	for (i = 0; i < 3; i++) {
-		for (j = 0; j < 3; j++) {
+	for (i = 0; i < 3; i++)
+	{
+		for (j = 0; j < 3; j++)
+		{
 			dst[i][j] = axis[i][j];
 		}
-
 		dst[3][i] = 0;
 		dst[i][3] = 0;
 	}
-
 	dst[3][3] = 1;
 }
 
-static ID_INLINE void Matrix4FromScaledAxis(const vec3_t axis[3], const float scale, vec4_t dst[4]) {
+static ID_INLINE void Matrix4FromScaledAxis(const vec3_t axis[3], const float scale, vec4_t dst[4])
+{
 	int i, j;
 
-	for (i = 0; i < 3; i++) {
-		for (j = 0; j < 3; j++) {
+	for (i = 0; i < 3; i++)
+	{
+		for (j = 0; j < 3; j++)
+		{
 			dst[i][j] = scale * axis[i][j];
-
-			if (i == j) {
+			if (i == j)
+			{
 				dst[i][j] += 1.0f - scale;
 			}
 		}
-
 		dst[3][i] = 0;
 		dst[i][3] = 0;
 	}
-
 	dst[3][3] = 1;
 }
 
-static ID_INLINE void Matrix4FromTranslation(const vec3_t t, vec4_t dst[4]) {
+static ID_INLINE void Matrix4FromTranslation(const vec3_t t, vec4_t dst[4])
+{
 	int i, j;
 
-	for (i = 0; i < 3; i++) {
-		for (j = 0; j < 3; j++) {
-			if (i == j) {
+	for (i = 0; i < 3; i++)
+	{
+		for (j = 0; j < 3; j++)
+		{
+			if (i == j)
+			{
 				dst[i][j] = 1;
-			} else {
+			}
+			else
+			{
 				dst[i][j] = 0;
 			}
 		}
-
 		dst[i][3] = t[i];
 		dst[3][i] = 0;
 	}
-
 	dst[3][3] = 1;
 }
 
 // can put an axis rotation followed by a translation directly into one matrix
 // const usage would require an explicit cast, non ANSI C - see unix/const-arg.c
-static ID_INLINE void Matrix4FromAxisPlusTranslation(/*const */ vec3_t axis[3], const vec3_t t, vec4_t dst[4]) {
+static ID_INLINE void Matrix4FromAxisPlusTranslation(/*const */ vec3_t axis[3], const vec3_t t, vec4_t dst[4])
+{
 	int i, j;
 
-	for (i = 0; i < 3; i++) {
-		for (j = 0; j < 3; j++) {
+	for (i = 0; i < 3; i++)
+	{
+		for (j = 0; j < 3; j++)
+		{
 			dst[i][j] = axis[i][j];
 		}
-
 		dst[3][i] = 0;
 		dst[i][3] = t[i];
 	}
-
 	dst[3][3] = 1;
 }
 
 // can put a scaled axis rotation followed by a translation directly into one matrix
 // const usage would require an explicit cast, non ANSI C - see unix/const-arg.c
-static ID_INLINE void Matrix4FromScaledAxisPlusTranslation(/*const */ vec3_t axis[3], const float scale, const vec3_t t, vec4_t dst[4]) {
+static ID_INLINE void Matrix4FromScaledAxisPlusTranslation(/*const */ vec3_t axis[3], const float scale, const vec3_t t, vec4_t dst[4])
+{
 	int i, j;
 
-	for (i = 0; i < 3; i++) {
-		for (j = 0; j < 3; j++) {
+	for (i = 0; i < 3; i++)
+	{
+		for (j = 0; j < 3; j++)
+		{
 			dst[i][j] = scale * axis[i][j];
-
-			if (i == j) {
+			if (i == j)
+			{
 				dst[i][j] += 1.0f - scale;
 			}
 		}
-
 		dst[3][i] = 0;
 		dst[i][3] = t[i];
 	}
-
 	dst[3][3] = 1;
 }
 
-static ID_INLINE void Matrix4FromScale(const float scale, vec4_t dst[4]) {
+static ID_INLINE void Matrix4FromScale(const float scale, vec4_t dst[4])
+{
 	int i, j;
 
-	for (i = 0; i < 4; i++) {
-		for (j = 0; j < 4; j++) {
-			if (i == j) {
+	for (i = 0; i < 4; i++)
+	{
+		for (j = 0; j < 4; j++)
+		{
+			if (i == j)
+			{
 				dst[i][j] = scale;
-			} else {
+			}
+			else
+			{
 				dst[i][j] = 0;
 			}
 		}
 	}
-
 	dst[3][3] = 1;
 }
 
-static ID_INLINE void Matrix4TransformVector(const vec4_t m[4], const vec3_t src, vec3_t dst) {
+static ID_INLINE void Matrix4TransformVector(const vec4_t m[4], const vec3_t src, vec3_t dst)
+{
 	dst[0] = m[0][0] * src[0] + m[0][1] * src[1] + m[0][2] * src[2] + m[0][3];
 	dst[1] = m[1][0] * src[0] + m[1][1] * src[1] + m[1][2] * src[2] + m[1][3];
 	dst[2] = m[2][0] * src[0] + m[2][1] * src[1] + m[2][2] * src[2] + m[2][3];
@@ -870,85 +993,99 @@ static ID_INLINE void Matrix4TransformVector(const vec4_t m[4], const vec3_t src
 ===============================================================================
 */
 
-static ID_INLINE void Matrix3Transpose(const vec3_t matrix[3], vec3_t transpose[3]) {
+static ID_INLINE void Matrix3Transpose(const vec3_t matrix[3], vec3_t transpose[3])
+{
 	int i, j;
 
-	for (i = 0; i < 3; i++) {
-		for (j = 0; j < 3; j++) {
+	for (i = 0; i < 3; i++)
+	{
+		for (j = 0; j < 3; j++)
+		{
 			transpose[i][j] = matrix[j][i];
 		}
 	}
 }
 
-static void R_CalcBone(const int torsoParent, const refEntity_t *refent, int boneNum) {
+static void R_CalcBone(const int torsoParent, const refEntity_t *refent, int boneNum)
+{
 	thisBoneInfo = &boneInfo[boneNum];
-
-	if (thisBoneInfo->torsoWeight) {
+	if (thisBoneInfo->torsoWeight)
+	{
 		cTBonePtr = &cBoneListTorso[boneNum];
-		isTorso = qtrue;
-
-		if (thisBoneInfo->torsoWeight == 1.0f) {
+		isTorso   = qtrue;
+		if (thisBoneInfo->torsoWeight == 1.0f)
+		{
 			fullTorso = qtrue;
 		}
-	} else {
-		isTorso = qfalse;
+	}
+	else
+	{
+		isTorso   = qfalse;
 		fullTorso = qfalse;
 	}
-
 	cBonePtr = &cBoneList[boneNum];
 
 	bonePtr = &bones[boneNum];
 
 	// we can assume the parent has already been uncompressed for this frame + lerp
-	if (thisBoneInfo->parent >= 0) {
-		parentBone = &bones[thisBoneInfo->parent];
+	if (thisBoneInfo->parent >= 0)
+	{
+		parentBone     = &bones[thisBoneInfo->parent];
 		parentBoneInfo = &boneInfo[thisBoneInfo->parent];
-	} else {
-		parentBone = NULL;
+	}
+	else
+	{
+		parentBone     = NULL;
 		parentBoneInfo = NULL;
 	}
+
 	// rotation
-	if (fullTorso) {
+	if (fullTorso)
+	{
 		sh = (short *)cTBonePtr->angles;
 		pf = angles;
 		ANGLES_SHORT_TO_FLOAT(pf, sh);
-	} else {
+	}
+	else
+	{
 		sh = (short *)cBonePtr->angles;
 		pf = angles;
 		ANGLES_SHORT_TO_FLOAT(pf, sh);
-
-		if (isTorso) {
+		if (isTorso)
+		{
 			int j;
 
 			sh = (short *)cTBonePtr->angles;
 			pf = tangles;
 			ANGLES_SHORT_TO_FLOAT(pf, sh);
 			// blend the angles together
-			for (j = 0; j < 3; j++) {
+			for (j = 0; j < 3; j++)
+			{
 				diff = tangles[j] - angles[j];
-
-				if (Q_fabs(diff) > 180) {
+				if (Q_fabs(diff) > 180)
+				{
 					diff = AngleNormalize180(diff);
 				}
 				angles[j] = angles[j] + thisBoneInfo->torsoWeight * diff;
 			}
 		}
 	}
-
 	AnglesToAxis(angles, bonePtr->matrix);
 
 	// translation
-	if (parentBone) {
-		if (fullTorso) {
+	if (parentBone)
+	{
+		if (fullTorso)
+		{
 #ifndef YD_INGLES
-			sh = (short *)cTBonePtr->ofsAngles;
-			pf = angles;
+			sh      = (short *)cTBonePtr->ofsAngles;
+			pf      = angles;
 			*(pf++) = SHORT2ANGLE(*(sh++));
 			*(pf++) = SHORT2ANGLE(*(sh++));
 			*(pf++) = 0;
 			LocalAngleVector(angles, vec);
 #else
-			sh = (short *)cTBonePtr->ofsAngles;
+			sh        = (short *)cTBonePtr->ofsAngles;
 			ingles[0] = sh[0];
 			ingles[1] = sh[1];
 			ingles[2] = 0;
@@ -956,31 +1093,34 @@ static void R_CalcBone(const int torsoParent, const refEntity_t *refent, int bon
 #endif
 
 			VectorMA(parentBone->translation, thisBoneInfo->parentDist, vec, bonePtr->translation);
-		} else {
+		}
+		else
+		{
 #ifndef YD_INGLES
-			sh = (short *)cBonePtr->ofsAngles;
-			pf = angles;
+			sh      = (short *)cBonePtr->ofsAngles;
+			pf      = angles;
 			*(pf++) = SHORT2ANGLE(*(sh++));
 			*(pf++) = SHORT2ANGLE(*(sh++));
 			*(pf++) = 0;
 			LocalAngleVector(angles, vec);
 #else
-			sh = (short *)cBonePtr->ofsAngles;
+			sh        = (short *)cBonePtr->ofsAngles;
 			ingles[0] = sh[0];
 			ingles[1] = sh[1];
 			ingles[2] = 0;
 			LocalIngleVector(ingles, vec);
 #endif
-			if (isTorso) {
+			if (isTorso)
+			{
 #ifndef YD_INGLES
-				sh = (short *)cTBonePtr->ofsAngles;
-				pf = tangles;
+				sh      = (short *)cTBonePtr->ofsAngles;
+				pf      = tangles;
 				*(pf++) = SHORT2ANGLE(*(sh++));
 				*(pf++) = SHORT2ANGLE(*(sh++));
 				*(pf++) = 0;
 				LocalAngleVector(tangles, v2);
 #else
-				sh = (short *)cTBonePtr->ofsAngles;
+				sh         = (short *)cTBonePtr->ofsAngles;
 				tingles[0] = sh[0];
 				tingles[1] = sh[1];
 				tingles[2] = 0;
@@ -989,17 +1129,22 @@ static void R_CalcBone(const int torsoParent, const refEntity_t *refent, int bon
 				// blend the angles together
 				SLerp_Normal(vec, v2, thisBoneInfo->torsoWeight, vec);
 				VectorMA(parentBone->translation, thisBoneInfo->parentDist, vec, bonePtr->translation);
-			} else {                  // legs bone
+			}
+			else
+			{                   // legs bone
 				VectorMA(parentBone->translation, thisBoneInfo->parentDist, vec, bonePtr->translation);
 			}
 		}
-	} else {                          // just use the frame position
+	}
+	else
+	{                           // just use the frame position
 		bonePtr->translation[0] = frame->parentOffset[0];
 		bonePtr->translation[1] = frame->parentOffset[1];
 		bonePtr->translation[2] = frame->parentOffset[2];
 	}
 
-	if (boneNum == torsoParent) {                          // this is the torsoParent
+	if (boneNum == torsoParent)
+	{                           // this is the torsoParent
 		VectorCopy(bonePtr->translation, torsoParentOffset);
 	}
 
@@ -1009,41 +1154,49 @@ static void R_CalcBone(const int torsoParent, const refEntity_t *refent, int bon
 	newBones[boneNum] = 1;
 }
 
-static void R_CalcBoneLerp(const int torsoParent, const refEntity_t *refent, int boneNum) {
+static void R_CalcBoneLerp(const int torsoParent, const refEntity_t *refent, int boneNum)
+{
 	int j;
 
-	if (!refent || boneNum < 0 || boneNum >= MDX_MAX_BONES) {
+	if (!refent || boneNum < 0 || boneNum >= MDX_MAX_BONES)
+	{
 		return;
 	}
 
 	thisBoneInfo = &boneInfo[boneNum];
 
-	if (!thisBoneInfo) {
+	if (!thisBoneInfo)
+	{
 		return;
 	}
 
-	if (thisBoneInfo->parent >= 0) {
-		parentBone = &bones[thisBoneInfo->parent];
+	if (thisBoneInfo->parent >= 0)
+	{
+		parentBone     = &bones[thisBoneInfo->parent];
 		parentBoneInfo = &boneInfo[thisBoneInfo->parent];
-	} else {
-		parentBone = NULL;
+	}
+	else
+	{
+		parentBone     = NULL;
 		parentBoneInfo = NULL;
 	}
 
-	if (thisBoneInfo->torsoWeight) {
-		cTBonePtr = &cBoneListTorso[boneNum];
+	if (thisBoneInfo->torsoWeight)
+	{
+		cTBonePtr    = &cBoneListTorso[boneNum];
 		cOldTBonePtr = &cOldBoneListTorso[boneNum];
-		isTorso = qtrue;
-
-		if (thisBoneInfo->torsoWeight == 1.0f) {
+		isTorso      = qtrue;
+		if (thisBoneInfo->torsoWeight == 1.0f)
+		{
 			fullTorso = qtrue;
 		}
-	} else {
-		isTorso = qfalse;
+	}
+	else
+	{
+		isTorso   = qfalse;
 		fullTorso = qfalse;
 	}
-
-	cBonePtr = &cBoneList[boneNum];
+	cBonePtr    = &cBoneList[boneNum];
 	cOldBonePtr = &cOldBoneList[boneNum];
 
 	bonePtr = &bones[boneNum];
@@ -1052,64 +1205,69 @@ static void R_CalcBoneLerp(const int torsoParent, const refEntity_t *refent, int
 
 	// rotation (take into account 170 to -170 lerps, which need to take the shortest route)
 #ifndef YD_INGLES
-	if (fullTorso) {
-		sh = (short *)cTBonePtr->angles;
+	if (fullTorso)
+	{
+		sh  = (short *)cTBonePtr->angles;
 		sh2 = (short *)cOldTBonePtr->angles;
-		pf = angles;
+		pf  = angles;
 
-		a1 = SHORT2ANGLE(*(sh++));
-		a2 = SHORT2ANGLE(*(sh2++));
-		diff = AngleNormalize180(a1 - a2);
+		a1      = SHORT2ANGLE(*(sh++));
+		a2      = SHORT2ANGLE(*(sh2++));
+		diff    = AngleNormalize180(a1 - a2);
 		*(pf++) = a1 - torsoBacklerp * diff;
-		a1 = SHORT2ANGLE(*(sh++));
-		a2 = SHORT2ANGLE(*(sh2++));
-		diff = AngleNormalize180(a1 - a2);
+		a1      = SHORT2ANGLE(*(sh++));
+		a2      = SHORT2ANGLE(*(sh2++));
+		diff    = AngleNormalize180(a1 - a2);
 		*(pf++) = a1 - torsoBacklerp * diff;
-		a1 = SHORT2ANGLE(*(sh++));
-		a2 = SHORT2ANGLE(*(sh2++));
-		diff = AngleNormalize180(a1 - a2);
+		a1      = SHORT2ANGLE(*(sh++));
+		a2      = SHORT2ANGLE(*(sh2++));
+		diff    = AngleNormalize180(a1 - a2);
 		*(pf++) = a1 - torsoBacklerp * diff;
-	} else {
-		sh = (short *)cBonePtr->angles;
+	}
+	else
+	{
+		sh  = (short *)cBonePtr->angles;
 		sh2 = (short *)cOldBonePtr->angles;
-		pf = angles;
+		pf  = angles;
 
-		a1 = SHORT2ANGLE(*(sh++));
-		a2 = SHORT2ANGLE(*(sh2++));
-		diff = AngleNormalize180(a1 - a2);
+		a1      = SHORT2ANGLE(*(sh++));
+		a2      = SHORT2ANGLE(*(sh2++));
+		diff    = AngleNormalize180(a1 - a2);
 		*(pf++) = a1 - backlerp * diff;
-		a1 = SHORT2ANGLE(*(sh++));
-		a2 = SHORT2ANGLE(*(sh2++));
-		diff = AngleNormalize180(a1 - a2);
+		a1      = SHORT2ANGLE(*(sh++));
+		a2      = SHORT2ANGLE(*(sh2++));
+		diff    = AngleNormalize180(a1 - a2);
 		*(pf++) = a1 - backlerp * diff;
-		a1 = SHORT2ANGLE(*(sh++));
-		a2 = SHORT2ANGLE(*(sh2++));
-		diff = AngleNormalize180(a1 - a2);
+		a1      = SHORT2ANGLE(*(sh++));
+		a2      = SHORT2ANGLE(*(sh2++));
+		diff    = AngleNormalize180(a1 - a2);
 		*(pf++) = a1 - backlerp * diff;
 
-		if (isTorso) {
-			sh = (short *)cTBonePtr->angles;
+		if (isTorso)
+		{
+			sh  = (short *)cTBonePtr->angles;
 			sh2 = (short *)cOldTBonePtr->angles;
-			pf = tangles;
+			pf  = tangles;
 
-			a1 = SHORT2ANGLE(*(sh++));
-			a2 = SHORT2ANGLE(*(sh2++));
-			diff = AngleNormalize180(a1 - a2);
+			a1      = SHORT2ANGLE(*(sh++));
+			a2      = SHORT2ANGLE(*(sh2++));
+			diff    = AngleNormalize180(a1 - a2);
 			*(pf++) = a1 - torsoBacklerp * diff;
-			a1 = SHORT2ANGLE(*(sh++));
-			a2 = SHORT2ANGLE(*(sh2++));
-			diff = AngleNormalize180(a1 - a2);
+			a1      = SHORT2ANGLE(*(sh++));
+			a2      = SHORT2ANGLE(*(sh2++));
+			diff    = AngleNormalize180(a1 - a2);
 			*(pf++) = a1 - torsoBacklerp * diff;
-			a1 = SHORT2ANGLE(*(sh++));
-			a2 = SHORT2ANGLE(*(sh2++));
-			diff = AngleNormalize180(a1 - a2);
+			a1      = SHORT2ANGLE(*(sh++));
+			a2      = SHORT2ANGLE(*(sh2++));
+			diff    = AngleNormalize180(a1 - a2);
 			*(pf++) = a1 - torsoBacklerp * diff;
 
 			// blend the angles together
-			for (j = 0; j < 3; j++) {
+			for (j = 0; j < 3; j++)
+			{
 				diff = tangles[j] - angles[j];
-
-				if (Q_fabs(diff) > 180) {
+				if (Q_fabs(diff) > 180)
+				{
 					diff = AngleNormalize180(diff);
 				}
 				angles[j] = angles[j] + thisBoneInfo->torsoWeight * diff;
@@ -1121,49 +1279,51 @@ static void R_CalcBoneLerp(const int torsoParent, const refEntity_t *refent, int
 
 #else
 	// ingles-based bone code
-	if (fullTorso) {
-		sh = (short *)cTBonePtr->angles;
+	if (fullTorso)
+	{
+		sh  = (short *)cTBonePtr->angles;
 		sh2 = (short *)cOldTBonePtr->angles;
-
-		for (j = 0; j < 3; j++) {
+		for (j = 0; j < 3; j++)
+		{
 			ingles[j] = (sh[j] - sh2[j]) & 65535;
-
-			if (ingles[j] > 32767) {
+			if (ingles[j] > 32767)
+			{
 				ingles[j] -= 65536;
 			}
-
 			ingles[j] = sh[j] - torsoBacklerp * ingles[j];
 		}
-	} else {
-		sh = (short *)cBonePtr->angles;
+	}
+	else
+	{
+		sh  = (short *)cBonePtr->angles;
 		sh2 = (short *)cOldBonePtr->angles;
-
-		for (j = 0; j < 3; j++) {
+		for (j = 0; j < 3; j++)
+		{
 			ingles[j] = (sh[j] - sh2[j]) & 65535;
-
-			if (ingles[j] > 32767) {
+			if (ingles[j] > 32767)
+			{
 				ingles[j] -= 65536;
 			}
-
 			ingles[j] = sh[j] - backlerp * ingles[j];
 		}
 
-		if (isTorso) {
-			sh = (short *)cTBonePtr->angles;
+		if (isTorso)
+		{
+			sh  = (short *)cTBonePtr->angles;
 			sh2 = (short *)cOldTBonePtr->angles;
-
-			for (j = 0; j < 3; j++) {
+			for (j = 0; j < 3; j++)
+			{
 				tingles[j] = (sh[j] - sh2[j]) & 65535;
-
-				if (tingles[j] > 32767) {
+				if (tingles[j] > 32767)
+				{
 					tingles[j] -= 65536;
 				}
 				tingles[j] = sh[j] - torsoBacklerp * tingles[j];
 
 				// blend torso and angles
 				tingles[j] = (tingles[j] - ingles[j]) & 65535;
-
-				if (tingles[j] > 32767) {
+				if (tingles[j] > 32767)
+				{
 					tingles[j] -= 65536;
 				}
 				ingles[j] += thisBoneInfo->torsoWeight * tingles[j];
@@ -1175,75 +1335,84 @@ static void R_CalcBoneLerp(const int torsoParent, const refEntity_t *refent, int
 
 #endif
 
-	if (parentBone) {
-		if (fullTorso) {
-			sh = (short *)cTBonePtr->ofsAngles;
+	if (parentBone)
+	{
+		if (fullTorso)
+		{
+			sh  = (short *)cTBonePtr->ofsAngles;
 			sh2 = (short *)cOldTBonePtr->ofsAngles;
-		} else {
-			sh = (short *)cBonePtr->ofsAngles;
+		}
+		else
+		{
+			sh  = (short *)cBonePtr->ofsAngles;
 			sh2 = (short *)cOldBonePtr->ofsAngles;
 		}
 
 #ifndef YD_INGLES
-		pf = angles;
+		pf      = angles;
 		*(pf++) = SHORT2ANGLE(*(sh++));
 		*(pf++) = SHORT2ANGLE(*(sh++));
 		*(pf++) = 0;
-		LocalAngleVector(angles, v2); // new
+		LocalAngleVector(angles, v2);   // new
 
-		pf = angles;
+		pf      = angles;
 		*(pf++) = SHORT2ANGLE(*(sh2++));
 		*(pf++) = SHORT2ANGLE(*(sh2++));
 		*(pf++) = 0;
-		LocalAngleVector(angles, vec); // old
+		LocalAngleVector(angles, vec);  // old
 #else
 		ingles[0] = sh[0];
 		ingles[1] = sh[1];
 		ingles[2] = 0;
-		LocalIngleVector(ingles, v2); // new
+		LocalIngleVector(ingles, v2);   // new
 
 		ingles[0] = sh2[0];
 		ingles[1] = sh2[1];
 		ingles[2] = 0;
-		LocalIngleVector(ingles, vec); // old
+		LocalIngleVector(ingles, vec);  // old
 #endif
 
 		// blend the angles together
-		if (fullTorso) {
+		if (fullTorso)
+		{
 			SLerp_Normal(vec, v2, torsoFrontlerp, dir);
-		} else {
+		}
+		else
+		{
 			SLerp_Normal(vec, v2, frontlerp, dir);
 		}
+
 		// translation
-		if (!fullTorso && isTorso) {
+		if (!fullTorso && isTorso)
+		{
 			// partial legs/torso, need to lerp according to torsoWeight
 
 			// calc the torso frame
-			sh = (short *)cTBonePtr->ofsAngles;
+			sh  = (short *)cTBonePtr->ofsAngles;
 			sh2 = (short *)cOldTBonePtr->ofsAngles;
 
 #ifndef YD_INGLES
-			pf = angles;
+			pf      = angles;
 			*(pf++) = SHORT2ANGLE(*(sh++));
 			*(pf++) = SHORT2ANGLE(*(sh++));
 			*(pf++) = 0;
-			LocalAngleVector(angles, v2); // new
+			LocalAngleVector(angles, v2);   // new
 
-			pf = angles;
+			pf      = angles;
 			*(pf++) = SHORT2ANGLE(*(sh2++));
 			*(pf++) = SHORT2ANGLE(*(sh2++));
 			*(pf++) = 0;
-			LocalAngleVector(angles, vec); // old
+			LocalAngleVector(angles, vec);  // old
 #else
 			ingles[0] = sh[0];
 			ingles[1] = sh[1];
 			ingles[2] = 0;
-			LocalIngleVector(ingles, v2); // new
+			LocalIngleVector(ingles, v2);   // new
 
 			ingles[0] = sh[0];
 			ingles[1] = sh[1];
 			ingles[2] = 0;
-			LocalIngleVector(ingles, vec); // old
+			LocalIngleVector(ingles, vec);  // old
 #endif
 
 			// blend the angles together
@@ -1254,17 +1423,19 @@ static void R_CalcBoneLerp(const int torsoParent, const refEntity_t *refent, int
 		}
 
 		VectorMA(parentBone->translation, thisBoneInfo->parentDist, dir, bonePtr->translation);
-	} else {
+	}
+	else
+	{
 		// just interpolate the frame positions
 		bonePtr->translation[0] = frontlerp * frame->parentOffset[0] + backlerp * oldFrame->parentOffset[0];
 		bonePtr->translation[1] = frontlerp * frame->parentOffset[1] + backlerp * oldFrame->parentOffset[1];
 		bonePtr->translation[2] = frontlerp * frame->parentOffset[2] + backlerp * oldFrame->parentOffset[2];
 	}
 
-	if (boneNum == torsoParent) {                          // this is the torsoParent
+	if (boneNum == torsoParent)
+	{                           // this is the torsoParent
 		VectorCopy(bonePtr->translation, torsoParentOffset);
 	}
-
 	validBones[boneNum] = 1;
 
 	rawBones[boneNum] = *bonePtr;
@@ -1282,35 +1453,61 @@ R_BonesStillValid
     Another solution: bones cache on an entity basis?
 ==============
 */
-static qboolean R_BonesStillValid(const refEntity_t *refent) {
+static qboolean R_BonesStillValid(const refEntity_t *refent)
+{
 #if 1
-	if (lastBoneEntity.hModel != refent->hModel) {
+	if (lastBoneEntity.hModel != refent->hModel)
+	{
 		return qfalse;
-	} else if (lastBoneEntity.frame != refent->frame) {
+	}
+	else if (lastBoneEntity.frame != refent->frame)
+	{
 		return qfalse;
-	} else if (lastBoneEntity.oldframe != refent->oldframe) {
+	}
+	else if (lastBoneEntity.oldframe != refent->oldframe)
+	{
 		return qfalse;
-	} else if (lastBoneEntity.frameModel != refent->frameModel) {
+	}
+	else if (lastBoneEntity.frameModel != refent->frameModel)
+	{
 		return qfalse;
-	} else if (lastBoneEntity.oldframeModel != refent->oldframeModel) {
+	}
+	else if (lastBoneEntity.oldframeModel != refent->oldframeModel)
+	{
 		return qfalse;
-	} else if (lastBoneEntity.backlerp != refent->backlerp) {
+	}
+	else if (lastBoneEntity.backlerp != refent->backlerp)
+	{
 		return qfalse;
-	} else if (lastBoneEntity.torsoFrame != refent->torsoFrame) {
+	}
+	else if (lastBoneEntity.torsoFrame != refent->torsoFrame)
+	{
 		return qfalse;
-	} else if (lastBoneEntity.oldTorsoFrame != refent->oldTorsoFrame) {
+	}
+	else if (lastBoneEntity.oldTorsoFrame != refent->oldTorsoFrame)
+	{
 		return qfalse;
-	} else if (lastBoneEntity.torsoFrameModel != refent->torsoFrameModel) {
+	}
+	else if (lastBoneEntity.torsoFrameModel != refent->torsoFrameModel)
+	{
 		return qfalse;
-	} else if (lastBoneEntity.oldTorsoFrameModel != refent->oldTorsoFrameModel) {
+	}
+	else if (lastBoneEntity.oldTorsoFrameModel != refent->oldTorsoFrameModel)
+	{
 		return qfalse;
-	} else if (lastBoneEntity.torsoBacklerp != refent->torsoBacklerp) {
+	}
+	else if (lastBoneEntity.torsoBacklerp != refent->torsoBacklerp)
+	{
 		return qfalse;
-	} else if (lastBoneEntity.reFlags != refent->reFlags) {
+	}
+	else if (lastBoneEntity.reFlags != refent->reFlags)
+	{
 		return qfalse;
-	} else if (!VectorCompare(lastBoneEntity.torsoAxis[0], refent->torsoAxis[0]) ||
+	}
+	else if (!VectorCompare(lastBoneEntity.torsoAxis[0], refent->torsoAxis[0]) ||
 	         !VectorCompare(lastBoneEntity.torsoAxis[1], refent->torsoAxis[1]) ||
-	         !VectorCompare(lastBoneEntity.torsoAxis[2], refent->torsoAxis[2])) {
+	         !VectorCompare(lastBoneEntity.torsoAxis[2], refent->torsoAxis[2]))
+	{
 		return qfalse;
 	}
 
@@ -1323,50 +1520,60 @@ static qboolean R_BonesStillValid(const refEntity_t *refent) {
 /**
  * @brief The list of bones[] should only be built and modified from within here
  */
-static void R_CalcBones(const refEntity_t *refent, int *boneList, int numBones) {
-	int i;
-	int *boneRefs;
-	float torsoWeight;
-	mdxHeader_t *mdxFrameHeader = R_GetModelByHandle(refent->frameModel)->mdx;
-	mdxHeader_t *mdxOldFrameHeader = R_GetModelByHandle(refent->oldframeModel)->mdx;
-	mdxHeader_t *mdxTorsoFrameHeader = R_GetModelByHandle(refent->torsoFrameModel)->mdx;
+static void R_CalcBones(const refEntity_t *refent, int *boneList, int numBones)
+{
+	int         i;
+	int         *boneRefs;
+	float       torsoWeight;
+	mdxHeader_t *mdxFrameHeader         = R_GetModelByHandle(refent->frameModel)->mdx;
+	mdxHeader_t *mdxOldFrameHeader      = R_GetModelByHandle(refent->oldframeModel)->mdx;
+	mdxHeader_t *mdxTorsoFrameHeader    = R_GetModelByHandle(refent->torsoFrameModel)->mdx;
 	mdxHeader_t *mdxOldTorsoFrameHeader = R_GetModelByHandle(refent->oldTorsoFrameModel)->mdx;
 
-	if (!mdxFrameHeader || !mdxOldFrameHeader || !mdxTorsoFrameHeader || !mdxOldTorsoFrameHeader) {
+	if (!mdxFrameHeader || !mdxOldFrameHeader || !mdxTorsoFrameHeader || !mdxOldTorsoFrameHeader)
+	{
 		return;
 	}
+
 	// if the entity has changed since the last time the bones were built, reset them
 
-	if (!R_BonesStillValid(refent)) {
+	if (!R_BonesStillValid(refent))
+	{
 		// different, cached bones are not valid
 		memset(validBones, 0, mdxFrameHeader->numBones);
 		lastBoneEntity = *refent;
 
 		// also reset these counter statics
 		// print stats for the complete model (not per-surface)
-		if (r_showSkeleton->integer == 4 && totalrt) {
+		if (r_showSkeleton->integer == 4 && totalrt)
+		{
 			Ren_Print("Lod %.2f  verts %4d/%4d  tris %4d/%4d  (%.2f%%)\n",
 			          lodScale, totalrv, totalv, totalrt, totalt, (float)(100.0 * totalrt) / (float)totalt);
 		}
-
 		totalrv = totalrt = totalv = totalt = 0;
 	}
 
 	memset(newBones, 0, mdxFrameHeader->numBones);
 
-	if (refent->oldframe == refent->frame && refent->oldframeModel == refent->frameModel) {
-		backlerp = 0;
+	if (refent->oldframe == refent->frame && refent->oldframeModel == refent->frameModel)
+	{
+		backlerp  = 0;
 		frontlerp = 1;
-	} else {
-		backlerp = refent->backlerp;
+	}
+	else
+	{
+		backlerp  = refent->backlerp;
 		frontlerp = 1.0f - backlerp;
 	}
 
-	if (refent->oldTorsoFrame == refent->torsoFrame && refent->oldTorsoFrameModel == refent->oldframeModel) {
-		torsoBacklerp = 0;
+	if (refent->oldTorsoFrame == refent->torsoFrame && refent->oldTorsoFrameModel == refent->oldframeModel)
+	{
+		torsoBacklerp  = 0;
 		torsoFrontlerp = 1;
-	} else {
-		torsoBacklerp = refent->torsoBacklerp;
+	}
+	else
+	{
+		torsoBacklerp  = refent->torsoBacklerp;
 		torsoFrontlerp = 1.0f - torsoBacklerp;
 	}
 
@@ -1398,11 +1605,14 @@ static void R_CalcBones(const refEntity_t *refent, int *boneList, int numBones) 
 	//
 	Matrix3Transpose(refent->torsoAxis, torsoAxis);
 
-	if (!backlerp && !torsoBacklerp) {
+	if (!backlerp && !torsoBacklerp)
+	{
 
-		for (i = 0; i < numBones; i++, boneRefs++) {
+		for (i = 0; i < numBones; i++, boneRefs++)
+		{
 
-			if (validBones[*boneRefs]) {
+			if (validBones[*boneRefs])
+			{
 				// this bone is still in the cache
 				bones[*boneRefs] = rawBones[*boneRefs];
 				continue;
@@ -1410,13 +1620,16 @@ static void R_CalcBones(const refEntity_t *refent, int *boneList, int numBones) 
 
 			// find our parent, and make sure it has been calculated
 			if ((boneInfo[*boneRefs].parent >= 0) &&
-			    (!validBones[boneInfo[*boneRefs].parent] && !newBones[boneInfo[*boneRefs].parent])) {
+			    (!validBones[boneInfo[*boneRefs].parent] && !newBones[boneInfo[*boneRefs].parent]))
+			{
 				R_CalcBone(mdxFrameHeader->torsoParent, refent, boneInfo[*boneRefs].parent);
 			}
 
 			R_CalcBone(mdxFrameHeader->torsoParent, refent, *boneRefs);
 		}
-	} else {
+	}
+	else
+	{
 		// interpolated
 		cOldBoneList = (mdxBoneFrameCompressed_t *) ((byte *) mdxOldFrameHeader + mdxOldFrameHeader->ofsFrames +
 		                                             (refent->oldframe + 1) * sizeof(mdxFrame_t) + refent->oldframe * frameSize);
@@ -1424,8 +1637,10 @@ static void R_CalcBones(const refEntity_t *refent, int *boneList, int numBones) 
 		                                                  (refent->oldTorsoFrame + 1) * sizeof(mdxFrame_t) +
 		                                                  refent->oldTorsoFrame * frameSize);
 
-		for (i = 0; i < numBones; i++, boneRefs++) {
-			if (validBones[*boneRefs]) {
+		for (i = 0; i < numBones; i++, boneRefs++)
+		{
+			if (validBones[*boneRefs])
+			{
 				// this bone is still in the cache
 				bones[*boneRefs] = rawBones[*boneRefs];
 				continue;
@@ -1433,23 +1648,27 @@ static void R_CalcBones(const refEntity_t *refent, int *boneList, int numBones) 
 
 			// find our parent, and make sure it has been calculated
 			if ((boneInfo[*boneRefs].parent >= 0) &&
-			    (!validBones[boneInfo[*boneRefs].parent] && !newBones[boneInfo[*boneRefs].parent])) {
+			    (!validBones[boneInfo[*boneRefs].parent] && !newBones[boneInfo[*boneRefs].parent]))
+			{
 				R_CalcBoneLerp(mdxFrameHeader->torsoParent, refent, boneInfo[*boneRefs].parent);
 			}
 
 			R_CalcBoneLerp(mdxFrameHeader->torsoParent, refent, *boneRefs);
 		}
 	}
+
 	// adjust for torso rotations
 	torsoWeight = 0;
-	boneRefs = boneList;
-
-	for (i = 0; i < numBones; i++, boneRefs++) {
+	boneRefs    = boneList;
+	for (i = 0; i < numBones; i++, boneRefs++)
+	{
 		thisBoneInfo = &boneInfo[*boneRefs];
-		bonePtr = &bones[*boneRefs];
+		bonePtr      = &bones[*boneRefs];
 		// add torso rotation
-		if (thisBoneInfo->torsoWeight > 0) {
-			if (!newBones[*boneRefs]) {
+		if (thisBoneInfo->torsoWeight > 0)
+		{
+			if (!newBones[*boneRefs])
+			{
 				// just copy it back from the previous calc
 				bones[*boneRefs] = oldBones[*boneRefs];
 				continue;
@@ -1464,14 +1683,15 @@ static void R_CalcBones(const refEntity_t *refent, int *boneList, int numBones) 
 			// 3rd scaled rotation
 			// 4th translate back to torso parent offset
 			// use previously created matrix if available for the same weight
-			if (torsoWeight != thisBoneInfo->torsoWeight) {
+			if (torsoWeight != thisBoneInfo->torsoWeight)
+			{
 				Matrix4FromScaledAxisPlusTranslation(torsoAxis, thisBoneInfo->torsoWeight, torsoParentOffset, m2);
 				torsoWeight = thisBoneInfo->torsoWeight;
 			}
 			// multiply matrices to create one matrix to do all calculations
 			Matrix4MultiplyInto3x3AndTranslation(m2, m1, bonePtr->matrix, bonePtr->translation);
 
-			/*} else { // tag's require special handling
+			/*} else {  // tag's require special handling
 
 			   // rotate each of the axis by the torsoAngles
 			   LocalScaledMatrixTransformVector( bonePtr->matrix[0], thisBoneInfo->torsoWeight, torsoAxis, tmpAxis[0] );
@@ -1484,9 +1704,10 @@ static void R_CalcBones(const refEntity_t *refent, int *boneList, int numBones) 
 			   LocalScaledMatrixTransformVector( t, thisBoneInfo->torsoWeight, torsoAxis, bonePtr->translation );
 			   VectorAdd( bonePtr->translation, torsoParentOffset, bonePtr->translation );
 
-			 } */
+			   } */
 		}
 	}
+
 	// backup the final bones
 	memcpy(oldBones, bones, sizeof(bones[0]) * mdxFrameHeader->numBones);
 }
@@ -1494,30 +1715,31 @@ static void R_CalcBones(const refEntity_t *refent, int *boneList, int numBones) 
 #ifdef DBG_PROFILE_BONES
 #define DBG_SHOWTIME    Ren_Print("%i: %i, ", di++, (dt = ri.Milliseconds()) - ldt); ldt = dt;
 #else
-#define DBG_SHOWTIME   ;
+#define DBG_SHOWTIME    ;
 #endif
 
-void Tess_MDM_SurfaceAnim(mdmSurfaceIntern_t *surface) {
+void Tess_MDM_SurfaceAnim(mdmSurfaceIntern_t *surface)
+{
 #if 1
-	int i, j, k;
-	refEntity_t *refent;
-	int *boneList;
-	mdmModel_t *mdm;
-	md5Vertex_t *v;
+	int           i, j, k;
+	refEntity_t   *refent;
+	int           *boneList;
+	mdmModel_t    *mdm;
+	md5Vertex_t   *v;
 	srfTriangle_t *tri;
-	int baseIndex, baseVertex;
-	float *tmpPosition, *tmpNormal, *tmpTangent, *tmpBinormal;
+	int           baseIndex, baseVertex;
+	float         *tmpPosition, *tmpNormal, *tmpTangent, *tmpBinormal;
 
 #ifdef DBG_PROFILE_BONES
 	int di = 0, dt, ldt;
 
-	dt = ri.Milliseconds();
+	dt  = ri.Milliseconds();
 	ldt = dt;
 #endif
 
-	refent = &backEnd.currentEntity->e;
+	refent   = &backEnd.currentEntity->e;
 	boneList = surface->boneReferences;
-	mdm = surface->model;
+	mdm      = surface->model;
 
 	R_CalcBones((const refEntity_t *)refent, boneList, surface->numBoneReferences);
 
@@ -1528,7 +1750,7 @@ void Tess_MDM_SurfaceAnim(mdmSurfaceIntern_t *surface) {
 	// TODO: lerp the radius and origin
 	VectorAdd(refent->origin, frame->localOrigin, vec);
 	lodRadius = frame->radius;
-	lodScale = RB_CalcMDMLod(refent, vec, lodRadius, mdm->lodBias, mdm->lodScale);
+	lodScale  = RB_CalcMDMLod(refent, vec, lodRadius, mdm->lodBias, mdm->lodScale);
 
 	// debug code
 	// lodScale = r_lodTest->value;
@@ -1539,75 +1761,88 @@ void Tess_MDM_SurfaceAnim(mdmSurfaceIntern_t *surface) {
 #if 0
 	render_count = surface->numVerts;
 #else
-	if (refent->reFlags & REFLAG_DEAD_LOD) {
-		if (lodScale < 0.35) {                      // allow dead to lod down to 35% (even if below surf->minLod) (%35 is arbitrary and probably not good generally.  worked for the blackguard/infantry as a test though)
+	if (refent->reFlags & REFLAG_DEAD_LOD)
+	{
+		if (lodScale < 0.35)
+		{                       // allow dead to lod down to 35% (even if below surf->minLod) (%35 is arbitrary and probably not good generally.  worked for the blackguard/infantry as a test though)
 			lodScale = 0.35;
 		}
-
 		render_count = ROUND_INT((float)surface->numVerts * lodScale);
-	} else {
+	}
+	else
+	{
 		render_count = ROUND_INT((float)surface->numVerts * lodScale);
-
-		if (render_count < surface->minLod) {
-			if (!(refent->reFlags & REFLAG_DEAD_LOD)) {
+		if (render_count < surface->minLod)
+		{
+			if (!(refent->reFlags & REFLAG_DEAD_LOD))
+			{
 				render_count = surface->minLod;
 			}
 		}
 	}
 #endif
 
-	if (render_count > surface->numVerts) {
+	if (render_count > surface->numVerts)
+	{
 		render_count = surface->numVerts;
 	}
+
 	// to profile bone transform performance only
-	if (r_showSkeleton->integer == 10) {
+	if (r_showSkeleton->integer == 10)
+	{
 		return;
 	}
 
 	Tess_CheckOverflow(render_count, surface->numTriangles * 3);
 
-	baseIndex = tess.numIndexes;
+	baseIndex  = tess.numIndexes;
 	baseVertex = tess.numVertexes;
 
 	// setup triangle list
 
 #if 0
-	for (i = 0, tri = surface->triangles; i < surface->numTriangles; i++, tri++) {
+	for (i = 0, tri = surface->triangles; i < surface->numTriangles; i++, tri++)
+	{
 		tess.indexes[tess.numIndexes + i * 3 + 0] = tess.numVertexes + tri->indexes[0];
 		tess.indexes[tess.numIndexes + i * 3 + 1] = tess.numVertexes + tri->indexes[1];
 		tess.indexes[tess.numIndexes + i * 3 + 2] = tess.numVertexes + tri->indexes[2];
 	}
 
-	tess.numIndexes += surface->numTriangles * 3;
+	tess.numIndexes  += surface->numTriangles * 3;
 	tess.numVertexes += render_count;
 
 #else
-	if (render_count == surface->numVerts) {
-		for (i = 0, tri = surface->triangles; i < surface->numTriangles; i++, tri++) {
+	if (render_count == surface->numVerts)
+	{
+		for (i = 0, tri = surface->triangles; i < surface->numTriangles; i++, tri++)
+		{
 			tess.indexes[tess.numIndexes + i * 3 + 0] = tess.numVertexes + tri->indexes[0];
 			tess.indexes[tess.numIndexes + i * 3 + 1] = tess.numVertexes + tri->indexes[1];
 			tess.indexes[tess.numIndexes + i * 3 + 2] = tess.numVertexes + tri->indexes[2];
 		}
 
-		tess.numIndexes += surface->numTriangles * 3;
+		tess.numIndexes  += surface->numTriangles * 3;
 		tess.numVertexes += render_count;
-	} else {
+	}
+	else
+	{
 		int p0, p1, p2;
 
 		pCollapse = collapse;
-
-		for (j = 0; j < render_count; pCollapse++, j++) {
+		for (j = 0; j < render_count; pCollapse++, j++)
+		{
 			*pCollapse = j;
 		}
 
 		pCollapseMap = &surface->collapseMap[render_count];
-
-		for (j = render_count; j < surface->numVerts; j++, pCollapse++, pCollapseMap++) {
+		for (j = render_count; j < surface->numVerts; j++, pCollapse++, pCollapseMap++)
+		{
 			int32_t collapseValue = *pCollapseMap;
 			*pCollapse = collapse[collapseValue];
 		}
 
-		for (i = 0, tri = surface->triangles; i < surface->numTriangles; i++, tri++) {
+		for (i = 0, tri = surface->triangles; i < surface->numTriangles; i++, tri++)
+		{
 			p0 = collapse[tri->indexes[0]];
 			p1 = collapse[tri->indexes[1]];
 			p2 = collapse[tri->indexes[2]];
@@ -1616,7 +1851,8 @@ void Tess_MDM_SurfaceAnim(mdmSurfaceIntern_t *surface) {
 			// note:  serious optimization opportunity here,
 			//  by sorting the triangles the following "continue"
 			//  could have been made into a "break" statement.
-			if (p0 == p1 || p1 == p2 || p2 == p0) {
+			if (p0 == p1 || p1 == p2 || p2 == p0)
+			{
 				continue;
 			}
 
@@ -1632,13 +1868,13 @@ void Tess_MDM_SurfaceAnim(mdmSurfaceIntern_t *surface) {
 #endif
 
 	// deform the vertexes by the lerped bones
-	v = surface->verts;
+	v           = surface->verts;
 	tmpPosition = (float *)(&tess.xyz[baseVertex][0]);
-	tmpNormal = (float *)(&tess.normals[baseVertex][0]);
+	tmpNormal   = (float *)(&tess.normals[baseVertex][0]);
 	tmpBinormal = (float *)(&tess.binormals[baseVertex][0]);
-	tmpTangent = (float *)(&tess.tangents[baseVertex][0]);
-
-	for (j = 0; j < render_count; j++, tmpPosition += 4, tmpNormal += 4, tmpTangent += 4, tmpBinormal += 4, v++) {
+	tmpTangent  = (float *)(&tess.tangents[baseVertex][0]);
+	for (j = 0; j < render_count; j++, tmpPosition += 4, tmpNormal += 4, tmpTangent += 4, tmpBinormal += 4, v++)
+	{
 		md5Weight_t *w;
 
 		Vector4Set(tmpPosition, 0, 0, 0, 1);
@@ -1646,7 +1882,8 @@ void Tess_MDM_SurfaceAnim(mdmSurfaceIntern_t *surface) {
 		Vector4Set(tmpBinormal, 0, 0, 0, 1);
 		Vector4Set(tmpNormal, 0, 0, 0, 1);
 
-		for (k = 0; k < v->numWeights; k++) {
+		for (k = 0; k < v->numWeights; k++)
+		{
 			w = v->weights[k];
 
 			bone = &bones[w->boneIndex];
@@ -1656,6 +1893,7 @@ void Tess_MDM_SurfaceAnim(mdmSurfaceIntern_t *surface) {
 			LocalAddScaledMatrixTransformVector(v->binormal, w->boneWeight, bone->matrix, tmpBinormal);
 			LocalAddScaledMatrixTransformVector(v->normal, w->boneWeight, bone->matrix, tmpNormal);
 		}
+
 		//LocalMatrixTransformVector(v->normal, bones[v->weights[0]->boneIndex].matrix, tempNormal);
 
 		tess.texCoords[baseVertex + j][0] = v->texCoords[0];
@@ -1665,23 +1903,24 @@ void Tess_MDM_SurfaceAnim(mdmSurfaceIntern_t *surface) {
 	DBG_SHOWTIME
 
 #if 0
-	if (r_showSkeleton->integer) {
+	if (r_showSkeleton->integer)
+	{
 		GL_State(GLS_POLYMODE_LINE | GLS_DEPTHMASK_TRUE);
-
-		if (r_showSkeleton->integer < 3 || r_showSkeleton->integer == 5 || r_showSkeleton->integer == 8 || r_showSkeleton->integer == 9) {
+		if (r_showSkeleton->integer < 3 || r_showSkeleton->integer == 5 || r_showSkeleton->integer == 8 || r_showSkeleton->integer == 9)
+		{
 			// DEBUG: show the bones as a stick figure with axis at each bone
 			boneRefs = (int *)((byte *) surface + surface->ofsBoneReferences);
-
-			for (i = 0; i < surface->numBoneReferences; i++, boneRefs++) {
+			for (i = 0; i < surface->numBoneReferences; i++, boneRefs++)
+			{
 				bonePtr = &bones[*boneRefs];
 
 				GL_Bind(tr.whiteImage);
-
-				if (r_showSkeleton->integer != 9) {
+				if (r_showSkeleton->integer != 9)
+				{
 					glLineWidth(1);
 					glBegin(GL_LINES);
-
-					for (j = 0; j < 3; j++) {
+					for (j = 0; j < 3; j++)
+					{
 						VectorClear(vec);
 						vec[j] = 1;
 						glColor3fv(vec);
@@ -1693,7 +1932,8 @@ void Tess_MDM_SurfaceAnim(mdmSurfaceIntern_t *surface) {
 				}
 
 				// connect to our parent if it's valid
-				if (validBones[boneInfo[*boneRefs].parent]) {
+				if (validBones[boneInfo[*boneRefs].parent])
+				{
 					glLineWidth(r_showSkeleton->integer == 8 ? 4 : 2);
 					glBegin(GL_LINES);
 					glColor3f(.6, .6, .6);
@@ -1705,7 +1945,8 @@ void Tess_MDM_SurfaceAnim(mdmSurfaceIntern_t *surface) {
 				glLineWidth(1);
 			}
 
-			if (r_showSkeleton->integer == 8) {
+			if (r_showSkeleton->integer == 8)
+			{
 				// FIXME: Actually draw the whole skeleton
 				//if( surface == (mdmSurface_t *)((byte *)header + header->ofsSurfaces) ) {
 				mdxHeader_t *mdxHeader = R_GetModelByHandle(refent->frameModel)->mdx;
@@ -1715,8 +1956,9 @@ void Tess_MDM_SurfaceAnim(mdmSurfaceIntern_t *surface) {
 				glDepthRange(0, 0); // never occluded
 				glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
-				for (i = 0; i < surface->numBoneReferences; i++, boneRefs++) {
-					vec3_t diff;
+				for (i = 0; i < surface->numBoneReferences; i++, boneRefs++)
+				{
+					vec3_t        diff;
 					mdxBoneInfo_t *mdxBoneInfo =
 					    (mdxBoneInfo_t *) ((byte *) mdxHeader + mdxHeader->ofsBones + *boneRefs * sizeof(mdxBoneInfo_t));
 					bonePtr = &bones[*boneRefs];
@@ -1740,17 +1982,21 @@ void Tess_MDM_SurfaceAnim(mdmSurfaceIntern_t *surface) {
 
 				glDepthRange(0, 1);
 				//}
-			} else if (r_showSkeleton->integer == 9) {
-				if (surface == (mdmSurface_t *) ((byte *) header + header->ofsSurfaces)) {
+			}
+			else if (r_showSkeleton->integer == 9)
+			{
+				if (surface == (mdmSurface_t *) ((byte *) header + header->ofsSurfaces))
+				{
 					mdmTag_t *pTag = (mdmTag_t *) ((byte *) header + header->ofsTags);
 
 					glDepthRange(0, 0); // never occluded
 					glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
-					for (i = 0; i < header->numTags; i++) {
+					for (i = 0; i < header->numTags; i++)
+					{
 						mdxBoneFrame_t *tagBone;
-						orientation_t outTag;
-						vec3_t diff;
+						orientation_t  outTag;
+						vec3_t         diff;
 
 						// now extract the orientation for the bone that represents our tag
 						tagBone = &bones[pTag->boneIndex];
@@ -1791,7 +2037,7 @@ void Tess_MDM_SurfaceAnim(mdmSurfaceIntern_t *surface) {
 						glEnd();
 						glDisable(GL_BLEND);
 
-						R_DebugText(vec, 1.f, 1.f, 1.f, pTag->name, qfalse); // qfalse, as there is no reason to set depthrange again
+						R_DebugText(vec, 1.f, 1.f, 1.f, pTag->name, qfalse);    // qfalse, as there is no reason to set depthrange again
 
 						pTag = (mdmTag_t *) ((byte *) pTag + pTag->ofsEnd);
 					}
@@ -1800,11 +2046,12 @@ void Tess_MDM_SurfaceAnim(mdmSurfaceIntern_t *surface) {
 			}
 		}
 
-		if (r_showSkeleton->integer >= 3 && r_showSkeleton->integer <= 6) {
+		if (r_showSkeleton->integer >= 3 && r_showSkeleton->integer <= 6)
+		{
 			int render_indexes = (tess.numIndexes - oldIndexes);
 
 			// show mesh edges
-			tempVert = (float *)(tess.xyz + baseVertex);
+			tempVert   = (float *)(tess.xyz + baseVertex);
 			tempNormal = (float *)(tess.normal + baseVertex);
 
 			GL_Bind(tr.whiteImage);
@@ -1813,8 +2060,8 @@ void Tess_MDM_SurfaceAnim(mdmSurfaceIntern_t *surface) {
 			glColor3f(.0, .0, .8);
 
 			pIndexes = &tess.indexes[oldIndexes];
-
-			for (j = 0; j < render_indexes / 3; j++, pIndexes += 3) {
+			for (j = 0; j < render_indexes / 3; j++, pIndexes += 3)
+			{
 				glVertex3fv(tempVert + 4 * pIndexes[0]);
 				glVertex3fv(tempVert + 4 * pIndexes[1]);
 
@@ -1828,41 +2075,49 @@ void Tess_MDM_SurfaceAnim(mdmSurfaceIntern_t *surface) {
 			glEnd();
 
 			// track debug stats
-			if (r_showSkeleton->integer == 4) {
+			if (r_showSkeleton->integer == 4)
+			{
 				totalrv += render_count;
 				totalrt += render_indexes / 3;
-				totalv += surface->numVerts;
-				totalt += surface->numTriangles;
+				totalv  += surface->numVerts;
+				totalt  += surface->numTriangles;
 			}
 
-			if (r_showSkeleton->integer == 3) {
+			if (r_showSkeleton->integer == 3)
+			{
 				Ren_Print("Lod %.2f  verts %4d/%4d  tris %4d/%4d  (%.2f%%)\n", lodScale, render_count,
 				          surface->numVerts, render_indexes / 3, surface->numTriangles,
 				          (float)(100.0 * render_indexes / 3) / (float)surface->numTriangles);
 			}
 		}
 
-		if (r_showSkeleton->integer == 6 || r_showSkeleton->integer == 7) {
-			v = (mdmVertex_t *) ((byte *) surface + surface->ofsVerts);
+		if (r_showSkeleton->integer == 6 || r_showSkeleton->integer == 7)
+		{
+			v        = (mdmVertex_t *) ((byte *) surface + surface->ofsVerts);
 			tempVert = (float *)(tess.xyz + baseVertex);
 			GL_Bind(tr.whiteImage);
 			glPointSize(5);
 			glBegin(GL_POINTS);
-
-			for (j = 0; j < render_count; j++, tempVert += 4) {
-				if (v->numWeights > 1) {
-					if (v->numWeights == 2) {
+			for (j = 0; j < render_count; j++, tempVert += 4)
+			{
+				if (v->numWeights > 1)
+				{
+					if (v->numWeights == 2)
+					{
 						glColor3f(.4f, .4f, 0.f);
-					} else if (v->numWeights == 3) {
+					}
+					else if (v->numWeights == 3)
+					{
 						glColor3f(.8f, .4f, 0.f);
-					} else {
+					}
+					else
+					{
 						glColor3f(1.f, .4f, 0.f);
 					}
 					glVertex3fv(tempVert);
 				}
 				v = (mdmVertex_t *) &v->weights[v->numWeights];
 			}
-
 			glEnd();
 		}
 	}
@@ -1925,11 +2180,12 @@ void Tess_MDM_SurfaceAnim(mdmSurfaceIntern_t *surface) {
         glVertex3fv( v5 );
 
         glEnd();
-  }*/
+    }*/
 
-	if (r_showSkeleton->integer > 1) {
+	if (r_showSkeleton->integer > 1)
+	{
 		// dont draw the actual surface
-		tess.numIndexes = baseIndex;
+		tess.numIndexes  = baseIndex;
 		tess.numVertexes = baseVertex;
 		return;
 	}
@@ -1941,18 +2197,20 @@ void Tess_MDM_SurfaceAnim(mdmSurfaceIntern_t *surface) {
 #endif // entire function block
 }
 
-void Tess_SurfaceVBOMDMMesh(srfVBOMDMMesh_t *surface) {
-	int i;
-	mdmModel_t *mdmModel;
+void Tess_SurfaceVBOMDMMesh(srfVBOMDMMesh_t *surface)
+{
+	int                i;
+	mdmModel_t         *mdmModel;
 	mdmSurfaceIntern_t *mdmSurface;
-	mat4_t m, m2; //, m3
-	refEntity_t *refent;
-	int lodIndex;
-	IBO_t *lodIBO;
+	mat4_t             m, m2; //, m3
+	refEntity_t        *refent;
+	int                lodIndex;
+	IBO_t              *lodIBO;
 
 	Ren_LogComment("--- Tess_SurfaceVBOMDMMesh ---\n");
 
-	if (!surface->vbo || !surface->ibo[0]) {
+	if (!surface->vbo || !surface->ibo[0])
+	{
 		return;
 	}
 
@@ -1962,7 +2220,7 @@ void Tess_SurfaceVBOMDMMesh(srfVBOMDMMesh_t *surface) {
 
 	tess.numVertexes = surface->numVerts;
 
-	mdmModel = surface->mdmModel;
+	mdmModel   = surface->mdmModel;
 	mdmSurface = surface->mdmSurface;
 
 	refent = &backEnd.currentEntity->e;
@@ -1973,7 +2231,8 @@ void Tess_SurfaceVBOMDMMesh(srfVBOMDMMesh_t *surface) {
 
 	tess.vboVertexSkinning = qtrue;
 
-	for (i = 0; i < surface->numBoneRemap; i++) {
+	for (i = 0; i < surface->numBoneRemap; i++)
+	{
 #if 1
 		MatrixFromVectorsFLU(m, bones[surface->boneRemapInverse[i]].matrix[0],
 		                     bones[surface->boneRemapInverse[i]].matrix[1],
@@ -1983,27 +2242,29 @@ void Tess_SurfaceVBOMDMMesh(srfVBOMDMMesh_t *surface) {
 
 		MatrixSetupTransformFromRotation(tess.boneMatrices[i], m2, bones[surface->boneRemapInverse[i]].translation);
 #else
-		float *row0 = bones[surface->boneRemapInverse[i]].matrix[0];
-		float *row1 = bones[surface->boneRemapInverse[i]].matrix[1];
-		float *row2 = bones[surface->boneRemapInverse[i]].matrix[2];
+		float *row0  = bones[surface->boneRemapInverse[i]].matrix[0];
+		float *row1  = bones[surface->boneRemapInverse[i]].matrix[1];
+		float *row2  = bones[surface->boneRemapInverse[i]].matrix[2];
 		float *trans = bones[surface->boneRemapInverse[i]].translation;
 
 		float *m = tess.boneMatrices[i];
 
-		m[0] = row0[0]; m[4] = row0[1]; m[8] = row0[2]; m[12] = trans[0];
-		m[1] = row1[0]; m[5] = row1[1]; m[9] = row1[2]; m[13] = trans[1];
-		m[2] = row2[0]; m[6] = row2[1]; m[10] = row2[2]; m[14] = trans[2];
-		m[3] = 0; m[7] = 0; m[11] = 0; m[15] = 1;
+		m[0] = row0[0];        m[4] = row0[1];        m[8] = row0[2];  m[12] = trans[0];
+		m[1] = row1[0];        m[5] = row1[1];        m[9] = row1[2];  m[13] = trans[1];
+		m[2] = row2[0];        m[6] = row2[1];        m[10] = row2[2];  m[14] = trans[2];
+		m[3] = 0;              m[7] = 0;              m[11] = 0;        m[15] = 1;
 #endif
 	}
+
 	// calculate LOD
 
 	// TODO: lerp the radius and origin
 	VectorAdd(refent->origin, frame->localOrigin, vec);
 	lodIndex = RB_CalcMDMLodIndex(refent, vec, frame->radius, mdmModel->lodBias, mdmModel->lodScale, mdmSurface);
-	lodIBO = surface->ibo[lodIndex];
+	lodIBO   = surface->ibo[lodIndex];
 
-	if (lodIBO == NULL) {
+	if (lodIBO == NULL)
+	{
 		lodIBO = surface->ibo[0];
 	}
 	//Ren_Print("LOD index = '%i', IBO = '%s'\n", lodIndex, lodIBO->name);
@@ -2018,28 +2279,35 @@ void Tess_SurfaceVBOMDMMesh(srfVBOMDMMesh_t *surface) {
 }
 
 int R_MDM_GetBoneTag(orientation_t *outTag, mdmModel_t *mdm, int startTagIndex, const refEntity_t *refent,
-                     const char *tagName) {
-	int i, j;
+                     const char *tagName)
+{
+	int            i, j;
 	mdmTagIntern_t *pTag;
-	int *boneList;
+	int            *boneList;
 
-	if (startTagIndex > mdm->numTags) {
+	if (startTagIndex > mdm->numTags)
+	{
 		memset(outTag, 0, sizeof(*outTag));
 		return -1;
 	}
+
 	// find the correct tag
 	pTag = (mdmTagIntern_t *) &mdm->tags[startTagIndex];
 
-	for (i = startTagIndex; i < mdm->numTags; i++, pTag++) {
-		if (!strcmp(pTag->name, tagName)) {
+	for (i = startTagIndex; i < mdm->numTags; i++, pTag++)
+	{
+		if (!strcmp(pTag->name, tagName))
+		{
 			break;
 		}
 	}
 
-	if (i >= mdm->numTags) {
+	if (i >= mdm->numTags)
+	{
 		memset(outTag, 0, sizeof(*outTag));
 		return -1;
 	}
+
 	// calc the bones
 	boneList = pTag->boneReferences;
 	R_CalcBones(refent, boneList, pTag->numBoneReferences);
@@ -2048,10 +2316,9 @@ int R_MDM_GetBoneTag(orientation_t *outTag, mdmModel_t *mdm, int startTagIndex, 
 	bone = &bones[pTag->boneIndex];
 	VectorClear(outTag->origin);
 	LocalAddScaledMatrixTransformVectorTranslate(pTag->offset, 1.f, bone->matrix, bone->translation, outTag->origin);
-
-	for (j = 0; j < 3; j++) {
+	for (j = 0; j < 3; j++)
+	{
 		LocalMatrixTransformVector(pTag->axis[j], bone->matrix, outTag->axis[j]);
 	}
-
 	return i;
 }

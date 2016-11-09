@@ -38,15 +38,18 @@
 /**
  * @brief R_PerformanceCounters
  */
-void R_PerformanceCounters(void) {
-	if (!r_speeds->integer) {
+void R_PerformanceCounters(void)
+{
+	if (!r_speeds->integer)
+	{
 		// clear the counters even if we aren't printing
 		Com_Memset(&tr.pc, 0, sizeof(tr.pc));
 		Com_Memset(&backEnd.pc, 0, sizeof(backEnd.pc));
 		return;
 	}
 
-	switch (r_speeds->integer) {
+	switch (r_speeds->integer)
+	{
 	case RSPEEDS_GENERAL:
 		Ren_Print("%i views %i portals %i batches %i surfs %i leafs %i verts %i tris\n",
 		          backEnd.pc.c_views, backEnd.pc.c_portals, backEnd.pc.c_batches, backEnd.pc.c_surfaces, tr.pc.c_leafs,
@@ -156,7 +159,8 @@ int c_blockedOnMain;
  * @brief R_IssueRenderCommands
  * @param runPerformanceCounters
  */
-void R_IssueRenderCommands(qboolean runPerformanceCounters) {
+void R_IssueRenderCommands(qboolean runPerformanceCounters)
+{
 	renderCommandList_t *cmdList = &backEndData->commands;
 
 	assert(cmdList);
@@ -168,11 +172,14 @@ void R_IssueRenderCommands(qboolean runPerformanceCounters) {
 
 	// at this point, the back end thread is idle, so it is ok
 	// to look at it's performance counters
-	if (runPerformanceCounters) {
+	if (runPerformanceCounters)
+	{
 		R_PerformanceCounters();
 	}
+
 	// actually start the commands going
-	if (!r_skipBackEnd->integer) {
+	if (!r_skipBackEnd->integer)
+	{
 		// let it start on the new batch
 		RB_ExecuteRenderCommands(cmdList->cmds);
 	}
@@ -181,11 +188,12 @@ void R_IssueRenderCommands(qboolean runPerformanceCounters) {
 /**
  * @brief Issue any pending commands
  */
-void R_IssuePendingRenderCommands(void) {
-	if (!tr.registered) {
+void R_IssuePendingRenderCommands(void)
+{
+	if (!tr.registered)
+	{
 		return;
 	}
-
 	R_IssueRenderCommands(qfalse);
 }
 
@@ -195,13 +203,16 @@ void R_IssuePendingRenderCommands(void) {
  * @param bytes
  * @return
  */
-void *R_GetCommandBuffer(int bytes) {
+void *R_GetCommandBuffer(int bytes)
+{
 	renderCommandList_t *cmdList = &backEndData->commands;
 
 	// always leave room for the swap buffers and end of list commands
 	// - added swapBuffers_t from ET
-	if (cmdList->used + bytes + (sizeof(swapBuffersCommand_t) + sizeof(int)) > MAX_RENDER_COMMANDS) {
-		if (bytes > MAX_RENDER_COMMANDS - (sizeof(swapBuffersCommand_t) + sizeof(int))) {
+	if (cmdList->used + bytes + (sizeof(swapBuffersCommand_t) + sizeof(int)) > MAX_RENDER_COMMANDS)
+	{
+		if (bytes > MAX_RENDER_COMMANDS - (sizeof(swapBuffersCommand_t) + sizeof(int)))
+		{
 			Ren_Fatal("R_GetCommandBuffer: bad size %i", bytes);
 		}
 		// if we run out of room, just start dropping commands
@@ -216,18 +227,18 @@ void *R_GetCommandBuffer(int bytes) {
 /**
  * @brief R_AddDrawViewCmd
  */
-void R_AddDrawViewCmd() {
+void R_AddDrawViewCmd()
+{
 	drawViewCommand_t *cmd;
 
 	cmd = (drawViewCommand_t *)R_GetCommandBuffer(sizeof(*cmd));
-
-	if (!cmd) {
+	if (!cmd)
+	{
 		return;
 	}
-
 	cmd->commandId = RC_DRAW_VIEW;
 
-	cmd->refdef = tr.refdef;
+	cmd->refdef    = tr.refdef;
 	cmd->viewParms = tr.viewParms;
 }
 
@@ -235,23 +246,23 @@ void R_AddDrawViewCmd() {
  * @brief Passing NULL will set the color to white
  * @param rgba
  */
-void RE_SetColor(const float *rgba) {
+void RE_SetColor(const float *rgba)
+{
 	setColorCommand_t *cmd;
 
-	if (!tr.registered) {
+	if (!tr.registered)
+	{
 		return;
 	}
-
 	cmd = (setColorCommand_t *)R_GetCommandBuffer(sizeof(*cmd));
-
-	if (!cmd) {
+	if (!cmd)
+	{
 		return;
 	}
-
 	cmd->commandId = RC_SET_COLOR;
-
-	if (!rgba) {
-		static float colorWhite[4] = {1, 1, 1, 1};
+	if (!rgba)
+	{
+		static float colorWhite[4] = { 1, 1, 1, 1 };
 
 		rgba = colorWhite;
 	}
@@ -274,19 +285,21 @@ void RE_SetColor(const float *rgba) {
  * @param t2
  * @return
  */
-static qboolean R_ClipRegion(float *x, float *y, float *w, float *h, float *s1, float *t1, float *s2, float *t2) {
+static qboolean R_ClipRegion(float *x, float *y, float *w, float *h, float *s1, float *t1, float *s2, float *t2)
+{
 	float left, top, right, bottom;
 	float _s1, _t1, _s2, _t2;
 	float clipLeft, clipTop, clipRight, clipBottom;
 
 	if (tr.clipRegion[2] <= tr.clipRegion[0] ||
-	    tr.clipRegion[3] <= tr.clipRegion[1]) {
+	    tr.clipRegion[3] <= tr.clipRegion[1])
+	{
 		return qfalse;
 	}
 
-	left = *x;
-	top = *y;
-	right = *x + *w;
+	left   = *x;
+	top    = *y;
+	right  = *x + *w;
 	bottom = *y + *h;
 
 	_s1 = *s1;
@@ -294,41 +307,50 @@ static qboolean R_ClipRegion(float *x, float *y, float *w, float *h, float *s1, 
 	_s2 = *s2;
 	_t2 = *t2;
 
-	clipLeft = tr.clipRegion[0];
-	clipTop = tr.clipRegion[1];
-	clipRight = tr.clipRegion[2];
+	clipLeft   = tr.clipRegion[0];
+	clipTop    = tr.clipRegion[1];
+	clipRight  = tr.clipRegion[2];
 	clipBottom = tr.clipRegion[3];
 
 	// Completely clipped away
 	if (right <= clipLeft || left >= clipRight ||
-	    bottom <= clipTop || top >= clipBottom) {
+	    bottom <= clipTop || top >= clipBottom)
+	{
 		return qtrue;
 	}
+
 	// Clip left edge
-	if (left < clipLeft) {
+	if (left < clipLeft)
+	{
 		float f = (clipLeft - left) / (right - left);
 		*s1 = (f * (_s2 - _s1)) + _s1;
-		*x = clipLeft;
+		*x  = clipLeft;
 		*w -= (clipLeft - left);
 	}
+
 	// Clip right edge
-	if (right > clipRight) {
+	if (right > clipRight)
+	{
 		float f = (clipRight - right) / (left - right);
 		*s2 = (f * (_s1 - _s2)) + _s2;
-		*w = clipRight - *x;
+		*w  = clipRight - *x;
 	}
+
 	// Clip top edge
-	if (top < clipTop) {
+	if (top < clipTop)
+	{
 		float f = (clipTop - top) / (bottom - top);
 		*t1 = (f * (_t2 - _t1)) + _t1;
-		*y = clipTop;
+		*y  = clipTop;
 		*h -= (clipTop - top);
 	}
+
 	// Clip bottom edge
-	if (bottom > clipBottom) {
+	if (bottom > clipBottom)
+	{
 		float f = (clipBottom - bottom) / (top - bottom);
 		*t2 = (f * (_t1 - _t2)) + _t2;
-		*h = clipBottom - *y;
+		*h  = clipBottom - *y;
 	}
 
 	return qfalse;
@@ -338,10 +360,14 @@ static qboolean R_ClipRegion(float *x, float *y, float *w, float *h, float *s1, 
  * @brief RE_SetClipRegion
  * @param region
  */
-void RE_SetClipRegion(const float *region) {
-	if (region == NULL) {
+void RE_SetClipRegion(const float *region)
+{
+	if (region == NULL)
+	{
 		Com_Memset(tr.clipRegion, 0, sizeof(vec4_t));
-	} else {
+	}
+	else
+	{
 		Vector4Copy(region, tr.clipRegion);
 	}
 }
@@ -358,33 +384,36 @@ void RE_SetClipRegion(const float *region) {
  * @param t2
  * @param hShader
  */
-void RE_StretchPic(float x, float y, float w, float h, float s1, float t1, float s2, float t2, qhandle_t hShader) {
+void RE_StretchPic(float x, float y, float w, float h, float s1, float t1, float s2, float t2, qhandle_t hShader)
+{
 	stretchPicCommand_t *cmd;
 
-	if (!tr.registered) {
+	if (!tr.registered)
+	{
 		return;
 	}
 
-	if (R_ClipRegion(&x, &y, &w, &h, &s1, &t1, &s2, &t2)) {
+	if (R_ClipRegion(&x, &y, &w, &h, &s1, &t1, &s2, &t2))
+	{
 		return;
 	}
 
 	cmd = (stretchPicCommand_t *)R_GetCommandBuffer(sizeof(*cmd));
-
-	if (!cmd) {
+	if (!cmd)
+	{
 		return;
 	}
 
 	cmd->commandId = RC_STRETCH_PIC;
-	cmd->shader = R_GetShaderByHandle(hShader);
-	cmd->x = x;
-	cmd->y = y;
-	cmd->w = w;
-	cmd->h = h;
-	cmd->s1 = s1;
-	cmd->t1 = t1;
-	cmd->s2 = s2;
-	cmd->t2 = t2;
+	cmd->shader    = R_GetShaderByHandle(hShader);
+	cmd->x         = x;
+	cmd->y         = y;
+	cmd->w         = w;
+	cmd->h         = h;
+	cmd->s1        = s1;
+	cmd->t1        = t1;
+	cmd->s2        = s2;
+	cmd->t2        = t2;
 }
 
 extern int r_numPolyVerts;
@@ -395,22 +424,24 @@ extern int r_numPolyVerts;
  * @param numverts
  * @param hShader
  */
-void RE_2DPolyies(polyVert_t *verts, int numverts, qhandle_t hShader) {
+void RE_2DPolyies(polyVert_t *verts, int numverts, qhandle_t hShader)
+{
 	poly2dCommand_t *cmd;
 
-	if (r_numPolyVerts + numverts > r_maxpolyverts->integer) {
+	if (r_numPolyVerts + numverts > r_maxpolyverts->integer)
+	{
 		return;
 	}
 
 	cmd = (poly2dCommand_t *)R_GetCommandBuffer(sizeof(*cmd));
-
-	if (!cmd) {
+	if (!cmd)
+	{
 		return;
 	}
 
 	cmd->commandId = RC_2DPOLYS;
-	cmd->verts = &backEndData->polyVerts[r_numPolyVerts];
-	cmd->numverts = numverts;
+	cmd->verts     = &backEndData->polyVerts[r_numPolyVerts];
+	cmd->numverts  = numverts;
 	memcpy(cmd->verts, verts, sizeof(polyVert_t) * numverts);
 	cmd->shader = R_GetShaderByHandle(hShader);
 
@@ -430,27 +461,28 @@ void RE_2DPolyies(polyVert_t *verts, int numverts, qhandle_t hShader) {
  * @param hShader
  * @param angle
  */
-void RE_RotatedPic(float x, float y, float w, float h, float s1, float t1, float s2, float t2, qhandle_t hShader, float angle) {
+void RE_RotatedPic(float x, float y, float w, float h, float s1, float t1, float s2, float t2, qhandle_t hShader, float angle)
+{
 	stretchPicCommand_t *cmd;
 
 	cmd = (stretchPicCommand_t *)R_GetCommandBuffer(sizeof(*cmd));
-
-	if (!cmd) {
+	if (!cmd)
+	{
 		return;
 	}
 
 	cmd->commandId = RC_ROTATED_PIC;
-	cmd->shader = R_GetShaderByHandle(hShader);
-	cmd->x = x;
-	cmd->y = y;
-	cmd->w = w;
-	cmd->h = h;
+	cmd->shader    = R_GetShaderByHandle(hShader);
+	cmd->x         = x;
+	cmd->y         = y;
+	cmd->w         = w;
+	cmd->h         = h;
 
 	cmd->angle = angle;
-	cmd->s1 = s1;
-	cmd->t1 = t1;
-	cmd->s2 = s2;
-	cmd->t2 = t2;
+	cmd->s1    = s1;
+	cmd->t1    = t1;
+	cmd->s2    = s2;
+	cmd->t2    = t2;
 }
 
 /**
@@ -469,28 +501,29 @@ void RE_RotatedPic(float x, float y, float w, float h, float s1, float t1, float
  */
 void RE_StretchPicGradient(float x, float y, float w, float h,
                            float s1, float t1, float s2, float t2, qhandle_t hShader, const float *gradientColor,
-                           int gradientType) {
+                           int gradientType)
+{
 	stretchPicCommand_t *cmd;
 
 	cmd = (stretchPicCommand_t *)R_GetCommandBuffer(sizeof(*cmd));
-
-	if (!cmd) {
+	if (!cmd)
+	{
 		return;
 	}
-
 	cmd->commandId = RC_STRETCH_PIC_GRADIENT;
-	cmd->shader = R_GetShaderByHandle(hShader);
-	cmd->x = x;
-	cmd->y = y;
-	cmd->w = w;
-	cmd->h = h;
-	cmd->s1 = s1;
-	cmd->t1 = t1;
-	cmd->s2 = s2;
-	cmd->t2 = t2;
+	cmd->shader    = R_GetShaderByHandle(hShader);
+	cmd->x         = x;
+	cmd->y         = y;
+	cmd->w         = w;
+	cmd->h         = h;
+	cmd->s1        = s1;
+	cmd->t1        = t1;
+	cmd->s2        = s2;
+	cmd->t2        = t2;
 
-	if (!gradientColor) {
-		static float colorWhite[4] = {1, 1, 1, 1};
+	if (!gradientColor)
+	{
+		static float colorWhite[4] = { 1, 1, 1, 1 };
 
 		gradientColor = colorWhite;
 	}
@@ -499,7 +532,7 @@ void RE_StretchPicGradient(float x, float y, float w, float h,
 	cmd->gradientColor[1] = gradientColor[1] * 255;
 	cmd->gradientColor[2] = gradientColor[2] * 255;
 	cmd->gradientColor[3] = gradientColor[3] * 255;
-	cmd->gradientType = gradientType;
+	cmd->gradientType     = gradientType;
 }
 
 /**
@@ -507,10 +540,12 @@ void RE_StretchPicGradient(float x, float y, float w, float h,
  * for each RE_EndFrame
  * @param stereoFrame
  */
-void RE_BeginFrame(stereoFrame_t stereoFrame) {
+void RE_BeginFrame(stereoFrame_t stereoFrame)
+{
 	drawBufferCommand_t *cmd;
 
-	if (!tr.registered) {
+	if (!tr.registered)
+	{
 		return;
 	}
 
@@ -520,15 +555,19 @@ void RE_BeginFrame(stereoFrame_t stereoFrame) {
 
 	tr.frameCount++;
 	tr.frameSceneNum = 0;
-	tr.viewCount = 0;
+	tr.viewCount     = 0;
 
 	// do overdraw measurement
-	if (r_measureOverdraw->integer) {
-		if (glConfig.stencilBits < 4) {
+	if (r_measureOverdraw->integer)
+	{
+		if (glConfig.stencilBits < 4)
+		{
 			Ren_Print("Warning: not enough stencil bits to measure overdraw: %d\n", glConfig.stencilBits);
 			ri.Cvar_Set("r_measureOverdraw", "0");
 			r_measureOverdraw->modified = qfalse;
-		} else {
+		}
+		else
+		{
 			R_IssuePendingRenderCommands();
 			glEnable(GL_STENCIL_TEST);
 			glStencilMask(~0U);
@@ -536,38 +575,47 @@ void RE_BeginFrame(stereoFrame_t stereoFrame) {
 			glStencilFunc(GL_ALWAYS, 0U, ~0U);
 			glStencilOp(GL_KEEP, GL_INCR, GL_INCR);
 		}
-
 		r_measureOverdraw->modified = qfalse;
-	} else {
+	}
+	else
+	{
 		// this is only reached if it was on and is now off
-		if (r_measureOverdraw->modified) {
+		if (r_measureOverdraw->modified)
+		{
 			R_IssuePendingRenderCommands();
 			glDisable(GL_STENCIL_TEST);
 		}
-
 		r_measureOverdraw->modified = qfalse;
 	}
+
 	// texturemode stuff
-	if (r_textureMode->modified) {
+	if (r_textureMode->modified)
+	{
 		R_IssuePendingRenderCommands();
 		GL_TextureMode(r_textureMode->string);
 		r_textureMode->modified = qfalse;
 	}
+
 	// gamma stuff
-	if (r_gamma->modified) {
+	if (r_gamma->modified)
+	{
 		r_gamma->modified = qfalse;
 		R_IssuePendingRenderCommands();
 		R_SetColorMappings();
 	}
+
 	// check for errors
-	if (!r_ignoreGLErrors->integer) {
-		int err;
+	if (!r_ignoreGLErrors->integer)
+	{
+		int  err;
 		char s[128];
 
 		R_IssuePendingRenderCommands();
 
-		if ((err = glGetError()) != GL_NO_ERROR) {
-			switch (err) {
+		if ((err = glGetError()) != GL_NO_ERROR)
+		{
+			switch (err)
+			{
 			case GL_INVALID_ENUM:
 				strcpy(s, "GL_INVALID_ENUM");
 				break;
@@ -601,31 +649,43 @@ void RE_BeginFrame(stereoFrame_t stereoFrame) {
 			Ren_Fatal("RE_BeginFrame() - glGetError() failed (%s)!\n", s);
 		}
 	}
+
 	// draw buffer stuff
 	cmd = (drawBufferCommand_t *)R_GetCommandBuffer(sizeof(*cmd));
-
-	if (!cmd) {
+	if (!cmd)
+	{
 		return;
 	}
 
 	cmd->commandId = RC_DRAW_BUFFER;
 
-	if (glConfig.stereoEnabled) {
-		if (stereoFrame == STEREO_LEFT) {
+	if (glConfig.stereoEnabled)
+	{
+		if (stereoFrame == STEREO_LEFT)
+		{
 			cmd->buffer = (int)GL_BACK_LEFT;
-		} else if (stereoFrame == STEREO_RIGHT) {
+		}
+		else if (stereoFrame == STEREO_RIGHT)
+		{
 			cmd->buffer = (int)GL_BACK_RIGHT;
-		} else {
+		}
+		else
+		{
 			Ren_Fatal("RE_BeginFrame: Stereo is enabled, but stereoFrame was %i", stereoFrame);
 		}
-	} else {
-		if (stereoFrame != STEREO_CENTER) {
+	}
+	else
+	{
+		if (stereoFrame != STEREO_CENTER)
+		{
 			Ren_Fatal("RE_BeginFrame: Stereo is disabled, but stereoFrame was %i", stereoFrame);
 		}
-
-		if (!Q_stricmp(r_drawBuffer->string, "GL_FRONT")) {
+		if (!Q_stricmp(r_drawBuffer->string, "GL_FRONT"))
+		{
 			cmd->buffer = (int)GL_FRONT;
-		} else {
+		}
+		else
+		{
 			cmd->buffer = (int)GL_BACK;
 		}
 	}
@@ -636,16 +696,18 @@ void RE_BeginFrame(stereoFrame_t stereoFrame) {
  * @param frontEndMsec
  * @param backEndMsec
  */
-void RE_EndFrame(int *frontEndMsec, int *backEndMsec) {
+void RE_EndFrame(int *frontEndMsec, int *backEndMsec)
+{
 	swapBuffersCommand_t *cmd;
 
-	if (!tr.registered) {
+	if (!tr.registered)
+	{
 		return;
 	}
 
 	cmd = (swapBuffersCommand_t *)R_GetCommandBuffer(sizeof(*cmd));
-
-	if (!cmd) {
+	if (!cmd)
+	{
 		return;
 	}
 
@@ -660,16 +722,15 @@ void RE_EndFrame(int *frontEndMsec, int *backEndMsec) {
 	// may still be rendering into the current ones
 	R_InitNextFrame();
 
-	if (frontEndMsec) {
+	if (frontEndMsec)
+	{
 		*frontEndMsec = tr.frontEndMsec;
 	}
-
 	tr.frontEndMsec = 0;
-
-	if (backEndMsec) {
+	if (backEndMsec)
+	{
 		*backEndMsec = backEnd.pc.msec;
 	}
-
 	backEnd.pc.msec = 0;
 }
 
@@ -681,26 +742,28 @@ void RE_EndFrame(int *frontEndMsec, int *backEndMsec) {
  * @param encodeBuffer
  * @param motionJpeg
  */
-void RE_TakeVideoFrame(int width, int height, byte *captureBuffer, byte *encodeBuffer, qboolean motionJpeg) {
+void RE_TakeVideoFrame(int width, int height, byte *captureBuffer, byte *encodeBuffer, qboolean motionJpeg)
+{
 	videoFrameCommand_t *cmd;
 
-	if (!tr.registered) {
+	if (!tr.registered)
+	{
 		return;
 	}
 
 	cmd = (videoFrameCommand_t *)R_GetCommandBuffer(sizeof(*cmd));
-
-	if (!cmd) {
+	if (!cmd)
+	{
 		return;
 	}
 
 	cmd->commandId = RC_VIDEOFRAME;
 
-	cmd->width = width;
-	cmd->height = height;
+	cmd->width         = width;
+	cmd->height        = height;
 	cmd->captureBuffer = captureBuffer;
-	cmd->encodeBuffer = encodeBuffer;
-	cmd->motionJpeg = motionJpeg;
+	cmd->encodeBuffer  = encodeBuffer;
+	cmd->motionJpeg    = motionJpeg;
 }
 
 /**
@@ -711,40 +774,43 @@ void RE_TakeVideoFrame(int width, int height, byte *captureBuffer, byte *encodeB
  * @param w
  * @param h
  */
-void RE_RenderToTexture(int textureid, int x, int y, int w, int h) {
+void RE_RenderToTexture(int textureid, int x, int y, int w, int h)
+{
 	renderToTextureCommand_t *cmd;
 
 	// note: see also Com_GrowListElement checking against tr.images->currentElements
-	if (textureid > tr.numImages || textureid < 0) {
+	if (textureid > tr.numImages || textureid < 0)
+	{
 		Ren_Print("Warning: trap_R_RenderToTexture textureid %d out of range.\n", textureid);
 		return;
 	}
 
 	cmd = (renderToTextureCommand_t *)R_GetCommandBuffer(sizeof(*cmd));
-
-	if (!cmd) {
+	if (!cmd)
+	{
 		return;
 	}
 
 	cmd->commandId = RC_RENDERTOTEXTURE;
-	cmd->image = (image_t *) Com_GrowListElement(&tr.images, textureid);
-	cmd->x = x;
-	cmd->y = y;
-	cmd->w = w;
-	cmd->h = h;
+	cmd->image     = (image_t *) Com_GrowListElement(&tr.images, textureid);
+	cmd->x         = x;
+	cmd->y         = y;
+	cmd->w         = w;
+	cmd->h         = h;
 }
 
 /**
  * @brief RE_Finish
  */
-void RE_Finish(void) {
+void RE_Finish(void)
+{
 	renderFinishCommand_t *cmd;
 
 	Ren_Print("RE_Finish\n");
 
 	cmd = (renderFinishCommand_t *)R_GetCommandBuffer(sizeof(*cmd));
-
-	if (!cmd) {
+	if (!cmd)
+	{
 		return;
 	}
 

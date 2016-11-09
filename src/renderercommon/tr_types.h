@@ -90,13 +90,15 @@
 // is done for the gun.
 // renderer2 END
 
-typedef struct {
+typedef struct
+{
 	vec3_t xyz;
 	float st[2];
 	byte modulate[4];
 } polyVert_t;
 
-typedef struct poly_s {
+typedef struct poly_s
+{
 	qhandle_t hShader;
 	int numVerts;
 	polyVert_t *verts;
@@ -131,11 +133,12 @@ typedef enum
 //#define REFBONE_NAMES 1
 
 #if defined(USE_REFENTITY_ANIMATIONSYSTEM)
-typedef struct {
+typedef struct
+{
 #if defined(REFBONE_NAMES)
 	char name[64];
 #endif
-	short parentIndex; // parent index (-1 if root)
+	short parentIndex;           // parent index (-1 if root)
 	vec3_t origin;
 	quat_t rotation;
 } refBone_t;
@@ -147,58 +150,62 @@ typedef enum
 	SK_ABSOLUTE
 } refSkeletonType_t;
 
-typedef struct {
-	refSkeletonType_t type; // skeleton has been reset
+typedef struct
+{
+	refSkeletonType_t type;     // skeleton has been reset
 
 	short numBones;
 	refBone_t bones[MAX_BONES];
-	vec3_t bounds[2]; // bounds of all applied animations
+
+	vec3_t bounds[2];           // bounds of all applied animations
 	vec3_t scale;
 } refSkeleton_t;
 #endif
 // renderer2 END
 
-typedef struct {
+typedef struct
+{
 	refEntityType_t reType;
 	int renderfx;
 
-	qhandle_t hModel; // opaque type outside refresh
+	qhandle_t hModel;           // opaque type outside refresh
 
 	// most recent data
-	vec3_t lightingOrigin; // so multi-part models can be lit identically (RF_LIGHTING_ORIGIN)
-	float shadowPlane; // projection shadows go here, stencils go slightly lower
+	vec3_t lightingOrigin;      // so multi-part models can be lit identically (RF_LIGHTING_ORIGIN)
+	float shadowPlane;          // projection shadows go here, stencils go slightly lower
 
-	vec3_t axis[3]; // rotation vectors
-	vec3_t torsoAxis[3]; // rotation vectors for torso section of skeletal animation
+	vec3_t axis[3];             // rotation vectors
+	vec3_t torsoAxis[3];        // rotation vectors for torso section of skeletal animation
 	qboolean nonNormalizedAxes; // axis are not normalized, i.e. they have scale
-	vec3_t origin; // also used as MODEL_BEAM's "from"
-	int frame; // also used as MODEL_BEAM's diameter
+	vec3_t origin;              // also used as MODEL_BEAM's "from"
+	int frame;                  // also used as MODEL_BEAM's diameter
 	qhandle_t frameModel;
-	int torsoFrame; // skeletal torso can have frame independant of legs frame
+	int torsoFrame;             // skeletal torso can have frame independant of legs frame
 	qhandle_t torsoFrameModel;
 
 	// previous data for frame interpolation
-	vec3_t oldorigin; // also used as MODEL_BEAM's "to"
+	vec3_t oldorigin;           // also used as MODEL_BEAM's "to"
 	int oldframe;
 	qhandle_t oldframeModel;
 	int oldTorsoFrame;
 	qhandle_t oldTorsoFrameModel;
-	float backlerp; // 0.0 = current, 1.0 = old
+	float backlerp;             // 0.0 = current, 1.0 = old
 	float torsoBacklerp;
 
 	// texturing
-	int skinNum; // inline skin index
-	qhandle_t customSkin; // NULL for default skin
-	qhandle_t customShader; // use one image for the entire thing
+	int skinNum;                // inline skin index
+	qhandle_t customSkin;       // NULL for default skin
+	qhandle_t customShader;     // use one image for the entire thing
 
 	// misc
-	byte shaderRGBA[4]; // colors used by rgbgen entity shaders
-	float shaderTexCoord[2]; // texture coordinates used by tcMod entity modifiers
-	float shaderTime; // subtracted from refdef time to control effect start times
+	byte shaderRGBA[4];         // colors used by rgbgen entity shaders
+	float shaderTexCoord[2];    // texture coordinates used by tcMod entity modifiers
+	float shaderTime;           // subtracted from refdef time to control effect start times
 
 	// extra sprite information
 	float radius;
 	float rotation;
+
 	vec3_t fireRiseDir;
 
 	// entity fading (gibs, debris, etc)
@@ -208,7 +215,7 @@ typedef struct {
 
 	int reFlags;
 
-	int entityNum; // currentState.number, so we can attach rendering effects to specific entities (Zombie)
+	int entityNum;              // currentState.number, so we can attach rendering effects to specific entities (Zombie)
 
 	// renderer2 BEGIN
 
@@ -236,17 +243,19 @@ typedef enum
 	RL_MAX_REF_LIGHT_TYPE
 } refLightType_t;
 
-typedef struct {
+typedef struct
+{
 	refLightType_t rlType;
-	//int lightfx;
+	//int             lightfx;
 
 	qhandle_t attenuationShader;
+
 	vec3_t origin;
 	quat_t rotation;
 	vec3_t center;
-	vec3_t color; // range from 0.0 to 1.0, should be color normalized
+	vec3_t color;               // range from 0.0 to 1.0, should be color normalized
 
-	float scale; // r_lightScale if not set
+	float scale;                // r_lightScale if not set
 
 	// omni-directional light specific
 	vec3_t radius;
@@ -259,9 +268,9 @@ typedef struct {
 	vec3_t projEnd;
 
 	qboolean noShadows;
-	short noShadowID; // don't cast shadows of all entities with this id
+	short noShadowID;           // don't cast shadows of all entities with this id
 
-	qboolean inverseShadows; // don't cast light and draw shadows by darken the scene
+	qboolean inverseShadows;    // don't cast light and draw shadows by darken the scene
 	                            // this is useful for drawing player shadows with shadow mapping
 } refLight_t;
 // renderer2 END
@@ -291,32 +300,34 @@ typedef enum
 	NUM_FOGS
 } glfogType_t;
 
-typedef struct {
-	int mode; // GL_LINEAR, GL_EXP
-	int hint; // GL_DONT_CARE
-	int startTime; // in ms
-	int finishTime; // in ms
+typedef struct
+{
+	int mode;                   // GL_LINEAR, GL_EXP
+	int hint;                   // GL_DONT_CARE
+	int startTime;              // in ms
+	int finishTime;             // in ms
 	float color[4];
-	float start; // near
-	float end; // far
-	qboolean useEndForClip; // use the 'far' value for the far clipping plane
-	float density; // 0.0-1.0
-	qboolean registered; // has this fog been set up?
-	qboolean drawsky; // draw skybox
-	qboolean clearscreen; // clear the GL color buffer
+	float start;                // near
+	float end;                  // far
+	qboolean useEndForClip;     // use the 'far' value for the far clipping plane
+	float density;              // 0.0-1.0
+	qboolean registered;        // has this fog been set up?
+	qboolean drawsky;           // draw skybox
+	qboolean clearscreen;       // clear the GL color buffer
 } glfog_t;
 
 #define MAX_RENDER_STRINGS          8
 #define MAX_RENDER_STRING_LENGTH    32
 
-typedef struct {
+typedef struct
+{
 	int x, y, width, height;
 	float fov_x, fov_y;
 	vec3_t vieworg;
-	vec3_t viewaxis[3]; // transformation matrix
+	vec3_t viewaxis[3];         // transformation matrix
 
-	int time; // time in milliseconds for shader effects and other time dependent rendering issues
-	int rdflags; // RDF_NOWORLDMODEL, etc
+	int time;                   // time in milliseconds for shader effects and other time dependent rendering issues
+	int rdflags;                // RDF_NOWORLDMODEL, etc
 
 	// 1 bits will prevent the associated area from rendering at all
 	byte areamask[MAX_MAP_AREA_BYTES];
@@ -374,17 +385,18 @@ typedef enum
 	 */
 } glHardwareType_t;
 
-typedef struct {
+typedef struct
+{
 	char renderer_string[MAX_STRING_CHARS];
 	char vendor_string[MAX_STRING_CHARS];
 	char version_string[MAX_STRING_CHARS];
-	char extensions_string[MAX_STRING_CHARS * 4]; // bumping, some cards have a big extension string
+	char extensions_string[MAX_STRING_CHARS * 4];   // bumping, some cards have a big extension string
 	                                                // - no need to increase MAX_STRING_CHARS *4 - console doesn't print more
 	                                                // ET:L also stores this data in char* to fix extensions_string overflow issues
 	                                                // see end of struct - modern gfx cards have huge extensions string
 
-	int maxTextureSize; // queried from GL
-	int maxActiveTextures; // multitexture ability
+	int maxTextureSize;                             // queried from GL
+	int maxActiveTextures;                          // multitexture ability
 
 	int colorBits, depthBits, stencilBits;
 
@@ -402,9 +414,9 @@ typedef struct {
 	qboolean NVFogAvailable;
 	int NVFogMode;
 	// ATI
-	int ATIMaxTruformTess; // for truform support
-	int ATINormalMode; // for truform support
-	int ATIPointMode; // for truform support
+	int ATIMaxTruformTess;                          // for truform support
+	int ATINormalMode;                              // for truform support
+	int ATIPointMode;                               // for truform support
 
 	int vidWidth, vidHeight;
 	// aspect is the screen's physical width / height, which may be different
@@ -418,7 +430,7 @@ typedef struct {
 	// synonymous with "does rendering consume the entire screen?"
 	qboolean isFullscreen;
 	qboolean stereoEnabled;
-	qboolean smpActive; // obsolete, kept for compatibility
+	qboolean smpActive;                     // obsolete, kept for compatibility
 } glconfig_t;
 
 typedef enum
@@ -429,7 +441,8 @@ typedef enum
 	GL_CONTEXT_EGL,
 } windowContextType_t;
 
-typedef struct windowContext_s {
+typedef struct windowContext_s
+{
 	int versionMajor;
 	int versionMinor;
 	int context;
@@ -440,7 +453,8 @@ typedef struct windowContext_s {
 #define MAX_PB_VERTS    1025
 #define MAX_PB_INDICIES (MAX_PB_VERTS * 6)
 
-typedef struct polyBuffer_s {
+typedef struct polyBuffer_s
+{
 	vec4_t xyz[MAX_PB_VERTS];
 	vec2_t st[MAX_PB_VERTS];
 	byte color[MAX_PB_VERTS][4];

@@ -35,79 +35,91 @@
 
 #include "tr_local.h"
 
-void GL_Bind(image_t *image) {
+void GL_Bind(image_t *image)
+{
 	int texnum;
 
-	if (!image) {
+	if (!image)
+	{
 		Ren_Warning("GL_Bind: NULL image\n");
 		image = tr.defaultImage;
-	} else {
+	}
+	else
+	{
 		Ren_LogComment("--- GL_Bind( %s ) ---\n", image->name);
 	}
 
 	texnum = image->texnum;
 
-	if (r_nobind->integer && tr.blackImage) {
+	if (r_nobind->integer && tr.blackImage)
+	{
 		// performance evaluation option
 		texnum = tr.blackImage->texnum;
-		image = tr.blackImage;
+		image  = tr.blackImage;
 	}
 
-	if (glState.currenttextures[glState.currenttmu] != texnum) {
-		image->frameUsed = tr.frameCount;
+	if (glState.currenttextures[glState.currenttmu] != texnum)
+	{
+		image->frameUsed                            = tr.frameCount;
 		glState.currenttextures[glState.currenttmu] = texnum;
 		glBindTexture(image->type, texnum);
 	}
 }
 
-void GL_Unbind() {
+void GL_Unbind()
+{
 	Ren_LogComment("--- GL_Unbind() ---\n");
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void BindAnimatedImage(textureBundle_t *bundle) {
+void BindAnimatedImage(textureBundle_t *bundle)
+{
 	int index;
 
-	if (bundle->isVideoMap) {
+	if (bundle->isVideoMap)
+	{
 		ri.CIN_RunCinematic(bundle->videoMapHandle);
 		ri.CIN_UploadCinematic(bundle->videoMapHandle);
 		return;
 	}
 
-	if (bundle->numImages <= 1) {
+	if (bundle->numImages <= 1)
+	{
 		GL_Bind(bundle->image[0]);
 		return;
 	}
+
 	// it is necessary to do this messy calc to make sure animations line up
 	// exactly with waveforms of the same frequency
-	index = Q_ftol(backEnd.refdef.floatTime * bundle->imageAnimationSpeed * FUNCTABLE_SIZE);
+	index   = Q_ftol(backEnd.refdef.floatTime * bundle->imageAnimationSpeed * FUNCTABLE_SIZE);
 	index >>= FUNCTABLE_SIZE2;
 
-	if (index < 0) {
-		index = 0; // may happen with shader time offsets
+	if (index < 0)
+	{
+		index = 0;              // may happen with shader time offsets
 	}
-
 	index %= bundle->numImages;
 
 	GL_Bind(bundle->image[index]);
 }
 
 /*
-void GL_TextureFilter(image_t *image, filterType_t filterType) {
+void GL_TextureFilter(image_t *image, filterType_t filterType)
+{
     if (!image)
     {
         Ren_Warning("GL_TextureFilter: NULL image\n");
-  }
+    }
     else
     {
         Ren_LogComment("--- GL_TextureFilter( %s ) ---\n", image->name);
-  }
+    }
 
     if (image->filterType == filterType)
     {
         return;
-  }
+    }
 
     // set filter type
     switch (image->filterType)
@@ -130,28 +142,35 @@ void GL_TextureFilter(image_t *image, filterType_t filterType) {
         break;
     default:
         break;
-  }
+    }
 }
 */
 
-void GL_SelectTexture(int unit) {
-	if (glState.currenttmu == unit) {
+void GL_SelectTexture(int unit)
+{
+	if (glState.currenttmu == unit)
+	{
 		return;
 	}
 
-	if (unit >= 0 && unit <= 31) {
+	if (unit >= 0 && unit <= 31)
+	{
 		glActiveTexture(GL_TEXTURE0 + unit);
 
 		Ren_LogComment("glActiveTexture( GL_TEXTURE%i )\n", unit);
-	} else {
+	}
+	else
+	{
 		Ren_Drop("GL_SelectTexture: unit = %i", unit);
 	}
 
 	glState.currenttmu = unit;
 }
 
-void GL_BlendFunc(GLenum sfactor, GLenum dfactor) {
-	if (glState.blendSrc != sfactor || glState.blendDst != dfactor) {
+void GL_BlendFunc(GLenum sfactor, GLenum dfactor)
+{
+	if (glState.blendSrc != sfactor || glState.blendDst != dfactor)
+	{
 		glState.blendSrc = sfactor;
 		glState.blendDst = dfactor;
 
@@ -159,86 +178,106 @@ void GL_BlendFunc(GLenum sfactor, GLenum dfactor) {
 	}
 }
 
-void GL_ClearColor(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha) {
-	if (glState.clearColorRed != red || glState.clearColorGreen != green || glState.clearColorBlue != blue || glState.clearColorAlpha != alpha) {
-		glState.clearColorRed = red;
+void GL_ClearColor(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha)
+{
+	if (glState.clearColorRed != red || glState.clearColorGreen != green || glState.clearColorBlue != blue || glState.clearColorAlpha != alpha)
+	{
+		glState.clearColorRed   = red;
 		glState.clearColorGreen = green;
-		glState.clearColorBlue = blue;
+		glState.clearColorBlue  = blue;
 		glState.clearColorAlpha = alpha;
 
 		glClearColor(red, green, blue, alpha);
 	}
 }
 
-void GL_ClearDepth(GLclampd depth) {
-	if (glState.clearDepth != depth) {
+void GL_ClearDepth(GLclampd depth)
+{
+	if (glState.clearDepth != depth)
+	{
 		glState.clearDepth = depth;
 
 		glClearDepth(depth);
 	}
 }
 
-void GL_ClearStencil(GLint s) {
-	if (glState.clearStencil != s) {
+void GL_ClearStencil(GLint s)
+{
+	if (glState.clearStencil != s)
+	{
 		glState.clearStencil = s;
 
 		glClearStencil(s);
 	}
 }
 
-void GL_ColorMask(GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha) {
-	if (glState.colorMaskRed != red || glState.colorMaskGreen != green || glState.colorMaskBlue != blue || glState.colorMaskAlpha != alpha) {
-		glState.colorMaskRed = red;
+void GL_ColorMask(GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha)
+{
+	if (glState.colorMaskRed != red || glState.colorMaskGreen != green || glState.colorMaskBlue != blue || glState.colorMaskAlpha != alpha)
+	{
+		glState.colorMaskRed   = red;
 		glState.colorMaskGreen = green;
-		glState.colorMaskBlue = blue;
+		glState.colorMaskBlue  = blue;
 		glState.colorMaskAlpha = alpha;
 
 		glColorMask(red, green, blue, alpha);
 	}
 }
 
-void GL_CullFace(GLenum mode) {
-	if (glState.cullFace != mode) {
+void GL_CullFace(GLenum mode)
+{
+	if (glState.cullFace != mode)
+	{
 		glState.cullFace = mode;
 
 		glCullFace(mode);
 	}
 }
 
-void GL_DepthFunc(GLenum func) {
-	if (glState.depthFunc != func) {
+void GL_DepthFunc(GLenum func)
+{
+	if (glState.depthFunc != func)
+	{
 		glState.depthFunc = func;
 
 		glDepthFunc(func);
 	}
 }
 
-void GL_DepthMask(GLboolean flag) {
-	if (glState.depthMask != flag) {
+void GL_DepthMask(GLboolean flag)
+{
+	if (glState.depthMask != flag)
+	{
 		glState.depthMask = flag;
 
 		glDepthMask(flag);
 	}
 }
 
-void GL_DrawBuffer(GLenum mode) {
-	if (glState.drawBuffer != mode) {
+void GL_DrawBuffer(GLenum mode)
+{
+	if (glState.drawBuffer != mode)
+	{
 		glState.drawBuffer = mode;
 
 		glDrawBuffer(mode);
 	}
 }
 
-void GL_FrontFace(GLenum mode) {
-	if (glState.frontFace != mode) {
+void GL_FrontFace(GLenum mode)
+{
+	if (glState.frontFace != mode)
+	{
 		glState.frontFace = mode;
 
 		glFrontFace(mode);
 	}
 }
 
-void GL_LoadModelViewMatrix(const mat4_t m) {
-	if (mat4_compare(GLSTACK_MVM, m)) {
+void GL_LoadModelViewMatrix(const mat4_t m)
+{
+	if (mat4_compare(GLSTACK_MVM, m))
+	{
 		return;
 	}
 
@@ -246,8 +285,10 @@ void GL_LoadModelViewMatrix(const mat4_t m) {
 	mat4_mult(GLSTACK_PM, GLSTACK_MVM, GLSTACK_MVPM);
 }
 
-void GL_LoadProjectionMatrix(const mat4_t m) {
-	if (mat4_compare(GLSTACK_PM, m)) {
+void GL_LoadProjectionMatrix(const mat4_t m)
+{
+	if (mat4_compare(GLSTACK_PM, m))
+	{
 		return;
 	}
 
@@ -255,26 +296,32 @@ void GL_LoadProjectionMatrix(const mat4_t m) {
 	mat4_mult(GLSTACK_PM, GLSTACK_MVM, GLSTACK_MVPM);
 }
 
-void GL_PushMatrix() {
+void GL_PushMatrix()
+{
 	glState.stackIndex++;
 
-	if (glState.stackIndex >= MAX_GLSTACK) {
+	if (glState.stackIndex >= MAX_GLSTACK)
+	{
 		glState.stackIndex = MAX_GLSTACK - 1;
 		Ren_Drop("GL_PushMatrix: stack overflow = %i", glState.stackIndex);
 	}
 }
 
-void GL_PopMatrix() {
+void GL_PopMatrix()
+{
 	glState.stackIndex--;
 
-	if (glState.stackIndex < 0) {
+	if (glState.stackIndex < 0)
+	{
 		glState.stackIndex = 0;
 		Ren_Drop("GL_PopMatrix: stack underflow");
 	}
 }
 
-void GL_PolygonMode(GLenum face, GLenum mode) {
-	if (glState.polygonFace != face || glState.polygonMode != mode) {
+void GL_PolygonMode(GLenum face, GLenum mode)
+{
+	if (glState.polygonFace != face || glState.polygonMode != mode)
+	{
 		glState.polygonFace = face;
 		glState.polygonMode = mode;
 
@@ -282,62 +329,80 @@ void GL_PolygonMode(GLenum face, GLenum mode) {
 	}
 }
 
-void GL_Scissor(GLint x, GLint y, GLsizei width, GLsizei height) {
-	if (glState.scissorX != x || glState.scissorY != y || glState.scissorWidth != width || glState.scissorHeight != height) {
-		glState.scissorX = x;
-		glState.scissorY = y;
-		glState.scissorWidth = width;
+void GL_Scissor(GLint x, GLint y, GLsizei width, GLsizei height)
+{
+	if (glState.scissorX != x || glState.scissorY != y || glState.scissorWidth != width || glState.scissorHeight != height)
+	{
+		glState.scissorX      = x;
+		glState.scissorY      = y;
+		glState.scissorWidth  = width;
 		glState.scissorHeight = height;
 
 		glScissor(x, y, width, height);
 	}
 }
 
-void GL_Viewport(GLint x, GLint y, GLsizei width, GLsizei height) {
-	if (glState.viewportX != x || glState.viewportY != y || glState.viewportWidth != width || glState.viewportHeight != height) {
-		glState.viewportX = x;
-		glState.viewportY = y;
-		glState.viewportWidth = width;
+void GL_Viewport(GLint x, GLint y, GLsizei width, GLsizei height)
+{
+	if (glState.viewportX != x || glState.viewportY != y || glState.viewportWidth != width || glState.viewportHeight != height)
+	{
+		glState.viewportX      = x;
+		glState.viewportY      = y;
+		glState.viewportWidth  = width;
 		glState.viewportHeight = height;
 
 		glViewport(x, y, width, height);
 	}
 }
 
-void GL_PolygonOffset(float factor, float units) {
-	if (glState.polygonOffsetFactor != factor || glState.polygonOffsetUnits != units) {
+void GL_PolygonOffset(float factor, float units)
+{
+	if (glState.polygonOffsetFactor != factor || glState.polygonOffsetUnits != units)
+	{
 		glState.polygonOffsetFactor = factor;
-		glState.polygonOffsetUnits = units;
+		glState.polygonOffsetUnits  = units;
 
 		glPolygonOffset(factor, units);
 	}
 }
 
-void GL_Clear(unsigned int bits) {
+void GL_Clear(unsigned int bits)
+{
 	glClear(bits);
 }
 
-void GL_Cull(int cullType) {
-	if (backEnd.viewParms.isMirror) {
+void GL_Cull(int cullType)
+{
+	if (backEnd.viewParms.isMirror)
+	{
 		GL_FrontFace(GL_CW);
-	} else {
+	}
+	else
+	{
 		GL_FrontFace(GL_CCW);
 	}
 
-	if (glState.faceCulling == cullType) {
+	if (glState.faceCulling == cullType)
+	{
 		return;
 	}
 
 	glState.faceCulling = cullType;
 
-	if (cullType == CT_TWO_SIDED) {
+	if (cullType == CT_TWO_SIDED)
+	{
 		glDisable(GL_CULL_FACE);
-	} else {
+	}
+	else
+	{
 		glEnable(GL_CULL_FACE);
 
-		if (cullType == CT_BACK_SIDED) {
+		if (cullType == CT_BACK_SIDED)
+		{
 			GL_CullFace(GL_BACK);
-		} else {
+		}
+		else
+		{
 			GL_CullFace(GL_FRONT);
 		}
 	}
@@ -346,15 +411,20 @@ void GL_Cull(int cullType) {
 /**
 * @brief This routine is responsible for setting the most commonly changed state in Q3.
 */
-void GL_State(uint32_t stateBits) {
+void GL_State(uint32_t stateBits)
+{
 	uint32_t diff = stateBits ^ glState.glStateBits;
 
-	if (!diff) {
+	if (!diff)
+	{
 		return;
 	}
+
 	// check depthFunc bits
-	if (diff & GLS_DEPTHFUNC_BITS) {
-		switch (stateBits & GLS_DEPTHFUNC_BITS) {
+	if (diff & GLS_DEPTHFUNC_BITS)
+	{
+		switch (stateBits & GLS_DEPTHFUNC_BITS)
+		{
 		default:
 			GL_DepthFunc(GL_LEQUAL);
 			break;
@@ -366,12 +436,16 @@ void GL_State(uint32_t stateBits) {
 			break;
 		}
 	}
+
 	// check blend bits
-	if (diff & (GLS_SRCBLEND_BITS | GLS_DSTBLEND_BITS)) {
+	if (diff & (GLS_SRCBLEND_BITS | GLS_DSTBLEND_BITS))
+	{
 		GLenum srcFactor, dstFactor;
 
-		if (stateBits & (GLS_SRCBLEND_BITS | GLS_DSTBLEND_BITS)) {
-			switch (stateBits & GLS_SRCBLEND_BITS) {
+		if (stateBits & (GLS_SRCBLEND_BITS | GLS_DSTBLEND_BITS))
+		{
+			switch (stateBits & GLS_SRCBLEND_BITS)
+			{
 			case GLS_SRCBLEND_ZERO:
 				srcFactor = GL_ZERO;
 				break;
@@ -400,12 +474,13 @@ void GL_State(uint32_t stateBits) {
 				srcFactor = GL_SRC_ALPHA_SATURATE;
 				break;
 			default:
-				srcFactor = GL_ONE; // to get warning to shut up
+				srcFactor = GL_ONE;     // to get warning to shut up
 				Ren_Drop("GL_State: invalid src blend state bits\n");
 				break;
 			}
 
-			switch (stateBits & GLS_DSTBLEND_BITS) {
+			switch (stateBits & GLS_DSTBLEND_BITS)
+			{
 			case GLS_DSTBLEND_ZERO:
 				dstFactor = GL_ZERO;
 				break;
@@ -431,56 +506,81 @@ void GL_State(uint32_t stateBits) {
 				dstFactor = GL_ONE_MINUS_DST_ALPHA;
 				break;
 			default:
-				dstFactor = GL_ONE; // to get warning to shut up
+				dstFactor = GL_ONE;     // to get warning to shut up
 				Ren_Drop("GL_State: invalid dst blend state bits\n");
 				break;
 			}
 
 			glEnable(GL_BLEND);
 			GL_BlendFunc(srcFactor, dstFactor);
-		} else {
+		}
+		else
+		{
 			glDisable(GL_BLEND);
 		}
 	}
+
 	// check colormask
-	if (diff & GLS_COLORMASK_BITS) {
-		if (stateBits & GLS_COLORMASK_BITS) {
+	if (diff & GLS_COLORMASK_BITS)
+	{
+		if (stateBits & GLS_COLORMASK_BITS)
+		{
 			GL_ColorMask((stateBits & GLS_REDMASK_FALSE) ? GL_FALSE : GL_TRUE,
 			             (stateBits & GLS_GREENMASK_FALSE) ? GL_FALSE : GL_TRUE,
 			             (stateBits & GLS_BLUEMASK_FALSE) ? GL_FALSE : GL_TRUE,
 			             (stateBits & GLS_ALPHAMASK_FALSE) ? GL_FALSE : GL_TRUE);
-		} else {
+		}
+		else
+		{
 			GL_ColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 		}
 	}
+
 	// check depthmask
-	if (diff & GLS_DEPTHMASK_TRUE) {
-		if (stateBits & GLS_DEPTHMASK_TRUE) {
+	if (diff & GLS_DEPTHMASK_TRUE)
+	{
+		if (stateBits & GLS_DEPTHMASK_TRUE)
+		{
 			GL_DepthMask(GL_TRUE);
-		} else {
+		}
+		else
+		{
 			GL_DepthMask(GL_FALSE);
 		}
 	}
+
 	// fill/line mode
-	if (diff & GLS_POLYMODE_LINE) {
-		if (stateBits & GLS_POLYMODE_LINE) {
+	if (diff & GLS_POLYMODE_LINE)
+	{
+		if (stateBits & GLS_POLYMODE_LINE)
+		{
 			GL_PolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		} else {
+		}
+		else
+		{
 			GL_PolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		}
 	}
+
 	// depthtest
-	if (diff & GLS_DEPTHTEST_DISABLE) {
-		if (stateBits & GLS_DEPTHTEST_DISABLE) {
+	if (diff & GLS_DEPTHTEST_DISABLE)
+	{
+		if (stateBits & GLS_DEPTHTEST_DISABLE)
+		{
 			glDisable(GL_DEPTH_TEST);
-		} else {
+		}
+		else
+		{
 			glEnable(GL_DEPTH_TEST);
 		}
 	}
+
 	// alpha test - deprecated in OpenGL 3.0
 #if 0
-	if (diff & GLS_ATEST_BITS) {
-		switch (stateBits & GLS_ATEST_BITS) {
+	if (diff & GLS_ATEST_BITS)
+	{
+		switch (stateBits & GLS_ATEST_BITS)
+		{
 		case GLS_ATEST_GT_0:
 		case GLS_ATEST_LT_128:
 		case GLS_ATEST_GE_128:
@@ -497,8 +597,10 @@ void GL_State(uint32_t stateBits) {
 #endif
 
 	/*
-	if(diff & GLS_ATEST_BITS) {
-	switch (stateBits & GLS_ATEST_BITS) {
+	if(diff & GLS_ATEST_BITS)
+	{
+	switch (stateBits & GLS_ATEST_BITS)
+	{
 	case 0:
 	glDisable(GL_ALPHA_TEST);
 	break;
@@ -524,14 +626,17 @@ void GL_State(uint32_t stateBits) {
 	break;
 	}
 	}
-
 	*/
 
 	// stenciltest
-	if (diff & GLS_STENCILTEST_ENABLE) {
-		if (stateBits & GLS_STENCILTEST_ENABLE) {
+	if (diff & GLS_STENCILTEST_ENABLE)
+	{
+		if (stateBits & GLS_STENCILTEST_ENABLE)
+		{
 			glEnable(GL_STENCIL_TEST);
-		} else {
+		}
+		else
+		{
 			glDisable(GL_STENCIL_TEST);
 		}
 	}

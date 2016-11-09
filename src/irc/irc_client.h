@@ -29,36 +29,21 @@
  * id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
  */
 /**
- * @file db_sql.h
- * @brief ET: Legacy SQL interface
+ * @file irc_client.h
  */
 
-#ifndef INCLUDE_DB_SQL_H
-#define INCLUDE_DB_SQL_H
+// this is FEATURE_IRC_CLIENT and FEATURE_IRC_SERVER only
 
-#include <sqlite3.h>
-#include "../qcommon/q_shared.h"
-#include "../qcommon/qcommon.h"
+// Hash table interface
+#ifndef IRC_CLIENT_H
+#define IRC_CLIENT_H
 
-#define ETL_DBMS_VERSION 1
+void IRC_Init(void);
+void IRC_Connect(void);
+void IRC_InitiateShutdown(void);
+void IRC_WaitShutdown(void);
+void IRC_Say(void);
+qboolean IRC_IsConnected(void);
+qboolean IRC_IsRunning(void);
 
-extern cvar_t *db_mode;     // 0 - disabled, 1 - sqlite3 memory db, 2 - sqlite3 file db
-extern cvar_t *db_url;
-
-extern sqlite3  *db;        // our sqlite3 database
-extern qboolean isDBActive; // general flag for active dbms (db_mode is latched)
-
-int DB_Init(void);
-int DB_Create(void);
-int DB_Close(void);
-int DB_LoadOrSaveDb(sqlite3 *, const char *, int);
-// int DB_BackupDB(const char *, void *));
-int DB_SaveMemDB(void); // use in code
-
-void DB_SaveMemDB_f(void); // console command to store memory db at any time to disk
-
-int DB_callback(void *, int, char **, char **);
-
-void DB_ExecSQLCommand_f(void);
-
-#endif // INCLUDE_DB_SQL_H
+#endif // IRC_CLIENT_H

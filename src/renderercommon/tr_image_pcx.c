@@ -35,7 +35,8 @@
 
 #include "tr_common.h"
 
-typedef struct {
+typedef struct
+{
 	char manufacturer;
 	char version;
 	char encoding;
@@ -52,50 +53,54 @@ typedef struct {
 	unsigned char data[];
 } pcx_t;
 
-void R_LoadPCX(const char *filename, byte **pic, int *width, int *height, byte alphaByte) {
-	union {
+void R_LoadPCX(const char *filename, byte **pic, int *width, int *height, byte alphaByte)
+{
+	union
+	{
 		byte *b;
 		void *v;
 	} raw;
 	byte           *end;
-	pcx_t *pcx;
-	int len;
-	unsigned char dataByte = 0, runLength = 0;
+	pcx_t          *pcx;
+	int            len;
+	unsigned char  dataByte = 0, runLength = 0;
 	byte           *out, *pix;
 	unsigned short w, h;
 	byte           *pic8;
 	byte           *palette;
-	int i;
+	int            i;
 	unsigned       size = 0;
 
-	if (width) {
+	if (width)
+	{
 		*width = 0;
 	}
-
-	if (height) {
+	if (height)
+	{
 		*height = 0;
 	}
-
 	*pic = NULL;
 
 	// load the file
 	len = ri.FS_ReadFile(( char * ) filename, &raw.v);
-
-	if (!raw.b || len < 0) {
+	if (!raw.b || len < 0)
+	{
 		return;
 	}
 
-	if ((unsigned)len < sizeof(pcx_t)) {
+	if ((unsigned)len < sizeof(pcx_t))
+	{
 		Ren_Print("PCX truncated: %s\n", filename);
 		ri.FS_FreeFile(raw.v);
 		return;
 	}
+
 	// parse the PCX file
 	pcx = (pcx_t *)raw.b;
 	end = raw.b + len;
 
-	w = LittleShort(pcx->xmax) + 1;
-	h = LittleShort(pcx->ymax) + 1;
+	w    = LittleShort(pcx->xmax) + 1;
+	h    = LittleShort(pcx->ymax) + 1;
 	size = w * h;
 
 	if (pcx->manufacturer != 0x0a
@@ -104,7 +109,8 @@ void R_LoadPCX(const char *filename, byte **pic, int *width, int *height, byte a
 	    || pcx->color_planes != 1
 	    || pcx->bits_per_pixel != 8
 	    || w >= 1024
-	    || h >= 1024) {
+	    || h >= 1024)
+	{
 		Ren_Print("Bad or unsupported pcx file %s (%dx%d@%d)\n", filename, w, h, pcx->bits_per_pixel);
 		return;
 	}
@@ -113,38 +119,45 @@ void R_LoadPCX(const char *filename, byte **pic, int *width, int *height, byte a
 
 	raw.b = pcx->data;
 	// FIXME: should use bytes_per_line but original q3 didn't do that either
-	while (pix < pic8 + size) {
-		if (runLength > 0) {
+	while (pix < pic8 + size)
+	{
+		if (runLength > 0)
+		{
 			*pix++ = dataByte;
 			--runLength;
 			continue;
 		}
 
-		if (raw.b + 1 > end) {
+		if (raw.b + 1 > end)
+		{
 			break;
 		}
-
 		dataByte = *raw.b++;
 
-		if ((dataByte & 0xC0) == 0xC0) {
-			if (raw.b + 1 > end) {
+		if ((dataByte & 0xC0) == 0xC0)
+		{
+			if (raw.b + 1 > end)
+			{
 				break;
 			}
-
 			runLength = dataByte & 0x3F;
-			dataByte = *raw.b++;
-		} else {
+			dataByte  = *raw.b++;
+		}
+		else
+		{
 			runLength = 1;
 		}
 	}
 
-	if (pix < pic8 + size) {
+	if (pix < pic8 + size)
+	{
 		Ren_Print("PCX file truncated: %s\n", filename);
 		ri.FS_FreeFile(pcx);
 		ri.Free(pic8);
 	}
 
-	if (raw.b - (byte *)pcx >= end - (byte *)769 || end[-769] != 0x0c) {
+	if (raw.b - (byte *)pcx >= end - (byte *)769 || end[-769] != 0x0c)
+	{
 		Ren_Print("PCX missing palette: %s\n", filename);
 		ri.FS_FreeFile(pcx);
 		ri.Free(pic8);
@@ -154,21 +167,22 @@ void R_LoadPCX(const char *filename, byte **pic, int *width, int *height, byte a
 	palette = end - 768;
 
 	pix = out = ri.Z_Malloc(4 * size);
-
-	for (i = 0; i < size; i++) {
+	for (i = 0 ; i < size ; i++)
+	{
 		unsigned char p = pic8[i];
 		pix[0] = palette[p * 3];
 		pix[1] = palette[p * 3 + 1];
 		pix[2] = palette[p * 3 + 2];
 		pix[3] = 255;
-		pix += 4;
+		pix   += 4;
 	}
 
-	if (width) {
+	if (width)
+	{
 		*width = w;
 	}
-
-	if (height) {
+	if (height)
+	{
 		*height = h;
 	}
 

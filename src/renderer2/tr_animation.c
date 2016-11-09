@@ -48,15 +48,17 @@ frame.
 
 #if defined(USE_REFENTITY_ANIMATIONSYSTEM)
 
-static skelAnimation_t *R_AllocAnimation(void) {
+static skelAnimation_t *R_AllocAnimation(void)
+{
 	skelAnimation_t *anim;
 
-	if (tr.numAnimations == MAX_ANIMATIONFILES) {
+	if (tr.numAnimations == MAX_ANIMATIONFILES)
+	{
 		return NULL;
 	}
 
-	anim = (skelAnimation_t *)ri.Hunk_Alloc(sizeof(*anim), h_low);
-	anim->index = tr.numAnimations;
+	anim                            = (skelAnimation_t *)ri.Hunk_Alloc(sizeof(*anim), h_low);
+	anim->index                     = tr.numAnimations;
 	tr.animations[tr.numAnimations] = anim;
 	tr.numAnimations++;
 
@@ -68,321 +70,337 @@ static skelAnimation_t *R_AllocAnimation(void) {
 R_InitAnimations
 ===============
 */
-void R_InitAnimations(void) {
+void R_InitAnimations(void)
+{
 	skelAnimation_t *anim;
 
 	// leave a space for NULL animation
 	tr.numAnimations = 0;
 
-	anim = R_AllocAnimation();
+	anim       = R_AllocAnimation();
 	anim->type = AT_BAD;
 	strcpy(anim->name, "<default animation>");
 }
 
-static qboolean R_LoadMD5Anim(skelAnimation_t *skelAnim, byte *buffer, int bufferSize, const char *name) {
-	int i, j;
+static qboolean R_LoadMD5Anim(skelAnimation_t *skelAnim, byte *buffer, int bufferSize, const char *name)
+{
+	int            i, j;
 	md5Animation_t *anim;
-	md5Frame_t *frame;
-	md5Channel_t *channel;
-	char *token;
-	int version;
-	char *buf_p = (char *)buffer;
+	md5Frame_t     *frame;
+	md5Channel_t   *channel;
+	char           *token;
+	int            version;
+	char           *buf_p = (char *)buffer;
 
 	skelAnim->type = AT_MD5;
-	skelAnim->md5 = anim = (md5Animation_t *)ri.Hunk_Alloc(sizeof(*anim), h_low);
+	skelAnim->md5  = anim = (md5Animation_t *)ri.Hunk_Alloc(sizeof(*anim), h_low);
 
 	// skip MD5Version indent string
 	(void) COM_ParseExt2(&buf_p, qfalse);
 
 	// check version
-	token = COM_ParseExt2(&buf_p, qfalse);
+	token   = COM_ParseExt2(&buf_p, qfalse);
 	version = atoi(token);
-
-	if (version != MD5_VERSION) {
+	if (version != MD5_VERSION)
+	{
 		Ren_Warning("RE_RegisterAnimation: '%s' has wrong version (%i should be %i)\n", name, version, MD5_VERSION);
 		return qfalse;
 	}
+
 	// skip commandline <arguments string>
 	token = COM_ParseExt2(&buf_p, qtrue);
 	token = COM_ParseExt2(&buf_p, qtrue);
 
 	// parse numFrames <number>
 	token = COM_ParseExt2(&buf_p, qtrue);
-
-	if (Q_stricmp(token, "numFrames")) {
+	if (Q_stricmp(token, "numFrames"))
+	{
 		Ren_Warning("RE_RegisterAnimation: expected 'numFrames' found '%s' in model '%s'\n", token, name);
 		return qfalse;
 	}
-
-	token = COM_ParseExt2(&buf_p, qfalse);
+	token           = COM_ParseExt2(&buf_p, qfalse);
 	anim->numFrames = atoi(token);
 
 	// parse numJoints <number>
 	token = COM_ParseExt2(&buf_p, qtrue);
-
-	if (Q_stricmp(token, "numJoints")) {
+	if (Q_stricmp(token, "numJoints"))
+	{
 		Ren_Warning("RE_RegisterAnimation: expected 'numJoints' found '%s' in model '%s'\n", token, name);
 		return qfalse;
 	}
-
-	token = COM_ParseExt2(&buf_p, qfalse);
+	token             = COM_ParseExt2(&buf_p, qfalse);
 	anim->numChannels = atoi(token);
 
 	// parse frameRate <number>
 	token = COM_ParseExt2(&buf_p, qtrue);
-
-	if (Q_stricmp(token, "frameRate")) {
+	if (Q_stricmp(token, "frameRate"))
+	{
 		Ren_Warning("RE_RegisterAnimation: expected 'frameRate' found '%s' in model '%s'\n", token, name);
 		return qfalse;
 	}
-
-	token = COM_ParseExt2(&buf_p, qfalse);
+	token           = COM_ParseExt2(&buf_p, qfalse);
 	anim->frameRate = atoi(token);
 
 	// parse numAnimatedComponents <number>
 	token = COM_ParseExt2(&buf_p, qtrue);
-
-	if (Q_stricmp(token, "numAnimatedComponents")) {
+	if (Q_stricmp(token, "numAnimatedComponents"))
+	{
 		Ren_Warning("RE_RegisterAnimation: expected 'numAnimatedComponents' found '%s' in model '%s'\n", token,
 		            name);
 		return qfalse;
 	}
-
-	token = COM_ParseExt2(&buf_p, qfalse);
+	token                       = COM_ParseExt2(&buf_p, qfalse);
 	anim->numAnimatedComponents = atoi(token);
 
 	// parse hierarchy {
 	token = COM_ParseExt2(&buf_p, qtrue);
-
-	if (Q_stricmp(token, "hierarchy")) {
+	if (Q_stricmp(token, "hierarchy"))
+	{
 		Ren_Warning("RE_RegisterAnimation: expected 'hierarchy' found '%s' in model '%s'\n", token, name);
 		return qfalse;
 	}
-
 	token = COM_ParseExt2(&buf_p, qfalse);
-
-	if (Q_stricmp(token, "{")) {
+	if (Q_stricmp(token, "{"))
+	{
 		Ren_Warning("RE_RegisterAnimation: expected '{' found '%s' in model '%s'\n", token, name);
 		return qfalse;
 	}
+
 	// parse all the channels
 	anim->channels = (md5Channel_t *)ri.Hunk_Alloc(sizeof(md5Channel_t) * anim->numChannels, h_low);
 
-	for (i = 0, channel = anim->channels; i < anim->numChannels; i++, channel++) {
+	for (i = 0, channel = anim->channels; i < anim->numChannels; i++, channel++)
+	{
 		token = COM_ParseExt2(&buf_p, qtrue);
 		Q_strncpyz(channel->name, token, sizeof(channel->name));
 
 		//Ren_Print("RE_RegisterAnimation: '%s' has channel '%s'\n", name, channel->name);
 
-		token = COM_ParseExt2(&buf_p, qfalse);
+		token                = COM_ParseExt2(&buf_p, qfalse);
 		channel->parentIndex = atoi(token);
 
-		if (channel->parentIndex >= anim->numChannels) {
+		if (channel->parentIndex >= anim->numChannels)
+		{
 			Ren_Drop("RE_RegisterAnimation: '%s' has channel '%s' with bad parent index %i while numBones is %i\n",
 			         name, channel->name, channel->parentIndex, anim->numChannels);
 		}
 
-		token = COM_ParseExt2(&buf_p, qfalse);
+		token                   = COM_ParseExt2(&buf_p, qfalse);
 		channel->componentsBits = atoi(token);
 
-		token = COM_ParseExt2(&buf_p, qfalse);
+		token                     = COM_ParseExt2(&buf_p, qfalse);
 		channel->componentsOffset = atoi(token);
 	}
-	// parse}
 
+	// parse }
 	token = COM_ParseExt2(&buf_p, qtrue);
-
-	if (Q_stricmp(token, "}")) {
+	if (Q_stricmp(token, "}"))
+	{
 		Ren_Warning("RE_RegisterAnimation: expected '}' found '%s' in model '%s'\n", token, name);
 		return qfalse;
 	}
+
 	// parse bounds {
 	token = COM_ParseExt2(&buf_p, qtrue);
-
-	if (Q_stricmp(token, "bounds")) {
+	if (Q_stricmp(token, "bounds"))
+	{
 		Ren_Warning("RE_RegisterAnimation: expected 'bounds' found '%s' in model '%s'\n", token, name);
 		return qfalse;
 	}
-
 	token = COM_ParseExt2(&buf_p, qfalse);
-
-	if (Q_stricmp(token, "{")) {
+	if (Q_stricmp(token, "{"))
+	{
 		Ren_Warning("RE_RegisterAnimation: expected '{' found '%s' in model '%s'\n", token, name);
 		return qfalse;
 	}
 
 	anim->frames = (md5Frame_t *)ri.Hunk_Alloc(sizeof(md5Frame_t) * anim->numFrames, h_low);
 
-	for (i = 0, frame = anim->frames; i < anim->numFrames; i++, frame++) {
+	for (i = 0, frame = anim->frames; i < anim->numFrames; i++, frame++)
+	{
 		// skip (
 		token = COM_ParseExt2(&buf_p, qtrue);
-
-		if (Q_stricmp(token, "(")) {
+		if (Q_stricmp(token, "("))
+		{
 			Ren_Warning("RE_RegisterAnimation: expected '(' found '%s' in model '%s'\n", token, name);
 			return qfalse;
 		}
 
-		for (j = 0; j < 3; j++) {
-			token = COM_ParseExt2(&buf_p, qfalse);
+		for (j = 0; j < 3; j++)
+		{
+			token               = COM_ParseExt2(&buf_p, qfalse);
 			frame->bounds[0][j] = atof(token);
 		}
+
 		// skip )
 		token = COM_ParseExt2(&buf_p, qfalse);
-
-		if (Q_stricmp(token, ")")) {
+		if (Q_stricmp(token, ")"))
+		{
 			Ren_Warning("RE_RegisterAnimation: expected ')' found '%s' in model '%s'\n", token, name);
 			return qfalse;
 		}
+
 		// skip (
 		token = COM_ParseExt2(&buf_p, qfalse);
-
-		if (Q_stricmp(token, "(")) {
+		if (Q_stricmp(token, "("))
+		{
 			Ren_Warning("RE_RegisterAnimation: expected '(' found '%s' in model '%s'\n", token, name);
 			return qfalse;
 		}
 
-		for (j = 0; j < 3; j++) {
-			token = COM_ParseExt2(&buf_p, qfalse);
+		for (j = 0; j < 3; j++)
+		{
+			token               = COM_ParseExt2(&buf_p, qfalse);
 			frame->bounds[1][j] = atof(token);
 		}
+
 		// skip )
 		token = COM_ParseExt2(&buf_p, qfalse);
-
-		if (Q_stricmp(token, ")")) {
+		if (Q_stricmp(token, ")"))
+		{
 			Ren_Warning("RE_RegisterAnimation: expected ')' found '%s' in model '%s'\n", token, name);
 			return qfalse;
 		}
 	}
-	// parse}
 
+	// parse }
 	token = COM_ParseExt2(&buf_p, qtrue);
-
-	if (Q_stricmp(token, "}")) {
+	if (Q_stricmp(token, "}"))
+	{
 		Ren_Warning("RE_RegisterAnimation: expected '}' found '%s' in model '%s'\n", token, name);
 		return qfalse;
 	}
+
 	// parse baseframe {
 	token = COM_ParseExt2(&buf_p, qtrue);
-
-	if (Q_stricmp(token, "baseframe")) {
+	if (Q_stricmp(token, "baseframe"))
+	{
 		Ren_Warning("RE_RegisterAnimation: expected 'baseframe' found '%s' in model '%s'\n", token, name);
 		return qfalse;
 	}
-
 	token = COM_ParseExt2(&buf_p, qfalse);
-
-	if (Q_stricmp(token, "{")) {
+	if (Q_stricmp(token, "{"))
+	{
 		Ren_Warning("RE_RegisterAnimation: expected '{' found '%s' in model '%s'\n", token, name);
 		return qfalse;
 	}
 
-	for (i = 0, channel = anim->channels; i < anim->numChannels; i++, channel++) {
+	for (i = 0, channel = anim->channels; i < anim->numChannels; i++, channel++)
+	{
 		// skip (
 		token = COM_ParseExt2(&buf_p, qtrue);
-
-		if (Q_stricmp(token, "(")) {
+		if (Q_stricmp(token, "("))
+		{
 			Ren_Warning("RE_RegisterAnimation: expected '(' found '%s' in model '%s'\n", token, name);
 			return qfalse;
 		}
 
-		for (j = 0; j < 3; j++) {
-			token = COM_ParseExt2(&buf_p, qfalse);
+		for (j = 0; j < 3; j++)
+		{
+			token                  = COM_ParseExt2(&buf_p, qfalse);
 			channel->baseOrigin[j] = atof(token);
 		}
+
 		// skip )
 		token = COM_ParseExt2(&buf_p, qfalse);
-
-		if (Q_stricmp(token, ")")) {
+		if (Q_stricmp(token, ")"))
+		{
 			Ren_Warning("RE_RegisterAnimation: expected ')' found '%s' in model '%s'\n", token, name);
 			return qfalse;
 		}
+
 		// skip (
 		token = COM_ParseExt2(&buf_p, qfalse);
-
-		if (Q_stricmp(token, "(")) {
+		if (Q_stricmp(token, "("))
+		{
 			Ren_Warning("RE_RegisterAnimation: expected '(' found '%s' in model '%s'\n", token, name);
 			return qfalse;
 		}
 
-		for (j = 0; j < 3; j++) {
-			token = COM_ParseExt2(&buf_p, qfalse);
+		for (j = 0; j < 3; j++)
+		{
+			token                = COM_ParseExt2(&buf_p, qfalse);
 			channel->baseQuat[j] = atof(token);
 		}
-
 		QuatCalcW(channel->baseQuat);
 
 		// skip )
 		token = COM_ParseExt2(&buf_p, qfalse);
-
-		if (Q_stricmp(token, ")")) {
+		if (Q_stricmp(token, ")"))
+		{
 			Ren_Warning("RE_RegisterAnimation: expected ')' found '%s' in model '%s'\n", token, name);
 			return qfalse;
 		}
 	}
-	// parse}
 
+	// parse }
 	token = COM_ParseExt2(&buf_p, qtrue);
-
-	if (Q_stricmp(token, "}")) {
+	if (Q_stricmp(token, "}"))
+	{
 		Ren_Warning("RE_RegisterAnimation: expected '}' found '%s' in model '%s'\n", token, name);
 		return qfalse;
 	}
 
-	for (i = 0, frame = anim->frames; i < anim->numFrames; i++, frame++) {
+	for (i = 0, frame = anim->frames; i < anim->numFrames; i++, frame++)
+	{
 		// parse frame <number> {
 		token = COM_ParseExt2(&buf_p, qtrue);
-
-		if (Q_stricmp(token, "frame")) {
+		if (Q_stricmp(token, "frame"))
+		{
 			Ren_Warning("RE_RegisterAnimation: expected 'baseframe' found '%s' in model '%s'\n", token, name);
 			return qfalse;
 		}
 
 		token = COM_ParseExt2(&buf_p, qfalse);
-
-		if (Q_stricmp(token, va("%i", i))) {
+		if (Q_stricmp(token, va("%i", i)))
+		{
 			Ren_Warning("RE_RegisterAnimation: expected '%i' found '%s' in model '%s'\n", i, token, name);
 			return qfalse;
 		}
 
 		token = COM_ParseExt2(&buf_p, qfalse);
-
-		if (Q_stricmp(token, "{")) {
+		if (Q_stricmp(token, "{"))
+		{
 			Ren_Warning("RE_RegisterAnimation: expected '{' found '%s' in model '%s'\n", token, name);
 			return qfalse;
 		}
 
 		frame->components = (float *)ri.Hunk_Alloc(sizeof(float) * anim->numAnimatedComponents, h_low);
-
-		for (j = 0; j < anim->numAnimatedComponents; j++) {
-			token = COM_ParseExt2(&buf_p, qtrue);
+		for (j = 0; j < anim->numAnimatedComponents; j++)
+		{
+			token                = COM_ParseExt2(&buf_p, qtrue);
 			frame->components[j] = atof(token);
 		}
-		// parse}
 
+		// parse }
 		token = COM_ParseExt2(&buf_p, qtrue);
-
-		if (Q_stricmp(token, "}")) {
+		if (Q_stricmp(token, "}"))
+		{
 			Ren_Warning("RE_RegisterAnimation: expected '}' found '%s' in model '%s'\n", token, name);
 			return qfalse;
 		}
 	}
+
 	// everything went ok
 	return qtrue;
 }
 
-static void GetChunkHeader(memStream_t *s, axChunkHeader_t *chunkHeader) {
+static void GetChunkHeader(memStream_t *s, axChunkHeader_t *chunkHeader)
+{
 	int i;
 
-	for (i = 0; i < 20; i++) {
+	for (i = 0; i < 20; i++)
+	{
 		chunkHeader->ident[i] = MemStreamGetC(s);
 	}
 
-	chunkHeader->flags = MemStreamGetLong(s);
+	chunkHeader->flags    = MemStreamGetLong(s);
 	chunkHeader->dataSize = MemStreamGetLong(s);
-	chunkHeader->numData = MemStreamGetLong(s);
+	chunkHeader->numData  = MemStreamGetLong(s);
 }
 
-static void PrintChunkHeader(axChunkHeader_t *chunkHeader) {
+static void PrintChunkHeader(axChunkHeader_t *chunkHeader)
+{
 #if 0
 	Ren_Print("----------------------\n");
 	Ren_Print("R_LoadPSA: chunk header ident: '%s'\n", chunkHeader->ident);
@@ -392,14 +410,17 @@ static void PrintChunkHeader(axChunkHeader_t *chunkHeader) {
 #endif
 }
 
-static void GetBone(memStream_t *s, axBone_t *bone) {
+static void GetBone(memStream_t *s, axBone_t *bone)
+{
 	int i;
 
-	for (i = 0; i < 4; i++) {
+	for (i = 0; i < 4; i++)
+	{
 		bone->quat[i] = MemStreamGetFloat(s);
 	}
 
-	for (i = 0; i < 3; i++) {
+	for (i = 0; i < 3; i++)
+	{
 		bone->position[i] = MemStreamGetFloat(s);
 	}
 
@@ -410,25 +431,27 @@ static void GetBone(memStream_t *s, axBone_t *bone) {
 	bone->zSize = MemStreamGetFloat(s);
 }
 
-static qboolean R_LoadPSA(skelAnimation_t *skelAnim, byte *buffer, int bufferSize, const char *name) {
-	int i, j, k;
-	memStream_t *stream;
-	axChunkHeader_t chunkHeader;
-	int numReferenceBones;
+static qboolean R_LoadPSA(skelAnimation_t *skelAnim, byte *buffer, int bufferSize, const char *name)
+{
+	int               i, j, k;
+	memStream_t       *stream;
+	axChunkHeader_t   chunkHeader;
+	int               numReferenceBones;
 	axReferenceBone_t *refBone;
 	axReferenceBone_t *refBones;
-	int numSequences;
+	int               numSequences;
 	axAnimationInfo_t *animInfo;
-	axAnimationKey_t *key;
-	psaAnimation_t *psa;
-	skelAnimation_t *extraAnim;
-	growList_t extraAnims;
+	axAnimationKey_t  *key;
+	psaAnimation_t    *psa;
+	skelAnimation_t   *extraAnim;
+	growList_t        extraAnims;
 
 	stream = AllocMemStream(buffer, bufferSize);
 	GetChunkHeader(stream, &chunkHeader);
 
 	// check indent again
-	if (Q_stricmpn(chunkHeader.ident, "ANIMHEAD", 8)) {
+	if (Q_stricmpn(chunkHeader.ident, "ANIMHEAD", 8))
+	{
 		Ren_Warning("R_LoadPSA: '%s' has wrong chunk indent ('%s' should be '%s')\n", name, chunkHeader.ident, "ANIMHEAD");
 		FreeMemStream(stream);
 		return qfalse;
@@ -438,14 +461,15 @@ static qboolean R_LoadPSA(skelAnimation_t *skelAnim, byte *buffer, int bufferSiz
 
 	// read reference bones
 	GetChunkHeader(stream, &chunkHeader);
-
-	if (Q_stricmpn(chunkHeader.ident, "BONENAMES", 9)) {
+	if (Q_stricmpn(chunkHeader.ident, "BONENAMES", 9))
+	{
 		Ren_Warning("R_LoadPSA: '%s' has wrong chunk indent ('%s' should be '%s')\n", name, chunkHeader.ident, "BONENAMES");
 		FreeMemStream(stream);
 		return qfalse;
 	}
 
-	if (chunkHeader.dataSize != sizeof(axReferenceBone_t)) {
+	if (chunkHeader.dataSize != sizeof(axReferenceBone_t))
+	{
 		Ren_Warning("R_LoadPSA: '%s' has wrong chunk dataSize ('%i' should be '%zu')\n", name, chunkHeader.dataSize, sizeof(axReferenceBone_t));
 		FreeMemStream(stream);
 		return qfalse;
@@ -454,29 +478,30 @@ static qboolean R_LoadPSA(skelAnimation_t *skelAnim, byte *buffer, int bufferSiz
 	PrintChunkHeader(&chunkHeader);
 
 	numReferenceBones = chunkHeader.numData;
-
-	if (numReferenceBones < 1) {
+	if (numReferenceBones < 1)
+	{
 		Ren_Warning("R_LoadPSA: '%s' has no bones\n", name);
 		FreeMemStream(stream);
 		return qfalse;
 	}
-
-	if (numReferenceBones > MAX_BONES) {
+	if (numReferenceBones > MAX_BONES)
+	{
 		Ren_Warning("R_LoadPSA: '%s' has more than %i bones (%i)\n", name, MAX_BONES, numReferenceBones);
 		FreeMemStream(stream);
 		return qfalse;
 	}
 
 	refBones = (axReferenceBone_t *)ri.Hunk_Alloc(numReferenceBones * sizeof(axReferenceBone_t), h_low);
-
-	for (i = 0, refBone = refBones; i < numReferenceBones; i++, refBone++) {
+	for (i = 0, refBone = refBones; i < numReferenceBones; i++, refBone++)
+	{
 		MemStreamRead(stream, refBone->name, sizeof(refBone->name));
 
-		refBone->flags = MemStreamGetLong(stream);
+		refBone->flags       = MemStreamGetLong(stream);
 		refBone->numChildren = MemStreamGetLong(stream);
 		refBone->parentIndex = MemStreamGetLong(stream);
 
-		if (i == 0) {
+		if (i == 0)
+		{
 			refBone->parentIndex = -1;
 		}
 
@@ -507,16 +532,18 @@ static qboolean R_LoadPSA(skelAnimation_t *skelAnim, byte *buffer, int bufferSiz
 		          refBone->bone.zSize);
 #endif
 	}
+
 	// load animation info
 	GetChunkHeader(stream, &chunkHeader);
-
-	if (Q_stricmpn(chunkHeader.ident, "ANIMINFO", 8)) {
+	if (Q_stricmpn(chunkHeader.ident, "ANIMINFO", 8))
+	{
 		Ren_Warning("R_LoadPSA: '%s' has wrong chunk indent ('%s' should be '%s')\n", name, chunkHeader.ident, "ANIMINFO");
 		FreeMemStream(stream);
 		return qfalse;
 	}
 
-	if (chunkHeader.dataSize != sizeof(axAnimationInfo_t)) {
+	if (chunkHeader.dataSize != sizeof(axAnimationInfo_t))
+	{
 		Ren_Warning("R_LoadPSA: '%s' has wrong chunk dataSize ('%i' should be '%zu')\n", name, chunkHeader.dataSize, sizeof(axAnimationInfo_t));
 		FreeMemStream(stream);
 		return qfalse;
@@ -526,15 +553,19 @@ static qboolean R_LoadPSA(skelAnimation_t *skelAnim, byte *buffer, int bufferSiz
 
 	numSequences = chunkHeader.numData;
 	Com_InitGrowList(&extraAnims, numSequences - 1);
-
-	for (i = 0; i < numSequences; i++) {
-		if (i == 0) {
+	for (i = 0; i < numSequences; i++)
+	{
+		if (i == 0)
+		{
 			Q_strncpyz(skelAnim->name, name, sizeof(skelAnim->name));
 			skelAnim->type = AT_PSA;
-			skelAnim->psa = psa = (psaAnimation_t *)ri.Hunk_Alloc(sizeof(*psa), h_low);
-		} else {
+			skelAnim->psa  = psa = (psaAnimation_t *)ri.Hunk_Alloc(sizeof(*psa), h_low);
+		}
+		else
+		{
 			// allocate a new skelAnimation_t
-			if ((extraAnim = R_AllocAnimation()) == NULL) {
+			if ((extraAnim = R_AllocAnimation()) == NULL)
+			{
 				Ren_Warning("R_LoadPSA: R_AllocAnimation() failed for '%s'\n", name);
 				FreeMemStream(stream);
 				return qfalse;
@@ -542,13 +573,13 @@ static qboolean R_LoadPSA(skelAnimation_t *skelAnim, byte *buffer, int bufferSiz
 
 			Q_strncpyz(extraAnim->name, name, sizeof(extraAnim->name));
 			extraAnim->type = AT_PSA;
-			extraAnim->psa = psa = (psaAnimation_t *)ri.Hunk_Alloc(sizeof(*psa), h_low);
+			extraAnim->psa  = psa = (psaAnimation_t *)ri.Hunk_Alloc(sizeof(*psa), h_low);
 
 			Com_AddToGrowList(&extraAnims, extraAnim);
 		}
 
 		psa->numBones = numReferenceBones;
-		psa->bones = refBones;
+		psa->bones    = refBones;
 
 		animInfo = &psa->info;
 
@@ -557,15 +588,16 @@ static qboolean R_LoadPSA(skelAnimation_t *skelAnim, byte *buffer, int bufferSiz
 
 		animInfo->numBones = MemStreamGetLong(stream);
 
-		if (animInfo->numBones != numReferenceBones) {
+		if (animInfo->numBones != numReferenceBones)
+		{
 			Ren_Drop("R_LoadPSA: axAnimationInfo_t contains different number than reference bones exist: %i != %i for anim '%s'", animInfo->numBones, numReferenceBones, name);
 		}
 
 		animInfo->rootInclude = MemStreamGetLong(stream);
 
 		animInfo->keyCompressionStyle = MemStreamGetLong(stream);
-		animInfo->keyQuotum = MemStreamGetLong(stream);
-		animInfo->keyReduction = MemStreamGetFloat(stream);
+		animInfo->keyQuotum           = MemStreamGetLong(stream);
+		animInfo->keyReduction        = MemStreamGetFloat(stream);
 
 		animInfo->trackTime = MemStreamGetFloat(stream);
 
@@ -574,7 +606,7 @@ static qboolean R_LoadPSA(skelAnimation_t *skelAnim, byte *buffer, int bufferSiz
 		animInfo->startBoneIndex = MemStreamGetLong(stream);
 
 		animInfo->firstRawFrame = MemStreamGetLong(stream);
-		animInfo->numRawFrames = MemStreamGetLong(stream);
+		animInfo->numRawFrames  = MemStreamGetLong(stream);
 
 #if 0
 		Ren_Print("R_LoadPSA: axAnimationInfo_t(%i):\n"
@@ -605,16 +637,18 @@ static qboolean R_LoadPSA(skelAnimation_t *skelAnim, byte *buffer, int bufferSiz
 		          animInfo->numRawFrames);
 #endif
 	}
+
 	// load the animation frame keys
 	GetChunkHeader(stream, &chunkHeader);
-
-	if (Q_stricmpn(chunkHeader.ident, "ANIMKEYS", 8)) {
+	if (Q_stricmpn(chunkHeader.ident, "ANIMKEYS", 8))
+	{
 		Ren_Warning("R_LoadPSA: '%s' has wrong chunk indent ('%s' should be '%s')\n", name, chunkHeader.ident, "ANIMKEYS");
 		FreeMemStream(stream);
 		return qfalse;
 	}
 
-	if (chunkHeader.dataSize != sizeof(axAnimationKey_t)) {
+	if (chunkHeader.dataSize != sizeof(axAnimationKey_t))
+	{
 		Ren_Warning("R_LoadPSA: '%s' has wrong chunk dataSize ('%i' should be '%zu')\n", name, chunkHeader.dataSize, sizeof(axAnimationKey_t));
 		FreeMemStream(stream);
 		return qfalse;
@@ -622,29 +656,38 @@ static qboolean R_LoadPSA(skelAnimation_t *skelAnim, byte *buffer, int bufferSiz
 
 	PrintChunkHeader(&chunkHeader);
 
-	for (i = 0; i < numSequences; i++) {
-		if (i == 0) {
+	for (i = 0; i < numSequences; i++)
+	{
+		if (i == 0)
+		{
 			psa = skelAnim->psa;
-		} else {
+		}
+		else
+		{
 			extraAnim = (skelAnimation_t *)Com_GrowListElement(&extraAnims, i - 1);
-			psa = extraAnim->psa;
+			psa       = extraAnim->psa;
 		}
 
 		psa->numKeys = psa->info.numBones * psa->info.numRawFrames;
-		psa->keys = (axAnimationKey_t *)ri.Hunk_Alloc(psa->numKeys * sizeof(axAnimationKey_t), h_low);
+		psa->keys    = (axAnimationKey_t *)ri.Hunk_Alloc(psa->numKeys * sizeof(axAnimationKey_t), h_low);
 
-		for (j = 0, key = &psa->keys[0]; j < psa->numKeys; j++, key++) {
-			for (k = 0; k < 3; k++) {
+		for (j = 0, key = &psa->keys[0]; j < psa->numKeys; j++, key++)
+		{
+			for (k = 0; k < 3; k++)
+			{
 				key->position[k] = MemStreamGetFloat(stream);
 			}
 
 			// see R_LoadPSK ...
-			if ((j % psa->info.numBones) == 0) {
+			if ((j % psa->info.numBones) == 0)
+			{
 				key->quat[0] = MemStreamGetFloat(stream);
 				key->quat[1] = -MemStreamGetFloat(stream);
 				key->quat[2] = MemStreamGetFloat(stream);
 				key->quat[3] = MemStreamGetFloat(stream);
-			} else {
+			}
+			else
+			{
 				key->quat[0] = -MemStreamGetFloat(stream);
 				key->quat[1] = -MemStreamGetFloat(stream);
 				key->quat[2] = -MemStreamGetFloat(stream);
@@ -666,52 +709,62 @@ static qboolean R_LoadPSA(skelAnimation_t *skelAnim, byte *buffer, int bufferSiz
 RE_RegisterAnimation
 ===============
 */
-qhandle_t RE_RegisterAnimation(const char *name) {
-	qhandle_t hAnim;
+qhandle_t RE_RegisterAnimation(const char *name)
+{
+	qhandle_t       hAnim;
 	skelAnimation_t *anim;
 	byte            *buffer;
-	int bufferLen;
+	int             bufferLen;
 	qboolean        loaded = qfalse;
 
-	if (!name || !name[0]) {
+	if (!name || !name[0])
+	{
 		Ren_Warning("Empty name passed to RE_RegisterAnimation\n");
 		return 0;
 	}
+
 	//Ren_Print("RE_RegisterAnimation(%s)\n", name);
 
-	if (strlen(name) >= MAX_QPATH) {
+	if (strlen(name) >= MAX_QPATH)
+	{
 		Ren_Warning("Animation name exceeds MAX_QPATH\n");
 		return 0;
 	}
-	// search the currently loaded animations
-	for (hAnim = 1; hAnim < tr.numAnimations; hAnim++) {
-		anim = tr.animations[hAnim];
 
-		if (!Q_stricmp(anim->name, name)) {
-			if (anim->type == AT_BAD) {
+	// search the currently loaded animations
+	for (hAnim = 1; hAnim < tr.numAnimations; hAnim++)
+	{
+		anim = tr.animations[hAnim];
+		if (!Q_stricmp(anim->name, name))
+		{
+			if (anim->type == AT_BAD)
+			{
 				return 0;
 			}
-
 			return hAnim;
 		}
 
-		if (anim->type == AT_PSA && anim->psa) {
+		if (anim->type == AT_PSA && anim->psa)
+		{
 			const char *animName;
 
 			animName = strstr(name, "::");
 
 			//Ren_Print("animName = '%s'\n", animName ? (animName + 2) : NULL);
-
-			if (animName && *(animName + 2) && !Q_stricmp(anim->psa->info.name, (animName + 2))) {
+			if (animName && *(animName + 2) && !Q_stricmp(anim->psa->info.name, (animName + 2)))
+			{
 				return hAnim;
 			}
 		}
 	}
+
 	// allocate a new model_t
-	if ((anim = R_AllocAnimation()) == NULL) {
+	if ((anim = R_AllocAnimation()) == NULL)
+	{
 		Ren_Warning("RE_RegisterAnimation: R_AllocAnimation() failed for '%s'\n", name);
 		return 0;
 	}
+
 	// only set the name after the animation has been successfully allocated
 	Q_strncpyz(anim->name, name, sizeof(anim->name));
 
@@ -720,22 +773,28 @@ qhandle_t RE_RegisterAnimation(const char *name) {
 
 	// load and parse the .md5anim file
 	bufferLen = ri.FS_ReadFile(name, (void **)&buffer);
-
-	if (!buffer) {
+	if (!buffer)
+	{
 		return 0;
 	}
 
-	if (!Q_stricmpn((const char *)buffer, "MD5Version", 10)) {
+	if (!Q_stricmpn((const char *)buffer, "MD5Version", 10))
+	{
 		loaded = R_LoadMD5Anim(anim, buffer, bufferLen, name);
-	} else if (!Q_stricmpn((const char *)buffer, "ANIMHEAD", 8)) {
+	}
+	else if (!Q_stricmpn((const char *)buffer, "ANIMHEAD", 8))
+	{
 		loaded = R_LoadPSA(anim, buffer, bufferLen, name);
-	} else {
+	}
+	else
+	{
 		Ren_Warning("RE_RegisterAnimation: unknown fileid for '%s'\n", name);
 	}
 
 	ri.FS_FreeFile(buffer);
 
-	if (!loaded) {
+	if (!loaded)
+	{
 		Ren_Warning("couldn't load '%s'\n", name);
 
 		// we still keep the model_t around, so if the model name is asked for
@@ -751,11 +810,13 @@ qhandle_t RE_RegisterAnimation(const char *name) {
 R_GetAnimationByHandle
 ================
 */
-skelAnimation_t *R_GetAnimationByHandle(qhandle_t index) {
+skelAnimation_t *R_GetAnimationByHandle(qhandle_t index)
+{
 	skelAnimation_t *anim;
 
 	// out of range gets the default animation
-	if (index < 1 || index >= tr.numAnimations) {
+	if (index < 1 || index >= tr.numAnimations)
+	{
 		return tr.animations[0];
 	}
 
@@ -769,41 +830,50 @@ skelAnimation_t *R_GetAnimationByHandle(qhandle_t index) {
 R_AnimationList_f
 ================
 */
-void R_AnimationList_f(void) {
-	int i;
+void R_AnimationList_f(void)
+{
+	int             i;
 	skelAnimation_t *anim;
 
-	for (i = 0; i < tr.numAnimations; i++) {
+	for (i = 0; i < tr.numAnimations; i++)
+	{
 		anim = tr.animations[i];
 
-		if (anim->type == AT_PSA && anim->psa) {
+		if (anim->type == AT_PSA && anim->psa)
+		{
 			Ren_Print("'%s' : '%s'\n", anim->name, anim->psa->info.name);
-		} else {
+		}
+		else
+		{
 			Ren_Print("'%s'\n", anim->name);
 		}
 	}
-
 	Ren_Print("%8i : Total animations\n", tr.numAnimations);
 }
 
 /*
-=======================================================================================================================================
+=============
 R_CullMD5
-=======================================================================================================================================
+=============
 */
-static void R_CullMD5(trRefEntity_t *ent) {
-	int i;
+static void R_CullMD5(trRefEntity_t *ent)
+{
+	int   i;
 	float boundsRadius;
 
-	if (ent->e.skeleton.type == SK_INVALID) {
+	if (ent->e.skeleton.type == SK_INVALID)
+	{
 		// no properly set skeleton so use the bounding box by the model instead by the animations
 		md5Model_t *model = tr.currentModel->md5;
 
 		VectorCopy(model->bounds[0], ent->localBounds[0]);
 		VectorCopy(model->bounds[1], ent->localBounds[1]);
-	} else {
+	}
+	else
+	{
 		// copy a bounding box in the current coordinate system provided by skeleton
-		for (i = 0; i < 3; i++) {
+		for (i = 0; i < 3; i++)
+		{
 			ent->localBounds[0][i] = ent->e.skeleton.bounds[0][i];
 			ent->localBounds[1][i] = ent->e.skeleton.bounds[1][i];
 		}
@@ -811,7 +881,8 @@ static void R_CullMD5(trRefEntity_t *ent) {
 
 	boundsRadius = RadiusFromBounds(ent->localBounds[0], ent->localBounds[1]);
 
-	switch (R_CullPointAndRadius(ent->e.origin, boundsRadius)) {
+	switch (R_CullPointAndRadius(ent->e.origin, boundsRadius))
+	{
 	case CULL_IN:
 		tr.pc.c_box_cull_md5_in++;
 		ent->cull = CULL_IN;
@@ -833,38 +904,47 @@ static void R_CullMD5(trRefEntity_t *ent) {
 R_AddMD5Surfaces
 ==============
 */
-void R_AddMD5Surfaces(trRefEntity_t *ent) {
-	md5Model_t *model = tr.currentModel->md5;
+void R_AddMD5Surfaces(trRefEntity_t *ent)
+{
+	md5Model_t   *model = tr.currentModel->md5;
 	md5Surface_t *surface;
-	shader_t *shader;
-	int i;
+	shader_t     *shader;
+	int          i;
 	qboolean     personalModel = (ent->e.renderfx & RF_THIRD_PERSON) && !tr.viewParms.isPortal; // don't add third_person objects if not in a portal
-	int fogNum;
+	int          fogNum;
 
 	// cull the entire model if merged bounding box of both frames
 	// is outside the view frustum
 	R_CullMD5(ent);
-
-	if (ent->cull == CULL_OUT) {
+	if (ent->cull == CULL_OUT)
+	{
 		return;
 	}
+
 	// set up world bounds for light intersection tests
 	R_SetupEntityWorldBounds(ent);
 
 	// set up lighting now that we know we aren't culled
-	if (!personalModel || r_shadows->integer > SHADOWING_BLOB) {
+	if (!personalModel || r_shadows->integer > SHADOWING_BLOB)
+	{
 		R_SetupEntityLighting(&tr.refdef, ent, NULL);
 	}
+
 	// see if we are in a fog volume
 	fogNum = R_FogWorldBox(ent->worldBounds);
 
 	if (!r_vboModels->integer || !model->numVBOSurfaces ||
-	    (!glConfig2.vboVertexSkinningAvailable && ent->e.skeleton.type == SK_ABSOLUTE)) {
+	    (!glConfig2.vboVertexSkinningAvailable && ent->e.skeleton.type == SK_ABSOLUTE))
+	{
 		// finally add surfaces
-		for (i = 0, surface = model->surfaces; i < model->numSurfaces; i++, surface++) {
-			if (ent->e.customShader) {
+		for (i = 0, surface = model->surfaces; i < model->numSurfaces; i++, surface++)
+		{
+			if (ent->e.customShader)
+			{
 				shader = R_GetShaderByHandle(ent->e.customShader);
-			} else if (ent->e.customSkin > 0 && ent->e.customSkin < tr.numSkins) {
+			}
+			else if (ent->e.customSkin > 0 && ent->e.customSkin < tr.numSkins)
+			{
 				skin_t *skin;
 
 				skin = R_GetSkinByHandle(ent->e.customSkin);
@@ -873,36 +953,49 @@ void R_AddMD5Surfaces(trRefEntity_t *ent) {
 				shader = tr.defaultShader;
 
 				// FIXME: replace MD3_MAX_SURFACES for skin_t::surfaces
-				if (i >= 0 && i < skin->numSurfaces && skin->surfaces[i]) {
+				if (i >= 0 && i < skin->numSurfaces && skin->surfaces[i])
+				{
 					shader = skin->surfaces[i]->shader;
 				}
-				if (shader == tr.defaultShader) {
+				if (shader == tr.defaultShader)
+				{
 					Ren_Developer("WARNING: no shader for surface %i in skin %s\n", i, skin->name);
-				} else if (shader->defaultShader) {
+				}
+				else if (shader->defaultShader)
+				{
 					Ren_Developer("WARNING: shader %s in skin %s not found\n", shader->name, skin->name);
 				}
-			} else {
+			}
+			else
+			{
 				shader = R_GetShaderByHandle(surface->shaderIndex);
 			}
 
 			// we will add shadows even if the main object isn't visible in the view
 
 			// don't add third_person objects if not viewing through a portal
-			if (!personalModel) {
+			if (!personalModel)
+			{
 				R_AddDrawSurf((surfaceType_t *)surface, shader, -1, fogNum);
 			}
 		}
-	} else {
-		int i;
+	}
+	else
+	{
+		int             i;
 		srfVBOMD5Mesh_t *vboSurface;
-		shader_t *shader;
+		shader_t        *shader;
 
-		for (i = 0; i < model->numVBOSurfaces; i++) {
+		for (i = 0; i < model->numVBOSurfaces; i++)
+		{
 			vboSurface = model->vboSurfaces[i];
 
-			if (ent->e.customShader) {
+			if (ent->e.customShader)
+			{
 				shader = R_GetShaderByHandle(ent->e.customShader);
-			} else if (ent->e.customSkin > 0 && ent->e.customSkin < tr.numSkins) {
+			}
+			else if (ent->e.customSkin > 0 && ent->e.customSkin < tr.numSkins)
+			{
 				skin_t *skin;
 
 				skin = R_GetSkinByHandle(ent->e.customSkin);
@@ -912,21 +1005,28 @@ void R_AddMD5Surfaces(trRefEntity_t *ent) {
 
 				// FIXME: replace MD3_MAX_SURFACES for skin_t::surfaces
 				//if(i >= 0 && i < skin->numSurfaces && skin->surfaces[i])
-				if (vboSurface->skinIndex >= 0 && vboSurface->skinIndex < skin->numSurfaces && skin->surfaces[vboSurface->skinIndex]) {
+				if (vboSurface->skinIndex >= 0 && vboSurface->skinIndex < skin->numSurfaces && skin->surfaces[vboSurface->skinIndex])
+				{
 					shader = skin->surfaces[vboSurface->skinIndex]->shader;
 				}
 
-				if (shader == tr.defaultShader) {
+				if (shader == tr.defaultShader)
+				{
 					Ren_Developer("WARNING: no shader for surface %i in skin %s\n", i, skin->name);
-				} else if (shader->defaultShader) {
+				}
+				else if (shader->defaultShader)
+				{
 					Ren_Developer("WARNING: shader %s in skin %s not found\n", shader->name, skin->name);
 				}
-			} else {
+			}
+			else
+			{
 				shader = vboSurface->shader;
 			}
 
 			// don't add third_person objects if not viewing through a portal
-			if (!personalModel) {
+			if (!personalModel)
+			{
 				R_AddDrawSurf((surfaceType_t *)vboSurface, shader, -1, fogNum);
 			}
 		}
@@ -938,32 +1038,43 @@ void R_AddMD5Surfaces(trRefEntity_t *ent) {
 R_AddMD5Interactions
 =================
 */
-void R_AddMD5Interactions(trRefEntity_t *ent, trRefLight_t *light) {
-	int i;
-	md5Model_t *model;
-	md5Surface_t *surface;
-	shader_t *shader = 0;
+void R_AddMD5Interactions(trRefEntity_t *ent, trRefLight_t *light)
+{
+	int               i;
+	md5Model_t        *model;
+	md5Surface_t      *surface;
+	shader_t          *shader = 0;
 	qboolean          personalModel;
 	byte              cubeSideBits = CUBESIDE_CLIPALL;
-	interactionType_t iaType = IA_DEFAULT;
+	interactionType_t iaType       = IA_DEFAULT;
 
 	// cull the entire model if merged bounding box of both frames
 	// is outside the view frustum and we don't care about proper shadowing
-	if (ent->cull == CULL_OUT) {
-		if (r_shadows->integer <= SHADOWING_BLOB || light->l.noShadows) {
+	if (ent->cull == CULL_OUT)
+	{
+		if (r_shadows->integer <= SHADOWING_BLOB || light->l.noShadows)
+		{
 			return;
-		} else {
+		}
+		else
+		{
 			iaType = IA_SHADOWONLY;
 		}
 	}
+
 	// avoid drawing of certain objects
 #if defined(USE_REFENTITY_NOSHADOWID)
-	if (light->l.inverseShadows) {
-		if (iaType != IA_LIGHTONLY && (light->l.noShadowID && (light->l.noShadowID != ent->e.noShadowID))) {
+	if (light->l.inverseShadows)
+	{
+		if (iaType != IA_LIGHTONLY && (light->l.noShadowID && (light->l.noShadowID != ent->e.noShadowID)))
+		{
 			return;
 		}
-	} else {
-		if (iaType != IA_LIGHTONLY && (light->l.noShadowID && (light->l.noShadowID == ent->e.noShadowID))) {
+	}
+	else
+	{
+		if (iaType != IA_LIGHTONLY && (light->l.noShadowID && (light->l.noShadowID == ent->e.noShadowID)))
+		{
 			return;
 		}
 	}
@@ -975,13 +1086,17 @@ void R_AddMD5Interactions(trRefEntity_t *ent, trRefLight_t *light) {
 	model = tr.currentModel->md5;
 
 	// do a quick AABB cull
-	if (!BoundsIntersect(light->worldBounds[0], light->worldBounds[1], ent->worldBounds[0], ent->worldBounds[1])) {
+	if (!BoundsIntersect(light->worldBounds[0], light->worldBounds[1], ent->worldBounds[0], ent->worldBounds[1]))
+	{
 		tr.pc.c_dlightSurfacesCulled += model->numSurfaces;
 		return;
 	}
+
 	// do a more expensive and precise light frustum cull
-	if (!r_noLightFrustums->integer) {
-		if (R_CullLightWorldBounds(light, ent->worldBounds) == CULL_OUT) {
+	if (!r_noLightFrustums->integer)
+	{
+		if (R_CullLightWorldBounds(light, ent->worldBounds) == CULL_OUT)
+		{
 			tr.pc.c_dlightSurfacesCulled += model->numSurfaces;
 			return;
 		}
@@ -990,12 +1105,17 @@ void R_AddMD5Interactions(trRefEntity_t *ent, trRefLight_t *light) {
 	cubeSideBits = R_CalcLightCubeSideBits(light, ent->worldBounds);
 
 	if (!r_vboModels->integer || !model->numVBOSurfaces ||
-	    (!glConfig2.vboVertexSkinningAvailable && ent->e.skeleton.type == SK_ABSOLUTE)) {
+	    (!glConfig2.vboVertexSkinningAvailable && ent->e.skeleton.type == SK_ABSOLUTE))
+	{
 		// generate interactions with all surfaces
-		for (i = 0, surface = model->surfaces; i < model->numSurfaces; i++, surface++) {
-			if (ent->e.customShader) {
+		for (i = 0, surface = model->surfaces; i < model->numSurfaces; i++, surface++)
+		{
+			if (ent->e.customShader)
+			{
 				shader = R_GetShaderByHandle(ent->e.customShader);
-			} else if (ent->e.customSkin > 0 && ent->e.customSkin < tr.numSkins) {
+			}
+			else if (ent->e.customSkin > 0 && ent->e.customSkin < tr.numSkins)
+			{
 				skin_t *skin;
 
 				skin = R_GetSkinByHandle(ent->e.customSkin);
@@ -1004,42 +1124,56 @@ void R_AddMD5Interactions(trRefEntity_t *ent, trRefLight_t *light) {
 				shader = tr.defaultShader;
 
 				// FIXME: replace MD3_MAX_SURFACES for skin_t::surfaces
-				if (i >= 0 && i < skin->numSurfaces && skin->surfaces[i]) {
+				if (i >= 0 && i < skin->numSurfaces && skin->surfaces[i])
+				{
 					shader = skin->surfaces[i]->shader;
 				}
-				if (shader == tr.defaultShader) {
+				if (shader == tr.defaultShader)
+				{
 					Ren_Developer("R_AddMD5Interactions WARNING: no shader for surface %i in skin %s\n", i, skin->name);
-				} else if (shader->defaultShader) {
+				}
+				else if (shader->defaultShader)
+				{
 					Ren_Developer("R_AddMD5Interactions WARNING: shader %s in skin %s not found\n", shader->name, skin->name);
 				}
-			} else {
+			}
+			else
+			{
 				shader = R_GetShaderByHandle(surface->shaderIndex);
 			}
 
 			// skip all surfaces that don't matter for lighting only pass
-			if (shader->isSky || (!shader->interactLight && shader->noShadows)) {
+			if (shader->isSky || (!shader->interactLight && shader->noShadows))
+			{
 				continue;
 			}
 
 			// we will add shadows even if the main object isn't visible in the view
 
 			// don't add third_person objects if not viewing through a portal
-			if (!personalModel) {
+			if (!personalModel)
+			{
 				R_AddLightInteraction(light, (surfaceType_t *)surface, shader, cubeSideBits, iaType);
 				tr.pc.c_dlightSurfaces++;
 			}
 		}
-	} else {
-		int i;
+	}
+	else
+	{
+		int             i;
 		srfVBOMD5Mesh_t *vboSurface;
-		shader_t *shader;
+		shader_t        *shader;
 
-		for (i = 0; i < model->numVBOSurfaces; i++) {
+		for (i = 0; i < model->numVBOSurfaces; i++)
+		{
 			vboSurface = model->vboSurfaces[i];
 
-			if (ent->e.customShader) {
+			if (ent->e.customShader)
+			{
 				shader = R_GetShaderByHandle(ent->e.customShader);
-			} else if (ent->e.customSkin > 0 && ent->e.customSkin < tr.numSkins) {
+			}
+			else if (ent->e.customSkin > 0 && ent->e.customSkin < tr.numSkins)
+			{
 				skin_t *skin;
 
 				skin = R_GetSkinByHandle(ent->e.customSkin);
@@ -1048,25 +1182,33 @@ void R_AddMD5Interactions(trRefEntity_t *ent, trRefLight_t *light) {
 				shader = tr.defaultShader;
 
 				// FIXME: replace MD3_MAX_SURFACES for skin_t::surfaces
-				if (i >= 0 && i < skin->numSurfaces && skin->surfaces[i]) {
+				if (i >= 0 && i < skin->numSurfaces && skin->surfaces[i])
+				{
 					shader = skin->surfaces[i]->shader;
 				}
-				if (shader == tr.defaultShader) {
+				if (shader == tr.defaultShader)
+				{
 					Ren_Developer("R_AddMD5Interactions WARNING: no shader for surface %i in skin %s\n", i, skin->name);
-				} else if (shader->defaultShader) {
+				}
+				else if (shader->defaultShader)
+				{
 					Ren_Developer("R_AddMD5Interactions WARNING: shader %s in skin %s not found\n", shader->name, skin->name);
 				}
-			} else {
+			}
+			else
+			{
 				shader = vboSurface->shader;
 			}
 
 			// skip all surfaces that don't matter for lighting only pass
-			if (shader->isSky || (!shader->interactLight && shader->noShadows)) {
+			if (shader->isSky || (!shader->interactLight && shader->noShadows))
+			{
 				continue;
 			}
 
 			// don't add third_person objects if not viewing through a portal
-			if (!personalModel) {
+			if (!personalModel)
+			{
 				R_AddLightInteraction(light, (surfaceType_t *)vboSurface, shader, cubeSideBits, iaType);
 				tr.pc.c_dlightSurfaces++;
 			}
@@ -1082,44 +1224,51 @@ check if the skeleton bones are the same in the model and animation
 and copy the parentIndex entries into the refSkeleton_t
 ==============
 */
-int RE_CheckSkeleton(refSkeleton_t *skel, qhandle_t hModel, qhandle_t hAnim) {
-	int i;
-	model_t *model;
-	md5Model_t *md5Model;
+int RE_CheckSkeleton(refSkeleton_t *skel, qhandle_t hModel, qhandle_t hAnim)
+{
+	int             i;
+	model_t         *model;
+	md5Model_t      *md5Model;
 	skelAnimation_t *skelAnim;
 
-	model = R_GetModelByHandle(hModel);
+	model    = R_GetModelByHandle(hModel);
 	skelAnim = R_GetAnimationByHandle(hAnim);
 
-	if (model->type != MOD_MD5 || !model->md5) {
+	if (model->type != MOD_MD5 || !model->md5)
+	{
 		Ren_Warning("RE_CheckSkeleton: '%s' is not a skeletal model\n", model->name);
 		return qfalse;
 	}
 
 	md5Model = model->md5;
-
-	if (md5Model->numBones < 1) {
+	if (md5Model->numBones < 1)
+	{
 		Ren_Warning("RE_CheckSkeleton: '%s' has no bones\n", model->name);
 		return qfalse;
 	}
-
-	if (md5Model->numBones > MAX_BONES) {
+	if (md5Model->numBones > MAX_BONES)
+	{
 		Ren_Warning("RE_CheckSkeleton: '%s' has more than %i bones (%i)\n", model->name, MAX_BONES, md5Model->numBones);
 		return qfalse;
 	}
 
-	if (skelAnim->type == AT_MD5 && skelAnim->md5) {
+	if (skelAnim->type == AT_MD5 && skelAnim->md5)
+	{
 		md5Animation_t *md5Animation = skelAnim->md5;
-		md5Bone_t *md5Bone;
-		md5Channel_t *md5Channel;
+		md5Bone_t      *md5Bone;
+		md5Channel_t   *md5Channel;
 
-		if (md5Model->numBones != md5Animation->numChannels) {
+		if (md5Model->numBones != md5Animation->numChannels)
+		{
 			Ren_Warning("RE_CheckSkeleton: model '%s' has different number of bones than animation '%s': %d != %d\n", model->name, skelAnim->name, md5Model->numBones, md5Animation->numChannels);
 			return qfalse;
 		}
+
 		// check bone names
-		for (i = 0, md5Bone = md5Model->bones, md5Channel = md5Animation->channels; i < md5Model->numBones; i++, md5Bone++, md5Channel++) {
-			if (Q_stricmp(md5Bone->name, md5Channel->name)) {
+		for (i = 0, md5Bone = md5Model->bones, md5Channel = md5Animation->channels; i < md5Model->numBones; i++, md5Bone++, md5Channel++)
+		{
+			if (Q_stricmp(md5Bone->name, md5Channel->name))
+			{
 				return qfalse;
 			}
 
@@ -1127,18 +1276,24 @@ int RE_CheckSkeleton(refSkeleton_t *skel, qhandle_t hModel, qhandle_t hAnim) {
 		}
 
 		return qtrue;
-	} else if (skelAnim->type == AT_PSA && skelAnim->psa) {
-		psaAnimation_t *psaAnimation = skelAnim->psa;
+	}
+	else if (skelAnim->type == AT_PSA && skelAnim->psa)
+	{
+		psaAnimation_t    *psaAnimation = skelAnim->psa;
 		axReferenceBone_t *refBone;
-		md5Bone_t *md5Bone;
+		md5Bone_t         *md5Bone;
 
-		if (md5Model->numBones != psaAnimation->info.numBones) {
+		if (md5Model->numBones != psaAnimation->info.numBones)
+		{
 			Ren_Warning("RE_CheckSkeleton: model '%s' has different number of bones than animation '%s': %d != %d\n", model->name, skelAnim->name, md5Model->numBones, psaAnimation->info.numBones);
 			return qfalse;
 		}
+
 		// check bone names
-		for (i = 0, md5Bone = md5Model->bones, refBone = psaAnimation->bones; i < md5Model->numBones; i++, md5Bone++, refBone++) {
-			if (Q_stricmp(md5Bone->name, refBone->name)) {
+		for (i = 0, md5Bone = md5Model->bones, refBone = psaAnimation->bones; i < md5Model->numBones; i++, md5Bone++, refBone++)
+		{
+			if (Q_stricmp(md5Bone->name, refBone->name))
+			{
 				return qfalse;
 			}
 
@@ -1158,19 +1313,21 @@ int RE_CheckSkeleton(refSkeleton_t *skel, qhandle_t hModel, qhandle_t hAnim) {
 RE_BuildSkeleton
 ==============
 */
-int RE_BuildSkeleton(refSkeleton_t *skel, qhandle_t hAnim, int startFrame, int endFrame, float frac, qboolean clearOrigin) {
+int RE_BuildSkeleton(refSkeleton_t *skel, qhandle_t hAnim, int startFrame, int endFrame, float frac, qboolean clearOrigin)
+{
 	skelAnimation_t *skelAnim;
 
 	skelAnim = R_GetAnimationByHandle(hAnim);
 
-	if (skelAnim->type == AT_MD5 && skelAnim->md5) {
-		int i;
+	if (skelAnim->type == AT_MD5 && skelAnim->md5)
+	{
+		int            i;
 		md5Animation_t *anim = skelAnim->md5;
-		md5Channel_t *channel;
-		md5Frame_t *newFrame, *oldFrame;
-		vec3_t newOrigin, oldOrigin, lerpedOrigin;
-		quat_t newQuat, oldQuat, lerpedQuat;
-		int componentsApplied;
+		md5Channel_t   *channel;
+		md5Frame_t     *newFrame, *oldFrame;
+		vec3_t         newOrigin, oldOrigin, lerpedOrigin;
+		quat_t         newQuat, oldQuat, lerpedQuat;
+		int            componentsApplied;
 
 		// Validate the frames so there is no chance of a crash.
 		// This will write directly into the entity structure, so
@@ -1191,14 +1348,16 @@ int RE_BuildSkeleton(refSkeleton_t *skel, qhandle_t hAnim, int startFrame, int e
 		newFrame = &anim->frames[endFrame];
 
 		// calculate a bounding box in the current coordinate system
-		for (i = 0; i < 3; i++) {
+		for (i = 0; i < 3; i++)
+		{
 			skel->bounds[0][i] =
 			    oldFrame->bounds[0][i] < newFrame->bounds[0][i] ? oldFrame->bounds[0][i] : newFrame->bounds[0][i];
 			skel->bounds[1][i] =
 			    oldFrame->bounds[1][i] > newFrame->bounds[1][i] ? oldFrame->bounds[1][i] : newFrame->bounds[1][i];
 		}
 
-		for (i = 0, channel = anim->channels; i < anim->numChannels; i++, channel++) {
+		for (i = 0, channel = anim->channels; i < anim->numChannels; i++, channel++)
+		{
 			// set baseframe values
 			VectorCopy(channel->baseOrigin, newOrigin);
 			VectorCopy(channel->baseOrigin, oldOrigin);
@@ -1209,38 +1368,44 @@ int RE_BuildSkeleton(refSkeleton_t *skel, qhandle_t hAnim, int startFrame, int e
 			componentsApplied = 0;
 
 			// update tranlation bits
-			if (channel->componentsBits & COMPONENT_BIT_TX) {
+			if (channel->componentsBits & COMPONENT_BIT_TX)
+			{
 				oldOrigin[0] = oldFrame->components[channel->componentsOffset + componentsApplied];
 				newOrigin[0] = newFrame->components[channel->componentsOffset + componentsApplied];
 				componentsApplied++;
 			}
 
-			if (channel->componentsBits & COMPONENT_BIT_TY) {
+			if (channel->componentsBits & COMPONENT_BIT_TY)
+			{
 				oldOrigin[1] = oldFrame->components[channel->componentsOffset + componentsApplied];
 				newOrigin[1] = newFrame->components[channel->componentsOffset + componentsApplied];
 				componentsApplied++;
 			}
 
-			if (channel->componentsBits & COMPONENT_BIT_TZ) {
+			if (channel->componentsBits & COMPONENT_BIT_TZ)
+			{
 				oldOrigin[2] = oldFrame->components[channel->componentsOffset + componentsApplied];
 				newOrigin[2] = newFrame->components[channel->componentsOffset + componentsApplied];
 				componentsApplied++;
 			}
 
 			// update quaternion rotation bits
-			if (channel->componentsBits & COMPONENT_BIT_QX) {
+			if (channel->componentsBits & COMPONENT_BIT_QX)
+			{
 				((vec_t *) oldQuat)[0] = oldFrame->components[channel->componentsOffset + componentsApplied];
 				((vec_t *) newQuat)[0] = newFrame->components[channel->componentsOffset + componentsApplied];
 				componentsApplied++;
 			}
 
-			if (channel->componentsBits & COMPONENT_BIT_QY) {
+			if (channel->componentsBits & COMPONENT_BIT_QY)
+			{
 				((vec_t *) oldQuat)[1] = oldFrame->components[channel->componentsOffset + componentsApplied];
 				((vec_t *) newQuat)[1] = newFrame->components[channel->componentsOffset + componentsApplied];
 				componentsApplied++;
 			}
 
-			if (channel->componentsBits & COMPONENT_BIT_QZ) {
+			if (channel->componentsBits & COMPONENT_BIT_QZ)
+			{
 				((vec_t *) oldQuat)[2] = oldFrame->components[channel->componentsOffset + componentsApplied];
 				((vec_t *) newQuat)[2] = newFrame->components[channel->componentsOffset + componentsApplied];
 			}
@@ -1262,14 +1427,17 @@ int RE_BuildSkeleton(refSkeleton_t *skel, qhandle_t hAnim, int startFrame, int e
 			// copy lerped information to the bone + extra data
 			skel->bones[i].parentIndex = channel->parentIndex;
 
-			if (channel->parentIndex < 0 && clearOrigin) {
+			if (channel->parentIndex < 0 && clearOrigin)
+			{
 				VectorClear(skel->bones[i].origin);
 				QuatClear(skel->bones[i].rotation);
 
 				// move bounding box back
 				VectorSubtract(skel->bounds[0], lerpedOrigin, skel->bounds[0]);
 				VectorSubtract(skel->bounds[1], lerpedOrigin, skel->bounds[1]);
-			} else {
+			}
+			else
+			{
 				VectorCopy(lerpedOrigin, skel->bones[i].origin);
 			}
 
@@ -1281,16 +1449,18 @@ int RE_BuildSkeleton(refSkeleton_t *skel, qhandle_t hAnim, int startFrame, int e
 		}
 
 		skel->numBones = anim->numChannels;
-		skel->type = SK_RELATIVE;
+		skel->type     = SK_RELATIVE;
 		return qtrue;
-	} else if (skelAnim->type == AT_PSA && skelAnim->psa) {
-		int i;
-		psaAnimation_t *anim = skelAnim->psa;
-		axAnimationKey_t *newKey, *oldKey;
+	}
+	else if (skelAnim->type == AT_PSA && skelAnim->psa)
+	{
+		int               i;
+		psaAnimation_t    *anim = skelAnim->psa;
+		axAnimationKey_t  *newKey, *oldKey;
 		axReferenceBone_t *refBone;
-		vec3_t newOrigin, oldOrigin, lerpedOrigin;
-		quat_t newQuat, oldQuat, lerpedQuat;
-		refSkeleton_t skeleton;
+		vec3_t            newOrigin, oldOrigin, lerpedOrigin;
+		quat_t            newQuat, oldQuat, lerpedQuat;
+		refSkeleton_t     skeleton;
 
 		Q_clamp(startFrame, 0, anim->info.numRawFrames - 1);
 		Q_clamp(endFrame, 0, anim->info.numRawFrames - 1);
@@ -1298,8 +1468,8 @@ int RE_BuildSkeleton(refSkeleton_t *skel, qhandle_t hAnim, int startFrame, int e
 		ClearBounds(skel->bounds[0], skel->bounds[1]);
 
 		skel->numBones = anim->info.numBones;
-
-		for (i = 0, refBone = anim->bones; i < anim->info.numBones; i++, refBone++) {
+		for (i = 0, refBone = anim->bones; i < anim->info.numBones; i++, refBone++)
+		{
 			oldKey = &anim->keys[startFrame * anim->info.numBones + i];
 			newKey = &anim->keys[endFrame * anim->info.numBones + i];
 
@@ -1321,14 +1491,17 @@ int RE_BuildSkeleton(refSkeleton_t *skel, qhandle_t hAnim, int startFrame, int e
 			// copy lerped information to the bone + extra data
 			skel->bones[i].parentIndex = refBone->parentIndex;
 
-			if (refBone->parentIndex < 0 && clearOrigin) {
+			if (refBone->parentIndex < 0 && clearOrigin)
+			{
 				VectorClear(skel->bones[i].origin);
 				QuatClear(skel->bones[i].rotation);
 
 				// move bounding box back
 				VectorSubtract(skel->bounds[0], lerpedOrigin, skel->bounds[0]);
 				VectorSubtract(skel->bounds[1], lerpedOrigin, skel->bounds[1]);
-			} else {
+			}
+			else
+			{
 				VectorCopy(lerpedOrigin, skel->bones[i].origin);
 			}
 
@@ -1342,10 +1515,11 @@ int RE_BuildSkeleton(refSkeleton_t *skel, qhandle_t hAnim, int startFrame, int e
 			VectorCopy(skel->bones[i].origin, skeleton.bones[i].origin);
 			quat_copy(skel->bones[i].rotation, skeleton.bones[i].rotation);
 
-			if (refBone->parentIndex >= 0) {
-				vec3_t rotated;
-				quat_t quat;
-				refBone_t *bone = &skeleton.bones[i];
+			if (refBone->parentIndex >= 0)
+			{
+				vec3_t    rotated;
+				quat_t    quat;
+				refBone_t *bone   = &skeleton.bones[i];
 				refBone_t *parent = &skeleton.bones[refBone->parentIndex];
 
 				QuatTransformVector(parent->rotation, bone->origin, rotated);
@@ -1360,9 +1534,10 @@ int RE_BuildSkeleton(refSkeleton_t *skel, qhandle_t hAnim, int startFrame, int e
 		}
 
 		skel->numBones = anim->info.numBones;
-		skel->type = SK_RELATIVE;
+		skel->type     = SK_RELATIVE;
 		return qtrue;
 	}
+
 	//Ren_Warning( "RE_BuildSkeleton: bad animation '%s' with handle %i\n", anim->name, hAnim);
 
 	// FIXME: clear existing bones and bounds?
@@ -1374,30 +1549,35 @@ int RE_BuildSkeleton(refSkeleton_t *skel, qhandle_t hAnim, int startFrame, int e
 RE_BlendSkeleton
 ==============
 */
-int RE_BlendSkeleton(refSkeleton_t *skel, const refSkeleton_t *blend, float frac) {
-	int i;
+int RE_BlendSkeleton(refSkeleton_t *skel, const refSkeleton_t *blend, float frac)
+{
+	int    i;
 	vec3_t lerpedOrigin;
 	quat_t lerpedQuat;
 	vec3_t bounds[2];
 
-	if (skel->numBones != blend->numBones) {
+	if (skel->numBones != blend->numBones)
+	{
 		Ren_Warning("RE_BlendSkeleton: different number of bones %d != %d\n", skel->numBones, blend->numBones);
 		return qfalse;
 	}
+
 	// lerp between the 2 bone poses
-	for (i = 0; i < skel->numBones; i++) {
+	for (i = 0; i < skel->numBones; i++)
+	{
 		VectorLerp(skel->bones[i].origin, blend->bones[i].origin, frac, lerpedOrigin);
 		quat_slerp(skel->bones[i].rotation, blend->bones[i].rotation, frac, lerpedQuat);
 
 		VectorCopy(lerpedOrigin, skel->bones[i].origin);
 		quat_copy(lerpedQuat, skel->bones[i].rotation);
 	}
+
 	// calculate a bounding box in the current coordinate system
-	for (i = 0; i < 3; i++) {
+	for (i = 0; i < 3; i++)
+	{
 		bounds[0][i] = skel->bounds[0][i] < blend->bounds[0][i] ? skel->bounds[0][i] : blend->bounds[0][i];
 		bounds[1][i] = skel->bounds[1][i] > blend->bounds[1][i] ? skel->bounds[1][i] : blend->bounds[1][i];
 	}
-
 	VectorCopy(bounds[0], skel->bounds[0]);
 	VectorCopy(bounds[1], skel->bounds[1]);
 
@@ -1409,16 +1589,19 @@ int RE_BlendSkeleton(refSkeleton_t *skel, const refSkeleton_t *blend, float frac
 RE_AnimNumFrames
 ==============
 */
-int RE_AnimNumFrames(qhandle_t hAnim) {
+int RE_AnimNumFrames(qhandle_t hAnim)
+{
 	skelAnimation_t *anim;
 
 	anim = R_GetAnimationByHandle(hAnim);
 
-	if (anim->type == AT_MD5 && anim->md5) {
+	if (anim->type == AT_MD5 && anim->md5)
+	{
 		return anim->md5->numFrames;
 	}
 
-	if (anim->type == AT_PSA && anim->psa) {
+	if (anim->type == AT_PSA && anim->psa)
+	{
 		return anim->psa->info.numRawFrames;
 	}
 
@@ -1430,16 +1613,19 @@ int RE_AnimNumFrames(qhandle_t hAnim) {
 RE_AnimFrameRate
 ==============
 */
-int RE_AnimFrameRate(qhandle_t hAnim) {
+int RE_AnimFrameRate(qhandle_t hAnim)
+{
 	skelAnimation_t *anim;
 
 	anim = R_GetAnimationByHandle(hAnim);
 
-	if (anim->type == AT_MD5 && anim->md5) {
+	if (anim->type == AT_MD5 && anim->md5)
+	{
 		return anim->md5->frameRate;
 	}
 
-	if (anim->type == AT_PSA && anim->psa) {
+	if (anim->type == AT_PSA && anim->psa)
+	{
 		return anim->psa->info.frameRate;
 	}
 

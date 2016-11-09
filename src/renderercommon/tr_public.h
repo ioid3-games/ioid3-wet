@@ -40,7 +40,8 @@
 #define REF_API_VERSION     10
 
 // these are the functions exported by the refresh module
-typedef struct {
+typedef struct
+{
 	// called before the library is unloaded
 	// if the system is just reconfiguring, pass destroyWindow = qfalse,
 	// which will keep the screen from flashing to the desktop.
@@ -87,9 +88,9 @@ typedef struct {
 	void (*SetFog)(int fogvar, int var1, int var2, float r, float g, float b, float density);
 	void (*RenderScene)(const refdef_t *fd);
 
-	void (*SetColor)(const float *rgba); // NULL = 1,1,1,1
-	void (*DrawStretchPic)(float x, float y, float w, float h, float s1, float t1, float s2, float t2, qhandle_t hShader); // 0 = white
-	void (*DrawRotatedPic)(float x, float y, float w, float h, float s1, float t1, float s2, float t2, qhandle_t hShader, float angle); // NERVE - SMF
+	void (*SetColor)(const float *rgba);        // NULL = 1,1,1,1
+	void (*DrawStretchPic)(float x, float y, float w, float h, float s1, float t1, float s2, float t2, qhandle_t hShader);          // 0 = white
+	void (*DrawRotatedPic)(float x, float y, float w, float h, float s1, float t1, float s2, float t2, qhandle_t hShader, float angle);         // NERVE - SMF
 	void (*DrawStretchPicGradient)(float x, float y, float w, float h, float s1, float t1, float s2, float t2, qhandle_t hShader, const float *gradientColor, int gradientType);
 	void (*Add2dPolys)(polyVert_t *polys, int numverts, qhandle_t hShader);
 
@@ -160,7 +161,8 @@ typedef struct {
 } refexport_t;
 
 // these are the functions imported by the refresh module
-typedef struct {
+typedef struct
+{
 	// print message on the local console
 	void (QDECL *Printf)(int printLevel, const char *fmt, ...) __attribute__ ((format(printf, 2, 3)));
 

@@ -901,7 +901,7 @@ typedef struct {
 	int weaponFireTime;
 	int nextIdleTime;
 	int lastIdleTimeEnd;
-	int idleAnim;
+	hudHeadAnimNumber_t idleAnim;
 	int lastWeapSelInBank[MAX_WEAP_BANKS_MP]; // remember which weapon was last selected in a bank for 'weaponbank' commands
 
 	// view movement
@@ -1706,9 +1706,9 @@ typedef struct location_s {
 
 typedef struct {
 	int lastLocation;
-	int lastX;
-	int lastY;
-	int lastZ;
+	float lastX;
+	float lastY;
+	float lastZ;
 } clientLocation_t;
 
 #define NUM_ENDGAME_AWARDS     19   // total number of endgame awards
@@ -2239,7 +2239,7 @@ float CG_Cvar_Get(const char *cvar);
 
 char *CG_generateFilename(void);
 int CG_findClientNum(char *s);
-void CG_printConsoleString(char *str);
+void CG_printConsoleString(const char *str);
 
 void CG_LoadObjectiveData(void);
 
@@ -2320,7 +2320,7 @@ void CG_DrawTopBottom_NoScale(float x, float y, float w, float h, float size);
 void CG_DrawBottom_NoScale(float x, float y, float w, float h, float size);
 
 // localization functions
-char *CG_TranslateString(const char *string);
+const char *CG_TranslateString(const char *string);
 
 void CG_InitStatsDebug(void);
 void CG_StatsDebugAddText(const char *text);
@@ -2525,7 +2525,7 @@ char *CG_BuildLocationString(int clientNum, vec3_t origin, int flag);
 void CG_LoadLocations(void);
 
 // cg_effects.c
-int CG_GetOriginForTag(centity_t * cent, refEntity_t * parent, char *tagName, int startIndex, vec3_t org, vec3_t axis[3]);
+int CG_GetOriginForTag(centity_t * cent, refEntity_t * parent, const char *tagName, int startIndex, vec3_t org, vec3_t axis[3]);
 localEntity_t *CG_SmokePuff(const vec3_t p,
                             const vec3_t vel,
                             float radius,
@@ -2655,9 +2655,9 @@ void CG_PlayBufferedVoiceChats(void);
 const char *CG_LocalizeServerCommand(const char *buf);
 void CG_wstatsParse_cmd(void);
 
-void CG_parseWeaponStats_cmd(void(txt_dump) (char *));
-void CG_parseBestShotsStats_cmd(qboolean doTop, void(txt_dump) (char *));
-void CG_parseTopShotsStats_cmd(qboolean doTop, void(txt_dump) (char *));
+void CG_parseWeaponStats_cmd(void(txt_dump) (const char *));
+void CG_parseBestShotsStats_cmd(qboolean doTop, void(txt_dump) (const char *));
+void CG_parseTopShotsStats_cmd(qboolean doTop, void(txt_dump) (const char *));
 void CG_scores_cmd(void);
 
 void CG_UpdateSvCvars(void);
@@ -3020,7 +3020,7 @@ void CG_mv_KeyHandling(int _key, qboolean down);
 #endif
 
 // cg_window.c
-qboolean CG_addString(cg_window_t *w, char *buf);
+qboolean CG_addString(cg_window_t *w, const char *buf);
 void CG_createStatsWindow(void);
 void CG_createTopShotsWindow(void);
 void CG_createWstatsMsgWindow(void);
@@ -3030,7 +3030,7 @@ void CG_createMOTDWindow(void);
 void CG_cursorUpdate(void);
 #endif
 void CG_initStrings(void);
-void CG_printWindow(char *str);
+void CG_printWindow(const char *str);
 void CG_removeStrings(cg_window_t *w);
 cg_window_t *CG_windowAlloc(int fx, int startupLength);
 void CG_windowDraw(void);

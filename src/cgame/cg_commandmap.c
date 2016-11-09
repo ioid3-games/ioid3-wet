@@ -657,7 +657,7 @@ void CG_DrawMapEntity(mapEntityData_t *mEnt, float x, float y, float w, float h,
 			} else {
 				CG_DrawPic(icon_pos[0], icon_pos[1], icon_extends[0], icon_extends[1], classInfo->icon);
 			}
-			CG_DrawRotatedPic(icon_pos[0] - 1, icon_pos[1] - 1, icon_extends[0] + 2, icon_extends[1] + 2, classInfo->arrow, (0.5 - (mEnt->yaw - 180.f) / 360.f));
+			CG_DrawRotatedPic(icon_pos[0] - 1, icon_pos[1] - 1, icon_extends[0] + 2, icon_extends[1] + 2, classInfo->arrow, (0.5f - (mEnt->yaw - 180.f) / 360.f));
 			trap_R_SetColor(NULL);
 		}
 
@@ -738,15 +738,15 @@ void CG_DrawMapEntity(mapEntityData_t *mEnt, float x, float y, float w, float h,
             if (mEntFilter & CC_FILTER_OBJECTIVES)
             {
                 return;
-         }
-            pic = cgs.media.ccTankIcon;
+            }
+            pic = cgs.media.ccTankIcon; // FIXME: this is churchill - add jagdpanther?
             break;
         case ME_TANK_DEAD:
             if (mEntFilter & CC_FILTER_OBJECTIVES)
             {
                 return;
-         }
-            pic = cgs.media.ccTankIcon;
+            }
+            pic = cgs.media.ccTankIcon; // FIXME: this is churchill - add jagdpanther?
             trap_R_SetColor(colorRed);
             break;
         case ME_COMMANDMAP_MARKER:

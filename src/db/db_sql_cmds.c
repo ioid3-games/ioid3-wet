@@ -3,7 +3,7 @@
  * Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
  *
  * ET: Legacy
- * Copyright (C) 2012 - 2016 ET:Legacy team <mail@etlegacy.com>
+ * Copyright (C) 2012-2016 ET:Legacy team <mail@etlegacy.com>
  *
  * This file is part of ET: Legacy - http://www.etlegacy.com
  *
@@ -12,9 +12,9 @@
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * ET: Legacy is distributed in the hope that it will be useful, 
+ * ET: Legacy is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
@@ -38,8 +38,9 @@
 /**
  * @brief command to enter sql querries on the console
  */
-void DB_ExecSQLCommand_f(void) {
-	int result;
+void DB_ExecSQLCommand_f(void)
+{
+	int  result;
 	char *cmd;
 	char *sql;
 	char *err_msg = 0;
@@ -47,21 +48,25 @@ void DB_ExecSQLCommand_f(void) {
 	cmd = Cmd_Argv(0);
 	sql = Cmd_Args();
 
-	if (!db || db_mode->integer == 0) {
+	if (!db || db_mode->integer == 0)
+	{
 		Com_Printf("SQL db not available or disabled!\n");
 		return;
 	}
 
-	if (!sql || !sql[0]) {
-		Com_Printf("Usage: %s sql < sql_statement >\n", cmd);
+	if (!sql || !sql[0])
+	{
+		Com_Printf("Usage: %s sql <sql_statement>\n", cmd);
 		return;
 	}
+
 	// debug
-	// Com_Printf("sql: '%s'\n", sql);
+	//Com_Printf("sql: '%s'\n", sql);
 
 	result = sqlite3_exec(db, sql, DB_callback, 0, &err_msg);
 
-	if (result != SQLITE_OK) {
+	if (result != SQLITE_OK)
+	{
 		Com_Printf("SQL command failed: %s\n", err_msg);
 		sqlite3_free(err_msg);
 		return;
@@ -73,17 +78,19 @@ void DB_ExecSQLCommand_f(void) {
 /**
  * @brief saves memory db to disk
  */
-void DB_SaveMemDB_f(void) {
+void DB_SaveMemDB_f(void)
+{
 	int result;
 
-	if (!db || db_mode->integer == 0) {
+	if (!db || db_mode->integer == 0)
+	{
 		Com_Printf("saveDB: db not available or disabled!\n");
 		return;
 	}
 
 	result = DB_SaveMemDB();
-
-	if (result != SQLITE_OK) {
+	if (result != SQLITE_OK)
+	{
 		Com_Printf("saveDB: can't save database.\n");
 	}
 }

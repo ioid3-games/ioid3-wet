@@ -1167,9 +1167,10 @@ void NET_OpenSocks(int port) {
 	int len;
 	qboolean rfc1929;
 	unsigned char buf[64];
-	int i = 1;
+	int                i = 1;
 
 	usingSocks = qfalse;
+	Com_Memset(&address.sin_zero, 0, sizeof(address.sin_zero));
 
 	Com_Printf("Opening connection to SOCKS server.\n");
 

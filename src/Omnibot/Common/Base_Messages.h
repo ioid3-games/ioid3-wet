@@ -28,19 +28,21 @@ struct Msg_Addbot
 
 	Msg_Addbot()
 		: m_Team(RANDOM_TEAM_IF_NO_TEAM)
-		, m_Class(RANDOM_CLASS_IF_NO_CLASS) {
+		, m_Class(RANDOM_CLASS_IF_NO_CLASS)
+	{
 		m_Name[0] = m_Model[0] = m_Skin[0] = m_SpawnPointName[0] = m_Profile[0] = 0;
 	}
 };
 
 struct Msg_Kickbot
 {
-	enum {BufferSize = 64, InvalidGameId = -1};
+	enum { BufferSize = 64, InvalidGameId = -1 };
 	char m_Name[BufferSize];
 	int m_GameId;
 
 	Msg_Kickbot()
-		: m_GameId(InvalidGameId) {
+		: m_GameId(InvalidGameId)
+	{
 		m_Name[0] = 0;
 	}
 };
@@ -52,14 +54,16 @@ struct Msg_ChangeName
 
 struct Msg_PlayerChooseEquipment
 {
-	enum {NumItems = 16};
+	enum { NumItems = 16 };
 	int m_WeaponChoice[NumItems];
 	int m_ItemChoice[NumItems];
 
-	Msg_PlayerChooseEquipment() {
-		for (int i = 0; i < NumItems; ++i) {
+	Msg_PlayerChooseEquipment()
+	{
+		for (int i = 0; i < NumItems; ++i)
+		{
 			m_WeaponChoice[i] = 0;
-			m_ItemChoice[i] = 0;
+			m_ItemChoice[i]   = 0;
 		}
 	}
 };
@@ -75,7 +79,8 @@ struct Msg_HealthArmor
 		: m_CurrentHealth(0)
 		, m_MaxHealth(0)
 		, m_CurrentArmor(0)
-		, m_MaxArmor(0) {
+		, m_MaxArmor(0)
+	{
 	}
 };
 
@@ -83,7 +88,8 @@ struct Msg_PlayerMaxSpeed
 {
 	float m_MaxSpeed;
 
-	Msg_PlayerMaxSpeed() : m_MaxSpeed(0.f) {
+	Msg_PlayerMaxSpeed() : m_MaxSpeed(0.f)
+	{
 	}
 };
 
@@ -91,7 +97,8 @@ struct Msg_IsAlive
 {
 	obBool m_IsAlive;
 
-	Msg_IsAlive() : m_IsAlive(False) {
+	Msg_IsAlive() : m_IsAlive(False)
+	{
 	}
 };
 
@@ -100,7 +107,8 @@ struct Msg_IsAllied
 	GameEntity m_TargetEntity;
 	obBool m_IsAllied;
 
-	Msg_IsAllied(GameEntity e) : m_TargetEntity(e), m_IsAllied(True) {
+	Msg_IsAllied(GameEntity e) : m_TargetEntity(e), m_IsAllied(True)
+	{
 	}
 };
 
@@ -110,7 +118,8 @@ struct Msg_IsOutside
 	obBool m_IsOutside;
 
 	Msg_IsOutside()
-		: m_IsOutside(False) {
+		: m_IsOutside(False)
+	{
 		m_Position[0] = m_Position[1] = m_Position[2] = 0.f;
 	}
 };
@@ -124,7 +133,8 @@ struct Msg_PointContents
 		: m_Contents(0)
 		, x(0.f)
 		, y(0.f)
-		, z(0.f) {
+		, z(0.f)
+	{
 	}
 };
 
@@ -132,7 +142,8 @@ struct Msg_ReadyToFire
 {
 	obBool m_Ready;
 
-	Msg_ReadyToFire() : m_Ready(False) {
+	Msg_ReadyToFire() : m_Ready(False)
+	{
 	}
 };
 
@@ -140,7 +151,8 @@ struct Msg_Reloading
 {
 	obBool m_Reloading;
 
-	Msg_Reloading() : m_Reloading(False) {
+	Msg_Reloading() : m_Reloading(False)
+	{
 	}
 };
 
@@ -150,7 +162,8 @@ struct Msg_FlagState
 	GameEntity m_Owner;
 
 	Msg_FlagState()
-		: m_FlagState(S_FLAG_NOT_A_FLAG) {
+		: m_FlagState(S_FLAG_NOT_A_FLAG)
+	{
 	}
 };
 
@@ -161,7 +174,8 @@ struct Msg_GameState
 
 	Msg_GameState()
 		: m_GameState(GAME_STATE_INVALID)
-		, m_TimeLeft(0.f) {
+		, m_TimeLeft(0.f)
+	{
 	}
 };
 
@@ -170,7 +184,8 @@ struct Msg_EntityStat
 	char m_StatName[64];
 	obUserData m_Result;
 
-	Msg_EntityStat() {
+	Msg_EntityStat()
+	{
 		m_StatName[0] = 0;
 	}
 };
@@ -182,7 +197,8 @@ struct Msg_TeamStat
 	obUserData m_Result;
 
 	Msg_TeamStat()
-		: m_Team(0) {
+		: m_Team(0)
+	{
 		m_StatName[0] = 0;
 	}
 };
@@ -191,7 +207,8 @@ struct Msg_ServerCommand
 {
 	char m_Command[256];
 
-	Msg_ServerCommand() {
+	Msg_ServerCommand()
+	{
 		m_Command[0] = 0;
 	}
 };
@@ -207,7 +224,8 @@ struct WeaponCharged
 		: m_Weapon(w)
 		, m_FireMode(m)
 		, m_IsCharged(False)
-		, m_IsCharging(False) {
+		, m_IsCharging(False)
+	{
 	}
 };
 
@@ -220,7 +238,8 @@ struct WeaponHeatLevel
 	WeaponHeatLevel(FireMode m = Primary)
 		: m_FireMode(m)
 		, m_CurrentHeat(0.f)
-		, m_MaxHeat(0.f) {
+		, m_MaxHeat(0.f)
+	{
 	}
 };
 
@@ -234,14 +253,15 @@ struct VehicleInfo
 	int m_VehicleMaxHealth;
 	float m_Armor;
 
-	VehicleInfo() {
-		m_Type = 0;
-		m_Entity = GameEntity();
-		m_Weapon = GameEntity();
-		m_Driver = GameEntity();
-		m_VehicleHealth = 0;
+	VehicleInfo()
+	{
+		m_Type             = 0;
+		m_Entity           = GameEntity();
+		m_Weapon           = GameEntity();
+		m_Driver           = GameEntity();
+		m_VehicleHealth    = 0;
 		m_VehicleMaxHealth = 0;
-		m_Armor = 0.f;
+		m_Armor            = 0.f;
 	}
 };
 
@@ -249,7 +269,8 @@ struct ControllingTeam
 {
 	int m_ControllingTeam;
 
-	ControllingTeam() : m_ControllingTeam(0) {
+	ControllingTeam() : m_ControllingTeam(0)
+	{
 	}
 };
 
@@ -258,14 +279,16 @@ struct WeaponStatus
 	int m_WeaponId;
 	//FireMode	m_FireMode;
 
-	WeaponStatus() : m_WeaponId(0) {
+	WeaponStatus() : m_WeaponId(0)
+	{
 	}
 
-	bool operator==(const WeaponStatus &_w2) {
+	bool operator==(const WeaponStatus &_w2)
+	{
 		return m_WeaponId == _w2.m_WeaponId;
 	}
-
-	bool operator!=(const WeaponStatus &_w2) {
+	bool operator!=(const WeaponStatus &_w2)
+	{
 		return !(*this == _w2);
 	}
 };
@@ -286,7 +309,8 @@ struct WeaponLimits
 		, m_MinPitch(-20.f)
 		, m_MaxPitch(20.f)
 		, m_WeaponId(0)
-		, m_Limited(False) {
+		, m_Limited(False)
+	{
 		m_CenterFacing[0] = 0.f;
 		m_CenterFacing[1] = 0.f;
 		m_CenterFacing[2] = 0.f;
@@ -322,10 +346,11 @@ struct Msg_GotoWaypoint
 	char m_WaypointName[64];
 	float m_Origin[3];
 
-	Msg_GotoWaypoint() {
-		m_Origin[0] = 0.f;
-		m_Origin[1] = 0.f;
-		m_Origin[2] = 0.f;
+	Msg_GotoWaypoint()
+	{
+		m_Origin[0]       = 0.f;
+		m_Origin[1]       = 0.f;
+		m_Origin[2]       = 0.f;
 		m_WaypointName[0] = 0;
 	}
 };
@@ -337,9 +362,10 @@ struct Msg_MoverAt
 
 	GameEntity m_Entity;
 
-	Msg_MoverAt() {
+	Msg_MoverAt()
+	{
 		m_Position[0] = m_Position[1] = m_Position[2] = 0.f;
-		m_Under[0] = m_Under[1] = m_Under[2] = 0.f;
+		m_Under[0]    = m_Under[1] = m_Under[2] = 0.f;
 	}
 };
 
@@ -362,7 +388,8 @@ struct Event_SystemClientConnected
 		: m_GameId(-1)
 		, m_IsBot(False)
 		, m_DesiredClass(RANDOM_CLASS_IF_NO_CLASS)
-		, m_DesiredTeam(RANDOM_TEAM_IF_NO_TEAM) {
+		, m_DesiredTeam(RANDOM_TEAM_IF_NO_TEAM)
+	{
 	}
 };
 
@@ -507,7 +534,8 @@ struct Event_DynamicPathsChanged
 
 	Event_DynamicPathsChanged(int _team, int _navid = 0)
 		: m_TeamMask(_team)
-		, m_NavId(_navid) {
+		, m_NavId(_navid)
+	{
 	}
 };
 
@@ -537,7 +565,8 @@ struct Event_EntityConnection
 		: m_ConnectionId(0)
 		, m_ConnectionDir(CON_TWO_WAY)
 		, m_Radius(0.f)
-		, m_Teleport(false) {
+		, m_Teleport(false)
+	{
 	}
 };
 

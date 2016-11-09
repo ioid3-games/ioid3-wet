@@ -15,7 +15,8 @@
 
 struct SubscriberHandle
 {
-	union {
+	union
+	{
 		struct
 		{
 			short m_MessageId;
@@ -59,9 +60,11 @@ public:
 	MessageHelper(int _msgId, void *_void = 0, obuint32 _size = 0) :
 		m_MessageId(_msgId),
 		m_pVoid(_void),
-		m_BlockSize(_size) {
+		m_BlockSize(_size)
+	{
 	}
-	~MessageHelper() {
+	~MessageHelper()
+	{
 	};
 
 	mutable int m_MessageId;

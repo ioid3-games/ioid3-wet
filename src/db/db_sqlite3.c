@@ -32,10 +32,10 @@
  * @file db_sqlite3.c
  * @brief ET: Legacy SQL interface
  *
- * TODO: - extend our db scheme
- * - implement version system & auto updates
- * - ...
- * - clean up
+ * TODO:  - extend our db scheme
+ *        - implement version system & auto updates
+ *        - ...
+ *        - clean up
  *
  *        Tutorial: http://zetcode.com/db/sqlitec/
  */
@@ -48,15 +48,17 @@ cvar_t *db_url;
 sqlite3  *db;
 qboolean isDBActive;
 
-int DB_Init() {
+int DB_Init()
+{
 	char *to_ospath;
 
 	isDBActive = qfalse;
 
 	db_mode = Cvar_Get("db_mode", "0", CVAR_ARCHIVE | CVAR_LATCH);
-	db_url = Cvar_Get("db_url", "etl.db", CVAR_ARCHIVE | CVAR_LATCH); // filename in path (not real DB URL for now)
+	db_url  = Cvar_Get("db_url", "etl.db", CVAR_ARCHIVE | CVAR_LATCH); // filename in path (not real DB URL for now)
 
-	if (db_mode->integer < 1 || db_mode->integer > 2) {
+	if (db_mode->integer < 1 || db_mode->integer > 2)
+	{
 		Com_Printf("... DBMS is disabled\n");
 		return 0; // return 0! - see isDBActive
 	}
@@ -69,61 +71,76 @@ int DB_Init() {
 		return 1;
 	}
 
-	to_ospath = FS_BuildOSPath(Cvar_VariableString("fs_homepath"), db_url->string, "");
+	to_ospath                        = FS_BuildOSPath(Cvar_VariableString("fs_homepath"), db_url->string, "");
 	to_ospath[strlen(to_ospath) - 1] = '\0';
 
-	if (FS_SV_FileExists(db_url->string)) {
+	if (FS_SV_FileExists(db_url->string))
+	{
 		int result;
 
 		Com_Printf("... loading existing database '%s'\n", to_ospath);
 
-		if (db_mode->integer == 1) {
+		if (db_mode->integer == 1)
+		{
 			// init memory table
 			//result = sqlite3_open(":memory:", &db); // memory table, not shared see https://www.sqlite.org/inmemorydb.html
 			result = sqlite3_open("file::memory:?cache=shared", &db); // In-memory databases with shared cache
 
-			if (result != SQLITE_OK) {
+			if (result != SQLITE_OK)
+			{
 				Com_Printf("... failed to open memory database - error: %s\n", sqlite3_errstr(result));
 				(void) sqlite3_close(db);
 				return 1;
 			}
+
 			// load from disk into memory
 			result = DB_LoadOrSaveDb(db, to_ospath, 0);
 
-			if (result != SQLITE_OK) {
+			if (result != SQLITE_OK)
+			{
 				Com_Printf("... WARNING can't load database file %s\n", db_url->string);
 				return 1;
 			}
-		} else if (db_mode->integer == 2) {
+		}
+		else if (db_mode->integer == 2)
+		{
 			result = sqlite3_open(to_ospath, &db);
 
-			if (result != SQLITE_OK) {
+			if (result != SQLITE_OK)
+			{
 				Com_Printf("... failed to open file database - error: %s\n", sqlite3_errstr(result));
 				(void) sqlite3_close(db);
 				return 1;
 			}
-		} else {
+		}
+		else
+		{
 			Com_Printf("... failed to open database - unknown mode\n");
 			return 1;
 		}
 
 		Com_Printf("... database file '%s' loaded\n", to_ospath);
-	} else // create new
+	}
+	else // create new
 	{
 		int result;
 
 		Com_Printf("... no database file '%s' found ... creating now\n", to_ospath);
 		result = DB_Create();
 
-		if (result != 0) {
+		if (result != 0)
+		{
 			Com_Printf("... WARNING can't create database [%i]\n", result);
 			return 1;
 		}
+
 		// save memory db to disk
-		if (db_mode->integer == 1) {
+		if (db_mode->integer == 1)
+		{
 			result = DB_SaveMemDB();
 
-			if (result != SQLITE_OK) {
+			if (result != SQLITE_OK)
+			{
 				Com_Printf("... WARNING can't save memory database file [%i]\n", result);
 				return 1;
 			}
@@ -139,8 +156,9 @@ int DB_Init() {
 /**
  * @brief creates tables and populates our scheme
  */
-static int DB_Create_Schema() {
-	int result;
+static int DB_Create_Schema()
+{
+	int  result;
 	char *err_msg = 0;
 
 	// FIXME:
@@ -154,11 +172,13 @@ static int DB_Create_Schema() {
 
 	result = sqlite3_exec(db, sql, 0, 0, &err_msg);
 
-	if (result != SQLITE_OK) {
+	if (result != SQLITE_OK)
+	{
 		Com_Printf("SQLite3 failed to create table version: %s\n", err_msg);
 		sqlite3_free(err_msg);
 		return 1;
 	}
+
 	// ban/mute table (ensure we can also do IP range ban entries)
 	// type = mute/ban
 	// af = AddressFamily
@@ -170,11 +190,13 @@ static int DB_Create_Schema() {
 
 	result = sqlite3_exec(db, sql, 0, 0, &err_msg);
 
-	if (result != SQLITE_OK) {
+	if (result != SQLITE_OK)
+	{
 		Com_Printf("SQLite3 failed to create table ban: %s\n", err_msg);
 		sqlite3_free(err_msg);
 		return 1;
 	}
+
 	// player/client table
 	// FIXME: do we want to track player names as PB did?
 	sql = "DROP TABLE IF EXISTS player;"
@@ -184,11 +206,13 @@ static int DB_Create_Schema() {
 
 	result = sqlite3_exec(db, sql, 0, 0, &err_msg);
 
-	if (result != SQLITE_OK) {
+	if (result != SQLITE_OK)
+	{
 		Com_Printf("... failed to create table player: %s\n", err_msg);
 		sqlite3_free(err_msg);
 		return 1;
 	}
+
 	// session table - server side tracking of players, client side tracking of games
 	// note: we might drop length field (created = start, updated = end of session
 	sql = "DROP TABLE IF EXISTS session;"
@@ -197,50 +221,61 @@ static int DB_Create_Schema() {
 
 	result = sqlite3_exec(db, sql, 0, 0, &err_msg);
 
-	if (result != SQLITE_OK) {
+	if (result != SQLITE_OK)
+	{
 		Com_Printf("... failed to create table session: %s\n", err_msg);
 		sqlite3_free(err_msg);
 		return 1;
 	}
+
 	// FIXME:
 	// add server table - store available maps, uptime & such
 	// add favourite table ?! (client)
 	return 0;
 }
 
-int DB_Create() {
+int DB_Create()
+{
 	int result;
 
-	if (db_mode->integer == 1) {
+	if (db_mode->integer == 1)
+	{
 		//result = sqlite3_open(":memory:", &db); // memory table, not shared see https://www.sqlite.org/inmemorydb.html
 		result = sqlite3_open("file::memory:?cache=shared", &db); // In-memory databases with shared cache
 
-		if (result != SQLITE_OK) {
+		if (result != SQLITE_OK)
+		{
 			Com_Printf("... failed to create memory database - error: %s\n", sqlite3_errstr(result));
 			(void) sqlite3_close(db);
 			return 1;
 		}
-	} else if (db_mode->integer == 2) {
+	}
+	else if (db_mode->integer == 2)
+	{
 		char *to_ospath;
 
-		to_ospath = FS_BuildOSPath(Cvar_VariableString("fs_homepath"), db_url->string, ""); // FIXME: check for empty db_url
+		to_ospath                        = FS_BuildOSPath(Cvar_VariableString("fs_homepath"), db_url->string, ""); // FIXME: check for empty db_url
 		to_ospath[strlen(to_ospath) - 1] = '\0';
 
 		result = sqlite3_open(to_ospath, &db);
 
-		if (result != SQLITE_OK) {
+		if (result != SQLITE_OK)
+		{
 			Com_Printf("... failed to create file database - error: %s\n", sqlite3_errstr(result));
 			(void) sqlite3_close(db);
 			return 1;
 		}
-	} else {
+	}
+	else
+	{
 		Com_Printf("... DB_Create failed - unknown mode\n");
 		return 1;
 	}
 
 	result = DB_Create_Schema();
 
-	if (result != 0) {
+	if (result != 0)
+	{
 		Com_Printf("... failed to create database schema\n");
 		(void) sqlite3_close(db);
 		return 1;
@@ -253,54 +288,63 @@ int DB_Create() {
 /**
  * @brief saves memory db to disk
  */
-int DB_SaveMemDB() {
-	if (db_mode->integer == 1) {
-		int result, msec;
+int DB_SaveMemDB()
+{
+	if (db_mode->integer == 1)
+	{
+		int  result, msec;
 		char *to_ospath;
 
 		// FIXME: check for empty db_url
 
-		to_ospath = FS_BuildOSPath(Cvar_VariableString("fs_homepath"), db_url->string, "");
+		to_ospath                        = FS_BuildOSPath(Cvar_VariableString("fs_homepath"), db_url->string, "");
 		to_ospath[strlen(to_ospath) - 1] = '\0';
 
 		msec = Sys_Milliseconds();
 
 		result = DB_LoadOrSaveDb(db, to_ospath, 1);
 
-		if (result != SQLITE_OK) {
+		if (result != SQLITE_OK)
+		{
 			Com_Printf("... WARNING can't save memory database file [%i]\n", result);
 			return 1;
 		}
-
 		Com_Printf("SQLite3 in-memory tables saved to disk @[%s] in [%i] msec\n", to_ospath, (Sys_Milliseconds() - msec));
-	} else {
+	}
+	else
+	{
 		Com_Printf("saveMemDB called for unknown database mode\n");
 	}
-
 	return 0;
 }
 
-int DB_Close() {
+int DB_Close()
+{
 	int result;
 
-	if (!isDBActive) {
+	if (!isDBActive)
+	{
 		Com_Printf("SQLite3 can't close database - not active.\n");
 		return 1;
 	}
+
 	// save memory db to disk
-	if (db_mode->integer == 1) {
+	if (db_mode->integer == 1)
+	{
 		result = DB_SaveMemDB();
 
-		if (result != SQLITE_OK) {
+		if (result != SQLITE_OK)
+		{
 			Com_Printf("... WARNING can't save memory database file [%i]\n", result);
 			// let's close the db ...
 		}
 	}
 
-	result = sqlite3_close(db);
+	result     = sqlite3_close(db);
 	isDBActive = qfalse;
 
-	if (result != SQLITE_OK) {
+	if (result != SQLITE_OK)
+	{
 		Com_Printf("SQLite3 failed to close database.\n");
 		return 1;
 	}
@@ -332,18 +376,18 @@ int DB_Close() {
  */
 int DB_BackupDB(const char *zFilename, void (*xProgress)(int, int)) // Progress function to invoke
 {
-	int rc; // Function return code
-	sqlite3        *pFile; // Database connection opened on zFilename
-	sqlite3_backup *pBackup; // Backup handle used to copy data
+	int            rc;        // Function return code
+	sqlite3        *pFile;    // Database connection opened on zFilename
+	sqlite3_backup *pBackup;  // Backup handle used to copy data
 
 	// Open the database file identified by zFilename.
 	rc = sqlite3_open(zFilename, &pFile);
-
-	if (rc == SQLITE_OK) {
+	if (rc == SQLITE_OK)
+	{
 		// Open the sqlite3_backup object used to accomplish the transfer
 		pBackup = sqlite3_backup_init(pFile, "main", db, "main");
-
-		if (pBackup) {
+		if (pBackup)
+		{
 			// Each iteration of this loop copies 5 database pages from database
 			// pDb to the backup database. If the return value of backup_step()
 			// indicates that there are still further pages to copy, sleep for
@@ -352,20 +396,19 @@ int DB_BackupDB(const char *zFilename, void (*xProgress)(int, int)) // Progress 
 			{
 				rc = sqlite3_backup_step(pBackup, 5);
 				xProgress(sqlite3_backup_remaining(pBackup), sqlite3_backup_pagecount(pBackup));
-
-				if (rc == SQLITE_OK || rc == SQLITE_BUSY || rc == SQLITE_LOCKED) {
+				if (rc == SQLITE_OK || rc == SQLITE_BUSY || rc == SQLITE_LOCKED)
+				{
 					sqlite3_sleep(250);
 				}
 			}
-
 			while (rc == SQLITE_OK || rc == SQLITE_BUSY || rc == SQLITE_LOCKED);
 
 			// Release resources allocated by backup_init().
 			(void) sqlite3_backup_finish(pBackup);
 		}
-
 		rc = sqlite3_errcode(pFile);
 	}
+
 	// Close the database connection opened on database file zFilename and return the result of this function.
 	(void) sqlite3_close(pFile);
 	return rc;
@@ -388,24 +431,25 @@ int DB_BackupDB(const char *zFilename, void (*xProgress)(int, int)) // Progress 
  * If the operation is successful, SQLITE_OK is returned. Otherwise, if
  * an error occurs, an SQLite error code is returned.
  */
-int DB_LoadOrSaveDb(sqlite3 *pInMemory, const char *zFilename, int isSave) {
-	int rc; // Function return code
-	sqlite3        *pFile; // Database connection opened on zFilename
+int DB_LoadOrSaveDb(sqlite3 *pInMemory, const char *zFilename, int isSave)
+{
+	int            rc;      // Function return code
+	sqlite3        *pFile;  // Database connection opened on zFilename
 	sqlite3_backup *pBackup; // Backup object used to copy data
-	sqlite3        *pTo; // Database to copy to (pFile or pInMemory)
-	sqlite3        *pFrom; // Database to copy from (pFile or pInMemory)
+	sqlite3        *pTo;    // Database to copy to (pFile or pInMemory)
+	sqlite3        *pFrom;  // Database to copy from (pFile or pInMemory)
 
 	// Open the database file identified by zFilename. Exit early if this fails for any reason.
 	rc = sqlite3_open(zFilename, &pFile);
-
-	if (rc == SQLITE_OK) {
+	if (rc == SQLITE_OK)
+	{
 		// If this is a 'load' operation (isSave==0), then data is copied
 		// from the database file just opened to database pInMemory.
 		// Otherwise, if this is a 'save' operation (isSave==1), then data
 		// is copied from pInMemory to pFile.  Set the variables pFrom and
 		// pTo accordingly.
 		pFrom = (isSave ? pInMemory : pFile);
-		pTo = (isSave ? pFile     : pInMemory);
+		pTo   = (isSave ? pFile     : pInMemory);
 
 		// Set up the backup procedure to copy from the "main" database of
 		// connection pFile to the main database of connection pInMemory.
@@ -419,20 +463,21 @@ int DB_LoadOrSaveDb(sqlite3 *pInMemory, const char *zFilename, int isSave) {
 		// connection pTo. If no error occurred, then the error code belonging
 		// to pTo is set to SQLITE_OK.
 		pBackup = sqlite3_backup_init(pTo, "main", pFrom, "main");
-
-		if (pBackup) {
+		if (pBackup)
+		{
 			(void) sqlite3_backup_step(pBackup, -1);
 			(void) sqlite3_backup_finish(pBackup);
 		}
-
 		rc = sqlite3_errcode(pTo);
 	}
+
 	// Close the database connection opened on database file zFilename and return the result of this function.
 	(void) sqlite3_close(pFile);
 	return rc;
 }
 
-int DB_callback(void *NotUsed, int argc, char **argv, char **azColName) {
+int DB_callback(void *NotUsed, int argc, char **argv, char **azColName)
+{
 	int i;
 	// NotUsed = 0;
 
@@ -443,11 +488,10 @@ int DB_callback(void *NotUsed, int argc, char **argv, char **azColName) {
 	//Com_Printf("\n");
 
 	Com_Printf("|");
-
-	for (i = 0; i < argc; i++) {
+	for (i = 0; i < argc; i++)
+	{
 		Com_Printf("%s|", argv[i] && argv[i][0] ? argv[i] : "NULL");
 	}
-
 	Com_Printf("\n");
 
 	return 0;
@@ -458,8 +502,10 @@ int DB_callback(void *NotUsed, int argc, char **argv, char **azColName) {
  * @brief Get the last inserted ROWID
  * see also "SELECT last_insert_rowid()"
  */
-int DB_last_insert_rowid() {
-	if (db) {
+int DB_last_insert_rowid()
+{
+	if (db)
+	{
 		return sqlite3_last_insert_rowid(db);
 	}
 

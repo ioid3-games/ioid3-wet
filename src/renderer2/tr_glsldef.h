@@ -36,7 +36,7 @@
 #if defined(UNIFORM_ENUM)
 #define UNIFORM_DEF(e, n, t) e,
 #elif defined(UNIFORM_TYPE)
-#define UNIFORM_DEF(e, n, t) {#n, t},
+#define UNIFORM_DEF(e, n, t) {#n, t },
 #else
 #define UNIFORM_DEF(e, n, t)
 #endif
@@ -63,7 +63,7 @@
 #if defined(ATTR_DECL)
 #define ATTR_DEF(name, val) name = val,
 #elif defined(ATTR_MAP)
-#define ATTR_DEF(name, val) {name, #name},
+#define ATTR_DEF(name, val) { name, #name },
 #else
 #define ATTR_DEF(name, val)
 #endif
