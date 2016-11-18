@@ -3,7 +3,7 @@
  * Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
  *
  * ET: Legacy
- * Copyright (C) 2012 - 2016 ET:Legacy team <mail@etlegacy.com>
+ * Copyright (C) 2012-2016 ET:Legacy team <mail@etlegacy.com>
  *
  * This file is part of ET: Legacy - http://www.etlegacy.com
  *
@@ -12,9 +12,9 @@
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * ET: Legacy is distributed in the hope that it will be useful, 
+ * ET: Legacy is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
@@ -37,60 +37,87 @@
 #define MAX_PB_BUFFERS  128
 
 polyBuffer_t cg_polyBuffers[MAX_PB_BUFFERS];
-qboolean cg_polyBuffersInuse[MAX_PB_BUFFERS];
+qboolean     cg_polyBuffersInuse[MAX_PB_BUFFERS];
 
-polyBuffer_t *CG_PB_FindFreePolyBuffer(qhandle_t shader, int numVerts, int numIndicies) {
+/**
+ * @brief CG_PB_FindFreePolyBuffer
+ * @param[in] shader
+ * @param[in] numVerts
+ * @param[in] numIndicies
+ * @return 
+ */
+polyBuffer_t *CG_PB_FindFreePolyBuffer(qhandle_t shader, int numVerts, int numIndicies)
+{
 	int i;
 	int firstFree = -1;
+
 	// first find one with the same shader if possible
-	for (i = 0; i < MAX_PB_BUFFERS; ++i) {
-		if (!cg_polyBuffersInuse[i]) {
-			if (firstFree == -1) {
+	for (i = 0; i < MAX_PB_BUFFERS; ++i)
+	{
+		if (!cg_polyBuffersInuse[i])
+		{
+			if (firstFree == -1)
+			{
 				firstFree = i;
 			}
-
 			continue;
 		}
 
-		if (cg_polyBuffers[i].shader != shader) {
+		if (cg_polyBuffers[i].shader != shader)
+		{
 			continue;
 		}
 
-		if (cg_polyBuffers[i].numIndicies + numIndicies >= MAX_PB_INDICIES) {
+		if (cg_polyBuffers[i].numIndicies + numIndicies >= MAX_PB_INDICIES)
+		{
 			continue;
 		}
 
-		if (cg_polyBuffers[i].numVerts + numVerts >= MAX_PB_VERTS) {
+		if (cg_polyBuffers[i].numVerts + numVerts >= MAX_PB_VERTS)
+		{
 			continue;
 		}
 
-		cg_polyBuffersInuse[i] = qtrue;
+		cg_polyBuffersInuse[i]   = qtrue;
 		cg_polyBuffers[i].shader = shader;
 
 		return &cg_polyBuffers[i];
 	}
+
 	// return the free pB we have already found above
-	if (firstFree != -1) {
-		cg_polyBuffersInuse[firstFree] = qtrue;
-		cg_polyBuffers[firstFree].shader = shader;
+	if (firstFree != -1)
+	{
+		cg_polyBuffersInuse[firstFree]        = qtrue;
+		cg_polyBuffers[firstFree].shader      = shader;
 		cg_polyBuffers[firstFree].numIndicies = 0;
-		cg_polyBuffers[firstFree].numVerts = 0;
+		cg_polyBuffers[firstFree].numVerts    = 0;
 		return &cg_polyBuffers[firstFree];
 	}
+
 	// or return NULL if no free buffer was found..
 	return NULL;
 }
 
-void CG_PB_ClearPolyBuffers(void) {
-	// changed numIndicies and numVerts to be reset in CG_PB_FindFreePolyBuffer, not here(should save the cache misses we were prolly getting)
+/**
+ * @brief CG_PB_ClearPolyBuffers
+ */
+void CG_PB_ClearPolyBuffers(void)
+{
+	// changed numIndicies and numVerts to be reset in CG_PB_FindFreePolyBuffer, not here (should save the cache misses we were prolly getting)
 	memset(cg_polyBuffersInuse, 0, sizeof(cg_polyBuffersInuse));
 }
 
-void CG_PB_RenderPolyBuffers(void) {
+/**
+ * @brief CG_PB_RenderPolyBuffers
+ */
+void CG_PB_RenderPolyBuffers(void)
+{
 	int i;
 
-	for (i = 0; i < MAX_PB_BUFFERS; i++) {
-		if (cg_polyBuffersInuse[i]) {
+	for (i = 0; i < MAX_PB_BUFFERS; i++)
+	{
+		if (cg_polyBuffersInuse[i])
+		{
 			trap_R_AddPolyBufferToScene(&cg_polyBuffers[i]);
 		}
 	}

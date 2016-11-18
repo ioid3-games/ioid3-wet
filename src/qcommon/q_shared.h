@@ -559,7 +559,7 @@ void COM_FixPath(char *pathname);
 const char *COM_GetExtension(const char *name);
 void COM_StripExtension(const char *in, char *out, int destsize);
 qboolean COM_CompareExtension(const char *in, const char *ext);
-void COM_StripFilename(char *in, char *out);
+void COM_StripFilename(const char *in, char *out);
 
 void COM_DefaultExtension(char *path, int maxSize, const char *extension);
 
@@ -873,8 +873,8 @@ typedef enum {
 */
 #define ANIM_BITS       10
 
-#define ANGLE2SHORT(x) ((int)((x) * 65536 / 360) & 65535)
-#define SHORT2ANGLE(x) ((x) * (360.0 / 65536))
+#define ANGLE2SHORT(x)  ((int)((x) * 65536 / 360) & 65535)
+#define SHORT2ANGLE(x)  ((x) * (360.0f / 65536))
 
 #define SNAPFLAG_RATE_DELAYED   1
 #define SNAPFLAG_NOT_ACTIVE     2   // snapshot used during connection and for zombies

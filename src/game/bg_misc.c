@@ -4362,7 +4362,7 @@ const voteType_t voteToggles[] =
 int numVotesAvailable = sizeof(voteToggles) / sizeof(voteType_t);
 
 // consts to offset random reinforcement seeds
-const unsigned int aReinfSeeds[MAX_REINFSEEDS] = { 11, 3, 13, 7, 2, 5, 1, 17 };
+const int aReinfSeeds[MAX_REINFSEEDS] = { 11, 3, 13, 7, 2, 5, 1, 17 };
 
 // Weapon full names + headshot capability
 const weap_ws_t aWeaponInfo[WS_MAX] =
@@ -4543,7 +4543,7 @@ extern void trap_Cvar_Set(const char *var_name, const char *value);
  * @param[in] alpha
  * @param[in] cvarName
  */
-void BG_setCrosshair(char *colString, float *col, float alpha, char *cvarName)
+void BG_setCrosshair(char *colString, float *col, float alpha, const char *cvarName)
 {
 	char *s = colString;
 
