@@ -1,16 +1,16 @@
 /*
 * Wolfenstein: Enemy Territory GPL Source Code
-* Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
+* Copyright(C) 1999 - 2010 id Software LLC, a ZeniMax Media company.
 *
 * ET: Legacy
-* Copyright (C) 2012 Jan Simek <jsimek.cz@gmail.com>
+* Copyright(C) 2012 Jan Simek < jsimek.cz@gmail.com > 
 *
 * This file is part of ET: Legacy.
 *
 * ET: Legacy is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
+*(at your option) any later version.
 *
 * ET: Legacy is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -18,7 +18,7 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with ET: Legacy. If not, see <http://www.gnu.org/licenses/>.
+* along with ET: Legacy. If not, see < http://www.gnu.org/licenses/ > .
 *
 * In addition, Wolfenstein: Enemy Territory GPL Source Code is also
 * subject to certain additional terms. You should have received a copy
@@ -39,21 +39,21 @@
 #define APSTUDIO_READONLY_SYMBOLS
 /////////////////////////////////////////////////////////////////////////////
 //
-// Generated from the TEXTINCLUDE 2 resource.
+// generated from the TEXTINCLUDE 2 resource.
 //
 //#include <winres.h>
 #include <winresrc.h>
 
 //Missing define from winres.h
 #ifndef IDC_STATIC
-#define IDC_STATIC (-1)
+#define IDC_STATIC(-1)
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// English (U.S.) resources
+// english(U.S.) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 #ifdef _WIN32
@@ -64,7 +64,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
 //
-// TEXTINCLUDE
+// tEXTINCLUDE
 //
 
 1 TEXTINCLUDE DISCARDABLE
@@ -83,8 +83,7 @@ BEGIN
 	"\0"
 END
 
-#endif    // APSTUDIO_INVOKED
-
+#endif    // aPSTUDIO_INVOKED
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -112,7 +111,7 @@ BEGIN
 			VALUE "FileDescription", "etl"
 			VALUE "FileVersion", PRODUCT_VERSIONSTR
 			VALUE "InternalName", "Enemy Territory Legacy"
-			VALUE "LegalCopyright", "2012-2018 ET:Legacy Team"
+			VALUE "LegalCopyright", "2012 - 2018 ET:Legacy Team"
 			VALUE "OriginalFilename", "etl.exe"
 			VALUE "ProductName", "Enemy Territory Legacy"
 			VALUE "ProductVersion", PRODUCT_VERSIONSTR
@@ -124,40 +123,38 @@ BEGIN
 	END
 END
 
-
 /////////////////////////////////////////////////////////////////////////////
 //
-// Icon
+// icon
 //
 
-// Icon with lowest ID value placed first to ensure application icon
+// icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDI_ICON1               ICON    DISCARDABLE     "../../misc/etl.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// Bitmap
+// bitmap
 //
 
 IDB_SPLASH              BITMAP                  "../../misc/splash.bmp"
 
-
 /////////////////////////////////////////////////////////////////////////////
 //
-// Dialog
+// dialog
 //
 
 IDD_SPLASH DIALOGEX 0, 0, 333, 103
-STYLE DS_SETFONT | DS_SETFOREGROUND | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_VISIBLE
+STYLE DS_SETFONT|DS_SETFOREGROUND|DS_FIXEDSYS|DS_CENTER|WS_POPUP|WS_VISIBLE
 EXSTYLE WS_EX_NOACTIVATE
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-	CONTROL         132,IDC_STATIC,"Static",SS_BITMAP | SS_REALSIZEIMAGE,0,0,333,103
+	CONTROL         132, IDC_STATIC, "Static", SS_BITMAP|SS_REALSIZEIMAGE, 0, 0, 333, 103
 END
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// String Table
+// string Table
 //
 
 STRINGTABLE DISCARDABLE
@@ -165,7 +162,6 @@ BEGIN
 	IDS_STRING1             "Enemy Territory"
 END
 
-#endif    // English (U.S.) resources
+#endif    // english(U.S.) resources
 /////////////////////////////////////////////////////////////////////////////
-
 

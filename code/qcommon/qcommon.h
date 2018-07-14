@@ -1,9 +1,9 @@
 /*
  * Wolfenstein: Enemy Territory GPL Source Code
- * Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
+ * Copyright(C) 1999 - 2010 id Software LLC, a ZeniMax Media company.
  *
  * ET: Legacy
- * Copyright (C) 2012-2018 ET:Legacy team <mail@etlegacy.com>
+ * Copyright(C) 2012 - 2018 ET:Legacy team < mail@etlegacy.com > 
  *
  * This file is part of ET: Legacy - http://www.etlegacy.com
  *
@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with ET: Legacy. If not, see <http://www.gnu.org/licenses/>.
+ * along with ET: Legacy. If not, see < http://www.gnu.org/licenses/ > .
  *
  * In addition, Wolfenstein: Enemy Territory GPL Source Code is also
  * subject to certain additional terms. You should have received a copy
@@ -39,13 +39,12 @@
 
 #include "../qcommon/cm_public.h"
 
-// Ignore __attribute__ on non-gcc platforms
+// ignore __attribute__ on non - gcc platforms
 #ifndef __GNUC__
 #   ifndef __attribute__
 #       define __attribute__(x)
 #   endif
 #endif
-
 
 // msg.c
 
@@ -53,17 +52,16 @@
  * @struct msg_s
  * @brief
  */
-typedef struct
-{
-	qboolean allowoverflow;     ///< if false, do a Com_Error
-	qboolean overflowed;        ///< set to true if the buffer size failed (with allowoverflow set)
-	qboolean oob;               ///< set to true if the buffer size failed (with allowoverflow set)
-	byte *data;                 ///< message content
+typedef struct {
+	qboolean allowoverflow;     // if false, do a Com_Error
+	qboolean overflowed;        // set to true if the buffer size failed(with allowoverflow set)
+	qboolean oob;               // set to true if the buffer size failed(with allowoverflow set)
+	byte *data;                 // message content
 	int maxsize;
 	int cursize;
-	int uncompsize;             ///< net debugging
+	int uncompsize;             // net debugging
 	int readcount;
-	int bit;                    ///< for bitwise reads and writes
+	int bit;                    // for bitwise reads and writes
 } msg_t;
 
 void MSG_Init(msg_t *buf, byte *data, int length);
@@ -129,9 +127,9 @@ void MSG_ReadDeltaPlayerstate(msg_t *msg, struct playerState_s *from, struct pla
 void MSG_ReportChangeVectors_f(void);
 
 /**
-==============================================================
+============================================================== 
 NET
-==============================================================
+============================================================== 
 */
 
 #define NET_ENABLEV4            0x01
@@ -154,7 +152,7 @@ NET
  * server for delta comrpession and ping estimation
  */
 #define PACKET_BACKUP   32
-#define PACKET_MASK (PACKET_BACKUP - 1)
+#define PACKET_MASK(PACKET_BACKUP - 1)
 
 /**
  * @def MAX_PACKET_USERCMDS
@@ -162,7 +160,7 @@ NET
  */
 #define MAX_PACKET_USERCMDS     32
 
-#define PORT_ANY            -1
+#define PORT_ANY - 1
 
 /**
  * @def MAX_RELIABLE_COMMANDS
@@ -176,9 +174,8 @@ NET
  * @enum netadrtype_t
  * @brief
  */
-typedef enum
-{
-	NA_BAD = 0,                 ///< an address lookup failed
+typedef enum {
+	NA_BAD = 0, // an address lookup failed
 	NA_BOT,
 	NA_LOOPBACK,
 	NA_BROADCAST,
@@ -192,8 +189,7 @@ typedef enum
  * @enum netsrc_t
  * @brief
  */
-typedef enum
-{
+typedef enum {
 	NS_CLIENT,
 	NS_SERVER
 } netsrc_t;
@@ -202,20 +198,19 @@ typedef enum
  * @def NET_ADDRSTRMAXLEN
  * @brief maximum length of an IPv6 address string including trailing '\0'
  */
-#define NET_ADDRSTRMAXLEN     48 /// why 48? IPv4-mapped IPv6 maximum is 45 .. + trailing 0 is 46
-#define NET_ADDRSTRMAXLEN_EXT 56 /// NET_ADDRSTRMAXLEN + 8 (2xbrackets, colon, 5xport)
+#define NET_ADDRSTRMAXLEN     48 // why 48? IPv4 - mapped IPv6 maximum is 45 .. + trailing 0 is 46
+#define NET_ADDRSTRMAXLEN_EXT 56 // nET_ADDRSTRMAXLEN + 8(2xbrackets, colon, 5xport)
 
 /**
  * @struct netadr_t
  * @brief
  */
-typedef struct
-{
+typedef struct {
 	uint16_t type;
 	byte ip[4];
 	byte ip6[16];
 	uint16_t port;
-	uint64_t scope_id; ///< Needed for IPv6 link-local addresses
+	uint64_t scope_id; // Needed for IPv6 link - local addresses
 } netadr_t;
 
 void NET_Init(void);
@@ -259,23 +254,21 @@ void NET_Sleep(int msec);
 
 /**
  * @def DLTYPE_WWW
- * @brief block -1 means www/ftp download
+ * @brief block - 1 means www/ftp download
  */
-#define DLTYPE_WWW -1
+#define DLTYPE_WWW - 1
 
 /**
  * @struct netchan_t
  *
  * @brief Netchan handles packet fragmentation and out of order / duplicate suppression
  */
-typedef struct
-{
+typedef struct {
 	netsrc_t sock;
-
-	int dropped;                    ///< between last packet and previous
+	int dropped;                    // between last packet and previous
 
 	netadr_t remoteAddress;
-	int qport;                      ///< qport value to write when transmitting
+	int qport;                      // qport value to write when transmitting
 
 	// sequencing variables
 	int incomingSequence;
@@ -292,7 +285,6 @@ typedef struct
 	int unsentFragmentStart;
 	int unsentLength;
 	byte unsentBuffer[MAX_MSGLEN];
-
 	int lastSentTime;
 	int lastSentSize;
 } netchan_t;
@@ -308,32 +300,31 @@ qboolean Netchan_Process(netchan_t *chan, msg_t *msg);
 /**
  * @brief download_t
  */
-typedef struct
-{
+typedef struct {
 	// file transfer from server
 	fileHandle_t download;
 	int downloadNumber;
-	int downloadBlock;                          ///< block we are waiting for
-	int downloadCount;                          ///< how many bytes we got
-	int downloadSize;                           ///< how many bytes we got
-	int downloadFlags;                          ///< misc download behaviour flags sent by the server
-	char downloadList[MAX_INFO_STRING];         ///< list of paks we need to download
+	int downloadBlock;                          // block we are waiting for
+	int downloadCount;                          // how many bytes we got
+	int downloadSize;                           // how many bytes we got
+	int downloadFlags;                          // misc download behaviour flags sent by the server
+	char downloadList[MAX_INFO_STRING];         // list of paks we need to download
 
 	// www downloading
-	qboolean bWWWDl;                            ///< we have a www download going
-	qboolean bWWWDlAborting;                    ///< disable the CL_WWWDownload until server gets us a gamestate (used for aborts)
-	char redirectedList[MAX_INFO_STRING];       ///< list of files that we downloaded through a redirect since last FS_ComparePaks
-	char badChecksumList[MAX_INFO_STRING];      ///< list of files for which wwwdl redirect is broken (wrong checksum)
+	qboolean bWWWDl;                            // we have a www download going
+	qboolean bWWWDlAborting;                    // disable the CL_WWWDownload until server gets us a gamestate(used for aborts)
+	char redirectedList[MAX_INFO_STRING];       // list of files that we downloaded through a redirect since last FS_ComparePaks
+	char badChecksumList[MAX_INFO_STRING];      // list of files for which wwwdl redirect is broken(wrong checksum)
 
 	// www downloading from static
 	// in the static stuff since this may have to survive server disconnects
 	// if new stuff gets added, CL_ClearStaticDownload code needs to be updated for clear up
-	qboolean bWWWDlDisconnected;                ///< keep going with the download after server disconnect
-	qboolean noReconnect;                       ///< do not try to reconnect when the dowload is ready
+	qboolean bWWWDlDisconnected;                // keep going with the download after server disconnect
+	qboolean noReconnect;                       // do not try to reconnect when the dowload is ready
 	char downloadName[MAX_OSPATH];
-	char downloadTempName[MAX_OSPATH];          ///< in wwwdl mode, this is OS path (it's a qpath otherwise)
-	char originalDownloadName[MAX_QPATH];       ///< if we get a redirect, keep a copy of the original file path
-	qboolean downloadRestart;                   ///< if true, we need to do another FS_Restart because we downloaded a pak
+	char downloadTempName[MAX_OSPATH];          // in wwwdl mode, this is OS path(it's a qpath otherwise)
+	char originalDownloadName[MAX_QPATH];       // if we get a redirect, keep a copy of the original file path
+	qboolean downloadRestart;                   // if true, we need to do another FS_Restart because we downloaded a pak
 } download_t;
 
 // update and motd server info
@@ -344,28 +335,26 @@ typedef struct
  * @struct autoupdate_t
  * @brief
  */
-typedef struct
-{
+typedef struct {
 	netadr_t autoupdateServer;
-	netadr_t authorizeServer;               ///< Unused.
+	netadr_t authorizeServer;               // Unused.
 	netadr_t motdServer;
 
-	qboolean updateChecked;                 ///< Have we heard from the auto-update server this session?
+	qboolean updateChecked;                 // Have we heard from the auto - update server this session?
 	qboolean updateStarted;
 
 	qboolean forceUpdate;
 
 	char motdChallenge[MAX_TOKEN_CHARS];
-
 	int masterDataChecked;
 } autoupdate_t;
 
 extern autoupdate_t autoupdate;
 
 /*
-==============================================================
+============================================================== 
 PROTOCOL
-==============================================================
+============================================================== 
 */
 
 /**
@@ -382,7 +371,7 @@ The server you are attempting to join is running an incompatible version of the 
  */
 #define PROTOCOL_MISMATCH_ERROR_LONG "ERROR: Protocol Mismatch Between Client and Server.\n\n\
 The server you attempted to join is running an incompatible version of the game.\n\
-You or the server may be running older versions of the game. Press the auto-update\
+You or the server may be running older versions of the game. Press the auto - update\
  button if it appears on the Main Menu screen."
 
 #define GAMENAME_STRING     "et"
@@ -395,8 +384,8 @@ You or the server may be running older versions of the game. Press the auto-upda
  */
 extern int demo_protocols[];
 
-#define MOTD_SERVER_NAME    "motd.etlegacy.com"    ///< location of the message of the day server
-#define UPDATE_SERVER_NAME  "update.etlegacy.com"  ///< location of the update server
+#define MOTD_SERVER_NAME    "motd.etlegacy.com"    // location of the message of the day server
+#define UPDATE_SERVER_NAME  "update.etlegacy.com"  // location of the update server
 
 #define PORT_MASTER         27950
 #define PORT_MOTD           27951
@@ -422,10 +411,10 @@ enum svc_ops_e
 	svc_bad,
 	svc_nop,
 	svc_gamestate,
-	svc_configstring,           ///< [short] [string] only in gamestate messages
-	svc_baseline,               ///< only in gamestate messages
-	svc_serverCommand,          ///< [string] to be executed by client game module
-	svc_download,               ///< [short] size [size bytes]
+	svc_configstring, // [short] [string] only in gamestate messages
+	svc_baseline, // only in gamestate messages
+	svc_serverCommand, // [string] to be executed by client game module
+	svc_download, // [short] size [size bytes]
 	svc_snapshot,
 	svc_EOF
 };
@@ -438,16 +427,16 @@ enum clc_ops_e
 {
 	clc_bad,
 	clc_nop,
-	clc_move,                   ///< [[usercmd_t]
-	clc_moveNoDelta,            ///< [[usercmd_t]
-	clc_clientCommand,          ///< [string] message
+	clc_move, // [[usercmd_t]
+	clc_moveNoDelta, // [[usercmd_t]
+	clc_clientCommand, // [string] message
 	clc_EOF
 };
 
 /*
-==============================================================
+============================================================== 
 VIRTUAL MACHINE
-==============================================================
+============================================================== 
 */
 
 typedef struct vm_s vm_t;
@@ -456,8 +445,7 @@ typedef struct vm_s vm_t;
  * @enum vmInterpret_t
  * @brief
  */
-typedef enum
-{
+typedef enum {
 	VMI_NATIVE,
 	VMI_BYTECODE,
 	VMI_COMPILED
@@ -482,8 +470,7 @@ extern const char *vmStrs[MAX_VM];
  * @enum sharedTraps_t
  * @brief
  */
-typedef enum
-{
+typedef enum {
 	TRAP_MEMSET = 100,
 	TRAP_MEMCPY,
 	TRAP_STRNCPY,
@@ -502,7 +489,7 @@ typedef enum
 } sharedTraps_t;
 
 void VM_Init(void);
-vm_t *VM_Create(const char *module, qboolean extract, intptr_t (*systemCalls)(intptr_t *), vmInterpret_t interpret);
+vm_t *VM_Create(const char *module, qboolean extract, intptr_t(*systemCalls)(intptr_t *), vmInterpret_t interpret);
 // module should be bare: "cgame", not "cgame.dll" or "vm/cgame.qvm"
 
 void VM_Free(vm_t *vm);
@@ -514,7 +501,7 @@ vm_t *VM_Restart(vm_t *vm);
  *
  * @brief This should be something like INT_MAX but that would need limits.h everywhere so meh and negative values should be somewhat safe
  */
-#define VM_CALL_END -1337
+#define VM_CALL_END - 1337
 
 intptr_t QDECL VM_CallFunc(vm_t *vm, int callNum, ...);
 #define VM_Call(vm, ...) VM_CallFunc(vm, __VA_ARGS__, VM_CALL_END)
@@ -529,8 +516,7 @@ void *VM_ExplicitArgPtr(vm_t *vm, intptr_t intValue);
  * @brief _vmf
  * @param[in] x
  */
-static ID_INLINE float _vmf(intptr_t x)
-{
+static ID_INLINE float _vmf(intptr_t x) {
 	floatint_t fi;
 	fi.i = (int) x;
 	return fi.f;
@@ -538,9 +524,9 @@ static ID_INLINE float _vmf(intptr_t x)
 #define VMF(x)  _vmf(args[x])
 
 /*
-==============================================================
+============================================================== 
 CMD - Command text buffering and command execution
-==============================================================
+============================================================== 
 */
 
 /*
@@ -549,16 +535,16 @@ Most commands come from either keybindings or console line input, but entire tex
 files can be execed.
 */
 
-void Cbuf_Init(void); ///< allocates an initial text buffer that will grow as needed
+void Cbuf_Init(void); // allocates an initial text buffer that will grow as needed
 
-void Cbuf_AddText(const char *text); ///< Adds command text at the end of the buffer, does NOT add a final \n
+void Cbuf_AddText(const char *text); // Adds command text at the end of the buffer, does NOT add a final \n
 
-void Cbuf_ExecuteText(int exec_when, const char *text); ///< this can be used in place of either Cbuf_AddText or Cbuf_InsertText
+void Cbuf_ExecuteText(int exec_when, const char *text); // this can be used in place of either Cbuf_AddText or Cbuf_InsertText
 
-void Cbuf_Execute(void);    ///< Pulls off \n terminated lines of text from the command buffer and sends
-                            ///< them through Cmd_ExecuteString.  Stops when the buffer is empty.
-                            ///< Normally called once per frame, but may be explicitly invoked.
-                            ///< Do not call inside a command function, or current args will be destroyed.
+void Cbuf_Execute(void);    // Pulls off \n terminated lines of text from the command buffer and sends
+                            // them through Cmd_ExecuteString.  Stops when the buffer is empty.
+                            // Normally called once per frame, but may be explicitly invoked.
+                            // Do not call inside a command function, or current args will be destroyed.
 
 //===========================================================================
 
@@ -567,20 +553,20 @@ Command execution takes a null terminated string, breaks it into tokens,
 then searches for a command or variable that matches the first token.
 */
 
-typedef void (*xcommand_t)(void);
-typedef void (*completionFunc_t)(char *args, int argNum);
+typedef void(*xcommand_t)(void);
+typedef void(*completionFunc_t)(char *args, int argNum);
 
 void Cmd_Init(void);
 
-// We need to use EXPAND because the Microsoft MSVC preprocessor does not expand the va_args the same way as other preprocessors
-// http://stackoverflow.com/questions/5134523/msvc-doesnt-expand-va-args-correctly
+// we need to use EXPAND because the Microsoft MSVC preprocessor does not expand the va_args the same way as other preprocessors
+//http://stackoverflow.com/questions/5134523/msvc - doesnt - expand - va - args - correctly
 #define EXPAND(x) x
 #define GET_MACRO(_1, _2, _3, _4, NAME, ...) NAME
 #define Cmd_AddCommand1(x) Cmd_AddSystemCommand(x, NULL, NULL, NULL)
 #define Cmd_AddCommand2(x, y) Cmd_AddSystemCommand(x, y, NULL, NULL)
 #define Cmd_AddCommand3(x, y, z) Cmd_AddSystemCommand(x, y, z, NULL)
 #define Cmd_AddCommand4(x, y, z, i) Cmd_AddSystemCommand(x, y, z, i)
-#define Cmd_AddCommand(...) EXPAND(GET_MACRO(__VA_ARGS__, Cmd_AddCommand4, Cmd_AddCommand3, Cmd_AddCommand2, Cmd_AddCommand1) (__VA_ARGS__))
+#define Cmd_AddCommand(...) EXPAND(GET_MACRO(__VA_ARGS__, Cmd_AddCommand4, Cmd_AddCommand3, Cmd_AddCommand2, Cmd_AddCommand1)(__VA_ARGS__))
 
 /**
  * Called by the init functions of other parts of the program to
@@ -594,7 +580,7 @@ void Cmd_AddSystemCommand(const char *cmd_name, xcommand_t function, const char 
 void Cmd_RemoveCommand(const char *cmd_name);
 void Cmd_RemoveCommandSafe(const char *cmd_name);
 
-void Cmd_CommandCompletion(void (*callback)(const char *s)); ///< callback with each valid string
+void Cmd_CommandCompletion(void(*callback)(const char *s)); // callback with each valid string
 
 void Cmd_SetCommandCompletionFunc(const char *command, completionFunc_t complete);
 void Cmd_SetCommandDescription(const char *command, const char *description);
@@ -614,25 +600,25 @@ char *Cmd_Cmd(void);
 
 /**
  * The functions that execute commands get their parameters with these
- * functions. Cmd_Argv () will return an empty string, not a NULL
+ * functions. Cmd_Argv() will return an empty string, not a NULL
  * if arg > argc, so string operations are allways safe.
  */
 void Cmd_Args_Sanitize(void);
 
 void Cmd_TokenizeString(const char *text);
 
-/// Takes a null terminated string.  Does not need to be /n terminated.
-/// breaks the string up into arg tokens.
+// takes a null terminated string.  Does not need to be /n terminated.
+// breaks the string up into arg tokens.
 void Cmd_TokenizeStringIgnoreQuotes(const char *text_in);
 
-/// Parses a single line of text into arguments and tries to execute it
-/// as if it was typed at the console
+// parses a single line of text into arguments and tries to execute it
+// as if it was typed at the console
 void Cmd_ExecuteString(const char *text);
 
 /*
-==============================================================
+============================================================== 
 CVAR
-==============================================================
+============================================================== 
 */
 
 /*
@@ -693,7 +679,7 @@ void Cvar_LatchedVariableStringBuffer(const char *var_name, char *buffer, size_t
 int Cvar_Flags(const char *var_name);
 // returns CVAR_NONEXISTENT if cvar doesn't exist or the flags of that particular CVAR.
 
-void Cvar_CommandCompletion(void (*callback)(const char *s));
+void Cvar_CommandCompletion(void(*callback)(const char *s));
 // callback with each valid string
 
 void Cvar_Reset(const char *var_name);
@@ -705,7 +691,7 @@ void Cvar_SetCheatState(void);
 qboolean Cvar_Command(void);
 // called by Cmd_ExecuteString when Cmd_Argv(0) doesn't match a known
 // command.  Returns true if the command was a variable reference that
-// was handled. (print or change)
+// was handled.(print or change)
 
 void Cvar_WriteVariables(fileHandle_t f);
 // writes lines containing "set variable value" for all variables
@@ -716,7 +702,7 @@ void Cvar_Init(void);
 char *Cvar_InfoString(int bit);
 char *Cvar_InfoString_Big(int bit);
 // returns an info string containing all the cvars that have the given bit set
-// in their flags ( CVAR_USERINFO, CVAR_SERVERINFO, CVAR_SYSTEMINFO, etc )
+// in their flags(CVAR_USERINFO, CVAR_SERVERINFO, CVAR_SYSTEMINFO, etc.)
 void Cvar_InfoStringBuffer(int bit, char *buff, size_t buffsize);
 void Cvar_CheckRange(cvar_t *cv, float minVal, float maxVal, qboolean shouldBeIntegral);
 void Cvar_SetDescription(cvar_t *cv, const char *varDescription);
@@ -729,34 +715,33 @@ void Cvar_CompleteCvarName(char *args, int argNum);
 extern int cvar_modifiedFlags;
 // whenever a cvar is modifed, its flags will be OR'd into this, so
 // a single check can determine if any CVAR_USERINFO, CVAR_SERVERINFO,
-// etc, variables have been modified since the last check.  The bit
+// etc., variables have been modified since the last check.  The bit
 // can then be cleared to allow another change detection.
 
 /*
-==============================================================
+============================================================== 
 FILESYSTEM
 No stdio calls should be used by any part of the game, because
 we need to deal with all sorts of directory and seperator char
 issues.
-==============================================================
+============================================================== 
 */
 
 #define BASEGAME "etmain"
-#define DEFAULT_MODGAME "legacy" /// see files.c
+#define DEFAULT_MODGAME "legacy" // see files.c
 
 /**
  * @struct modHash
  * @brief
  */
-typedef struct
-{
+typedef struct {
 	unsigned int defaultMod;
 	unsigned int currentMod;
 } modHash;
 extern modHash modHashes;
 
-//#define IS_LEGACY_MOD (Q_stricmp(Cvar_VariableString("fs_game"), DEFAULT_MODGAME) == 0)
-#define IS_LEGACY_MOD (modHashes.defaultMod == modHashes.currentMod)
+//#define IS_LEGACY_MOD(Q_stricmp(Cvar_VariableString("fs_game"), DEFAULT_MODGAME) == 0)
+#define IS_LEGACY_MOD(modHashes.defaultMod == modHashes.currentMod)
 
 // referenced flags
 // these are in loop specific order so don't change the order
@@ -841,14 +826,14 @@ file IO goes through FS_ReadFile, which Does The Right Thing already.
 
 added exclude flag to filter out regular dirs or pack files on demand
 would rather have used FS_FOpenFileRead(..., int filter_flag = 0)
-but that's a C++ construct ..
+but that's a C++construct ..
 */
 #define FS_EXCLUDE_DIR 0x1
 #define FS_EXCLUDE_PK3 0x2
 long FS_FOpenFileRead_Filtered(const char *qpath, fileHandle_t *file, qboolean uniqueFILE, int filter_flag);
 
 int FS_FileIsInPAK(const char *fileName, int *pChecksum);
-// returns 1 if a file is in the PAK file, otherwise -1
+// returns 1 if a file is in the PAK file, otherwise - 1
 
 int FS_Delete(const char *fileName);
 
@@ -865,9 +850,9 @@ void FS_FCloseFile(fileHandle_t f);
 int FS_ReadFile(const char *qpath, void **buffer);
 // returns the length of the file
 // a null buffer will just return the file length without loading
-// as a quick check for existance. -1 length == not present
-// A 0 byte will always be appended at the end, so string ops are safe.
-// the buffer should be considered read-only, because it may be cached
+// as a quick check for existance. - 1 length == not present
+// a 0 byte will always be appended at the end, so string ops are safe.
+// the buffer should be considered read - only, because it may be cached
 // for other uses.
 
 void FS_ForceFlush(fileHandle_t f);
@@ -901,14 +886,14 @@ qboolean FS_FilenameCompare(const char *s1, const char *s2);
 const char *FS_LoadedPakNames(void);
 const char *FS_LoadedPakChecksums(void);
 const char *FS_LoadedPakPureChecksums(void);
-// Returns a space separated string containing the checksums of all loaded pk3 files.
-// Servers with sv_pure set will get this string and pass it to clients.
+// returns a space separated string containing the checksums of all loaded pk3 files.
+// servers with sv_pure set will get this string and pass it to clients.
 
 const char *FS_ReferencedPakNames(void);
 const char *FS_ReferencedPakChecksums(void);
 const char *FS_ReferencedPakPureChecksums(void);
-// Returns a space separated string containing the checksums of all loaded
-// AND referenced pk3 files. Servers with sv_pure set will get this string
+// returns a space separated string containing the checksums of all loaded
+// aND referenced pk3 files. Servers with sv_pure set will get this string
 // back from clients for pure validation
 
 void FS_ClearPakReferences(int flags);
@@ -916,8 +901,8 @@ void FS_ClearPakReferences(int flags);
 void FS_ClearPureServerPacks(void);
 void FS_PureServerSetReferencedPaks(const char *pakSums, const char *pakNames);
 void FS_PureServerSetLoadedPaks(const char *pakSums, const char *pakNames);
-// If the string is empty, all data sources will be allowed.
-// If not empty, only pk3 files that match one of the space
+// if the string is empty, all data sources will be allowed.
+// if not empty, only pk3 files that match one of the space
 // separated checksums will be checked for files, with the
 // sole exception of .cfg files.
 
@@ -930,7 +915,7 @@ qboolean FS_InvalidGameDir(const char *gamedir);
 void FS_Rename(const char *from, const char *to);
 
 void FS_FilenameCompletion(const char *dir, int numext, const char **ext,
-                           qboolean stripExt, void (*callback)(const char *s), qboolean allowNonPureFilesOnDisk);
+                           qboolean stripExt, void(*callback)(const char *s), qboolean allowNonPureFilesOnDisk);
 
 #if !defined(DEDICATED)
 extern int cl_connectedToPureServer;
@@ -948,25 +933,25 @@ void FS_HomeRemove(const char *homePath);
 qboolean FS_FileInPathExists(const char *testpath);
 
 /*
-==============================================================
+============================================================== 
 DOWNLOAD
-==============================================================
+============================================================== 
 */
 
 #include "dl_public.h"
 
 /*
-==============================================================
+============================================================== 
 JSON
-==============================================================
+============================================================== 
 */
 
 #include "json_public.h"
 
 /*
-==============================================================
+============================================================== 
 Edit fields and command line history/completion
-==============================================================
+============================================================== 
 */
 
 #define MAX_EDIT_LINE   512
@@ -975,8 +960,7 @@ Edit fields and command line history/completion
  * @struct field_t
  * @brief
  */
-typedef struct
-{
+typedef struct {
 	int cursor;
 	int scroll;
 	int widthInChars;
@@ -993,20 +977,20 @@ void Field_CompleteFilename(const char *dir, const char *ext, qboolean stripExt,
 void Field_CompleteCommand(char *cmd, qboolean doCommands, qboolean doCvars);
 
 /*
-==============================================================
+============================================================== 
 MISC
-==============================================================
+============================================================== 
 */
 
 char *CopyString(const char *in);
 void Info_Print(const char *s);
 
-void Com_BeginRedirect(char *buffer, size_t buffersize, void (*flush)(char *));
+void Com_BeginRedirect(char *buffer, size_t buffersize, void(*flush)(char *));
 void Com_EndRedirect(void);
-void QDECL Com_Printf(const char *fmt, ...) __attribute__ ((format(printf, 1, 2)));
-void QDECL Com_DPrintf(const char *fmt, ...) __attribute__ ((format(printf, 1, 2)));
-void QDECL Com_Error(int code, const char *fmt, ...) __attribute__ ((noreturn, format(printf, 2, 3)));
-void Com_Quit_f(void) __attribute__ ((noreturn));
+void QDECL Com_Printf(const char *fmt, ...) __attribute__((format(printf, 1, 2)));
+void QDECL Com_DPrintf(const char *fmt, ...) __attribute__((format(printf, 1, 2)));
+void QDECL Com_Error(int code, const char *fmt, ...) __attribute__((noreturn, format(printf, 2, 3)));
+void Com_Quit_f(void)__attribute__((noreturn));
 
 int Com_Milliseconds(void);     // will be journaled properly
 unsigned int Com_BlockChecksum(const void *buffer, size_t length);
@@ -1023,7 +1007,7 @@ char *Com_MD5File(const char *fileName, int length, const char *prefix, int pref
 
 void Com_StartupVariable(const char *match);
 void Com_SetRecommended(void);
-// checks for and removes command line "+set var arg" constructs
+// checks for and removes command line " + set var arg" constructs
 // if match is NULL, all set commands will be executed, otherwise
 // only a set with the exact name.  Only used during startup.
 
@@ -1088,8 +1072,7 @@ extern fileHandle_t com_journalDataFile;
  * @enum memtag_t
  * @brief
  */
-typedef enum
-{
+typedef enum {
 	TAG_FREE,
 	TAG_GENERAL,
 	TAG_BOTLIB,
@@ -1099,20 +1082,20 @@ typedef enum
 } memtag_t;
 
 /*
---- low memory ----
+---  low memory--- - 
 server vm
 server clipmap
----mark---
-renderer initialization (shaders, etc)
+--- mark--- 
+renderer initialization(shaders, etc.)
 UI vm
 cgame vm
 renderer map
 renderer models
 
----free---
+--- free--- 
 
 temp file loading
---- high memory ---
+---  high memory--- 
 */
 
 #ifdef LEGACY_DEBUG
@@ -1123,13 +1106,13 @@ temp file loading
 #define Z_TagMalloc(size, tag)          Z_TagMallocDebug(size, tag, # size, __FILE__, __LINE__)
 #define Z_Malloc(size)                  Z_MallocDebug(size, # size, __FILE__, __LINE__)
 #define S_Malloc(size)                  S_MallocDebug(size, # size, __FILE__, __LINE__)
-void *Z_TagMallocDebug(int size, int tag, char *label, char *file, int line);   // NOT 0 filled memory
+void *Z_TagMallocDebug(int size, int tag, char *label, char *file, int line);   // nOT 0 filled memory
 void *Z_MallocDebug(int size, char *label, char *file, int line);               // returns 0 filled memory
 void *S_MallocDebug(int size, char *label, char *file, int line);               // returns 0 filled memory
 #else
-void *Z_TagMalloc(int size, int tag);   // NOT 0 filled memory
+void *Z_TagMalloc(int size, int tag);   // nOT 0 filled memory
 void *Z_Malloc(int size);               // returns 0 filled memory
-void *S_Malloc(int size);               // NOT 0 filled memory only for small allocations
+void *S_Malloc(int size);               // nOT 0 filled memory only for small allocations
 #endif
 void Z_Free(void *ptr);
 void Z_FreeTags(int tag);
@@ -1139,8 +1122,8 @@ void Hunk_Clear(void);
 void Hunk_ClearToMark(void);
 void Hunk_SetMark(void);
 qboolean Hunk_CheckMark(void);
-//void *Hunk_Alloc( int size );
-// void *Hunk_Alloc( int size, ha_pref preference );
+//void *Hunk_Alloc(int size);
+// void *Hunk_Alloc(int size, ha_pref preference);
 void Hunk_ClearTempMemory(void);
 void *Hunk_AllocateTempMemory(unsigned int size);
 void Hunk_FreeTempMemory(void *buf);
@@ -1150,16 +1133,16 @@ void Hunk_Log(void);
 
 void Com_TouchMemory(void);
 
-// commandLine should not include the executable name (argv[0])
+// commandLine should not include the executable name(argv[0])
 void Com_Init(char *commandLine);
 char *Com_GetCommandLine(void);
 void Com_Frame(void);
 void Com_Shutdown(qboolean badProfile);
 
 /*
-==============================================================
+============================================================== 
 CLIENT / SERVER SYSTEMS
-==============================================================
+============================================================== 
 */
 
 // client interface
@@ -1194,7 +1177,7 @@ void CL_MapLoading(void);
 
 void CL_ForwardCommandToServer(const char *string);
 // adds the current command line as a clc_clientCommand to the client message.
-// things like godmode, noclip, etc, are commands directed to the server,
+// things like godmode, noclip, etc., are commands directed to the server,
 // so when they are typed in at the console, they will need to be forwarded.
 
 void CL_ShutdownAll(void);
@@ -1210,7 +1193,7 @@ void CL_StartHunkUsers(void);
 // start all the client stuff using the hunk
 
 void CL_Snd_Shutdown(void);
-// Restart sound subsystem
+// restart sound subsystem
 
 // udpate.c
 
@@ -1245,7 +1228,7 @@ void Com_WWWDownload(void);
 qboolean Com_WWWBadChecksum(const char *pakname);
 void Com_Download_f(void);
 
-void Key_KeynameCompletion(void (*callback)(const char *s));
+void Key_KeynameCompletion(void(*callback)(const char *s));
 // for keyname autocompletion
 
 void Key_WriteBindings(fileHandle_t f);
@@ -1256,7 +1239,7 @@ void S_ClearSoundBuffer(qboolean killStreaming);
 
 void SCR_DebugGraph(float value);     // FIXME: move logging to common?
 
-// AVI files have the start of pixel lines 4 byte-aligned
+// aVI files have the start of pixel lines 4 byte - aligned
 #define AVI_LINE_PADDING 4
 
 // server interface
@@ -1269,22 +1252,21 @@ qboolean SV_GameCommand(void);
 int SV_FrameMsec();
 int SV_SendQueuedPackets();
 
-// UI interface
+// uI interface
 
 qboolean UI_GameCommand(void);
 
 /*
-==============================================================
-NON-PORTABLE SYSTEM SERVICES
-==============================================================
+============================================================== 
+NON - PORTABLE SYSTEM SERVICES
+============================================================== 
 */
 
 /**
  * @enum joystickAxis_t
  * @brief
  */
-typedef enum
-{
+typedef enum {
 	AXIS_SIDE,
 	AXIS_FORWARD,
 	AXIS_UP,
@@ -1299,14 +1281,13 @@ typedef enum
  * @brief
  * @note Make sure SE_NONE is zero
  */
-typedef enum
-{
-	SE_NONE = 0,        ///< evTime is still valid
-	SE_KEY,             ///< evValue is a key code, evValue2 is the down flag
-	SE_CHAR,            ///< evValue is an ascii char
-	SE_MOUSE,           ///< evValue and evValue2 are reletive signed x / y moves
-	SE_JOYSTICK_AXIS,   ///< evValue is an axis number and evValue2 is the current state (-127 to 127)
-	SE_CONSOLE,         ///< evPtr is a char*
+typedef enum {
+	SE_NONE = 0, // evTime is still valid
+	SE_KEY, // evValue is a key code, evValue2 is the down flag
+	SE_CHAR, // evValue is an ascii char
+	SE_MOUSE, // evValue and evValue2 are reletive signed x / y moves
+	SE_JOYSTICK_AXIS, // evValue is an axis number and evValue2 is the current state(-127 to 127)
+	SE_CONSOLE, // evPtr is a char*
 } sysEventType_t;
 
 /**
@@ -1314,13 +1295,12 @@ typedef enum
  * @brief
  * @note Make sure SE_NONE is zero
  */
-typedef struct
-{
+typedef struct {
 	int evTime;
 	sysEventType_t evType;
 	int evValue, evValue2;
-	int evPtrLength;                ///< bytes of data pointed to by evPtr, for journaling
-	void *evPtr;                    ///< this must be manually freed if not NULL
+	int evPtrLength;                // bytes of data pointed to by evPtr, for journaling
+	void *evPtr;                    // this must be manually freed if not NULL
 } sysEvent_t;
 
 void Com_QueueEvent(int time, sysEventType_t type, int value, int value2, int ptrLength, void *ptr);
@@ -1349,13 +1329,13 @@ qboolean Sys_DllExtension(const char *name);
 
 char *Sys_GetCurrentUser(void);
 
-void QDECL Sys_Error(const char *error, ...) __attribute__ ((noreturn, format(printf, 1, 2)));
-void Sys_Quit(void) __attribute__ ((noreturn));
+void QDECL Sys_Error(const char *error, ...) __attribute__((noreturn, format(printf, 1, 2)));
+void Sys_Quit(void)__attribute__((noreturn));
 char *IN_GetClipboardData(void);       // note that this isn't journaled...
 
 void Sys_Print(const char *msg);
 
-// Sys_Milliseconds should only be used for profiling purposes,
+// sys_Milliseconds should only be used for profiling purposes,
 // any game related timing information should come from event timestamps
 int Sys_Milliseconds(void);
 
@@ -1401,11 +1381,10 @@ void Sys_SetEnv(const char *name, const char *value);
  * @enum dialogResult_t
  * @brief
  */
-typedef enum
-{
-	DR_YES    = 0,
-	DR_NO     = 1,
-	DR_OK     = 0,
+typedef enum {
+	DR_YES = 0,
+	DR_NO = 1,
+	DR_OK = 0,
 	DR_CANCEL = 1
 } dialogResult_t;
 
@@ -1413,8 +1392,7 @@ typedef enum
  * @enum dialogType_t
  * @brief
  */
-typedef enum
-{
+typedef enum {
 	DT_INFO,
 	DT_WARNING,
 	DT_ERROR,
@@ -1432,13 +1410,13 @@ void Sys_OpenURL(const char *url, qboolean doexit);
 void Sys_Chmod(const char *file, int mode);
 #endif
 
-// Console
+// console
 void Hist_Add(field_t *field);
 field_t *Hist_Prev(void);
 field_t *Hist_Next(void);
 
 #ifdef FEATURE_CURSES
-// Functions from the tty console for fallback
+// functions from the tty console for fallback
 void CON_Shutdown_tty(void);
 void CON_Init_tty(void);
 char *CON_Input_tty(void);
@@ -1449,11 +1427,11 @@ void CON_Clear_tty(void);
 /*
  * This is based on the Adaptive Huffman algorithm described in Sayood's Data
  * Compression book.  The ranks are not actually stored, but implicitly defined
- * by the location of a node within a doubly-linked list
+ * by the location of a node within a doubly - linked list
  */
 
-#define NYT HMAX                    ///< NYT = Not Yet Transmitted
-#define INTERNAL_NODE (HMAX + 1)
+#define NYT HMAX                    // NYT = Not Yet Transmitted
+#define INTERNAL_NODE(HMAX + 1)
 
 /**
  * @struct nodetype
@@ -1462,9 +1440,9 @@ void CON_Clear_tty(void);
  */
 typedef struct nodetype
 {
-	struct  nodetype *left, *right, *parent;    ///< tree structure
-	struct  nodetype *next, *prev;              ///< doubly-linked list
-	struct  nodetype **head;                    ///< highest ranked node in block
+	struct  nodetype *left, *right, *parent;    // tree structure
+	struct  nodetype *next, *prev;              // doubly - linked list
+	struct  nodetype **head;                    // highest ranked node in block
 	int weight;
 	int symbol;
 
@@ -1480,8 +1458,7 @@ typedef struct nodetype
  * @struct huff_t
  * @brief
  */
-typedef struct
-{
+typedef struct {
 	int blocNode;
 	int blocPtrs;
 
@@ -1499,8 +1476,7 @@ typedef struct
  * @struct huffman_t
  * @brief
  */
-typedef struct
-{
+typedef struct {
 	huff_t compressor;
 	huff_t decompressor;
 } huffman_t;
@@ -1526,9 +1502,9 @@ extern huffman_t clientHuffTables;
 void Com_GetHunkInfo(int *hunkused, int *hunkexpected);
 
 /*
-==============================================================
+============================================================== 
 Native language support
-==============================================================
+============================================================== 
 */
 #ifdef FEATURE_GETTEXT
 
@@ -1542,7 +1518,7 @@ const char *I18N_TranslateMod(const char *msgid);
 
 extern qboolean doTranslateMod;
 
-#else // FEATURE_GETTEXT
+#else // fEATURE_GETTEXT
 #define _(x) x
 #define __(x) x
 #endif

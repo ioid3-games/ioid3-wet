@@ -1,9 +1,9 @@
 /*
  * Wolfenstein: Enemy Territory GPL Source Code
- * Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
+ * Copyright(C) 1999 - 2010 id Software LLC, a ZeniMax Media company.
  *
  * ET: Legacy
- * Copyright (C) 2012-2018 ET:Legacy team <mail@etlegacy.com>
+ * Copyright(C) 2012 - 2018 ET:Legacy team < mail@etlegacy.com > 
  *
  * This file is part of ET: Legacy - http://www.etlegacy.com
  *
@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with ET: Legacy. If not, see <http://www.gnu.org/licenses/>.
+ * along with ET: Legacy. If not, see < http://www.gnu.org/licenses/ > .
  *
  * In addition, Wolfenstein: Enemy Territory GPL Source Code is also
  * subject to certain additional terms. You should have received a copy
@@ -40,15 +40,13 @@
 /**
  * @brief DL_InitDownload
  */
-void DL_InitDownload(void)
-{
+void DL_InitDownload(void) {
 }
 
 /**
  * @brief DL_Shutdown
  */
-void DL_Shutdown(void)
-{
+void DL_Shutdown(void) {
 }
 
 /**
@@ -57,8 +55,7 @@ void DL_Shutdown(void)
  * @param remoteName - unused
  * @return
  */
-int DL_BeginDownload(char *localName, const char *remoteName)
-{
+int DL_BeginDownload(char *localName, const char *remoteName) {
 	return 1;
 }
 
@@ -67,8 +64,7 @@ int DL_BeginDownload(char *localName, const char *remoteName)
  * @param url - unused
  * @return
  */
-char *DL_GetString(const char *url)
-{
+char *DL_GetString(const char *url) {
 	return 0;
 }
 
@@ -78,7 +74,6 @@ char *DL_GetString(const char *url)
  *
  * @note Maybe this should be CL_DL_DownloadLoop
  */
-dlStatus_t DL_DownloadLoop(void)
-{
+dlStatus_t DL_DownloadLoop(void) {
 	return DL_DONE;
 }

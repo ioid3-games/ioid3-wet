@@ -1,10 +1,10 @@
 /*
  * Wolfenstein: Enemy Territory GPL Source Code
- * Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
+ * Copyright(C) 1999 - 2010 id Software LLC, a ZeniMax Media company.
  *
  * ET: Legacy
- * Copyright (C) 2012-2018 ET:Legacy team <mail@etlegacy.com>
- * Copyright (C) 2012 Konrad Mosoń <mosonkonrad@gmail.com>
+ * Copyright(C) 2012 - 2018 ET:Legacy team < mail@etlegacy.com > 
+ * Copyright(C) 2012 Konrad Mosoń < mosonkonrad@gmail.com > 
  *
  * This file is part of ET: Legacy - http://www.etlegacy.com
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with ET: Legacy. If not, see <http://www.gnu.org/licenses/>.
+ * along with ET: Legacy. If not, see < http://www.gnu.org/licenses/ > .
  *
  * In addition, Wolfenstein: Enemy Territory GPL Source Code is also
  * subject to certain additional terms. You should have received a copy
@@ -39,16 +39,15 @@
 #include "sv_tracker.h"
 
 long t;
-int  waittime = 15; // seconds
+int waittime = 15; // seconds
 char expect[16];
-int  expectnum;
+int expectnum;
 
 qboolean maprunning = qfalse;
 
 int querycl = -1;
 
-enum
-{
+enum {
 	TR_BOT_NONE,
 	TR_BOT_CONNECT
 } catchBot;
@@ -67,10 +66,9 @@ char *Tracker_getGUID(client_t *cl);
  * @brief Sends data to Tracker
  * @param[in] format Formatted data to send
  */
-void Tracker_Send(char *format, ...)
-{
+void Tracker_Send(char *format, ...) {
 	va_list argptr;
-	char    msg[MAX_MSGLEN];
+	char msg[MAX_MSGLEN];
 
 	va_start(argptr, format);
 	Q_vsnprintf(msg, sizeof(msg), format, argptr);
@@ -85,18 +83,16 @@ void Tracker_Send(char *format, ...)
 /**
  * @brief Initialize Tracker support
  */
-void Tracker_Init(void)
-{
+void Tracker_Init(void) {
 	char *tracker;
 
-	if (!(sv_advert->integer & SVA_TRACKER))
-	{
+	if (!(sv_advert->integer & SVA_TRACKER)) {
 		Com_Printf("Tracker: Server communication disabled by sv_advert.\n");
 		return;
 	}
 
-	tracker   = Cvar_VariableString("sv_tracker");
-	t         = time(0);
+	tracker = Cvar_VariableString("sv_tracker");
+	t = time(0);
 	expectnum = 0;
 
 	NET_StringToAdr(tracker, &addr, NA_IP);
@@ -109,10 +105,8 @@ void Tracker_Init(void)
 /**
  * @brief Send info about server startup
  */
-void Tracker_ServerStart(void)
-{
-	if (!(sv_advert->integer & SVA_TRACKER))
-	{
+void Tracker_ServerStart(void) {
+	if (!(sv_advert->integer & SVA_TRACKER)) {
 		return;
 	}
 
@@ -122,10 +116,8 @@ void Tracker_ServerStart(void)
 /**
  * @brief Send info about server shutdown
  */
-void Tracker_ServerStop(void)
-{
-	if (!(sv_advert->integer & SVA_TRACKER))
-	{
+void Tracker_ServerStop(void) {
+	if (!(sv_advert->integer & SVA_TRACKER)) {
 		return;
 	}
 
@@ -136,10 +128,8 @@ void Tracker_ServerStop(void)
  * @brief Send info about new client connected
  * @param[in] cl Client
  */
-void Tracker_ClientConnect(client_t *cl)
-{
-	if (!(sv_advert->integer & SVA_TRACKER))
-	{
+void Tracker_ClientConnect(client_t *cl) {
+	if (!(sv_advert->integer & SVA_TRACKER)) {
 		return;
 	}
 
@@ -150,10 +140,8 @@ void Tracker_ClientConnect(client_t *cl)
  * @brief Send info when client disconnects
  * @param[in] cl Client
  */
-void Tracker_ClientDisconnect(client_t *cl)
-{
-	if (!(sv_advert->integer & SVA_TRACKER))
-	{
+void Tracker_ClientDisconnect(client_t *cl) {
+	if (!(sv_advert->integer & SVA_TRACKER)) {
 		return;
 	}
 
@@ -164,15 +152,12 @@ void Tracker_ClientDisconnect(client_t *cl)
  * @brief Send info when player changes his name
  * @param[in] cl Client
  */
-void Tracker_ClientName(client_t *cl)
-{
-	if (!(sv_advert->integer & SVA_TRACKER))
-	{
+void Tracker_ClientName(client_t *cl) {
+	if (!(sv_advert->integer & SVA_TRACKER)) {
 		return;
 	}
 
-	if (!*cl->name)
-	{
+	if (!*cl->name) {
 		return;
 	}
 
@@ -183,10 +168,8 @@ void Tracker_ClientName(client_t *cl)
  * @brief Send info when map has changed
  * @param[in] mapname Current Map
  */
-void Tracker_Map(char *mapname)
-{
-	if (!(sv_advert->integer & SVA_TRACKER))
-	{
+void Tracker_Map(char *mapname) {
+	if (!(sv_advert->integer & SVA_TRACKER)) {
 		return;
 	}
 
@@ -199,10 +182,8 @@ void Tracker_Map(char *mapname)
  *
  * Allows counting time from 0 again on TB
  */
-void Tracker_MapRestart(void)
-{
-	if (!(sv_advert->integer & SVA_TRACKER))
-	{
+void Tracker_MapRestart(void) {
+	if (!(sv_advert->integer & SVA_TRACKER)) {
 		return;
 	}
 
@@ -215,10 +196,8 @@ void Tracker_MapRestart(void)
  *
  * Sometimes intermission is very long, so TB can show appropriate info to players
  */
-void Tracker_MapEnd(void)
-{
-	if (!(sv_advert->integer & SVA_TRACKER))
-	{
+void Tracker_MapEnd(void) {
+	if (!(sv_advert->integer & SVA_TRACKER)) {
 		return;
 	}
 
@@ -232,75 +211,64 @@ void Tracker_MapEnd(void)
  * @brief Send info when player changes his team
  * @param[in] cl Client
  */
-void Tracker_TeamSwitch(client_t *cl)
-{
+void Tracker_TeamSwitch(client_t *cl) {
 	Tracker_Send("team %i", (int)(cl - svs.clients));
 }
 #endif // 0
 
 /**
  * @brief Creates client information for other functions
- * @param clientNum Client ID (from 0 to MAX_CLIENTS)
+ * @param clientNum Client ID(from 0 to MAX_CLIENTS)
  * @note Just for internal use
  */
-char *Tracker_createClientInfo(int clientNum)
-{
+char *Tracker_createClientInfo(int clientNum) {
 	playerState_t *ps;
 	ps = SV_GameClientNum(clientNum);
 
-	return va("%i\\%i\\%c\\%i\\%s", svs.clients[clientNum].ping, ps->persistant[PERS_SCORE], Info_ValueForKey(Cvar_InfoString(CVAR_SERVERINFO | CVAR_SERVERINFO_NOUPDATE), "P")[clientNum], ps->stats[STAT_PLAYER_CLASS], svs.clients[clientNum].name);
+	return va("%i\\%i\\%c\\%i\\%s", svs.clients[clientNum].ping, ps->persistant[PERS_SCORE], Info_ValueForKey(Cvar_InfoString(CVAR_SERVERINFO|CVAR_SERVERINFO_NOUPDATE), "P")[clientNum], ps->stats[STAT_PLAYER_CLASS], svs.clients[clientNum].name);
 }
 
 /**
  * @brief Request weapon stats data from mod
  */
-void Tracker_requestWeaponStats(void)
-{
-	int      i;
+void Tracker_requestWeaponStats(void) {
+	int i;
 	qboolean onlybots = qtrue;
-	char     *P;
+	char *P;
 
-	if (!maprunning)
-	{
+	if (!maprunning) {
 		return;
 	}
 
-	strcpy(infostring, Cvar_InfoString(CVAR_SERVERINFO | CVAR_SERVERINFO_NOUPDATE));
+	strcpy(infostring, Cvar_InfoString(CVAR_SERVERINFO|CVAR_SERVERINFO_NOUPDATE));
 	P = Info_ValueForKey(infostring, "P");
 
 	strcpy(expect, "ws");
-	for (i = 0; i < sv_maxclients->value; i++)
-	{
-		if (svs.clients[i].state == CS_ACTIVE)
-		{
-			if (svs.clients[i].netchan.remoteAddress.type != NA_BOT)
-			{
+
+	for (i = 0; i < sv_maxclients->value; i++) {
+		if (svs.clients[i].state == CS_ACTIVE) {
+			if (svs.clients[i].netchan.remoteAddress.type != NA_BOT) {
 				onlybots = qfalse;
-				querycl  = i;
+				querycl = i;
 			}
 
 			expectnum++;
 		}
 	}
 
-	if (expectnum > 0)
-	{
+	if (expectnum > 0) {
 		Tracker_Send("wsc %i", expectnum);
 
-		for (i = 0; i < sv_maxclients->value; i++)
-		{
-			if (svs.clients[i].state == CS_ACTIVE)
-			{
+		for (i = 0; i < sv_maxclients->value; i++) {
+			if (svs.clients[i].state == CS_ACTIVE) {
 				// send basic data is client is spectator
-				if (P[i] == '3' || (svs.clients[i].netchan.remoteAddress.type == NA_BOT && onlybots))
-				{
+				if (P[i] == '3' || (svs.clients[i].netchan.remoteAddress.type == NA_BOT && onlybots)) {
 					Tracker_Send("ws %i 0 0 0\\%s", i, Tracker_createClientInfo(i));
 				}
 			}
 		}
 
-		if (querycl >= 0)
-		{
+		if (querycl >= 0) {
 			SV_ExecuteClientCommand(&svs.clients[querycl], "statsall", qtrue, qfalse);
 		}
 	}
@@ -309,21 +277,17 @@ void Tracker_requestWeaponStats(void)
 /**
  * @brief Frame function
  */
-void Tracker_Frame(int msec)
-{
-	if (!(sv_advert->integer & SVA_TRACKER))
-	{
+void Tracker_Frame(int msec) {
+	if (!(sv_advert->integer & SVA_TRACKER)) {
 		return;
 	}
 
-	if (catchBot == TR_BOT_CONNECT)
-	{
+	if (catchBot == TR_BOT_CONNECT) {
 		Tracker_ClientConnect(&svs.clients[catchBotNum]);
 		catchBot = TR_BOT_NONE;
 	}
 
-	if (!(time(0) - waittime > t))
-	{
+	if (!(time(0) - waittime > t)) {
 		return;
 	}
 
@@ -337,43 +301,36 @@ void Tracker_Frame(int msec)
 
 /**
  * @brief Catches server command
- * @param     clientNum Client ID (from 0 to MAX_CLIENTS)
+ * @param     clientNum Client ID(from 0 to MAX_CLIENTS)
  * @param[in] msg       Message sends by backend
  */
-qboolean Tracker_catchServerCommand(int clientNum, char *msg)
-{
+qboolean Tracker_catchServerCommand(int clientNum, char *msg) {
 	int slot;
 
-	if (!(sv_advert->integer & SVA_TRACKER))
-	{
+	if (!(sv_advert->integer & SVA_TRACKER)) {
 		return qfalse;
 	}
 
-	if (clientNum != querycl)
-	{
+	if (clientNum != querycl) {
 		return qfalse;
 	}
 
-	if (expectnum == 0)
-	{
+	if (expectnum == 0) {
 		return qfalse;
 	}
 
-	if (!(!strncmp(expect, msg, strlen(expect))))
-	{
+	if (!(!strncmp(expect, msg, strlen(expect)))) {
 		return qfalse;
 	}
 
-	if (msg[strlen(msg) - 1] == '\n')
-	{
+	if (msg[strlen(msg) - 1] == '\n') {
 		msg[strlen(msg) - 1] = '\0';
 	}
 
-	if (!Q_strncmp("ws", msg, 2))
-	{
+	if (!Q_strncmp("ws", msg, 2)) {
 		expectnum--;
-		if (expectnum == 0)
-		{
+
+		if (expectnum == 0) {
 			strcpy(expect, "");
 			querycl = -1;
 		}
@@ -391,14 +348,12 @@ qboolean Tracker_catchServerCommand(int clientNum, char *msg)
 /**
  * @brief Catch bot connection
  */
-void Tracker_catchBotConnect(int clientNum)
-{
-	if (!(sv_advert->integer & SVA_TRACKER))
-	{
+void Tracker_catchBotConnect(int clientNum) {
+	if (!(sv_advert->integer & SVA_TRACKER)) {
 		return;
 	}
 
-	catchBot    = TR_BOT_CONNECT;
+	catchBot = TR_BOT_CONNECT;
 	catchBotNum = clientNum;
 }
 
@@ -408,16 +363,12 @@ void Tracker_catchBotConnect(int clientNum)
  *
  * We prefer to use original cl_guid, but some mods has their own guid values
  */
-char *Tracker_getGUID(client_t *cl)
-{
-	if (*Info_ValueForKey(cl->userinfo, "cl_guid"))
-	{
+char *Tracker_getGUID(client_t *cl) {
+	if (*Info_ValueForKey(cl->userinfo, "cl_guid")) {
 		return Info_ValueForKey(cl->userinfo, "cl_guid");
-	}
-	else
-	{
+	} else {
 		return "unknown";
 	}
 }
 
-#endif // FEATURE_TRACKER
+#endif // fEATURE_TRACKER

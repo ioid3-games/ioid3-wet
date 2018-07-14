@@ -1,9 +1,9 @@
 /*
  * Wolfenstein: Enemy Territory GPL Source Code
- * Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
+ * Copyright(C) 1999 - 2010 id Software LLC, a ZeniMax Media company.
  *
  * ET: Legacy
- * Copyright (C) 2012-2018 ET:Legacy team <mail@etlegacy.com>
+ * Copyright(C) 2012 - 2018 ET:Legacy team < mail@etlegacy.com > 
  *
  * This file is part of ET: Legacy - http://www.etlegacy.com
  *
@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with ET: Legacy. If not, see <http://www.gnu.org/licenses/>.
+ * along with ET: Legacy. If not, see < http://www.gnu.org/licenses/ > .
  *
  * In addition, Wolfenstein: Enemy Territory GPL Source Code is also
  * subject to certain additional terms. You should have received a copy
@@ -30,7 +30,7 @@
  */
 /**
  * @file sys_unix.c
- * @brief Contains unix-specific code for console.
+ * @brief Contains unix - specific code for console.
  */
 
 #ifndef DEDICATED
@@ -60,21 +60,18 @@
 
 qboolean stdinIsATTY;
 
-// Used to determine where to store user-specific files
-static char homePath[MAX_OSPATH] = { 0 };
+// used to determine where to store user - specific files
+static char homePath[MAX_OSPATH] = {0};
 
 /**
  * @brief Get current home path
  * @return path to ET: Legacy directory
  */
-char *Sys_DefaultHomePath(void)
-{
+char *Sys_DefaultHomePath(void) {
 	char *p;
 
-	if (!*homePath)
-	{
-		if ((p = getenv("HOME")) != NULL)
-		{
+	if (!*homePath) {
+		if ((p = getenv("HOME")) != NULL) {
 			Q_strncpyz(homePath, p, sizeof(homePath));
 #ifdef __APPLE__
 			Q_strncpyz(homePath, OSX_ApplicationSupportPath(), sizeof(homePath));
@@ -93,84 +90,74 @@ char *Sys_DefaultHomePath(void)
  * @param[in] file Filename
  * @param[in] mode Access Mode
  */
-void Sys_Chmod(const char *file, int mode)
-{
+void Sys_Chmod(const char *file, int mode) {
 	struct stat stat_infoBefore;
 	struct stat fstat_infoAfter;
-	int         perm;
-	int         fd;
+	int perm;
+	int fd;
 
-	// Get the state of the file
-	if (stat(file, &stat_infoBefore) == -1)
-	{
+	// get the state of the file
+	if (stat(file, &stat_infoBefore) == -1) {
 		Com_Printf("Sys_Chmod: first stat('%s')  failed: errno %d\n", file, errno);
 		return;
 	}
 
-	perm = stat_infoBefore.st_mode | mode;
+	perm = stat_infoBefore.st_mode|mode;
 
-	// Try to get the file descriptor
-	if ((fd = open(file, O_RDONLY, S_IXUSR)) == -1)
-	{
+	// try to get the file descriptor
+	if ((fd = open(file, O_RDONLY, S_IXUSR)) == -1) {
 		Com_Printf("Sys_Chmod: open('%s', %d, %d) failed: errno %d\n", file, O_RDONLY, S_IXUSR, errno);
 		return;
 	}
 
-	Com_DPrintf("chmod +%d '%s'\n", mode, file);
+	Com_DPrintf("chmod + %d '%s'\n", mode, file);
 
-	// Get the state of the file after opening function
-	if (stat(file, &fstat_infoAfter) == -1)
-	{
+	// get the state of the file after opening function
+	if (stat(file, &fstat_infoAfter) == -1) {
 		Com_Printf("Sys_Chmod: second stat('%s')  failed: errno %d\n", file, errno);
 		close(fd);
 		return;
 	}
-
-	// Compare the state before and after opening
+	// compare the state before and after opening
 	if (stat_infoBefore.st_mode != fstat_infoAfter.st_mode ||
-	    stat_infoBefore.st_ino != fstat_infoAfter.st_ino)
-	{
-		Com_Printf("Sys_Chmod: stat before and after open are different. The file ('%s') may differ (TOCTOU Attacks ?)\n", file);
+	    stat_infoBefore.st_ino != fstat_infoAfter.st_ino) {
+		Com_Printf("Sys_Chmod: stat before and after open are different. The file('%s') may differ(TOCTOU Attacks ?)\n", file);
 		close(fd);
 		return;
 	}
-
-	// Chmod the file by using the file descriptor
-	if (fchmod(fd, perm) != 0)
-	{
+	// chmod the file by using the file descriptor
+	if (fchmod(fd, perm) != 0) {
 		Com_Printf("Sys_Chmod: fchmod('%s', %d) failed: errno %d\n", file, perm, errno);
 	}
 
 	close(fd);
-	Com_DPrintf("chmod +%d '%s'\n", mode, file);
+	Com_DPrintf("chmod + %d '%s'\n", mode, file);
 }
 
 /**
  * @brief Base time in seconds
  *
  * That's our origin timeval:tv_sec is an int:\n
- * assuming this wraps every 0x7fffffff - ~68 years since the Epoch (1970) - we're safe till 2038\n
+ * assuming this wraps every 0x7fffffff - ~68 years since the Epoch(1970) - we're safe till 2038\n
  * using unsigned long data type to work right with Sys_XTimeToSysTime
  */
 unsigned long sys_timeBase = 0;
 
 /**
  * @brief Current time in ms, using sys_timeBase as origin
- * @note sys_timeBase * 1000 + curtime -> ms since the Epoch, 0x7fffffff ms - ~24 days
+ * @note sys_timeBase * 1000 + curtime ->ms since the Epoch, 0x7fffffff ms - ~24 days
  *
  * although timeval:tv_usec is an int, I'm not sure wether it is actually used as an unsigned int
- *   (which would affect the wrap period)
+ * (which would affect the wrap period)
  */
 int curtime;
 
-int Sys_Milliseconds(void)
-{
+int Sys_Milliseconds(void) {
 	struct timeval tp;
 
 	gettimeofday(&tp, NULL);
 
-	if (!sys_timeBase)
-	{
+	if (!sys_timeBase) {
 		sys_timeBase = tp.tv_sec;
 		return tp.tv_usec / 1000;
 	}
@@ -181,10 +168,9 @@ int Sys_Milliseconds(void)
 }
 
 /**
- * @param[in,out] v Vector
+ * @param[in, out] v Vector
  */
-void Sys_SnapVector(float *v)
-{
+void Sys_SnapVector(float *v) {
 	v[0] = rint(v[0]);
 	v[1] = rint(v[1]);
 	v[2] = rint(v[2]);
@@ -196,20 +182,18 @@ void Sys_SnapVector(float *v)
  * @retval qfalse on failure
  * @retval qtrue  on success
  */
-qboolean Sys_RandomBytes(byte *string, int len)
-{
+qboolean Sys_RandomBytes(byte *string, int len) {
 	FILE *fp;
 
 	fp = fopen("/dev/urandom", "r");
-	if (!fp)
-	{
+
+	if (!fp) {
 		return qfalse;
 	}
 
 	setvbuf(fp, NULL, _IONBF, 0); // don't buffer reads from /dev/urandom
 
-	if (fread(string, sizeof(byte), len, fp) != len)
-	{
+	if (fread(string, sizeof(byte), len, fp) != len) {
 		fclose(fp);
 		return qfalse;
 	}
@@ -222,12 +206,10 @@ qboolean Sys_RandomBytes(byte *string, int len)
  * @brief Get current user username
  * @return username
  */
-char *Sys_GetCurrentUser(void)
-{
+char *Sys_GetCurrentUser(void) {
 	struct passwd *p;
 
-	if ((p = getpwuid(getuid())) == NULL)
-	{
+	if ((p = getpwuid(getuid())) == NULL) {
 		return "player";
 	}
 
@@ -237,100 +219,74 @@ char *Sys_GetCurrentUser(void)
 /**
  * @todo
  */
-qboolean Sys_LowPhysicalMemory(void)
-{
+qboolean Sys_LowPhysicalMemory(void) {
 	return qfalse;
 }
 
-const char *Sys_Basename(char *path)
-{
+const char *Sys_Basename(char *path) {
 	return basename(path);
 }
 
-const char *Sys_Dirname(char *path)
-{
+const char *Sys_Dirname(char *path) {
 	return dirname(path);
 }
 
 /**
  * @brief Safe function to open a file and preventing TOCTOU attacks
  * @param[in] ospath The file path to open
- * @param[in] mode The mode used to open the file ('rb','wb','ab')
+ * @param[in] mode The mode used to open the file('rb', 'wb', 'ab')
  * @return
  */
-FILE *Sys_FOpen(const char *ospath, const char *mode)
-{
+FILE *Sys_FOpen(const char *ospath, const char *mode) {
 	struct stat stat_infoBefore;
 	struct stat stat_infoAfter;
-	FILE        *fp;
-	int         fd;
-	int         oflag = 0;
+	FILE *fp;
+	int fd;
+	int oflag = 0;
 
-	// Retrive the oflag for open depending of mode parameter
-	if (*mode == 'w')
-	{
-		oflag |= O_WRONLY | O_CREAT | O_TRUNC;
-	}
-	else if (*mode == 'r')
-	{
+	// retrive the oflag for open depending of mode parameter
+	if (*mode == 'w') {
+		oflag |= O_WRONLY|O_CREAT|O_TRUNC;
+	} else if (*mode == 'r') {
 		oflag |= O_RDONLY;
-	}
-	else if (*mode == 'a')
-	{
-		oflag |= O_WRONLY | O_APPEND;
-	}
-	else
-	{
-		Com_Printf("Sys_FOpen: invalid mode parameter to open file ('%s')", mode);
+	} else if (*mode == 'a') {
+		oflag |= O_WRONLY|O_APPEND;
+	} else {
+		Com_Printf("Sys_FOpen: invalid mode parameter to open file('%s')", mode);
 		return NULL;
 	}
-
-	// Check the state (if path exists)
-	if (stat(ospath, &stat_infoBefore) == -1)
-	{
-		// Check the error in case the the file doesn't exist
-		if (errno != ENOENT)
-		{
+	// check the state(if path exists)
+	if (stat(ospath, &stat_infoBefore) == -1) {
+		// check the error in case the the file doesn't exist
+		if (errno != ENOENT) {
 			Com_Printf("Sys_FOpen: first stat('%s')  failed: errno %d\n", ospath, errno);
 			return NULL;
-		}
-		else if (*mode != 'w')
-		{
+		} else if (*mode != 'w') {
 			return NULL;
 		}
-	}
-	else if (S_ISDIR(stat_infoBefore.st_mode))
-	{
+	} else if (S_ISDIR(stat_infoBefore.st_mode)) {
 		return NULL;
 	}
-
-	// Try to open the file and get the file descriptor
-	if ((fd = open(ospath, oflag, S_IRWXU)) == -1)
-	{
+	// try to open the file and get the file descriptor
+	if ((fd = open(ospath, oflag, S_IRWXU)) == -1) {
 		Com_Printf("Sys_FOpen: open('%s', %d) failed: errno %d\n", ospath, oflag, errno);
 		return NULL;
 	}
-
-	// Get the state of the current handle file only if the file wasn't created
-	if (*mode != 'w' && fstat(fd, &stat_infoAfter) == -1)
-	{
+	// get the state of the current handle file only if the file wasn't created
+	if (*mode != 'w' && fstat(fd, &stat_infoAfter) == -1) {
 		Com_Printf("Sys_FOpen: second stat('%s')  failed: errno %d\n", ospath, errno);
 		close(fd);
 		return NULL;
 	}
-
-	// Compare the state before and after opening only if the file wasn't created
+	// compare the state before and after opening only if the file wasn't created
 	if (*mode != 'w' && (stat_infoBefore.st_mode != stat_infoAfter.st_mode ||
-	                     stat_infoBefore.st_ino != stat_infoAfter.st_ino))
-	{
-		Com_Printf("Sys_FOpen: stat before and after chmod are different. The file ('%s') may differ (TOCTOU Attacks ?)\n", ospath);
+	                     stat_infoBefore.st_ino != stat_infoAfter.st_ino)) {
+		Com_Printf("Sys_FOpen: stat before and after chmod are different. The file('%s') may differ(TOCTOU Attacks ?)\n", ospath);
 		close(fd);
 		return NULL;
 	}
-
-	// Try to open the file with the file descriptor
-	if (!(fp = fdopen(fd, mode)))
-	{
+	// try to open the file with the file descriptor
+	if (!(fp = fdopen(fd, mode))) {
 		Com_Printf("Sys_FOpen: fdopen('%s', %s) failed: errno %d\n", ospath, mode, errno);
 		close(fd);
 		unlink(ospath);
@@ -346,12 +302,10 @@ FILE *Sys_FOpen(const char *ospath, const char *mode)
  * @retval qfalse on failure
  * @retval qtrue  on success
  */
-qboolean Sys_Mkdir(const char *path)
-{
+qboolean Sys_Mkdir(const char *path) {
 	int result = mkdir(path, 0750);
 
-	if (result != 0)
-	{
+	if (result != 0) {
 		return errno == EEXIST;
 	}
 
@@ -362,13 +316,12 @@ qboolean Sys_Mkdir(const char *path)
  * @brief Get current working directory
  * @return Path to current working directory
  */
-char *Sys_Cwd(void)
-{
+char *Sys_Cwd(void) {
 	static char cwd[MAX_OSPATH];
 
 	char *result = getcwd(cwd, sizeof(cwd) - 1);
-	if (result != cwd)
-	{
+
+	if (result != cwd) {
 		return NULL;
 	}
 
@@ -378,70 +331,58 @@ char *Sys_Cwd(void)
 }
 
 /*
-==============================================================
+============================================================== 
 DIRECTORY SCANNING
-==============================================================
+============================================================== 
 */
 
-void Sys_ListFilteredFiles(const char *basedir, const char *subdirs, const char *filter, char **list, int *numfiles)
-{
-	char          search[MAX_OSPATH], newsubdirs[MAX_OSPATH];
-	char          filename[MAX_OSPATH];
+void Sys_ListFilteredFiles(const char *basedir, const char *subdirs, const char *filter, char **list, int *numfiles) {
+	char search[MAX_OSPATH], newsubdirs[MAX_OSPATH];
+	char filename[MAX_OSPATH];
 	DIR           *fdir;
 	struct dirent *d;
 	struct stat   st;
 
-	if (*numfiles >= MAX_FOUND_FILES - 1)
-	{
+	if (*numfiles >= MAX_FOUND_FILES - 1) {
 		return;
 	}
 
-	if (strlen(subdirs))
-	{
+	if (strlen(subdirs)) {
 		Com_sprintf(search, sizeof(search), "%s/%s", basedir, subdirs);
-	}
-	else
-	{
+	} else {
 		Com_sprintf(search, sizeof(search), "%s", basedir);
 	}
 
-	if ((fdir = opendir(search)) == NULL)
-	{
+	if ((fdir = opendir(search)) == NULL) {
 		return;
 	}
 
-	while ((d = readdir(fdir)) != NULL)
-	{
+	while ((d = readdir(fdir)) != NULL) {
 		Com_sprintf(filename, sizeof(filename), "%s/%s", search, d->d_name);
-		if (stat(filename, &st) == -1)
-		{
+
+		if (stat(filename, &st) == -1) {
 			continue;
 		}
 
-		if (st.st_mode & S_IFDIR)
-		{
-			if (Q_stricmp(d->d_name, ".") && Q_stricmp(d->d_name, ".."))
-			{
-				if (strlen(subdirs))
-				{
+		if (st.st_mode & S_IFDIR) {
+			if (Q_stricmp(d->d_name, ".") && Q_stricmp(d->d_name, "..")) {
+				if (strlen(subdirs)) {
 					Com_sprintf(newsubdirs, sizeof(newsubdirs), "%s/%s", subdirs, d->d_name);
-				}
-				else
-				{
+				} else {
 					Com_sprintf(newsubdirs, sizeof(newsubdirs), "%s", d->d_name);
 				}
 
 				Sys_ListFilteredFiles(basedir, newsubdirs, filter, list, numfiles);
 			}
 		}
-		if (*numfiles >= MAX_FOUND_FILES - 1)
-		{
+
+		if (*numfiles >= MAX_FOUND_FILES - 1) {
 			break;
 		}
+
 		Com_sprintf(filename, sizeof(filename), "%s/%s", subdirs, d->d_name);
 
-		if (!Com_FilterPath(filter, filename, qfalse))
-		{
+		if (!Com_FilterPath(filter, filename, qfalse)) {
 			continue;
 		}
 
@@ -461,36 +402,33 @@ void Sys_ListFilteredFiles(const char *basedir, const char *subdirs, const char 
  * @param      wantsubs  Do we want to list subdirectories too?
  * @return Array of strings with files
  */
-char **Sys_ListFiles(const char *directory, const char *extension, const char *filter, int *numfiles, qboolean wantsubs)
-{
+char **Sys_ListFiles(const char *directory, const char *extension, const char *filter, int *numfiles, qboolean wantsubs) {
 	struct dirent *d;
 	DIR           *fdir;
-	qboolean      dironly = wantsubs;
-	char          search[MAX_OSPATH];
-	int           nfiles;
-	char          **listCopy;
-	char          *list[MAX_FOUND_FILES];
-	int           i;
+	qboolean dironly = wantsubs;
+	char search[MAX_OSPATH];
+	int nfiles;
+	char **listCopy;
+	char *list[MAX_FOUND_FILES];
+	int i;
 	struct stat   st;
-	int           extLen;
-	qboolean      invalid;
+	int extLen;
+	qboolean invalid;
 
-	if (filter)
-	{
+	if (filter) {
 		nfiles = 0;
 		Sys_ListFilteredFiles(directory, "", filter, list, &nfiles);
 
 		list[nfiles] = NULL;
-		*numfiles    = nfiles;
+		*numfiles = nfiles;
 
-		if (!nfiles)
-		{
+		if (!nfiles) {
 			return NULL;
 		}
 
 		listCopy = Z_Malloc((nfiles + 1) * sizeof(*listCopy));
-		for (i = 0 ; i < nfiles ; i++)
-		{
+
+		for (i = 0; i < nfiles; i++) {
 			listCopy[i] = list[i];
 		}
 
@@ -499,15 +437,13 @@ char **Sys_ListFiles(const char *directory, const char *extension, const char *f
 		return listCopy;
 	}
 
-	if (!extension)
-	{
+	if (!extension) {
 		extension = "";
 	}
 
-	if (extension[0] == '/' && extension[1] == 0)
-	{
+	if (extension[0] == '/' && extension[1] == 0) {
 		extension = "";
-		dironly   = qtrue;
+		dironly = qtrue;
 	}
 
 	extLen = strlen(extension);
@@ -515,48 +451,40 @@ char **Sys_ListFiles(const char *directory, const char *extension, const char *f
 	// search
 	nfiles = 0;
 
-	if ((fdir = opendir(directory)) == NULL)
-	{
+	if ((fdir = opendir(directory)) == NULL) {
 		*numfiles = 0;
 		return NULL;
 	}
 
-	while ((d = readdir(fdir)) != NULL)
-	{
+	while ((d = readdir(fdir)) != NULL) {
 		Com_sprintf(search, sizeof(search), "%s/%s", directory, d->d_name);
-		if (stat(search, &st) == -1)
-		{
-			continue;
-		}
-		if ((dironly && !(st.st_mode & S_IFDIR)) || (!dironly && (st.st_mode & S_IFDIR)))
-		{
+
+		if (stat(search, &st) == -1) {
 			continue;
 		}
 
-		if (*extension)
-		{
-			if (strlen(d->d_name) < extLen || Q_stricmp(d->d_name + strlen(d->d_name) - extLen, extension))
-			{
+		if ((dironly && !(st.st_mode & S_IFDIR)) || (!dironly && (st.st_mode & S_IFDIR))) {
+			continue;
+		}
+
+		if (*extension) {
+			if (strlen(d->d_name) < extLen || Q_stricmp(d->d_name + strlen(d->d_name) - extLen, extension)) {
 				continue; // didn't match
 			}
 		}
-
 		// check for bad file names
 		invalid = qfalse;
 		// note: this isn't done in Sys_ListFilteredFiles()
 
-		for (i = 0; i < strlen(d->d_name); i++)
-		{
-			if (d->d_name[i] <= 31 || d->d_name[i] >= 123)
-			{
+		for (i = 0; i < strlen(d->d_name); i++) {
+			if (d->d_name[i] <= 31 || d->d_name[i] >= 123) {
 				Com_Printf(S_COLOR_RED "ERROR: invalid char in name of file '%s'.\n", d->d_name);
 				invalid = qtrue;
 				break;
 			}
 		}
 
-		if (invalid)
-		{
+		if (invalid) {
 			remove(va("%s%c%s", directory, PATH_SEP, d->d_name));
 #ifdef DEDICATED
 			Sys_Error("Invalid character in file name '%s'. The file has been removed. Start the server again.", d->d_name);
@@ -566,8 +494,7 @@ char **Sys_ListFiles(const char *directory, const char *extension, const char *f
 #endif
 		}
 
-		if (nfiles == MAX_FOUND_FILES - 1)
-		{
+		if (nfiles == MAX_FOUND_FILES - 1) {
 			break;
 		}
 
@@ -582,14 +509,13 @@ char **Sys_ListFiles(const char *directory, const char *extension, const char *f
 	// return a copy of the list
 	*numfiles = nfiles;
 
-	if (!nfiles)
-	{
+	if (!nfiles) {
 		return NULL;
 	}
 
 	listCopy = Z_Malloc((nfiles + 1) * sizeof(*listCopy));
-	for (i = 0 ; i < nfiles ; i++)
-	{
+
+	for (i = 0; i < nfiles; i++) {
 		listCopy[i] = list[i];
 	}
 
@@ -598,17 +524,14 @@ char **Sys_ListFiles(const char *directory, const char *extension, const char *f
 	return listCopy;
 }
 
-void Sys_FreeFileList(char **list)
-{
+void Sys_FreeFileList(char **list) {
 	int i;
 
-	if (!list)
-	{
+	if (!list) {
 		return;
 	}
 
-	for (i = 0 ; list[i] ; i++)
-	{
+	for (i = 0; list[i]; i++) {
 		Z_Free(list[i]);
 	}
 
@@ -619,37 +542,29 @@ void Sys_FreeFileList(char **list)
  * @brief Block execution for msec or until input is recieved.
  * @param msec How long we want to block execution?
  */
-void Sys_Sleep(int msec)
-{
-	if (msec == 0)
-	{
+void Sys_Sleep(int msec) {
+	if (msec == 0) {
 		return;
 	}
 
-	if (stdinIsATTY)
-	{
+	if (stdinIsATTY) {
 		fd_set fdset;
 
 		FD_ZERO(&fdset);
 		FD_SET(STDIN_FILENO, &fdset);
-		if (msec < 0)
-		{
+
+		if (msec < 0) {
 			select(STDIN_FILENO + 1, &fdset, NULL, NULL, NULL);
-		}
-		else
-		{
+		} else {
 			struct timeval timeout;
 
-			timeout.tv_sec  = msec / 1000;
+			timeout.tv_sec = msec / 1000;
 			timeout.tv_usec = (msec % 1000) * 1000;
 			select(STDIN_FILENO + 1, &fdset, NULL, NULL, &timeout);
 		}
-	}
-	else
-	{
-		// With nothing to select() on, we can't wait indefinitely
-		if (msec < 0)
-		{
+	} else {
+		// with nothing to select() on, we can't wait indefinitely
+		if (msec < 0) {
 			msec = 10;
 		}
 
@@ -661,16 +576,15 @@ void Sys_Sleep(int msec)
  * @brief Displays an error message and writes the error into crashlog.txt
  * @param[in] error Error String
  */
-void Sys_ErrorDialog(const char *error)
-{
-	char         buffer[1024];
+void Sys_ErrorDialog(const char *error) {
+	char buffer[1024];
 	unsigned int size;
-	int          f         = -1;
-	const char   *homepath = Cvar_VariableString("fs_homepath");
-	const char   *gamedir  = Cvar_VariableString("fs_gamedir");
-	const char   *fileName = "crashlog.txt";
-	char         *dirpath  = FS_BuildOSPath(homepath, gamedir, "");
-	char         *ospath   = FS_BuildOSPath(homepath, gamedir, fileName);
+	int f = -1;
+	const char *homepath = Cvar_VariableString("fs_homepath");
+	const char *gamedir = Cvar_VariableString("fs_gamedir");
+	const char *fileName = "crashlog.txt";
+	char *dirpath = FS_BuildOSPath(homepath, gamedir, "");
+	char *ospath = FS_BuildOSPath(homepath, gamedir, fileName);
 
 	Sys_Print(va("%s\n", error));
 
@@ -678,35 +592,29 @@ void Sys_ErrorDialog(const char *error)
 	Sys_Dialog(DT_ERROR, va("%s\nSee \"%s\" for details.\n", error, ospath), "Error");
 #endif
 
-	// Make sure the write path for the crashlog exists...
+	// make sure the write path for the crashlog exists...
 	// check homepath
-	if (!Sys_Mkdir(homepath))
-	{
+	if (!Sys_Mkdir(homepath)) {
 		Com_Printf("ERROR: couldn't create path '%s' to write file '%s'.\n", homepath, ospath);
 		return;
 	}
-	// check gamedir (inside homepath)
-	if (!Sys_Mkdir(dirpath))
-	{
+	// check gamedir(inside homepath)
+	if (!Sys_Mkdir(dirpath)) {
 		Com_Printf("ERROR: couldn't create path '%s' to write file '%s'.\n", dirpath, ospath);
 		return;
 	}
-
-	// We might be crashing because we maxed out the Quake MAX_FILE_HANDLES,
+	// we might be crashing because we maxed out the Quake MAX_FILE_HANDLES,
 	// which will come through here, so we don't want to recurse forever by
 	// calling FS_FOpenFileWrite()...use the Unix system APIs instead.
-	f = open(ospath, O_CREAT | O_TRUNC | O_WRONLY, 0640);
-	if (f == -1)
-	{
+	f = open(ospath, O_CREAT|O_TRUNC|O_WRONLY, 0640);
+
+	if (f == -1) {
 		Com_Printf("ERROR: couldn't open '%s'\n", fileName);
 		return;
 	}
-
-	// We're crashing, so we don't care much if write() or close() fails.
-	while ((size = CON_LogRead(buffer, sizeof(buffer))) > 0)
-	{
-		if (write(f, buffer, size) != size)
-		{
+	// we're crashing, so we don't care much if write() or close() fails.
+	while ((size = CON_LogRead(buffer, sizeof(buffer))) > 0) {
+		if (write(f, buffer, size) != size) {
 			Com_Printf("ERROR: couldn't fully write to '%s'\n", fileName);
 			break;
 		}
@@ -715,26 +623,23 @@ void Sys_ErrorDialog(const char *error)
 	close(f);
 }
 
-#if !defined (__APPLE__)
+#if !defined(__APPLE__)
 static char execBuffer[1024];
 static char *execBufferPointer;
 static char *execArgv[16];
-static int  execArgc;
+static int execArgc;
 
-static void Sys_ClearExecBuffer(void)
-{
+static void Sys_ClearExecBuffer(void) {
 	execBufferPointer = execBuffer;
 	Com_Memset(execArgv, 0, sizeof(execArgv));
 	execArgc = 0;
 }
 
-static void Sys_AppendToExecBuffer(const char *text)
-{
-	size_t size   = sizeof(execBuffer) - (execBufferPointer - execBuffer);
-	int    length = strlen(text) + 1;
+static void Sys_AppendToExecBuffer(const char *text) {
+	size_t size = sizeof(execBuffer) - (execBufferPointer - execBuffer);
+	int length = strlen(text) + 1;
 
-	if (length > size || execArgc >= ARRAY_LEN(execArgv))
-	{
+	if (length > size || execArgc >= ARRAY_LEN(execArgv)) {
 		return;
 	}
 
@@ -744,43 +649,35 @@ static void Sys_AppendToExecBuffer(const char *text)
 	execBufferPointer += length;
 }
 
-static int Sys_Exec(void)
-{
+static int Sys_Exec(void) {
 	pid_t pid = fork();
 
-	if (pid < 0)
-	{
+	if (pid < 0) {
 		return -1;
 	}
 
-	if (pid)
-	{
-		// Parent
+	if (pid) {
+		// parent
 		int exitCode;
 
 		wait(&exitCode);
 
 		return WEXITSTATUS(exitCode);
-	}
-	else
-	{
-		// Child
+	} else {
+		// child
 		execvp(execArgv[0], execArgv);
-
-		// Failed to execute
+		// failed to execute
 		exit(-1);
 
 		return -1;
 	}
 }
 
-static void Sys_ZenityCommand(dialogType_t type, const char *message, const char *title)
-{
+static void Sys_ZenityCommand(dialogType_t type, const char *message, const char *title) {
 	Sys_ClearExecBuffer();
 	Sys_AppendToExecBuffer("zenity");
 
-	switch (type)
-	{
+	switch (type) {
 	default:
 	case DT_INFO:
 		Sys_AppendToExecBuffer("--info");
@@ -793,28 +690,26 @@ static void Sys_ZenityCommand(dialogType_t type, const char *message, const char
 		break;
 	case DT_YES_NO:
 		Sys_AppendToExecBuffer("--question");
-		Sys_AppendToExecBuffer("--ok-label=Yes");
-		Sys_AppendToExecBuffer("--cancel-label=No");
+		Sys_AppendToExecBuffer("--ok - label = Yes");
+		Sys_AppendToExecBuffer("--cancel - label = No");
 		break;
 
 	case DT_OK_CANCEL:
 		Sys_AppendToExecBuffer("--question");
-		Sys_AppendToExecBuffer("--ok-label=OK");
-		Sys_AppendToExecBuffer("--cancel-label=Cancel");
+		Sys_AppendToExecBuffer("--ok - label = OK");
+		Sys_AppendToExecBuffer("--cancel - label = Cancel");
 		break;
 	}
 
-	Sys_AppendToExecBuffer(va("--text=%s", message));
-	Sys_AppendToExecBuffer(va("--title=%s", title));
+	Sys_AppendToExecBuffer(va("--text = %s", message));
+	Sys_AppendToExecBuffer(va("--title = %s", title));
 }
 
-static void Sys_KdialogCommand(dialogType_t type, const char *message, const char *title)
-{
+static void Sys_KdialogCommand(dialogType_t type, const char *message, const char *title) {
 	Sys_ClearExecBuffer();
 	Sys_AppendToExecBuffer("kdialog");
 
-	switch (type)
-	{
+	switch (type) {
 	default:
 	case DT_INFO:
 		Sys_AppendToExecBuffer("--msgbox");
@@ -834,22 +729,20 @@ static void Sys_KdialogCommand(dialogType_t type, const char *message, const cha
 	}
 
 	Sys_AppendToExecBuffer(message);
-	Sys_AppendToExecBuffer(va("--title=%s", title));
+	Sys_AppendToExecBuffer(va("--title = %s", title));
 }
 
-static void Sys_XmessageCommand(dialogType_t type, const char *message, const char *title)
-{
+static void Sys_XmessageCommand(dialogType_t type, const char *message, const char *title) {
 	Sys_ClearExecBuffer();
 	Sys_AppendToExecBuffer("xmessage");
 	Sys_AppendToExecBuffer("-buttons");
 
-	switch (type)
-	{
+	switch (type) {
 	default:           Sys_AppendToExecBuffer("OK:0");
 		break;
-	case DT_YES_NO:    Sys_AppendToExecBuffer("Yes:0,No:1");
+	case DT_YES_NO:    Sys_AppendToExecBuffer("Yes:0, No:1");
 		break;
-	case DT_OK_CANCEL: Sys_AppendToExecBuffer("OK:0,Cancel:1");
+	case DT_OK_CANCEL: Sys_AppendToExecBuffer("OK:0, Cancel:1");
 		break;
 	}
 
@@ -863,51 +756,42 @@ static void Sys_XmessageCommand(dialogType_t type, const char *message, const ch
  * @param[in] message Message to show
  * @param[in] title   Message box title
  */
-dialogResult_t Sys_Dialog(dialogType_t type, const char *message, const char *title)
-{
+dialogResult_t Sys_Dialog(dialogType_t type, const char *message, const char *title) {
 	typedef enum
 	{
-		NONE   = 0,
+		NONE = 0,
 		ZENITY = 1,
 		KDIALOG,
 		XMESSAGE,
 		NUM_DIALOG_PROGRAMS
 	} dialogCommandType_t;
 
-	const char          *session = getenv("DESKTOP_SESSION");
-	int                 i, exitCode;
-	qboolean            tried[NUM_DIALOG_PROGRAMS] = { qfalse };
-	dialogCommandType_t preferredCommandType       = NONE;
+	const char *session = getenv("DESKTOP_SESSION");
+	int i, exitCode;
+	qboolean tried[NUM_DIALOG_PROGRAMS] = {qfalse};
+	dialogCommandType_t preferredCommandType = NONE;
 
 	// first check the obsolete DESKTOP_SESSION
-	if (!Q_stricmp(session, "default") || !Q_stricmp(session, ""))
-	{
+	if (!Q_stricmp(session, "default") || !Q_stricmp(session, "")) {
 		// try the standard
 		session = getenv("XDG_CURRENT_DESKTOP");
 	}
 
 	if (!Q_stricmpn(session, "gnome", 5)
 	    || !Q_stricmpn(session, "unity", 5)
-	    || !Q_stricmpn(session, "xfce", 4))
-	{
+	    || !Q_stricmpn(session, "xfce", 4)) {
 		preferredCommandType = ZENITY;
-	}
-	else if (!Q_stricmpn(session, "kde", 3))
-	{
+	} else if (!Q_stricmpn(session, "kde", 3)) {
 		preferredCommandType = KDIALOG;
 	}
 
-	for (i = ZENITY; i < NUM_DIALOG_PROGRAMS; i++)
-	{
-		if (preferredCommandType != NONE && preferredCommandType != i)
-		{
+	for (i = ZENITY; i < NUM_DIALOG_PROGRAMS; i++) {
+		if (preferredCommandType != NONE && preferredCommandType != i) {
 			continue;
 		}
 
-		if (!tried[i])
-		{
-			switch (i)
-			{
+		if (!tried[i]) {
+			switch (i) {
 			case ZENITY:
 				Sys_ZenityCommand(type, message, title);
 				break;
@@ -921,10 +805,8 @@ dialogResult_t Sys_Dialog(dialogType_t type, const char *message, const char *ti
 
 			exitCode = Sys_Exec();
 
-			if (exitCode >= 0)
-			{
-				switch (type)
-				{
+			if (exitCode >= 0) {
+				switch (type) {
 				case DT_YES_NO:
 					return exitCode ? DR_NO : DR_YES;
 				case DT_OK_CANCEL:
@@ -935,12 +817,10 @@ dialogResult_t Sys_Dialog(dialogType_t type, const char *message, const char *ti
 			}
 
 			tried[i] = qtrue;
-
-			// The preference failed, so start again in order
-			if (preferredCommandType != NONE)
-			{
+			// the preference failed, so start again in order
+			if (preferredCommandType != NONE) {
 				preferredCommandType = NONE;
-				i                    = NONE;
+				i = NONE;
 			}
 		}
 	}
@@ -961,36 +841,29 @@ dialogResult_t Sys_Dialog(dialogType_t type, const char *message, const char *ti
  * the only way to do this on unix is to use a system() call
  * but system doesn't replace the current process, which leads to a situation like:\n
  * wolf.x86--spawned_process.x86\n
- * in the case of auto-update for instance, this will cause write access denied on wolf.x86:\n
- * wolf-beta/2002-March/000079.html\n
+ * in the case of auto - update for instance, this will cause write access denied on wolf.x86:\n
+ * wolf - beta/2002 - March/000079.html\n
  * we hack the implementation here, if there are no space in the command line, assume it's a straight process and use execl
  * otherwise, use system...\n
  * The clean solution would be Sys_StartProcess and Sys_StartProcess_Args..
  */
-void Sys_DoStartProcess(char *cmdline)
-{
-	switch (fork())
-	{
+void Sys_DoStartProcess(char *cmdline) {
+	switch (fork()) {
 	case -1:
 		// main thread
 		break;
 	case 0:
-		if (strchr(cmdline, ' '))
-		{
+		if (strchr(cmdline, ' ')) {
 			int ret = system(cmdline);
-
 			// we assume there is a valid command
-			switch (ret)
-			{
+			switch (ret) {
 			case -1:
 				printf("execl failed: child process could not be created, or its status could not be retrieved\n");
 				break;
 			default:
 				break;
 			}
-		}
-		else
-		{
+		} else {
 			execl(cmdline, cmdline, NULL);
 			printf("execl failed: %s\n", strerror(errno));
 		}
@@ -1009,11 +882,9 @@ void Sys_DoStartProcess(char *cmdline)
  * If !doexit then start the process ASAP, otherwise push it for execution at exit
  * (i.e. let complete shutdown of the game and freeing of resources happen)
  */
-void Sys_StartProcess(char *cmdline, qboolean doexit)
-{
-	if (doexit)
-	{
-		Com_DPrintf("Sys_StartProcess %s (delaying to final exit)\n", cmdline);
+void Sys_StartProcess(char *cmdline, qboolean doexit) {
+	if (doexit) {
+		Com_DPrintf("Sys_StartProcess %s(delaying to final exit)\n", cmdline);
 		Sys_DoStartProcess(cmdline);
 		Cbuf_ExecuteText(EXEC_APPEND, "quit\n");
 		return;
@@ -1028,16 +899,14 @@ void Sys_StartProcess(char *cmdline, qboolean doexit)
  * @param[in] url    URL to open
  * @param     doexit Quit from game after opening URL
  */
-void Sys_OpenURL(const char *url, qboolean doexit)
-{
+void Sys_OpenURL(const char *url, qboolean doexit) {
 #ifndef DEDICATED
 	char fn[MAX_OSPATH];
 	char cmdline[MAX_CMD];
 
 	static qboolean doexit_spamguard = qfalse;
 
-	if (doexit_spamguard)
-	{
+	if (doexit_spamguard) {
 		Com_DPrintf("Sys_OpenURL: already in a doexit sequence, ignoring %s\n", url);
 		return;
 	}
@@ -1049,7 +918,7 @@ void Sys_OpenURL(const char *url, qboolean doexit)
 #ifdef __APPLE__
 	Com_sprintf(cmdline, MAX_CMD, "open '%s' &", url);
 #else
-	Com_sprintf(cmdline, MAX_CMD, "xdg-open '%s' &", url);
+	Com_sprintf(cmdline, MAX_CMD, "xdg - open '%s' &", url);
 #endif
 
 	Sys_StartProcess(cmdline, doexit);
@@ -1061,24 +930,21 @@ void Sys_OpenURL(const char *url, qboolean doexit)
 /**
  * @brief Unix specific "safe" GL implementation initialisation
  */
-void Sys_GLimpSafeInit(void)
-{
-	// NOP
+void Sys_GLimpSafeInit(void) {
+	// nOP
 }
 
 /**
  * @brief Unix specific GL implementation initialisation
  */
-void Sys_GLimpInit(void)
-{
-	// NOP
+void Sys_GLimpInit(void) {
+	// nOP
 }
 
 /**
  * @brief Unix specific initialisation
  */
-void Sys_PlatformInit(void)
-{
+void Sys_PlatformInit(void) {
 	const char *term = getenv("TERM");
 
 	signal(SIGHUP, Sys_SigHandler);
@@ -1097,14 +963,10 @@ void Sys_PlatformInit(void)
  * @param[in] value New value to set
  * @note Empty value removes variable
  */
-void Sys_SetEnv(const char *name, const char *value)
-{
-	if (value && *value)
-	{
+void Sys_SetEnv(const char *name, const char *value) {
+	if (value && *value) {
 		setenv(name, value, 1);
-	}
-	else
-	{
+	} else {
 		unsetenv(name);
 	}
 }
@@ -1112,8 +974,7 @@ void Sys_SetEnv(const char *name, const char *value)
 /**
  * @return PID of current process
 */
-int Sys_PID(void)
-{
+int Sys_PID(void) {
 	return getpid();
 }
 
@@ -1123,8 +984,7 @@ int Sys_PID(void)
  * @retval qfalse on failure
  * @retval qtrue  on success
  */
-qboolean Sys_PIDIsRunning(unsigned int pid)
-{
+qboolean Sys_PIDIsRunning(unsigned int pid) {
 	return kill(pid, 0) == 0;
 }
 
@@ -1132,39 +992,30 @@ qboolean Sys_PIDIsRunning(unsigned int pid)
  * @brief Check if filename should be allowed to be loaded as a DLL.
  * @param name
  */
-qboolean Sys_DllExtension(const char *name)
-{
+qboolean Sys_DllExtension(const char *name) {
 	const char *p;
-	char       c = 0;
+	char c = 0;
 
-	if (COM_CompareExtension(name, DLL_EXT))
-	{
+	if (COM_CompareExtension(name, DLL_EXT)) {
 		return qtrue;
 	}
+	// check for format of filename.so.1.2.3
+	p = strstr(name, DLL_EXT ".");
 
-	// Check for format of filename.so.1.2.3
-	p = strstr(name, DLL_EXT "." );
-
-	if (p)
-	{
+	if (p) {
 		p += strlen(DLL_EXT);
-
-		// Check if .so is only followed for periods and numbers.
-		while (*p)
-		{
+		// check if .so is only followed for periods and numbers.
+		while (*p) {
 			c = *p;
 
-			if (!isdigit(c) && c != '.')
-			{
+			if (!isdigit(c) && c != '.') {
 				return qfalse;
 			}
 
 			p++;
 		}
-
-		// Don't allow filename to end in a period. file.so., file.so.0., etc
-		if (c != '.')
-		{
+		// don't allow filename to end in a period. file.so., file.so.0., etc.
+		if (c != '.') {
 			return qtrue;
 		}
 	}

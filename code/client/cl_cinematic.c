@@ -1,9 +1,9 @@
 /*
  * Wolfenstein: Enemy Territory GPL Source Code
- * Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
+ * Copyright(C) 1999 - 2010 id Software LLC, a ZeniMax Media company.
  *
  * ET: Legacy
- * Copyright (C) 2012-2018 ET:Legacy team <mail@etlegacy.com>
+ * Copyright(C) 2012 - 2018 ET:Legacy team < mail@etlegacy.com > 
  *
  * This file is part of ET: Legacy - http://www.etlegacy.com
  *
@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with ET: Legacy. If not, see <http://www.gnu.org/licenses/>.
+ * along with ET: Legacy. If not, see < http://www.gnu.org/licenses/ > .
  *
  * In addition, Wolfenstein: Enemy Territory GPL Source Code is also
  * subject to certain additional terms. You should have received a copy
@@ -35,23 +35,21 @@
 
 #include "client.h"
 
-typedef struct videoDecode_s
-{
+typedef struct videoDecode_s {
 	char fileExt[10];
 	char fileExt2[10];
 
-	// Init and Shutdown are not mandatory
-	void (*Init)(void);
-	void (*Shutdown)(void);
+	// init and Shutdown are not mandatory
+	void(*Init)(void);
+	void(*Shutdown)(void);
 
-	qboolean (*Start)(cinematic_t *cin);
-	void (*Update)(cinematic_t *cin, int time);
-	void (*Reset)(cinematic_t *cin);
-	void (*Stop)(cinematic_t *cin);
+	qboolean(*Start)(cinematic_t *cin);
+	void(*Update)(cinematic_t *cin, int time);
+	void(*Reset)(cinematic_t *cin);
+	void(*Stop)(cinematic_t *cin);
 } videoDecode_t;
 
-typedef enum
-{
+typedef enum {
 	VIDEO_NONE = 0,
 	VIDEO_ROQ,
 #ifdef FEATURE_THEORA
@@ -61,16 +59,15 @@ typedef enum
 	VIDEO_NUM_CODECS
 } cinType_t;
 
-static videoDecode_t videoDecoders[] =
-{
-	{ "\0",  "\0",  NULL,     NULL, NULL,          NULL,                NULL,      NULL          },
-	{ "roq", "\0",  ROQ_Init, NULL, ROQ_StartRead, ROQ_UpdateCinematic, ROQ_Reset, ROQ_StopVideo },
+static videoDecode_t videoDecoders[] = {
+	{"\0", "\0", NULL, NULL, NULL, NULL, NULL, NULL},
+	{"roq", "\0", ROQ_Init, NULL, ROQ_StartRead, ROQ_UpdateCinematic, ROQ_Reset, ROQ_StopVideo},
 #ifdef FEATURE_THEORA
-	{ "ogv", "ogm", NULL,     NULL, OGV_StartRead, OGV_UpdateCinematic, NULL,      OGV_StopVideo },
+	{"ogv", "ogm", NULL, NULL, OGV_StartRead, OGV_UpdateCinematic, NULL, OGV_StopVideo},
 #endif
 };
 
-// ============================================================================
+//============================================================================ 
 
 static cinematic_t cin_cinematics[MAX_CINEMATICS];
 
@@ -79,21 +76,17 @@ static cinematic_t cin_cinematics[MAX_CINEMATICS];
  * @param[out] handle
  * @return
  */
-static cinematic_t *CIN_HandleForCinematic(cinHandle_t *handle)
-{
+static cinematic_t *CIN_HandleForCinematic(cinHandle_t *handle) {
 	cinematic_t *cin;
-	int         i;
+	int i;
 
-	for (i = 0, cin = cin_cinematics; i < MAX_CINEMATICS; i++, cin++)
-	{
-		if (!cin->playing)
-		{
+	for (i = 0, cin = cin_cinematics; i < MAX_CINEMATICS; i++, cin++) {
+		if (!cin->playing) {
 			break;
 		}
 	}
 
-	if (i == MAX_CINEMATICS)
-	{
+	if (i == MAX_CINEMATICS) {
 		Com_Error(ERR_DROP, "CIN_HandleForCinematic: none free");
 	}
 
@@ -107,10 +100,8 @@ static cinematic_t *CIN_HandleForCinematic(cinHandle_t *handle)
  * @param[in] handle
  * @return
  */
-static qboolean CIN_HandleValid(cinHandle_t handle)
-{
-	if (handle <= 0 || handle > MAX_CINEMATICS)
-	{
+static qboolean CIN_HandleValid(cinHandle_t handle) {
+	if (handle <= 0 || handle > MAX_CINEMATICS) {
 		return qfalse;
 	}
 
@@ -122,19 +113,16 @@ static qboolean CIN_HandleValid(cinHandle_t handle)
  * @param[in] handle
  * @return A cinematic_t for the given cinHandle_t
  */
-cinematic_t *CIN_GetCinematicByHandle(cinHandle_t handle)
-{
+cinematic_t *CIN_GetCinematicByHandle(cinHandle_t handle) {
 	cinematic_t *cin;
 
-	if (!CIN_HandleValid(handle))
-	{
+	if (!CIN_HandleValid(handle)) {
 		Com_Error(ERR_DROP, "CIN_GetCinematicByHandle: handle out of range");
 	}
 
 	cin = &cin_cinematics[handle - 1];
 
-	if (!cin->playing)
-	{
+	if (!cin->playing) {
 		Com_Error(ERR_DROP, "CIN_GetCinematicByHandle: invalid handle");
 	}
 
@@ -143,46 +131,37 @@ cinematic_t *CIN_GetCinematicByHandle(cinHandle_t handle)
 
 /**
  * @brief CIN_FreeCinematic
- * @param[in,out] cin
+ * @param[in, out] cin
  * @param[in] runtime
  */
-static void CIN_FreeCinematic(cinematic_t *cin, qboolean runtime)
-{
-	// Stop the cinematic
-	if (runtime && (cin->flags & CIN_system))
-	{
+static void CIN_FreeCinematic(cinematic_t *cin, qboolean runtime) {
+	// stop the cinematic
+	if (runtime && (cin->flags & CIN_system)) {
 		Com_DPrintf("Stopped cinematic %s\n", cin->name);
-
-		// Make sure sounds aren't playing
+		// make sure sounds aren't playing
 		S_StopAllSounds();
 	}
 
 	/*
-	if (!cin->playing)
-	{
+	if (!cin->playing) {
 	    return;
 	}
+
 	*/
 
-	if (videoDecoders[cin->videoType].Stop)
-	{
+	if (videoDecoders[cin->videoType].Stop) {
 		videoDecoders[cin->videoType].Stop(cin);
 	}
-
-	// Free the frame buffers
-	if (cin->frameBuffer[0])
-	{
+	// free the frame buffers
+	if (cin->frameBuffer[0]) {
 		Com_Dealloc(cin->frameBuffer[0]);
 	}
 
-	if (cin->frameBuffer[1])
-	{
+	if (cin->frameBuffer[1]) {
 		Com_Dealloc(cin->frameBuffer[1]);
 	}
-
-	// Close the file
-	if (cin->file)
-	{
+	// close the file
+	if (cin->file) {
 		FS_FCloseFile(cin->file);
 	}
 
@@ -192,72 +171,63 @@ static void CIN_FreeCinematic(cinematic_t *cin, qboolean runtime)
 /**
  * @brief CIN_PlayCinematic_f
  */
-static void CIN_PlayCinematic_f(void)
-{
+static void CIN_PlayCinematic_f(void) {
 	char name[MAX_OSPATH];
 	char *vidName;
 	char *vidArg;
-	int  bits = CIN_system;
+	int bits = CIN_system;
 
-	if (Cmd_Argc() != 2)
-	{
-		Com_Printf("Usage: playCinematic <name>\n");
+	if (Cmd_Argc() != 2) {
+		Com_Printf("Usage: playCinematic < name > \n");
 		return;
 	}
-
 	// don't allow this while on server
-	if (cls.state > CA_DISCONNECTED && cls.state <= CA_ACTIVE)
-	{
+	if (cls.state > CA_DISCONNECTED && cls.state <= CA_ACTIVE) {
 		return;
 	}
 
 	Com_DPrintf("CIN_PlayCinematic_f\n");
-	if (cls.state == CA_CINEMATIC)
-	{
+
+	if (cls.state == CA_CINEMATIC) {
 		SCR_StopCinematic();
 	}
 
 	vidName = Cmd_Argv(1);
-	vidArg  = Cmd_Argv(2);
+	vidArg = Cmd_Argv(2);
 
 	Com_sprintf(name, sizeof(name), "video/%s", vidName);
 	COM_DefaultExtension(name, sizeof(name), ".roq");
 
-	if ((vidArg && vidArg[0] == '1') || Q_stricmp(vidName, "demoend.roq") == 0 || Q_stricmp(vidName, "end.roq") == 0)
-	{
+	if ((vidArg && vidArg[0] == '1') || Q_stricmp(vidName, "demoend.roq") == 0 || Q_stricmp(vidName, "end.roq") == 0) {
 		bits |= CIN_hold;
 	}
-	if (vidArg && vidArg[0] == '2')
-	{
+
+	if (vidArg && vidArg[0] == '2') {
 		bits |= CIN_loop;
 	}
-
-	// If running a local server, kill it
+	// if running a local server, kill it
 	SV_Shutdown("Server quit");
 
-	// If connected to a server, disconnect
+	// if connected to a server, disconnect
 	CL_Disconnect(qtrue);
 
-	// Play the cinematic
+	// play the cinematic
 	cls.cinematicHandle = CIN_PlayCinematic(name, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, bits);
 }
 
 /**
  * @brief CIN_ListCinematics_f
  */
-static void CIN_ListCinematics_f(void)
-{
+static void CIN_ListCinematics_f(void) {
 	cinematic_t *cin;
-	int         count = 0, bytes = 0;
-	int         i;
+	int count = 0, bytes = 0;
+	int i;
 
 	Com_Printf("\n");
-	Com_Printf("    -w-- -h-- -size- fps -name-----------\n");
+	Com_Printf("-w--- h--- size - fps - name-----------\n");
 
-	for (i = 0, cin = cin_cinematics; i < MAX_CINEMATICS; i++, cin++)
-	{
-		if (!cin->playing)
-		{
+	for (i = 0, cin = cin_cinematics; i < MAX_CINEMATICS; i++, cin++) {
+		if (!cin->playing) {
 			continue;
 		}
 
@@ -286,12 +256,10 @@ static void CIN_ListCinematics_f(void)
  * @param args - unused
  * @param[in] argNum
  */
-static void CIN_Completion_VideoName(char *args, int argNum)
-{
-	if (argNum == 2)
-	{
+static void CIN_Completion_VideoName(char *args, int argNum) {
+	if (argNum == 2) {
 #ifdef FEATURE_THEORA
-		const char *extensions[] = { "roq", "ogv", "ogm" };
+		const char *extensions[] = {"roq", "ogv", "ogm"};
 		Field_CompleteFilenameMultiple("video", 3, extensions, qtrue);
 #else
 		Field_CompleteFilename("video", "roq", qtrue, qtrue);
@@ -309,110 +277,93 @@ static void CIN_Completion_VideoName(char *args, int argNum)
  * @param[in] flags
  * @return
  */
-cinHandle_t CIN_PlayCinematic(const char *name, int x, int y, int w, int h, int flags)
-{
-	cinematic_t  *cin;
-	cinHandle_t  handle;
+cinHandle_t CIN_PlayCinematic(const char *name, int x, int y, int w, int h, int flags) {
+	cinematic_t *cin;
+	cinHandle_t handle;
 	fileHandle_t file;
-	int          size;
-	int          i;
-	const char   *fileExt;
+	int size;
+	int i;
+	const char *fileExt;
 
 	fileExt = COM_GetExtension(name);
 
-	// See if already playing
-	for (i = 0, cin = cin_cinematics; i < MAX_CINEMATICS; i++, cin++)
-	{
-		if (!cin->playing)
-		{
+	// see if already playing
+	for (i = 0, cin = cin_cinematics; i < MAX_CINEMATICS; i++, cin++) {
+		if (!cin->playing) {
 			continue;
 		}
 
-		if (!Q_stricmp(cin->name, name))
-		{
-			if (cin->flags != flags)
-			{
+		if (!Q_stricmp(cin->name, name)) {
+			if (cin->flags != flags) {
 				continue;
 			}
 
 			return i + 1;
 		}
 	}
-
-	// Open the file
+	// open the file
 	size = FS_FOpenFileRead(name, &file, qtrue);
 
-	if (size <= 0)
-	{
+	if (size <= 0) {
 		Com_Printf("Warning: Cinematic '%s' file not found or can't be read\n", name);
 		return -1;
 	}
 
-
-	if (!file)
-	{
-		if (flags & CIN_system)
-		{
+	if (!file) {
+		if (flags & CIN_system) {
 			Com_Printf("Warning: Cinematic %s file not found\n", name);
 		}
 
 		return -1;
 	}
 
-	if (flags & CIN_system)
-	{
+	if (flags & CIN_system) {
 		Com_Printf("Cinematic %s found\n", name);
 	}
-
-	// Play the cinematic
+	// play the cinematic
 	cin = CIN_HandleForCinematic(&handle);
 
-	// Fill it in
+	// fill it in
 	cin->playing = qtrue;
 	Q_strncpyz(cin->name, name, MAX_OSPATH);
-	cin->flags          = flags;
-	cin->file           = file;
-	cin->size           = size;
-	cin->startTime      = 0;
-	cin->frameWidth     = 0;
-	cin->frameHeight    = 0;
-	cin->frameCount     = 0;
+	cin->flags = flags;
+	cin->file = file;
+	cin->size = size;
+	cin->startTime = 0;
+	cin->frameWidth = 0;
+	cin->frameHeight = 0;
+	cin->frameCount = 0;
 	cin->frameBuffer[0] = NULL;
 	cin->frameBuffer[1] = NULL;
-	cin->rectangle.x    = x;
-	cin->rectangle.y    = y;
-	cin->rectangle.w    = w;
-	cin->rectangle.h    = h;
+	cin->rectangle.x = x;
+	cin->rectangle.y = y;
+	cin->rectangle.w = w;
+	cin->rectangle.h = h;
 
-	for (i = 0; i < VIDEO_NUM_CODECS; i++)
-	{
-		if (!videoDecoders[i].fileExt[0])
-		{
+	for (i = 0; i < VIDEO_NUM_CODECS; i++) {
+		if (!videoDecoders[i].fileExt[0]) {
 			continue;
 		}
 
-		if (COM_CompareExtension(fileExt, videoDecoders[i].fileExt) ||
-		    (videoDecoders[i].fileExt2[0] && COM_CompareExtension(fileExt, videoDecoders[i].fileExt2)))
-		{
-			if (!videoDecoders[i].Start)
-			{
+		if (COM_CompareExtension(fileExt, videoDecoders[i].fileExt) || (videoDecoders[i].fileExt2[0] && COM_CompareExtension(fileExt, videoDecoders[i].fileExt2))) {
+			if (!videoDecoders[i].Start) {
 				Com_Error(ERR_FATAL, "Cinematic %s cannot be run, there is no start method defined", name);
 			}
 
 			cin->videoType = i;
 
-			if (!videoDecoders[i].Start(cin))
-			{
-				if (flags & CIN_system)
-				{
+			if (!videoDecoders[i].Start(cin)) {
+				if (flags & CIN_system) {
 					Com_Printf("Warning: Cinematic %s is not a valid %s file\n", name, videoDecoders[i].fileExt);
 				}
 
 				goto video_playback_failed;
 			}
+
 			goto codec_found_valid;
 		}
 	}
+
 	Com_Printf("Could not find a codec for the video: %s\n", name);
 video_playback_failed:
 	CIN_FreeCinematic(cin, qfalse);
@@ -420,22 +371,18 @@ video_playback_failed:
 
 codec_found_valid:
 
-	if (flags & CIN_system)
-	{
+	if (flags & CIN_system) {
 		Com_Printf("Playing cinematic %s\n", name);
 
 		cls.state = CA_CINEMATIC;
-
-		// Force console and GUI off
-		if (uivm)
-		{
+		// force console and GUI off
+		if (uivm) {
 			VM_Call(uivm, UI_SET_ACTIVE_MENU, UIMENU_NONE);
 		}
 
 		Con_Close();
 	}
-
-	// Make sure sounds aren't playing
+	// make sure sounds aren't playing
 	S_StopAllSounds();
 
 	return handle;
@@ -447,28 +394,23 @@ codec_found_valid:
  *
  * @note Unused
  */
-void CIN_ResetCinematic(cinHandle_t handle)
-{
+void CIN_ResetCinematic(cinHandle_t handle) {
 	cinematic_t *cin;
 
-	if (!CIN_HandleValid(handle))
-	{
+	if (!CIN_HandleValid(handle)) {
 		return;
 	}
 
 	cin = CIN_GetCinematicByHandle(handle);
 
-	// Reset the cinematic
-	if (videoDecoders[cin->videoType].Reset)
-	{
+	// reset the cinematic
+	if (videoDecoders[cin->videoType].Reset) {
 		videoDecoders[cin->videoType].Reset(cin);
-	}
-	else
-	{
+	} else {
 		Com_Printf("Warning: Cinematic decoder %s missing reset functionality\n", videoDecoders[cin->videoType].fileExt);
 	}
 
-	cin->startTime  = 0;
+	cin->startTime = 0;
 	cin->frameCount = 0;
 }
 
@@ -477,19 +419,16 @@ void CIN_ResetCinematic(cinHandle_t handle)
  * @param[in] handle
  * @return
  */
-e_status CIN_StopCinematic(cinHandle_t handle)
-{
+e_status CIN_StopCinematic(cinHandle_t handle) {
 	cinematic_t *cin;
 
-	if (!CIN_HandleValid(handle))
-	{
+	if (!CIN_HandleValid(handle)) {
 		return FMV_EOF;
 	}
 
 	cin = CIN_GetCinematicByHandle(handle);
 
-	if (cin->flags & CIN_system)
-	{
+	if (cin->flags & CIN_system) {
 		const char *s;
 
 		cls.state = CA_DISCONNECTED;
@@ -498,11 +437,12 @@ e_status CIN_StopCinematic(cinHandle_t handle)
 		// a devmap command, nextmap would be valid by
 		// the time it was referenced
 		s = Cvar_VariableString("nextmap");
-		if (s[0])
-		{
+
+		if (s[0]) {
 			Cbuf_ExecuteText(EXEC_APPEND, va("%s\n", s));
 			Cvar_Set("nextmap", "");
 		}
+
 		cls.cinematicHandle = -1;
 	}
 
@@ -514,20 +454,17 @@ e_status CIN_StopCinematic(cinHandle_t handle)
 /**
  * @brief CIN_Init
  */
-void CIN_Init(void)
-{
+void CIN_Init(void) {
 	int i;
 
-	// Add commands
+	// add commands
 	Cmd_AddCommand("cinematic", CIN_PlayCinematic_f, "Plays a cinematic", CIN_Completion_VideoName);
 	Cmd_AddCommand("listCinematics", CIN_ListCinematics_f, "Lists playing cinematics", NULL);
 
 	Com_Memset(cin_cinematics, 0, sizeof(cin_cinematics));
 
-	for (i = 0; i < VIDEO_NUM_CODECS; i++)
-	{
-		if (videoDecoders[i].Init)
-		{
+	for (i = 0; i < VIDEO_NUM_CODECS; i++) {
+		if (videoDecoders[i].Init) {
 			videoDecoders[i].Init();
 		}
 	}
@@ -536,20 +473,17 @@ void CIN_Init(void)
 /**
  * @brief CIN_Shutdown
  */
-void CIN_Shutdown(void)
-{
+void CIN_Shutdown(void) {
 	int i;
 
-	// Remove commands
+	// remove commands
 	Cmd_RemoveCommand("cinematic");
 	Cmd_RemoveCommand("listCinematics");
 
 	CIN_CloseAllVideos();
 
-	for (i = 0; i < VIDEO_NUM_CODECS; i++)
-	{
-		if (videoDecoders[i].Shutdown)
-		{
+	for (i = 0; i < VIDEO_NUM_CODECS; i++) {
+		if (videoDecoders[i].Shutdown) {
 			videoDecoders[i].Shutdown();
 		}
 	}
@@ -558,19 +492,16 @@ void CIN_Shutdown(void)
 /**
  * @brief Stop all the cinematics
  */
-void CIN_CloseAllVideos(void)
-{
+void CIN_CloseAllVideos(void) {
 	cinematic_t *cin;
-	int         i;
+	int i;
 
 	cls.cinematicHandle = -1;
 
-	for (i = 0, cin = cin_cinematics; i < MAX_CINEMATICS; i++, cin++)
-	{
+	for (i = 0, cin = cin_cinematics; i < MAX_CINEMATICS; i++, cin++) {
 		CIN_FreeCinematic(cin, qtrue);
 	}
-
-	// Clear cinematics list
+	// clear cinematics list
 	Com_Memset(cin_cinematics, 0, sizeof(cin_cinematics));
 }
 
@@ -579,29 +510,23 @@ void CIN_CloseAllVideos(void)
  * @param[in] handle
  * @return
  */
-e_status CIN_RunCinematic(int handle)
-{
+e_status CIN_RunCinematic(int handle) {
 	cinematic_t *data;
 
-	if (!CIN_HandleValid(handle))
-	{
+	if (!CIN_HandleValid(handle)) {
 		return FMV_EOF;
 	}
 
 	data = CIN_GetCinematicByHandle(handle);
 
-	if (videoDecoders[data->videoType].Update)
-	{
+	if (videoDecoders[data->videoType].Update) {
 		videoDecoders[data->videoType].Update(data, cls.realtime);
-	}
-	else
-	{
+	} else {
 		Com_Error(ERR_FATAL, "Cinematic decoder %s is missing the update function",
 		          videoDecoders[data->videoType].fileExt);
 	}
 
-	if (!data->currentData.image)
-	{
+	if (!data->currentData.image) {
 		CIN_StopCinematic(handle);
 
 		return FMV_EOF;
@@ -618,10 +543,8 @@ e_status CIN_RunCinematic(int handle)
  * @param[in] w
  * @param[in] h
  */
-void CIN_SetExtents(int handle, int x, int y, int w, int h)
-{
-	if (CIN_HandleValid(handle))
-	{
+void CIN_SetExtents(int handle, int x, int y, int w, int h) {
+	if (CIN_HandleValid(handle)) {
 		cinematic_t *cin;
 
 		cin = CIN_GetCinematicByHandle(handle);
@@ -635,10 +558,8 @@ void CIN_SetExtents(int handle, int x, int y, int w, int h)
 /**
  * @brief SCR_StopCinematic
  */
-void SCR_StopCinematic(void)
-{
-	if (CIN_HandleValid(cls.cinematicHandle))
-	{
+void SCR_StopCinematic(void) {
+	if (CIN_HandleValid(cls.cinematicHandle)) {
 		CIN_StopCinematic(cls.cinematicHandle);
 		cls.cinematicHandle = -1;
 	}
@@ -647,10 +568,8 @@ void SCR_StopCinematic(void)
 /**
  * @brief SCR_RunCinematic
  */
-void SCR_RunCinematic(void)
-{
-	if (CIN_HandleValid(cls.cinematicHandle))
-	{
+void SCR_RunCinematic(void) {
+	if (CIN_HandleValid(cls.cinematicHandle)) {
 		CIN_RunCinematic(cls.cinematicHandle);
 	}
 }
@@ -658,10 +577,8 @@ void SCR_RunCinematic(void)
 /**
  * @brief SCR_DrawCinematic
  */
-void SCR_DrawCinematic(void)
-{
-	if (CIN_HandleValid(cls.cinematicHandle))
-	{
+void SCR_DrawCinematic(void) {
+	if (CIN_HandleValid(cls.cinematicHandle)) {
 		CIN_DrawCinematic(cls.cinematicHandle);
 	}
 }
@@ -670,13 +587,11 @@ void SCR_DrawCinematic(void)
  * @brief CIN_DrawCinematic
  * @param[in] handle
  */
-void CIN_DrawCinematic(int handle)
-{
-	float       x, y, w, h;
+void CIN_DrawCinematic(int handle) {
+	float x, y, w, h;
 	cinematic_t *cin;
 
-	if (!CIN_HandleValid(handle))
-	{
+	if (!CIN_HandleValid(handle)) {
 		return;
 	}
 
@@ -688,8 +603,7 @@ void CIN_DrawCinematic(int handle)
 	h = cin->rectangle.h;
 	SCR_AdjustFrom640(&x, &y, &w, &h);
 
-	if (!cin->currentData.image)
-	{
+	if (!cin->currentData.image) {
 		return;
 	}
 
@@ -701,20 +615,17 @@ void CIN_DrawCinematic(int handle)
  * @brief CIN_UploadCinematic
  * @param handle
  */
-void CIN_UploadCinematic(int handle)
-{
+void CIN_UploadCinematic(int handle) {
 	cinematic_t *cin;
 
-	if (!CIN_HandleValid(handle))
-	{
+	if (!CIN_HandleValid(handle)) {
 		Com_Printf("CIN_UploadCinematic Warning: invalid handle\n");
 		return;
 	}
 
 	cin = CIN_GetCinematicByHandle(handle);
 
-	if (!cin->currentData.image)
-	{
+	if (!cin->currentData.image) {
 		return;
 	}
 

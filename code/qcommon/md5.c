@@ -1,5 +1,5 @@
 /**
- * This code implements the MD5 message-digest algorithm.
+ * This code implements the MD5 message - digest algorithm.
  * The algorithm is due to Ron Rivest.  This code was
  * written by Colin Plumb in 1993, no copyright is claimed.
  * This code is in the public domain; do with it what you wish.
@@ -12,7 +12,7 @@
  * To compute the message digest of a chunk of bytes, declare an
  * MD5Context structure, pass it to MD5Init, call MD5Update as
  * needed on buffers full of bytes, and then call MD5Final, which
- * will fill a supplied 16-byte array with the digest.
+ * will fill a supplied 16 - byte array with the digest.
  */
 #include "q_shared.h"
 #include "qcommon.h"
@@ -30,29 +30,27 @@ typedef struct MD5Context
 static void byteReverse(unsigned char *buf, unsigned longs);
 
 /*
- * Note: this code is harmless on little-endian machines.
+ * Note: this code is harmless on little - endian machines.
  */
-static void byteReverse(unsigned char *buf, unsigned longs)
-{
+static void byteReverse(unsigned char *buf, unsigned longs) {
 	uint32_t t;
-	do
-	{
-		t = ( uint32_t )
-		    (( unsigned ) buf[3] << 8 | buf[2]) << 16 |
-		    (( unsigned ) buf[1] << 8 | buf[0]);
-		*( uint32_t * ) buf = t;
-		buf                += 4;
+	do {
+		t = (uint32_t)
+		((unsigned) buf[3] << 8|buf[2]) << 16 |
+		((unsigned) buf[1] << 8|buf[0]);
+		*(uint32_t *)buf = t;
+		buf += 4;
 	}
-	while (--longs);
+
+	while (-- longs);
 }
-#endif // Q3_BIG_ENDIAN
+#endif // q3_BIG_ENDIAN
 
 /*
  * Start MD5 accumulation.  Set bit count to 0 and buffer to mysterious
  * initialization constants.
  */
-static void MD5Init(struct MD5Context *ctx)
-{
+static void MD5Init(struct MD5Context *ctx) {
 	ctx->buf[0] = 0x67452301;
 	ctx->buf[1] = 0xefcdab89;
 	ctx->buf[2] = 0x98badcfe;
@@ -63,15 +61,15 @@ static void MD5Init(struct MD5Context *ctx)
 }
 /* The four core functions - F1 is optimized somewhat */
 
-/* #define F1(x, y, z) (x & y | ~x & z) */
-#define F1(x, y, z) (z ^ (x & (y ^ z)))
+/* #define F1(x, y, z)(x & y|~x & z) */
+#define F1(x, y, z)(z ^ (x &(y ^ z)))
 #define F2(x, y, z) F1(z, x, y)
-#define F3(x, y, z) (x ^ y ^ z)
-#define F4(x, y, z) (y ^ (x | ~z))
+#define F3(x, y, z)(x ^ y ^ z)
+#define F4(x, y, z)(y ^ (x|~z))
 
 /* This is the central step in the MD5 algorithm. */
 #define MD5STEP(f, w, x, y, z, data, s) \
-	(w += f(x, y, z) + data, w = w << s | w >> (32 - s), w += x)
+	(w += f(x, y, z) + data, w = w << s|w >> (32 - s), w += x)
 
 /**
  * @brief The core of the MD5 algorithm, this alters an existing MD5 hash to
@@ -79,8 +77,7 @@ static void MD5Init(struct MD5Context *ctx)
  * the data and converts bytes into longwords for this routine.
  */
 static void MD5Transform(uint32_t buf[4],
-                         uint32_t const in[16])
-{
+                         uint32_t const in[16]) {
 	register uint32_t a, b, c, d;
 
 	a = buf[0];
@@ -167,46 +164,45 @@ static void MD5Transform(uint32_t buf[4],
  * of bytes.
  */
 static void MD5Update(struct MD5Context *ctx, unsigned char const *buf,
-                      unsigned len)
-{
+                      unsigned len) {
 	uint32_t t;
 
 	/* Update bitcount */
 
 	t = ctx->bits[0];
-	if ((ctx->bits[0] = t + (( uint32_t ) len << 3)) < t)
-	{
+
+	if ((ctx->bits[0] = t + ((uint32_t) len << 3)) < t) {
 		ctx->bits[1]++;     /* Carry from low to high */
 	}
+
 	ctx->bits[1] += len >> 29;
 
 	t = (t >> 3) & 0x3f;    /* Bytes already in shsInfo->data */
 
-	/* Handle any leading odd-sized chunks */
+	/* Handle any leading odd - sized chunks */
 
-	if (t)
-	{
-		unsigned char *p = ( unsigned char * ) ctx->in + t;
+	if (t) {
+		unsigned char *p = (unsigned char *)ctx->in + t;
 
 		t = 64 - t;
-		if (len < t)
-		{
+
+		if (len < t) {
 			Com_Memcpy(p, buf, len);
 			return;
 		}
+
 		Com_Memcpy(p, buf, t);
 		byteReverse(ctx->in, 16);
-		MD5Transform(ctx->buf, ( uint32_t * ) ctx->in);
+		MD5Transform(ctx->buf, (uint32_t *)ctx->in);
 		buf += t;
 		len -= t;
 	}
-	/* Process data in 64-byte chunks */
+	/* Process data in 64 - byte chunks */
 
-	while (len >= 64)
-	{
+	while (len >= 64) {
 		Com_Memcpy(ctx->in, buf, 64);
 		byteReverse(ctx->in, 16);
-		MD5Transform(ctx->buf, ( uint32_t * ) ctx->in);
+		MD5Transform(ctx->buf, (uint32_t *)ctx->in);
 		buf += 64;
 		len -= 64;
 	}
@@ -216,14 +212,12 @@ static void MD5Update(struct MD5Context *ctx, unsigned char const *buf,
 	Com_Memcpy(ctx->in, buf, len);
 }
 
-
 /*
- * Final wrapup - pad to 64-byte boundary with the bit pattern
- * 1 0* (64-bit count of bits processed, MSB-first)
+ * Final wrapup - pad to 64 - byte boundary with the bit pattern
+ * 1 0*(64 - bit count of bits processed, MSB - first)
  */
-static void MD5Final(struct MD5Context *ctx, unsigned char *digest)
-{
-	unsigned      count;
+static void MD5Final(struct MD5Context *ctx, unsigned char *digest) {
+	unsigned count;
 	unsigned char *p;
 
 	/* Compute number of bytes mod 64 */
@@ -231,41 +225,39 @@ static void MD5Final(struct MD5Context *ctx, unsigned char *digest)
 
 	/* Set the first char of padding to 0x80.  This is safe since there is
 	   always at least one byte free */
-	p    = ctx->in + count;
+	p = ctx->in + count;
 	*p++ = 0x80;
 
 	/* Bytes of padding needed to make 64 bytes */
 	count = 64 - 1 - count;
 
 	/* Pad out to 56 mod 64 */
-	if (count < 8)
-	{
+	if (count < 8) {
 		/* Two lots of padding:  Pad the first block to 64 bytes */
 		Com_Memset(p, 0, count);
 		byteReverse(ctx->in, 16);
-		MD5Transform(ctx->buf, ( uint32_t * ) ctx->in);
+		MD5Transform(ctx->buf, (uint32_t *)ctx->in);
 
 		/* Now fill the next block with 56 bytes */
 		Com_Memset(ctx->in, 0, 56);
-	}
-	else
-	{
+	} else {
 		/* Pad block to 56 bytes */
 		Com_Memset(p, 0, count - 8);
 	}
+
 	byteReverse(ctx->in, 14);
 
 	/* Append length in bits and transform */
-	(( uint32_t * ) ctx->in)[14] = ctx->bits[0];
-	(( uint32_t * ) ctx->in)[15] = ctx->bits[1];
+	((uint32_t *)ctx->in)[14] = ctx->bits[0];
+	((uint32_t *)ctx->in)[15] = ctx->bits[1];
 
-	MD5Transform(ctx->buf, ( uint32_t * ) ctx->in);
-	byteReverse(( unsigned char * ) ctx->buf, 4);
+	MD5Transform(ctx->buf, (uint32_t *)ctx->in);
+	byteReverse((unsigned char *)ctx->buf, 4);
 
-	if (digest != NULL)
-	{
+	if (digest != NULL) {
 		Com_Memcpy(digest, ctx->buf, 16);
 	}
+
 	Com_Memset(ctx, 0, sizeof(*ctx));          /* In case it's sensitive */
 }
 
@@ -277,111 +269,107 @@ static void MD5Final(struct MD5Context *ctx, unsigned char *digest)
  * @param prefix_len ignored if 0
  * @return           md5 checksum
  */
-char *Com_MD5File(const char *fn, int length, const char *prefix, int prefix_len)
-{
-	static char   final[33]  = { "" };
-	unsigned char digest[16] = { "" };
-	fileHandle_t  f;
-	MD5_CTX       md5;
-	byte          buffer[2048];
-	int           i;
-	int           filelen = 0;
-	int           r       = 0;
-	int           total   = 0;
+char *Com_MD5File(const char *fn, int length, const char *prefix, int prefix_len) {
+	static char final[33] = {""};
+	unsigned char digest[16] = {""};
+	fileHandle_t f;
+	MD5_CTX md5;
+	byte buffer[2048];
+	int i;
+	int filelen = 0;
+	int r = 0;
+	int total = 0;
 
 	Q_strncpyz(final, "", sizeof(final));
 
 	filelen = FS_SV_FOpenFileRead(fn, &f);
 
-	if (!f)
-	{
+	if (!f) {
 		return final;
 	}
-	if (filelen < 1)
-	{
+
+	if (filelen < 1) {
 		FS_FCloseFile(f);
 		return final;
 	}
-	if (filelen < length || !length)
-	{
+
+	if (filelen < length || !length) {
 		length = filelen;
 	}
 
 	MD5Init(&md5);
 
-	if (prefix_len && *prefix)
-	{
-		MD5Update(&md5, ( unsigned char * ) prefix, prefix_len);
+	if (prefix_len && *prefix) {
+		MD5Update(&md5, (unsigned char *)prefix, prefix_len);
 	}
 
-	for ( ;; )
-	{
+	for (;;) {
 		r = FS_Read(buffer, sizeof(buffer), f);
-		if (r < 1)
-		{
+
+		if (r < 1) {
 			break;
 		}
-		if (r + total > length)
-		{
+
+		if (r + total > length) {
 			r = length - total;
 		}
+
 		total += r;
 		MD5Update(&md5, buffer, r);
-		if (r < sizeof(buffer) || total >= length)
-		{
+
+		if (r < sizeof(buffer) || total >= length) {
 			break;
 		}
 	}
+
 	FS_FCloseFile(f);
 	MD5Final(&md5, digest);
 	final[0] = '\0';
-	for (i = 0; i < 16; i++)
-	{
+
+	for (i = 0; i < 16; i++) {
 		Q_strcat(final, sizeof(final), va("%02X", digest[i]));
 	}
+
 	return final;
 }
 
-void MD5InitSeed(MD5_CTX *mdContext, unsigned long pseudoRandomNumber)
-{
-	mdContext->bits[0] = mdContext->bits[1] = ( uint32_t ) 0;
-	mdContext->buf[0]  = ( uint32_t ) 0x67452301 + pseudoRandomNumber * 11;
-	mdContext->buf[1]  = ( uint32_t ) 0xefcdab89 + pseudoRandomNumber * 71;
-	mdContext->buf[2]  = ( uint32_t ) 0x98badcfe + pseudoRandomNumber * 37;
-	mdContext->buf[3]  = ( uint32_t ) 0x10325476 + pseudoRandomNumber * 97;
+void MD5InitSeed(MD5_CTX *mdContext, unsigned long pseudoRandomNumber) {
+	mdContext->bits[0] = mdContext->bits[1] = (uint32_t) 0;
+	mdContext->buf[0] = (uint32_t) 0x67452301 + pseudoRandomNumber * 11;
+	mdContext->buf[1] = (uint32_t) 0xefcdab89 + pseudoRandomNumber * 71;
+	mdContext->buf[2] = (uint32_t) 0x98badcfe + pseudoRandomNumber * 37;
+	mdContext->buf[3] = (uint32_t) 0x10325476 + pseudoRandomNumber * 97;
 }
 
 /**
  * @author Morsik
  * https://github.com/morsik/war-territory
  */
-static char *CalculateMD5ForSeed(const char *key, int seed)
-{
-	MD5_CTX           ctx;
-	int               i;
-	static char       hash[33];
+static char *CalculateMD5ForSeed(const char *key, int seed) {
+	MD5_CTX ctx;
+	int i;
+	static char hash[33];
 	static const char hex[17] = "0123456789abcdef";
-	unsigned char     digest[16];
+	unsigned char digest[16];
 
 	MD5InitSeed(&ctx, seed);
-	MD5Update(&ctx, ( const byte * ) key, strlen(key));
+	MD5Update(&ctx, (const byte *)key, strlen(key));
 	MD5Final(&ctx, digest);
 
-	for (i = 0; i < 16; i++)
-	{
-		hash[i << 1]       = hex[digest[i] >> 4];
+	for (i = 0; i < 16; i++) {
+		hash[i << 1] = hex[digest[i] >> 4];
 		hash[(i << 1) + 1] = hex[digest[i] & 15];
 	}
+
 	hash[i << 1] = 0;
 	return hash;
 }
 
-static char *CalculateGUID(const char *key)
-{
-	int  i;
+static char *CalculateGUID(const char *key) {
+	int i;
 	char *tmp, *hash;
 
-	tmp  = CalculateMD5ForSeed(key, 0x00b684a3);
+	tmp = CalculateMD5ForSeed(key, 0x00b684a3);
 	hash = CalculateMD5ForSeed(tmp, 0x00051a56);
 
 	// guids are lowercased after md5sums, we must to change case to upper
@@ -392,21 +380,18 @@ static char *CalculateGUID(const char *key)
 	return hash;
 }
 
-char *Com_MD5FileETCompat(const char *filename)
-{
-	char key[19] = { 0 };
+char *Com_MD5FileETCompat(const char *filename) {
+	char key[19] = {0};
 	char *buffer;
-	int  len;
+	int len;
 
-	len = FS_ReadFile(filename, ( void ** ) &buffer);
-	if (buffer)
-	{
-		if (len >= 28)
-		{
+	len = FS_ReadFile(filename, (void **) &buffer);
+
+	if (buffer) {
+		if (len >= 28) {
 			int i;
 
-			for (i = 0; i < 18; i++)
-			{
+			for (i = 0; i < 18; i++) {
 				key[i] = buffer[i + 10];
 			}
 
@@ -415,5 +400,6 @@ char *Com_MD5FileETCompat(const char *filename)
 			return CalculateGUID(key);
 		}
 	}
+
 	return NULL;
 }

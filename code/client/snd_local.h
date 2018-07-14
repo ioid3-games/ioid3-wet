@@ -1,9 +1,9 @@
 /*
  * Wolfenstein: Enemy Territory GPL Source Code
- * Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
+ * Copyright(C) 1999 - 2010 id Software LLC, a ZeniMax Media company.
  *
  * ET: Legacy
- * Copyright (C) 2012-2018 ET:Legacy team <mail@etlegacy.com>
+ * Copyright(C) 2012 - 2018 ET:Legacy team < mail@etlegacy.com > 
  *
  * This file is part of ET: Legacy - http://www.etlegacy.com
  *
@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with ET: Legacy. If not, see <http://www.gnu.org/licenses/>.
+ * along with ET: Legacy. If not, see < http://www.gnu.org/licenses/ > .
  *
  * In addition, Wolfenstein: Enemy Territory GPL Source Code is also
  * subject to certain additional terms. You should have received a copy
@@ -41,19 +41,18 @@
 #include "snd_public.h"
 #include "snd_codec.h"
 
-#define PAINTBUFFER_SIZE        4096                    ///< this is in samples
+#define PAINTBUFFER_SIZE        4096                    // this is in samples
 
-#define SND_CHUNK_SIZE          1024                    ///< samples
-#define SND_CHUNK_SIZE_FLOAT    (SND_CHUNK_SIZE / 2)    ///< floats
-#define SND_CHUNK_SIZE_BYTE     (SND_CHUNK_SIZE * 2)    ///< floats
+#define SND_CHUNK_SIZE          1024                    // samples
+#define SND_CHUNK_SIZE_FLOAT(SND_CHUNK_SIZE / 2)    // floats
+#define SND_CHUNK_SIZE_BYTE(SND_CHUNK_SIZE * 2)    // floats
 
 /**
  * @struct portable_samplepair_s
  * @brief
  */
-typedef struct
-{
-	int left;           ///< the final values will be clamped to +/- 0x00ffff00 and shifted down
+typedef struct {
+	int left;           // the final values will be clamped to + / - 0x00ffff00 and shifted down
 	int right;
 } portable_samplepair_t;
 
@@ -64,8 +63,8 @@ typedef struct
  */
 typedef struct adpcm_state
 {
-	short sample;       ///< Previous output value
-	char index;         ///< Index into stepsize table
+	short sample;       // Previous output value
+	char index;         // Index into stepsize table
 } adpcm_state_t;
 
 /**
@@ -73,8 +72,7 @@ typedef struct adpcm_state
  * @typedef sndBuffer
  * @brief
  */
-typedef struct sndBuffer_s
-{
+typedef struct sndBuffer_s {
 	short sndChunk[SND_CHUNK_SIZE];
 	struct sndBuffer_s *next;
 	int size;
@@ -86,12 +84,11 @@ typedef struct sndBuffer_s
  * @typedef sfx_t
  * @brief
  */
-typedef struct sfx_s
-{
+typedef struct sfx_s {
 	sndBuffer *soundData;
-	qboolean defaultSound;          ///< couldn't be loaded, so use buzz
-	qboolean inMemory;              ///< not in Memory
-	qboolean soundCompressed;       ///< not in Memory
+	qboolean defaultSound;          // couldn't be loaded, so use buzz
+	qboolean inMemory;              // not in Memory
+	qboolean soundCompressed;       // not in Memory
 	int soundCompressionMethod;
 	int soundLength;
 	int soundChannels;
@@ -104,11 +101,10 @@ typedef struct sfx_s
  * @struct dma_s
  * @brief
  */
-typedef struct
-{
+typedef struct {
 	int channels;
-	int samples;                ///< mono samples in buffer
-	int submission_chunk;       ///< don't mix less than this #
+	int samples;                // mono samples in buffer
+	int submission_chunk;       // don't mix less than this #
 	int samplebits;
 	int speed;
 	byte *buffer;
@@ -116,15 +112,14 @@ typedef struct
 
 #define START_SAMPLE_IMMEDIATE  0x7fffffff
 
-#define MAX_DOPPLER_SCALE 50.0f ///< arbitrary
+#define MAX_DOPPLER_SCALE 50.0f // arbitrary
 
 /**
  * @struct loopSound_s
  * @typedef loopSound_t
  * @brief
  */
-typedef struct loopSound_s
-{
+typedef struct loopSound_s {
 	vec3_t origin;
 	vec3_t velocity;
 	sfx_t *sfx;
@@ -146,20 +141,19 @@ typedef struct loopSound_s
  * @struct channel_s
  * @brief
  */
-typedef struct
-{
+typedef struct {
 	int allocTime;
-	int startSample;            ///< START_SAMPLE_IMMEDIATE = set immediately on next mix
-	int entnum;                 ///< to allow overriding a specific sound
-	int entchannel;             ///< to allow overriding a specific sound
-	int leftvol;                ///< 0-255 volume after spatialization
-	int rightvol;               ///< 0-255 volume after spatialization
-	int master_vol;             ///< 0-255 volume before spatialization
+	int startSample;            // START_SAMPLE_IMMEDIATE = set immediately on next mix
+	int entnum;                 // to allow overriding a specific sound
+	int entchannel;             // to allow overriding a specific sound
+	int leftvol;                // 0 - 255 volume after spatialization
+	int rightvol;               // 0 - 255 volume after spatialization
+	int master_vol;             // 0 - 255 volume before spatialization
 	float dopplerScale;
 	float oldDopplerScale;
-	vec3_t origin;              ///< only use if fixed_origin is set
-	qboolean fixed_origin;      ///< use origin instead of fetching entnum's origin
-	sfx_t *thesfx;              ///< sfx structure
+	vec3_t origin;              // only use if fixed_origin is set
+	qboolean fixed_origin;      // use origin instead of fetching entnum's origin
+	sfx_t *thesfx;              // sfx structure
 	qboolean doppler;
 	int flags;
 } channel_t;
@@ -170,64 +164,62 @@ typedef struct
  * @struct wavinfo_s
  * @brief
  */
-typedef struct
-{
+typedef struct {
 	int format;
 	int rate;
 	int width;
 	int channels;
 	int samples;
-	int dataofs;                ///< chunk starts this many bytes from file start
+	int dataofs;                // chunk starts this many bytes from file start
 } wavinfo_t;
 
 /**
  * @struct soundInterface_s
  * @brief Interface between Q3 sound "api" and the sound backend
  */
-typedef struct
-{
-	void (*Shutdown)(void);
-	void (*Reload)(void);
-	void (*StartSound)(vec3_t origin, int entnum, int entchannel, sfxHandle_t sfx, int volume);
-	void (*StartSoundEx)(vec3_t origin, int entnum, int entchannel, sfxHandle_t sfx, int flags, int volume);
-	void (*StartLocalSound)(sfxHandle_t sfx, int channelNum, int volume);
-	void (*StartBackgroundTrack)(const char *intro, const char *loop, int fadeupTime);
-	void (*StopBackgroundTrack)(void);
-	float (*StartStreamingSound)(const char *intro, const char *loop, int entnum, int channel, int attenuation);
-	void (*StopEntStreamingSound)(int entNum);
-	void (*FadeStreamingSound)(float targetvol, int time, int ssNum);
-	void (*RawSamples)(int stream, int samples, int rate, int width, int channels, const byte *data, float lvol, float rvol);
-	void (*ClearSounds)(qboolean clearStreaming, qboolean clearMusic);
-	void (*StopAllSounds)(void);
-	void (*FadeAllSounds)(float targetvol, int time, qboolean stopsounds);
-	void (*ClearLoopingSounds)(void);
-	void (*AddLoopingSound)(const vec3_t origin, const vec3_t velocity, const int range, sfxHandle_t sfx, int volume, int soundTime);
-	void (*AddRealLoopingSound)(const vec3_t origin, const vec3_t velocity, const int range, sfxHandle_t sfx, int volume, int soundTime);
-	void (*Respatialize)(int entityNum, const vec3_t origin, vec3_t axis[3], int inwater);
-	void (*UpdateEntityPosition)(int entityNum, const vec3_t origin);
-	void (*Update)(void);
-	void (*DisableSounds)(void);
-	void (*BeginRegistration)(void);
-	sfxHandle_t (*RegisterSound)(const char *sample, qboolean compressed);
-	void (*ClearSoundBuffer)(qboolean killStreaming);
-	void (*SoundInfo)(void);
-	void (*SoundList)(void);
-	int (*GetVoiceAmplitude)(int entityNum);
-	int (*GetSoundLength)(sfxHandle_t sfxHandle);
-	int (*GetCurrentSoundTime)(void);
+typedef struct {
+	void(*Shutdown)(void);
+	void(*Reload)(void);
+	void(*StartSound)(vec3_t origin, int entnum, int entchannel, sfxHandle_t sfx, int volume);
+	void(*StartSoundEx)(vec3_t origin, int entnum, int entchannel, sfxHandle_t sfx, int flags, int volume);
+	void(*StartLocalSound)(sfxHandle_t sfx, int channelNum, int volume);
+	void(*StartBackgroundTrack)(const char *intro, const char *loop, int fadeupTime);
+	void(*StopBackgroundTrack)(void);
+	float(*StartStreamingSound)(const char *intro, const char *loop, int entnum, int channel, int attenuation);
+	void(*StopEntStreamingSound)(int entNum);
+	void(*FadeStreamingSound)(float targetvol, int time, int ssNum);
+	void(*RawSamples)(int stream, int samples, int rate, int width, int channels, const byte *data, float lvol, float rvol);
+	void(*ClearSounds)(qboolean clearStreaming, qboolean clearMusic);
+	void(*StopAllSounds)(void);
+	void(*FadeAllSounds)(float targetvol, int time, qboolean stopsounds);
+	void(*ClearLoopingSounds)(void);
+	void(*AddLoopingSound)(const vec3_t origin, const vec3_t velocity, const int range, sfxHandle_t sfx, int volume, int soundTime);
+	void(*AddRealLoopingSound)(const vec3_t origin, const vec3_t velocity, const int range, sfxHandle_t sfx, int volume, int soundTime);
+	void(*Respatialize)(int entityNum, const vec3_t origin, vec3_t axis[3], int inwater);
+	void(*UpdateEntityPosition)(int entityNum, const vec3_t origin);
+	void(*Update)(void);
+	void(*DisableSounds)(void);
+	void(*BeginRegistration)(void);
+	sfxHandle_t(*RegisterSound)(const char *sample, qboolean compressed);
+	void(*ClearSoundBuffer)(qboolean killStreaming);
+	void(*SoundInfo)(void);
+	void(*SoundList)(void);
+	int(*GetVoiceAmplitude)(int entityNum);
+	int(*GetSoundLength)(sfxHandle_t sfxHandle);
+	int(*GetCurrentSoundTime)(void);
 #ifdef USE_VOIP
-	void (*StartCapture)(void);
-	int (*AvailableCaptureSamples)(void);
-	void (*Capture)(int samples, byte *data);
-	void (*StopCapture)(void);
-	void (*MasterGain)(float gain);
+	void(*StartCapture)(void);
+	int(*AvailableCaptureSamples)(void);
+	void(*Capture)(int samples, byte *data);
+	void(*StopCapture)(void);
+	void(*MasterGain)(float gain);
 #endif
 } soundInterface_t;
 
 /*
-====================================================================
+==================================================================== 
   SYSTEM SPECIFIC FUNCTIONS
-====================================================================
+==================================================================== 
 */
 
 // initializes cycling through a DMA buffer and returns information on it
@@ -243,19 +235,18 @@ void SNDDMA_BeginPainting(void);
 
 void SNDDMA_Submit(void);
 
-//====================================================================
+//==================================================================== 
 
 #define MAX_CHANNELS            96
 
 extern channel_t s_channels[MAX_CHANNELS];
 extern channel_t loop_channels[MAX_CHANNELS];
-extern int       numLoopChannels;
+extern int numLoopChannels;
 
-extern int   s_paintedtime;
+extern int s_paintedtime;
 extern dma_t dma;
 
-typedef struct
-{
+typedef struct {
 	snd_stream_t *stream;
 	char name[MAX_QPATH];
 	char loopStream[MAX_QPATH];
@@ -276,17 +267,17 @@ typedef struct
 
 #define RAW_STREAM_MUSIC 0
 #ifdef USE_VOIP
-#define RAW_STREAM_VOIP (RAW_STREAM_MUSIC + 1)
-#define RAW_STREAM_SOUNDS (RAW_STREAM_VOIP + MAX_CLIENTS)
+#define RAW_STREAM_VOIP(RAW_STREAM_MUSIC + 1)
+#define RAW_STREAM_SOUNDS(RAW_STREAM_VOIP + MAX_CLIENTS)
 #else
-#define RAW_STREAM_SOUNDS (RAW_STREAM_MUSIC + 1)
+#define RAW_STREAM_SOUNDS(RAW_STREAM_MUSIC + 1)
 #endif
-#define RAW_STREAM(x) ((x ? RAW_STREAM_SOUNDS + x - 1 : 0))
+#define RAW_STREAM(x)((x ? RAW_STREAM_SOUNDS + x - 1 : 0))
 
 extern portable_samplepair_t s_rawsamples[MAX_RAW_STREAMS][MAX_RAW_SAMPLES];
-extern int                   s_rawend[MAX_RAW_STREAMS];
+extern int s_rawend[MAX_RAW_STREAMS];
 
-#define     MAX_LOOP_SOUNDS 1024
+#define MAX_LOOP_SOUNDS 1024
 
 extern cvar_t *s_volume;
 extern cvar_t *s_musicVolume;
@@ -328,7 +319,7 @@ extern short mulawToShort[256];
 
 extern short *sfxScratchBuffer;
 extern sfx_t *sfxScratchPointer;
-extern int   sfxScratchIndex;
+extern int sfxScratchIndex;
 
 qboolean S_Base_Init(soundInterface_t *si);
 
@@ -338,20 +329,18 @@ qboolean S_Base_Init(soundInterface_t *si);
  * @enum alSrcPriority_e
  * @brief OpenAL stuff
  */
-typedef enum
-{
-	SRCPRI_AMBIENT = 0, ///< Ambient sound effects
-	SRCPRI_ENTITY,      ///< Entity sound effects
-	SRCPRI_ONESHOT,     ///< One-shot sounds
-	SRCPRI_LOCAL,       ///< Local sounds
-	SRCPRI_STREAM       ///< Streams (music, cutscenes)
+typedef enum {
+	SRCPRI_AMBIENT = 0, // Ambient sound effects
+	SRCPRI_ENTITY, // Entity sound effects
+	SRCPRI_ONESHOT, // One - shot sounds
+	SRCPRI_LOCAL, // Local sounds
+	SRCPRI_STREAM       // Streams(music, cutscenes)
 } alSrcPriority_t;
-
 
 typedef int srcHandle_t;
 
 qboolean S_AL_Init(soundInterface_t *si);
 
-#endif // FEATURE_OPENAL
+#endif // fEATURE_OPENAL
 
 #endif // #ifndef INCLUDE_SND_LOCAL_H

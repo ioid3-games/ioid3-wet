@@ -1,9 +1,9 @@
 /*
  * Wolfenstein: Enemy Territory GPL Source Code
- * Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
+ * Copyright(C) 1999 - 2010 id Software LLC, a ZeniMax Media company.
  *
  * ET: Legacy
- * Copyright (C) 2012-2018 ET:Legacy team <mail@etlegacy.com>
+ * Copyright(C) 2012 - 2018 ET:Legacy team < mail@etlegacy.com > 
  *
  * This file is part of ET: Legacy - http://www.etlegacy.com
  *
@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with ET: Legacy. If not, see <http://www.gnu.org/licenses/>.
+ * along with ET: Legacy. If not, see < http://www.gnu.org/licenses/ > .
  *
  * In addition, Wolfenstein: Enemy Territory GPL Source Code is also
  * subject to certain additional terms. You should have received a copy
@@ -38,7 +38,7 @@
 #include "../qcommon/q_shared.h"
 #include "../qcommon/qcommon.h"
 
-// Input subsystem
+// input subsystem
 void IN_Init(void);
 void IN_Frame(void);
 void IN_Shutdown(void);
@@ -54,7 +54,7 @@ void GLimp_Shutdown(void);
 void GLimp_EndFrame(void);
 void GLimp_SetGamma(unsigned char red[256], unsigned char green[256], unsigned char blue[256]);
 
-// Console
+// console
 void CON_Shutdown(void);
 void CON_Init(void);
 char *CON_Input(void);
@@ -67,12 +67,12 @@ unsigned int CON_LogRead(char *out, unsigned int outSize);
 void Sys_GLimpSafeInit(void);
 void Sys_GLimpInit(void);
 void Sys_PlatformInit(void);
-void Sys_SigHandler(int signal) __attribute__ ((noreturn));
+void Sys_SigHandler(int signal) __attribute__((noreturn));
 void Sys_ErrorDialog(const char *error);
 void Sys_AnsiColorPrint(const char *msg);
 
 void *Sys_LoadDll(const char *name, qboolean useSystemLib);
-void *Sys_LoadGameDll(const char *name, qboolean extract, intptr_t(**entryPoint) (int, ...), intptr_t (*systemcalls)(intptr_t, ...));
+void *Sys_LoadGameDll(const char *name, qboolean extract, intptr_t(**entryPoint)(int, ...), intptr_t(*systemcalls)(intptr_t, ...));
 void Sys_UnloadDll(void *dllHandle);
 void Sys_ParseArgs(int argc, char **argv);
 void Sys_BuildCommandLine(int argc, char **argv, char *buffer, size_t bufferSize);
@@ -83,7 +83,7 @@ void Sys_DestroyConsole(void);
 #endif
 
 void Sys_SetUpConsoleAndSignals(void);
-void Sys_GameLoop(void) __attribute__((noreturn));
+void Sys_GameLoop(void)__attribute__((noreturn));
 
 #ifdef __APPLE__
 const char *OSX_ApplicationSupportPath(void);

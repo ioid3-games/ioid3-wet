@@ -1,39 +1,39 @@
 /*
- *	Copyright (C) 1998
- *	Paul E. Jones <paulej@arid.us>
+ *	Copyright(C) 1998
+ *	Paul E. Jones < paulej@arid.us > 
  *	All Rights Reserved
  */
 /**
  * @file sha1.c
  * @brief This file implements the Secure Hashing Standard as defined
- *        in FIPS PUB 180-1 published April 17, 1995.
+ *        in FIPS PUB 180 - 1 published April 17, 1995.
  *
  * The Secure Hashing Standard, which uses the Secure Hashing
- * Algorithm (SHA), produces a 160-bit message digest for a
+ * Algorithm(SHA), produces a 160 - bit message digest for a
  * given data stream.  In theory, it is highly improbable that
  * two messages will produce the same message digest.  Therefore,
  * this algorithm can serve as a means of providing a "fingerprint"
  * for a message.
  *
  * Portability Issues
- * ------------------
+ *------------------ 
  *
- * SHA-1 is defined in terms of 32-bit "words".  This code was
+ * SHA - 1 is defined in terms of 32 - bit "words".  This code was
  * written with the expectation that the processor has at least
- * a 32-bit machine word size.  If the machine word size is larger,
+ * a 32 - bit machine word size.  If the machine word size is larger,
  * the code should still function properly.  One caveat to that
  * is that the input functions taking characters and character
  * arrays assume that only 8 bits of information are stored in each
  * character.
  *
  * Caveats
- * -------
+ *------ - 
  *
- * SHA-1 is designed to work with messages less than 2^64 bits
- * long. Although SHA-1 allows a message digest to be generated for
+ * SHA - 1 is designed to work with messages less than 2^64 bits
+ * long. Although SHA - 1 allows a message digest to be generated for
  * messages of any number of bits less than 2^64, this
  * implementation only works with messages with a length that is a
- * multiple of the size of an 8-bit character.
+ * multiple of the size of an 8 - bit character.
  */
 
 #include "sha1.h"
@@ -41,9 +41,9 @@
 /*
  *  Define the circular shift macro
  */
-#define SHA1CircularShift(bits,word) \
-                ((((word) << (bits)) & 0xFFFFFFFF) | \
-                ((word) >> (32-(bits))))
+#define SHA1CircularShift(bits, word) \
+((((word) << (bits)) & 0xFFFFFFFF)|\
+((word) >> (32 - (bits))))
 
 /* Function prototypes */
 void SHA1ProcessMessageBlock(SHA1Context *);
@@ -66,32 +66,31 @@ void SHA1PadMessage(SHA1Context *);
  *  Comments:
  *
  */
-void SHA1Reset(SHA1Context *context)
-{
-    context->Length_Low             = 0;
-    context->Length_High            = 0;
-    context->Message_Block_Index    = 0;
+void SHA1Reset(SHA1Context *context) {
+    context->Length_Low = 0;
+    context->Length_High = 0;
+    context->Message_Block_Index = 0;
 
-    context->Message_Digest[0]      = 0x67452301;
-    context->Message_Digest[1]      = 0xEFCDAB89;
-    context->Message_Digest[2]      = 0x98BADCFE;
-    context->Message_Digest[3]      = 0x10325476;
-    context->Message_Digest[4]      = 0xC3D2E1F0;
+    context->Message_Digest[0] = 0x67452301;
+    context->Message_Digest[1] = 0xEFCDAB89;
+    context->Message_Digest[2] = 0x98BADCFE;
+    context->Message_Digest[3] = 0x10325476;
+    context->Message_Digest[4] = 0xC3D2E1F0;
 
-    context->Computed   = 0;
-    context->Corrupted  = 0;
+    context->Computed = 0;
+    context->Corrupted = 0;
 }
 
 /*  
  *  SHA1Result
  *
  *  Description:
- *      This function will return the 160-bit message digest into the
+ *      This function will return the 160 - bit message digest into the
  *      Message_Digest array within the SHA1Context provided
  *
  *  Parameters:
  *      context: [in/out]
- *          The context to use to calculate the SHA-1 hash.
+ *          The context to use to calculate the SHA - 1 hash.
  *
  *  Returns:
  *      1 if successful, 0 if it failed.
@@ -99,19 +98,18 @@ void SHA1Reset(SHA1Context *context)
  *  Comments:
  *
  */
-int SHA1Result(SHA1Context *context)
-{
+int SHA1Result(SHA1Context *context) {
 
     if (context->Corrupted)
     {
         return 0;
-    }
+}
 
     if (!context->Computed)
     {
         SHA1PadMessage(context);
         context->Computed = 1;
-    }
+}
 
     return 1;
 }
@@ -125,7 +123,7 @@ int SHA1Result(SHA1Context *context)
  *
  *  Parameters:
  *      context: [in/out]
- *          The SHA-1 context to update
+ *          The SHA - 1 context to update
  *      message_array: [in]
  *          An array of characters representing the next portion of the
  *          message.
@@ -138,25 +136,24 @@ int SHA1Result(SHA1Context *context)
  *  Comments:
  *
  */
-void SHA1Input(     SHA1Context         *context,
+void SHA1Input(SHA1Context         *context,
                     const unsigned char *message_array,
-                    unsigned            length)
-{
+                    unsigned    length) {
     if (!length)
     {
         return;
-    }
+}
 
     if (context->Computed || context->Corrupted)
     {
         context->Corrupted = 1;
         return;
-    }
+}
 
-    while(length-- && !context->Corrupted)
+    while(length--&& !context->Corrupted)
     {
-        context->Message_Block[context->Message_Block_Index++] =
-                                                (*message_array & 0xFF);
+        context->Message_Block[context->Message_Block_Index++] = 
+   (*message_array & 0xFF);
 
         context->Length_Low += 8;
         /* Force it to 32 bits */
@@ -170,16 +167,16 @@ void SHA1Input(     SHA1Context         *context,
             {
                 /* Message is too long */
                 context->Corrupted = 1;
-            }
-        }
+}
+}
 
         if (context->Message_Block_Index == 64)
         {
             SHA1ProcessMessageBlock(context);
-        }
+}
 
         message_array++;
-    }
+}
 }
 
 /*  
@@ -202,19 +199,18 @@ void SHA1Input(     SHA1Context         *context,
  *         
  *
  */
-void SHA1ProcessMessageBlock(SHA1Context *context)
-{
-    const unsigned K[] =            /* Constants defined in SHA-1   */      
+void SHA1ProcessMessageBlock(SHA1Context *context) {
+    const unsigned K[] = /* Constants defined in SHA - 1   */      
     {
         0x5A827999,
         0x6ED9EBA1,
         0x8F1BBCDC,
         0xCA62C1D6
-    };
-    int         t;                  /* Loop counter                 */
-    unsigned    temp;               /* Temporary word value         */
-    unsigned    W[80];              /* Word sequence                */
-    unsigned    A, B, C, D, E;      /* Word buffers                 */
+};
+    int t;                  /* Loop counter                 */
+    unsigned temp;               /* Temporary word value         */
+    unsigned W[80];              /* Word sequence                */
+    unsigned A, B, C, D, E;      /* Word buffers                 */
 
     /*
      *  Initialize the first 16 words in the array W
@@ -225,12 +221,12 @@ void SHA1ProcessMessageBlock(SHA1Context *context)
         W[t] |= ((unsigned) context->Message_Block[t * 4 + 1]) << 16;
         W[t] |= ((unsigned) context->Message_Block[t * 4 + 2]) << 8;
         W[t] |= ((unsigned) context->Message_Block[t * 4 + 3]);
-    }
+}
 
     for(t = 16; t < 80; t++)
     {
-       W[t] = SHA1CircularShift(1,W[t-3] ^ W[t-8] ^ W[t-14] ^ W[t-16]);
-    }
+       W[t] = SHA1CircularShift(1, W[t - 3] ^ W[t - 8] ^ W[t - 14] ^ W[t - 16]);
+}
 
     A = context->Message_Digest[0];
     B = context->Message_Digest[1];
@@ -240,60 +236,60 @@ void SHA1ProcessMessageBlock(SHA1Context *context)
 
     for(t = 0; t < 20; t++)
     {
-        temp =  SHA1CircularShift(5,A) +
-                ((B & C) | ((~B) & D)) + E + W[t] + K[0];
+        temp = SHA1CircularShift(5, A) + 
+((B & C)|((~B) & D)) + E + W[t] + K[0];
         temp &= 0xFFFFFFFF;
         E = D;
         D = C;
-        C = SHA1CircularShift(30,B);
+        C = SHA1CircularShift(30, B);
         B = A;
         A = temp;
-    }
+}
 
     for(t = 20; t < 40; t++)
     {
-        temp = SHA1CircularShift(5,A) + (B ^ C ^ D) + E + W[t] + K[1];
+        temp = SHA1CircularShift(5, A) + (B ^ C ^ D) + E + W[t] + K[1];
         temp &= 0xFFFFFFFF;
         E = D;
         D = C;
-        C = SHA1CircularShift(30,B);
+        C = SHA1CircularShift(30, B);
         B = A;
         A = temp;
-    }
+}
 
     for(t = 40; t < 60; t++)
     {
-        temp = SHA1CircularShift(5,A) +
-               ((B & C) | (B & D) | (C & D)) + E + W[t] + K[2];
+        temp = SHA1CircularShift(5, A) + 
+((B & C)|(B & D)|(C & D)) + E + W[t] + K[2];
         temp &= 0xFFFFFFFF;
         E = D;
         D = C;
-        C = SHA1CircularShift(30,B);
+        C = SHA1CircularShift(30, B);
         B = A;
         A = temp;
-    }
+}
 
     for(t = 60; t < 80; t++)
     {
-        temp = SHA1CircularShift(5,A) + (B ^ C ^ D) + E + W[t] + K[3];
+        temp = SHA1CircularShift(5, A) + (B ^ C ^ D) + E + W[t] + K[3];
         temp &= 0xFFFFFFFF;
         E = D;
         D = C;
-        C = SHA1CircularShift(30,B);
+        C = SHA1CircularShift(30, B);
         B = A;
         A = temp;
-    }
+}
 
-    context->Message_Digest[0] =
-                        (context->Message_Digest[0] + A) & 0xFFFFFFFF;
-    context->Message_Digest[1] =
-                        (context->Message_Digest[1] + B) & 0xFFFFFFFF;
-    context->Message_Digest[2] =
-                        (context->Message_Digest[2] + C) & 0xFFFFFFFF;
-    context->Message_Digest[3] =
-                        (context->Message_Digest[3] + D) & 0xFFFFFFFF;
-    context->Message_Digest[4] =
-                        (context->Message_Digest[4] + E) & 0xFFFFFFFF;
+    context->Message_Digest[0] = 
+(context->Message_Digest[0] + A) & 0xFFFFFFFF;
+    context->Message_Digest[1] = 
+(context->Message_Digest[1] + B) & 0xFFFFFFFF;
+    context->Message_Digest[2] = 
+(context->Message_Digest[2] + C) & 0xFFFFFFFF;
+    context->Message_Digest[3] = 
+(context->Message_Digest[3] + D) & 0xFFFFFFFF;
+    context->Message_Digest[4] = 
+(context->Message_Digest[4] + E) & 0xFFFFFFFF;
 
     context->Message_Block_Index = 0;
 }
@@ -321,8 +317,7 @@ void SHA1ProcessMessageBlock(SHA1Context *context)
  *  Comments:
  *
  */
-void SHA1PadMessage(SHA1Context *context)
-{
+void SHA1PadMessage(SHA1Context *context) {
     /*
      *  Check to see if the current message block is too small to hold
      *  the initial padding bits and length.  If so, we will pad the
@@ -335,23 +330,23 @@ void SHA1PadMessage(SHA1Context *context)
         while(context->Message_Block_Index < 64)
         {
             context->Message_Block[context->Message_Block_Index++] = 0;
-        }
+}
 
         SHA1ProcessMessageBlock(context);
 
         while(context->Message_Block_Index < 56)
         {
             context->Message_Block[context->Message_Block_Index++] = 0;
-        }
-    }
+}
+}
     else
     {
         context->Message_Block[context->Message_Block_Index++] = 0x80;
         while(context->Message_Block_Index < 56)
         {
             context->Message_Block[context->Message_Block_Index++] = 0;
-        }
-    }
+}
+}
 
     /*
      *  Store the message length as the last 8 octets

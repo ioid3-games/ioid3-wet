@@ -1,9 +1,9 @@
 /*
  * Wolfenstein: Enemy Territory GPL Source Code
- * Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
+ * Copyright(C) 1999 - 2010 id Software LLC, a ZeniMax Media company.
  *
  * ET: Legacy
- * Copyright (C) 2012-2018 ET:Legacy team <mail@etlegacy.com>
+ * Copyright(C) 2012 - 2018 ET:Legacy team < mail@etlegacy.com > 
  *
  * This file is part of ET: Legacy - http://www.etlegacy.com
  *
@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with ET: Legacy. If not, see <http://www.gnu.org/licenses/>.
+ * along with ET: Legacy. If not, see < http://www.gnu.org/licenses/ > .
  *
  * In addition, Wolfenstein: Enemy Territory GPL Source Code is also
  * subject to certain additional terms. You should have received a copy
@@ -44,10 +44,9 @@ vm_t *uivm;
  * @brief GetClientState
  * @param[out] state
  */
-static void GetClientState(uiClientState_t *state)
-{
+static void GetClientState(uiClientState_t *state) {
 	state->connectPacketCount = clc.connectPacketCount;
-	state->connState          = cls.state;
+	state->connState = cls.state;
 	Q_strncpyz(state->servername, cls.servername, sizeof(state->servername));
 	Q_strncpyz(state->updateInfoString, cls.updateInfoString, sizeof(state->updateInfoString));
 	Q_strncpyz(state->messageString, clc.serverMessage, sizeof(state->messageString));
@@ -57,44 +56,35 @@ static void GetClientState(uiClientState_t *state)
 /**
  * @brief LAN_LoadCachedServers
  */
-void LAN_LoadCachedServers(void)
-{
-	int32_t      size;
+void LAN_LoadCachedServers(void) {
+	int32_t size;
 	fileHandle_t fileIn;
-	char         filename[MAX_QPATH];
+	char filename[MAX_QPATH];
 
-	cls.numglobalservers         = 0;
-	cls.numfavoriteservers       = 0;
+	cls.numglobalservers = 0;
+	cls.numfavoriteservers = 0;
 	cls.numGlobalServerAddresses = 0;
 
-	if (cl_profile->string[0])
-	{
+	if (cl_profile->string[0]) {
 		Com_sprintf(filename, sizeof(filename), "profiles/%s/favcache.dat", cl_profile->string);
-	}
-	else
-	{
+	} else {
 		Q_strncpyz(filename, "favcache.dat", sizeof(filename));
 	}
-
 	// moved to mod/profiles dir
-	if (FS_FOpenFileRead(filename, &fileIn, qtrue) > 0)
-	{
+	if (FS_FOpenFileRead(filename, &fileIn, qtrue) > 0) {
 		FS_Read(&cls.numfavoriteservers, sizeof(int32_t), fileIn);
 		FS_Read(&size, sizeof(int32_t), fileIn);
-		if (size == sizeof(cls.favoriteServers))
-		{
+
+		if (size == sizeof(cls.favoriteServers)) {
 			FS_Read(&cls.favoriteServers, sizeof(cls.favoriteServers), fileIn);
-		}
-		else
-		{
+		} else {
 			cls.numfavoriteservers = 0;
 		}
+
 		FS_FCloseFile(fileIn);
 
 		Com_Printf("Total favourite servers restored: %i\n", cls.numfavoriteservers);
-	}
-	else
-	{
+	} else {
 		Com_Printf("Warning: can't read '%s' - no favourite servers restored.\n", filename);
 	}
 }
@@ -102,29 +92,24 @@ void LAN_LoadCachedServers(void)
 /**
  * @brief LAN_SaveServersToFile
  */
-void LAN_SaveServersToFile(void)
-{
-	int32_t      size;
+void LAN_SaveServersToFile(void) {
+	int32_t size;
 	fileHandle_t fileOut;
-	char         filename[MAX_QPATH];
+	char filename[MAX_QPATH];
 
-	if (cl_profile->string[0])
-	{
+	if (cl_profile->string[0]) {
 		Com_sprintf(filename, sizeof(filename), "profiles/%s/favcache.dat", cl_profile->string);
-	}
-	else
-	{
+	} else {
 		Q_strncpyz(filename, "favcache.dat", sizeof(filename));
 	}
-
 	// moved to mod/profiles dir
 	fileOut = FS_FOpenFileWrite(filename);
-	(void) FS_Write(&cls.numfavoriteservers, sizeof(int32_t), fileOut);
+	(void)FS_Write(&cls.numfavoriteservers, sizeof(int32_t), fileOut);
 
 	size = sizeof(cls.favoriteServers);
 
-	(void) FS_Write(&size, sizeof(int32_t), fileOut);
-	(void) FS_Write(&cls.favoriteServers, sizeof(cls.favoriteServers), fileOut);
+	(void)FS_Write(&size, sizeof(int32_t), fileOut);
+	(void)FS_Write(&cls.favoriteServers, sizeof(cls.favoriteServers), fileOut);
 	FS_FCloseFile(fileOut);
 
 	Com_Printf("Total favourite servers saved: %i\n", cls.numfavoriteservers);
@@ -134,31 +119,27 @@ void LAN_SaveServersToFile(void)
  * @brief LAN_ResetPings
  * @param[in] source
  */
-static void LAN_ResetPings(int source)
-{
-	int          count    = 0, i;
+static void LAN_ResetPings(int source) {
+	int count = 0, i;
 	serverInfo_t *servers = NULL;
 
-	switch (source)
-	{
+	switch (source) {
 	case AS_LOCAL:
 		servers = &cls.localServers[0];
-		count   = MAX_OTHER_SERVERS;
+		count = MAX_OTHER_SERVERS;
 		break;
 	case AS_GLOBAL:
 		servers = &cls.globalServers[0];
-		count   = MAX_GLOBAL_SERVERS;
+		count = MAX_GLOBAL_SERVERS;
 		break;
 	case AS_FAVORITES:
 		servers = &cls.favoriteServers[0];
-		count   = MAX_OTHER_SERVERS;
+		count = MAX_OTHER_SERVERS;
 		break;
 	}
 
-	if (servers)
-	{
-		for (i = 0; i < count; i++)
-		{
+	if (servers) {
+		for (i = 0; i < count; i++) {
 			servers[i].ping = -1;
 		}
 	}
@@ -171,57 +152,54 @@ static void LAN_ResetPings(int source)
  * @param[in] address
  * @return
  */
-static int LAN_AddServer(int source, const char *name, const char *address)
-{
-	int          max = MAX_OTHER_SERVERS, *count = 0;
-	netadr_t     adr;
+static int LAN_AddServer(int source, const char *name, const char *address) {
+	int max = MAX_OTHER_SERVERS, *count = 0;
+	netadr_t adr;
 	serverInfo_t *servers = NULL;
 
-	switch (source)
-	{
+	switch (source) {
 	case AS_LOCAL:
-		count   = &cls.numlocalservers;
+		count = &cls.numlocalservers;
 		servers = &cls.localServers[0];
 		break;
 	case AS_GLOBAL:
-		max     = MAX_GLOBAL_SERVERS;
-		count   = &cls.numglobalservers;
+		max = MAX_GLOBAL_SERVERS;
+		count = &cls.numglobalservers;
 		servers = &cls.globalServers[0];
 		break;
 	case AS_FAVORITES:
-		count   = &cls.numfavoriteservers;
+		count = &cls.numfavoriteservers;
 		servers = &cls.favoriteServers[0];
 		break;
 	}
 
-	if (servers && *count < max)
-	{
+	if (servers && *count < max) {
 		int i;
 
 		NET_StringToAdr(address, &adr, NA_UNSPEC);
-		for (i = 0; i < *count; i++)
-		{
-			if (NET_CompareAdr(servers[i].adr, adr))
-			{
+
+		for (i = 0; i < *count; i++) {
+			if (NET_CompareAdr(servers[i].adr, adr)) {
 				break;
 			}
 		}
-		if (i >= *count)
-		{
+
+		if (i >= *count) {
 			servers[*count].adr = adr;
 			Q_strncpyz(servers[*count].hostName, name, sizeof(servers[*count].hostName));
 			servers[*count].visible = qtrue;
 			(*count)++;
 
-			if (source == AS_FAVORITES)
-			{
+			if (source == AS_FAVORITES) {
 				LAN_SaveServersToFile();
 			}
 
 			return 1;
 		}
+
 		return 0;
 	}
+
 	return -1;
 }
 
@@ -232,46 +210,41 @@ static int LAN_AddServer(int source, const char *name, const char *address)
  * @param[in] addr   Server address - in case of negative source param addr is not required
  *
  */
-static void LAN_RemoveServer(int source, const char *addr)
-{
-	int          *count   = 0;
+static void LAN_RemoveServer(int source, const char *addr) {
+	int *count = 0;
 	serverInfo_t *servers = NULL;
 
-	switch (source)
-	{
+	switch (source) {
 	case AS_LOCAL:
 	case AS_LOCAL_ALL:
-		count   = &cls.numlocalservers;
+		count = &cls.numlocalservers;
 		servers = &cls.localServers[0];
 		break;
 	case AS_GLOBAL:
 	case AS_GLOBAL_ALL:
-		count   = &cls.numglobalservers;
+		count = &cls.numglobalservers;
 		servers = &cls.globalServers[0];
 		break;
 	case AS_FAVORITES:
 	case AS_FAVORITES_ALL:
-		count   = &cls.numfavoriteservers;
+		count = &cls.numfavoriteservers;
 		servers = &cls.favoriteServers[0];
 		break;
 	}
 
-	if (servers && count && *count > 0)
-	{
+	if (servers && count && *count > 0) {
 		if (source >= AS_LOCAL) // single server removal
 		{
 			netadr_t comp;
-			int      i, j;
+			int i, j;
 
 			NET_StringToAdr(addr, &comp, NA_UNSPEC);
-			for (i = 0; i < *count; i++)
-			{
-				if (NET_CompareAdr(comp, servers[i].adr))
-				{
+
+			for (i = 0; i < *count; i++) {
+				if (NET_CompareAdr(comp, servers[i].adr)) {
 					j = i;
 
-					while (j < *count - 1)
-					{
+					while (j < *count - 1) {
 						Com_Memcpy(&servers[j], &servers[j + 1], sizeof(servers[j]));
 						j++;
 					}
@@ -280,15 +253,12 @@ static void LAN_RemoveServer(int source, const char *addr)
 				}
 			}
 
-			if (source == AS_FAVORITES)
-			{
+			if (source == AS_FAVORITES) {
 				LAN_SaveServersToFile();
 			}
-		}
-		else // remove all
+		} else // remove all
 		{
-			switch (source)
-			{
+			switch (source) {
 			case AS_LOCAL_ALL:
 				Com_Printf("Removing %i local servers\n", cls.numlocalservers);
 				cls.numlocalservers = 0;
@@ -310,9 +280,7 @@ static void LAN_RemoveServer(int source, const char *addr)
 				break;
 			}
 		}
-	}
-	else
-	{
+	} else {
 		Com_Printf("No server found - nothing to remove\n");
 	}
 }
@@ -322,10 +290,8 @@ static void LAN_RemoveServer(int source, const char *addr)
  * @param[in] source
  * @return
  */
-static int LAN_GetServerCount(int source)
-{
-	switch (source)
-	{
+static int LAN_GetServerCount(int source) {
+	switch (source) {
 	case AS_LOCAL:
 		return cls.numlocalservers;
 	case AS_GLOBAL:
@@ -335,6 +301,7 @@ static int LAN_GetServerCount(int source)
 	default:
 		break;
 	}
+
 	return 0;
 }
 
@@ -345,32 +312,31 @@ static int LAN_GetServerCount(int source)
  * @param[out] buf
  * @param[in] buflen
  */
-static void LAN_GetServerAddressString(int source, int n, char *buf, size_t buflen)
-{
-	switch (source)
-	{
+static void LAN_GetServerAddressString(int source, int n, char *buf, size_t buflen) {
+	switch (source) {
 	case AS_LOCAL:
-		if (n >= 0 && n < MAX_OTHER_SERVERS)
-		{
+		if (n >= 0 && n < MAX_OTHER_SERVERS) {
 			Q_strncpyz(buf, NET_AdrToString(cls.localServers[n].adr), buflen);
 			return;
 		}
+
 		break;
 	case AS_GLOBAL:
-		if (n >= 0 && n < MAX_GLOBAL_SERVERS)
-		{
+		if (n >= 0 && n < MAX_GLOBAL_SERVERS) {
 			Q_strncpyz(buf, NET_AdrToString(cls.globalServers[n].adr), buflen);
 			return;
 		}
+
 		break;
 	case AS_FAVORITES:
-		if (n >= 0 && n < MAX_OTHER_SERVERS)
-		{
+		if (n >= 0 && n < MAX_OTHER_SERVERS) {
 			Q_strncpyz(buf, NET_AdrToString(cls.favoriteServers[n].adr), buflen);
 			return;
 		}
+
 		break;
 	}
+
 	buf[0] = '\0';
 }
 
@@ -381,35 +347,33 @@ static void LAN_GetServerAddressString(int source, int n, char *buf, size_t bufl
  * @param[in] buf
  * @param[in] buflen
  */
-static void LAN_GetServerInfo(int source, int n, char *buf, size_t buflen)
-{
-	char         info[MAX_STRING_CHARS];
+static void LAN_GetServerInfo(int source, int n, char *buf, size_t buflen) {
+	char info[MAX_STRING_CHARS];
 	serverInfo_t *server = NULL;
 	info[0] = '\0';
 
-	switch (source)
-	{
+	switch (source) {
 	case AS_LOCAL:
-		if (n >= 0 && n < MAX_OTHER_SERVERS)
-		{
+		if (n >= 0 && n < MAX_OTHER_SERVERS) {
 			server = &cls.localServers[n];
 		}
+
 		break;
 	case AS_GLOBAL:
-		if (n >= 0 && n < MAX_GLOBAL_SERVERS)
-		{
+		if (n >= 0 && n < MAX_GLOBAL_SERVERS) {
 			server = &cls.globalServers[n];
 		}
+
 		break;
 	case AS_FAVORITES:
-		if (n >= 0 && n < MAX_OTHER_SERVERS)
-		{
+		if (n >= 0 && n < MAX_OTHER_SERVERS) {
 			server = &cls.favoriteServers[n];
 		}
+
 		break;
 	}
-	if (server && buf)
-	{
+
+	if (server && buf) {
 		buf[0] = '\0';
 		Info_SetValueForKey(info, "version", server->version);
 		Info_SetValueForKey(info, "hostname", server->hostName);
@@ -434,11 +398,8 @@ static void LAN_GetServerInfo(int source, int n, char *buf, size_t buflen)
 		Info_SetValueForKey(info, "weaprestrict", va("%i", server->weaprestrict));
 		Info_SetValueForKey(info, "balancedteams", va("%i", server->balancedteams));
 		Q_strncpyz(buf, info, buflen);
-	}
-	else
-	{
-		if (buf)
-		{
+	} else {
+		if (buf) {
 			buf[0] = '\0';
 		}
 	}
@@ -450,35 +411,34 @@ static void LAN_GetServerInfo(int source, int n, char *buf, size_t buflen)
  * @param[in] n
  * @return
  */
-static int LAN_GetServerPing(int source, int n)
-{
+static int LAN_GetServerPing(int source, int n) {
 	serverInfo_t *server = NULL;
 
-	switch (source)
-	{
+	switch (source) {
 	case AS_LOCAL:
-		if (n >= 0 && n < MAX_OTHER_SERVERS)
-		{
+		if (n >= 0 && n < MAX_OTHER_SERVERS) {
 			server = &cls.localServers[n];
 		}
+
 		break;
 	case AS_GLOBAL:
-		if (n >= 0 && n < MAX_GLOBAL_SERVERS)
-		{
+		if (n >= 0 && n < MAX_GLOBAL_SERVERS) {
 			server = &cls.globalServers[n];
 		}
+
 		break;
 	case AS_FAVORITES:
-		if (n >= 0 && n < MAX_OTHER_SERVERS)
-		{
+		if (n >= 0 && n < MAX_OTHER_SERVERS) {
 			server = &cls.favoriteServers[n];
 		}
+
 		break;
 	}
-	if (server)
-	{
+
+	if (server) {
 		return server->ping;
 	}
+
 	return -1;
 }
 
@@ -488,29 +448,28 @@ static int LAN_GetServerPing(int source, int n)
  * @param[in] n
  * @return
  */
-static serverInfo_t *LAN_GetServerPtr(int source, int n)
-{
-	switch (source)
-	{
+static serverInfo_t *LAN_GetServerPtr(int source, int n) {
+	switch (source) {
 	case AS_LOCAL:
-		if (n >= 0 && n < MAX_OTHER_SERVERS)
-		{
+		if (n >= 0 && n < MAX_OTHER_SERVERS) {
 			return &cls.localServers[n];
 		}
+
 		break;
 	case AS_GLOBAL:
-		if (n >= 0 && n < MAX_GLOBAL_SERVERS)
-		{
+		if (n >= 0 && n < MAX_GLOBAL_SERVERS) {
 			return &cls.globalServers[n];
 		}
+
 		break;
 	case AS_FAVORITES:
-		if (n >= 0 && n < MAX_OTHER_SERVERS)
-		{
+		if (n >= 0 && n < MAX_OTHER_SERVERS) {
 			return &cls.favoriteServers[n];
 		}
+
 		break;
 	}
+
 	return NULL;
 }
 
@@ -523,24 +482,22 @@ static serverInfo_t *LAN_GetServerPtr(int source, int n)
  * @param[in] s2
  * @return
  */
-static int LAN_CompareServers(int source, int sortKey, int sortDir, int s1, int s2)
-{
-	int          res;
+static int LAN_CompareServers(int source, int sortKey, int sortDir, int s1, int s2) {
+	int res;
 	serverInfo_t *server1, *server2;
-	char         name1[MAX_SERVER_NAME_LENGTH], name2[MAX_SERVER_NAME_LENGTH];
+	char name1[MAX_SERVER_NAME_LENGTH], name2[MAX_SERVER_NAME_LENGTH];
 
 	server1 = LAN_GetServerPtr(source, s1);
 	server2 = LAN_GetServerPtr(source, s2);
-	if (!server1 || !server2)
-	{
+
+	if (!server1 || !server2) {
 		return 0;
 	}
 
 	res = 0;
-	switch (sortKey)
-	{
+	switch (sortKey) {
 	case SORT_HOST:
-		//% res = Q_stricmp( server1->hostName, server2->hostName );
+		//% res = Q_stricmp(server1->hostName, server2->hostName);
 		Q_strncpyz(name1, server1->hostName, sizeof(name1));
 		Q_CleanStr(name1);
 		Q_strncpyz(name2, server2->hostName, sizeof(name2));
@@ -552,61 +509,49 @@ static int LAN_CompareServers(int source, int sortKey, int sortDir, int s1, int 
 		res = Q_stricmp(server1->mapName, server2->mapName);
 		break;
 	case SORT_CLIENTS:
-		if (server1->clients < server2->clients)
-		{
+		if (server1->clients < server2->clients) {
 			res = -1;
-		}
-		else if (server1->clients > server2->clients)
-		{
+		} else if (server1->clients > server2->clients) {
 			res = 1;
-		}
-		else
-		{
+		} else {
 			res = 0;
 		}
+
 		break;
 	case SORT_GAME:
-		if (server1->gameType < server2->gameType)
-		{
+		if (server1->gameType < server2->gameType) {
 			res = -1;
-		}
-		else if (server1->gameType > server2->gameType)
-		{
+		} else if (server1->gameType > server2->gameType) {
 			res = 1;
-		}
-		else
-		{
+		} else {
 			res = 0;
 		}
+
 		break;
 	case SORT_PING:
-		if (server1->ping < server2->ping)
-		{
+		if (server1->ping < server2->ping) {
 			res = -1;
-		}
-		else if (server1->ping > server2->ping)
-		{
+		} else if (server1->ping > server2->ping) {
 			res = 1;
-		}
-		else
-		{
+		} else {
 			res = 0;
 		}
+
 		break;
 	}
 
-	if (sortDir)
-	{
-		if (res < 0)
-		{
+	if (sortDir) {
+		if (res < 0) {
 			return 1;
 		}
-		if (res > 0)
-		{
+
+		if (res > 0) {
 			return -1;
 		}
+
 		return 0;
 	}
+
 	return res;
 }
 
@@ -614,8 +559,7 @@ static int LAN_CompareServers(int source, int sortKey, int sortDir, int s1, int 
  * @brief LAN_GetPingQueueCount
  * @return
  */
-static int LAN_GetPingQueueCount(void)
-{
+static int LAN_GetPingQueueCount(void) {
 	return (CL_GetPingQueueCount());
 }
 
@@ -623,8 +567,7 @@ static int LAN_GetPingQueueCount(void)
  * @brief LAN_ClearPing
  * @param[in] n
  */
-static void LAN_ClearPing(int n)
-{
+static void LAN_ClearPing(int n) {
 	CL_ClearPing(n);
 }
 
@@ -635,8 +578,7 @@ static void LAN_ClearPing(int n)
  * @param[in] buflen
  * @param[out] pingtime
  */
-static void LAN_GetPing(int n, char *buf, size_t buflen, int *pingtime)
-{
+static void LAN_GetPing(int n, char *buf, size_t buflen, int *pingtime) {
 	CL_GetPing(n, buf, buflen, pingtime);
 }
 
@@ -646,8 +588,7 @@ static void LAN_GetPing(int n, char *buf, size_t buflen, int *pingtime)
  * @param[out] buf
  * @param[in] buflen
  */
-static void LAN_GetPingInfo(int n, char *buf, size_t buflen)
-{
+static void LAN_GetPingInfo(int n, char *buf, size_t buflen) {
 	CL_GetPingInfo(n, buf, buflen);
 }
 
@@ -657,55 +598,48 @@ static void LAN_GetPingInfo(int n, char *buf, size_t buflen)
  * @param[in] n
  * @param[in] visible
  */
-static void LAN_MarkServerVisible(int source, int n, qboolean visible)
-{
-	if (n == -1)
-	{
-		int          count   = MAX_OTHER_SERVERS;
+static void LAN_MarkServerVisible(int source, int n, qboolean visible) {
+	if (n == -1) {
+		int count = MAX_OTHER_SERVERS;
 		serverInfo_t *server = NULL;
 
-		switch (source)
-		{
+		switch (source) {
 		case AS_LOCAL:
 			server = &cls.localServers[0];
 			break;
 		case AS_GLOBAL:
 			server = &cls.globalServers[0];
-			count  = MAX_GLOBAL_SERVERS;
+			count = MAX_GLOBAL_SERVERS;
 			break;
 		case AS_FAVORITES:
 			server = &cls.favoriteServers[0];
 			break;
 		}
-		if (server)
-		{
-			for (n = 0; n < count; n++)
-			{
+
+		if (server) {
+			for (n = 0; n < count; n++) {
 				server[n].visible = visible;
 			}
 		}
-	}
-	else
-	{
-		switch (source)
-		{
+	} else {
+		switch (source) {
 		case AS_LOCAL:
-			if (n >= 0 && n < MAX_OTHER_SERVERS)
-			{
+			if (n >= 0 && n < MAX_OTHER_SERVERS) {
 				cls.localServers[n].visible = visible;
 			}
+
 			break;
 		case AS_GLOBAL:
-			if (n >= 0 && n < MAX_GLOBAL_SERVERS)
-			{
+			if (n >= 0 && n < MAX_GLOBAL_SERVERS) {
 				cls.globalServers[n].visible = visible;
 			}
+
 			break;
 		case AS_FAVORITES:
-			if (n >= 0 && n < MAX_OTHER_SERVERS)
-			{
+			if (n >= 0 && n < MAX_OTHER_SERVERS) {
 				cls.favoriteServers[n].visible = visible;
 			}
+
 			break;
 		}
 	}
@@ -717,29 +651,28 @@ static void LAN_MarkServerVisible(int source, int n, qboolean visible)
  * @param[in] n
  * @return
  */
-static int LAN_ServerIsVisible(int source, int n)
-{
-	switch (source)
-	{
+static int LAN_ServerIsVisible(int source, int n) {
+	switch (source) {
 	case AS_LOCAL:
-		if (n >= 0 && n < MAX_OTHER_SERVERS)
-		{
+		if (n >= 0 && n < MAX_OTHER_SERVERS) {
 			return cls.localServers[n].visible;
 		}
+
 		break;
 	case AS_GLOBAL:
-		if (n >= 0 && n < MAX_GLOBAL_SERVERS)
-		{
+		if (n >= 0 && n < MAX_GLOBAL_SERVERS) {
 			return cls.globalServers[n].visible;
 		}
+
 		break;
 	case AS_FAVORITES:
-		if (n >= 0 && n < MAX_OTHER_SERVERS)
-		{
+		if (n >= 0 && n < MAX_OTHER_SERVERS) {
 			return cls.favoriteServers[n].visible;
 		}
+
 		break;
 	}
+
 	return qfalse;
 }
 
@@ -748,8 +681,7 @@ static int LAN_ServerIsVisible(int source, int n)
  * @param[in] source
  * @return
  */
-qboolean LAN_UpdateVisiblePings(int source)
-{
+qboolean LAN_UpdateVisiblePings(int source) {
 	return CL_UpdateVisiblePings_f(source);
 }
 
@@ -760,8 +692,7 @@ qboolean LAN_UpdateVisiblePings(int source)
  * @param[in] maxLen
  * @return
  */
-int LAN_GetServerStatus(const char *serverAddress, char *serverStatus, size_t maxLen)
-{
+int LAN_GetServerStatus(const char *serverAddress, char *serverStatus, size_t maxLen) {
 	return CL_ServerStatus(serverAddress, serverStatus, maxLen);
 }
 
@@ -771,42 +702,37 @@ int LAN_GetServerStatus(const char *serverAddress, char *serverStatus, size_t ma
  * @param[in] n
  * @return
  */
-qboolean LAN_ServerIsInFavoriteList(int source, int n)
-{
-	int          i;
+qboolean LAN_ServerIsInFavoriteList(int source, int n) {
+	int i;
 	serverInfo_t *server = NULL;
 
-	switch (source)
-	{
+	switch (source) {
 	case AS_LOCAL:
-		if (n >= 0 && n < MAX_OTHER_SERVERS)
-		{
+		if (n >= 0 && n < MAX_OTHER_SERVERS) {
 			server = &cls.localServers[n];
 		}
+
 		break;
 	case AS_GLOBAL:
-		if (n >= 0 && n < MAX_GLOBAL_SERVERS)
-		{
+		if (n >= 0 && n < MAX_GLOBAL_SERVERS) {
 			server = &cls.globalServers[n];
 		}
+
 		break;
 	case AS_FAVORITES:
-		if (n >= 0 && n < MAX_OTHER_SERVERS)
-		{
+		if (n >= 0 && n < MAX_OTHER_SERVERS) {
 			return qtrue;
 		}
+
 		break;
 	}
 
-	if (!server)
-	{
+	if (!server) {
 		return qfalse;
 	}
 
-	for (i = 0; i < cls.numfavoriteservers; i++)
-	{
-		if (NET_CompareAdr(cls.favoriteServers[i].adr, server->adr))
-		{
+	for (i = 0; i < cls.numfavoriteservers; i++) {
+		if (NET_CompareAdr(cls.favoriteServers[i].adr, server->adr)) {
 			return qtrue;
 		}
 	}
@@ -818,8 +744,7 @@ qboolean LAN_ServerIsInFavoriteList(int source, int n)
  * @brief CL_GetGlconfig
  * @param[out] config
  */
-static void CL_GetGlconfig(glconfig_t *config)
-{
+static void CL_GetGlconfig(glconfig_t *config) {
 	*config = cls.glconfig;
 }
 
@@ -828,14 +753,12 @@ static void CL_GetGlconfig(glconfig_t *config)
  * @param[out] buf
  * @param[in] buflen
  */
-static void GetClipboardData(char *buf, unsigned int buflen)
-{
+static void GetClipboardData(char *buf, unsigned int buflen) {
 	char *cbd;
 
 	cbd = IN_GetClipboardData();
 
-	if (!cbd)
-	{
+	if (!cbd) {
 		*buf = 0;
 		return;
 	}
@@ -851,8 +774,7 @@ static void GetClipboardData(char *buf, unsigned int buflen)
  * @param[out] buf
  * @param[in] buflen
  */
-void Key_KeynumToStringBuf(int keynum, char *buf, size_t buflen)
-{
+void Key_KeynumToStringBuf(int keynum, char *buf, size_t buflen) {
 	Q_strncpyz(buf, CL_TranslateStringBuf(Key_KeynumToString(keynum)), buflen);
 }
 
@@ -862,17 +784,14 @@ void Key_KeynumToStringBuf(int keynum, char *buf, size_t buflen)
  * @param[out] buf
  * @param[in] buflen
  */
-void Key_GetBindingBuf(int keynum, char *buf, size_t buflen)
-{
+void Key_GetBindingBuf(int keynum, char *buf, size_t buflen) {
 	char *value;
 
 	value = Key_GetBinding(keynum);
-	if (value)
-	{
+
+	if (value) {
 		Q_strncpyz(buf, value, buflen);
-	}
-	else
-	{
+	} else {
 		*buf = 0;
 	}
 }
@@ -881,8 +800,7 @@ void Key_GetBindingBuf(int keynum, char *buf, size_t buflen)
  * @brief Key_GetCatcher
  * @return
  */
-int Key_GetCatcher(void)
-{
+int Key_GetCatcher(void) {
 	return cls.keyCatchers;
 }
 
@@ -890,15 +808,11 @@ int Key_GetCatcher(void)
  * @brief Key_SetCatcher
  * @param[in] catcher
  */
-void Key_SetCatcher(int catcher)
-{
+void Key_SetCatcher(int catcher) {
 	// console overrides everything
-	if (cls.keyCatchers & KEYCATCH_CONSOLE)
-	{
-		cls.keyCatchers = catcher | KEYCATCH_CONSOLE;
-	}
-	else
-	{
+	if (cls.keyCatchers & KEYCATCH_CONSOLE) {
+		cls.keyCatchers = catcher|KEYCATCH_CONSOLE;
+	} else {
 		cls.keyCatchers = catcher;
 	}
 }
@@ -910,24 +824,20 @@ void Key_SetCatcher(int catcher)
  * @param[in] size
  * @return
  */
-static int GetConfigString(int index, char *buf, size_t size)
-{
+static int GetConfigString(int index, char *buf, size_t size) {
 	int offset;
 
-	if (index < 0 || index >= MAX_CONFIGSTRINGS)
-	{
+	if (index < 0 || index >= MAX_CONFIGSTRINGS) {
 		Com_Printf("Config string [%i] index out of range\n", index);
 		return qfalse;
 	}
 
 	offset = cl.gameState.stringOffsets[index];
-	if (!offset)
-	{
-		if (size)
-		{
+
+	if (!offset) {
+		if (size) {
 			buf[0] = 0;
 		}
-
 		// this happens when ui calls for player configstrings which might be empty
 		//Com_Printf("Config string [%i] zero offset\n", index);
 		return qfalse;
@@ -943,8 +853,7 @@ static int GetConfigString(int index, char *buf, size_t size)
  * @param[in] f
  * @return
  */
-static int FloatAsInt(float f)
-{
+static int FloatAsInt(float f) {
 	floatint_t fi;
 
 	fi.f = f;
@@ -956,10 +865,8 @@ static int FloatAsInt(float f)
  * @param[in] args
  * @return
  */
-intptr_t CL_UISystemCalls(intptr_t *args)
-{
-	switch (args[0])
-	{
+intptr_t CL_UISystemCalls(intptr_t *args) {
+	switch (args[0]) {
 	case UI_ERROR:
 		Com_Error(ERR_DROP, "%s", (char *)VMA(1));
 	case UI_PRINT:
@@ -1005,11 +912,11 @@ intptr_t CL_UISystemCalls(intptr_t *args)
 		if (args[1] == EXEC_NOW
 		    && (!strncmp(VMA(2), "snd_restart", 11)
 		        || !strncmp(VMA(2), "vid_restart", 11)
-		        || !strncmp(VMA(2), "quit", 5)))
-		{
+		        || !strncmp(VMA(2), "quit", 5))) {
 			Com_Printf(S_COLOR_YELLOW "turning EXEC_NOW '%.11s' into EXEC_INSERT\n", (const char *)VMA(2));
 			args[1] = EXEC_INSERT;
 		}
+
 		Cbuf_ExecuteText(args[1], VMA(2));
 		return 0;
 	case UI_ADDCOMMAND:
@@ -1114,8 +1021,8 @@ intptr_t CL_UISystemCalls(intptr_t *args)
 	case UI_KEY_GETCATCHER:
 		return Key_GetCatcher();
 	case UI_KEY_SETCATCHER:
-		// Don't allow the ui module to close the console
-		Key_SetCatcher(args[1] | (Key_GetCatcher() & KEYCATCH_CONSOLE));
+		// don't allow the ui module to close the console
+		Key_SetCatcher(args[1]|(Key_GetCatcher() & KEYCATCH_CONSOLE));
 		return 0;
 	case UI_GETCLIPBOARDDATA:
 		GetClipboardData(VMA(1), args[2]);
@@ -1270,14 +1177,14 @@ intptr_t CL_UISystemCalls(intptr_t *args)
 /**
  * @brief CL_ShutdownUI
  */
-void CL_ShutdownUI(void)
-{
+void CL_ShutdownUI(void) {
 	cls.keyCatchers &= ~KEYCATCH_UI;
-	cls.uiStarted    = qfalse;
-	if (!uivm)
-	{
+	cls.uiStarted = qfalse;
+
+	if (!uivm) {
 		return;
 	}
+
 	VM_Call(uivm, UI_SHUTDOWN);
 	VM_Free(uivm);
 	uivm = NULL;
@@ -1286,36 +1193,29 @@ void CL_ShutdownUI(void)
 /**
  * @brief CL_InitUI
  */
-void CL_InitUI(void)
-{
+void CL_InitUI(void) {
 	int v;
 
 	uivm = VM_Create("ui", qtrue, CL_UISystemCalls, VMI_NATIVE);
-	if (!uivm)
-	{
+
+	if (!uivm) {
 		Com_Error(ERR_FATAL, "VM_Create on UI failed");
 	}
-
 	// sanity check
 	v = VM_Call(uivm, UI_GETAPIVERSION);
-	if (v != UI_API_VERSION)
-	{
+
+	if (v != UI_API_VERSION) {
 		Com_Error(ERR_FATAL, "User Interface is version %d, expected %d", v, UI_API_VERSION);
 		//cls.uiStarted = qfalse; // FIXME: Never executed !
 	}
-
 	// init for this gamestate
 	VM_Call(uivm, UI_INIT, (cls.state >= CA_AUTHORIZING && cls.state < CA_ACTIVE), qtrue, ETLEGACY_VERSION_INT);
 }
 
-qboolean UI_checkKeyExec(int key)
-{
-	if (uivm)
-	{
+qboolean UI_checkKeyExec(int key) {
+	if (uivm) {
 		return (qboolean)(VM_Call(uivm, UI_CHECKEXECKEY, key));
-	}
-	else
-	{
+	} else {
 		return qfalse;
 	}
 }
@@ -1324,10 +1224,8 @@ qboolean UI_checkKeyExec(int key)
  * @brief See if the current console command is claimed by the ui
  * @return
  */
-qboolean UI_GameCommand(void)
-{
-	if (!uivm)
-	{
+qboolean UI_GameCommand(void) {
+	if (!uivm) {
 		return qfalse;
 	}
 

@@ -1,9 +1,9 @@
 /*
  * Wolfenstein: Enemy Territory GPL Source Code
- * Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
+ * Copyright(C) 1999 - 2010 id Software LLC, a ZeniMax Media company.
  *
  * ET: Legacy
- * Copyright (C) 2012-2018 ET:Legacy team <mail@etlegacy.com>
+ * Copyright(C) 2012 - 2018 ET:Legacy team < mail@etlegacy.com > 
  *
  * This file is part of ET: Legacy - http://www.etlegacy.com
  *
@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with ET: Legacy. If not, see <http://www.gnu.org/licenses/>.
+ * along with ET: Legacy. If not, see < http://www.gnu.org/licenses/ > .
  *
  * In addition, Wolfenstein: Enemy Territory GPL Source Code is also
  * subject to certain additional terms. You should have received a copy
@@ -43,8 +43,7 @@
  * @typedef snd_info_t
  * @brief
  */
-typedef struct snd_info_s
-{
+typedef struct snd_info_s {
 	int rate;
 	int width;
 	int channels;
@@ -60,8 +59,7 @@ typedef struct snd_codec_s snd_codec_t;
  * @typedef snd_stream_t
  * @brief
  */
-typedef struct snd_stream_s
-{
+typedef struct snd_stream_s {
 	snd_codec_t *codec;
 	fileHandle_t file;
 	snd_info_t info;
@@ -70,18 +68,17 @@ typedef struct snd_stream_s
 	void *ptr;
 } snd_stream_t;
 
-// Codec functions
-typedef void *(*CODEC_LOAD)(const char *filename, snd_info_t *info);
-typedef snd_stream_t *(*CODEC_OPEN)(const char *filename);
-typedef int (*CODEC_READ)(snd_stream_t *stream, int bytes, void *buffer);
-typedef void (*CODEC_CLOSE)(snd_stream_t *stream);
+// codec functions
+typedef void * (*CODEC_LOAD)(const char *filename, snd_info_t *info);
+typedef snd_stream_t * (*CODEC_OPEN)(const char *filename);
+typedef int(*CODEC_READ)(snd_stream_t *stream, int bytes, void *buffer);
+typedef void(*CODEC_CLOSE)(snd_stream_t *stream);
 
 /**
  * @struct snd_codec_s
  * @brief Codec data structure
  */
-struct snd_codec_s
-{
+struct snd_codec_s {
 	char *ext;
 	CODEC_LOAD load;
 	CODEC_OPEN open;
@@ -90,7 +87,7 @@ struct snd_codec_s
 	snd_codec_t *next;
 };
 
-// Codec management
+// codec management
 void S_CodecInit(void);
 void S_CodecShutdown(void);
 void S_CodecRegister(snd_codec_t *codec);
@@ -99,24 +96,24 @@ snd_stream_t *S_CodecOpenStream(const char *filename);
 void S_CodecCloseStream(snd_stream_t *stream);
 int S_CodecReadStream(snd_stream_t *stream, int bytes, void *buffer);
 
-// Util functions (used by codecs)
+// util functions(used by codecs)
 snd_stream_t *S_CodecUtilOpen(const char *filename, snd_codec_t *codec);
 void S_CodecUtilClose(snd_stream_t **stream);
 
-// WAV Codec
+// wAV Codec
 extern snd_codec_t wav_codec;
 void *S_WAV_CodecLoad(const char *filename, snd_info_t *info);
 snd_stream_t *S_WAV_CodecOpenStream(const char *filename);
 void S_WAV_CodecCloseStream(snd_stream_t *stream);
 int S_WAV_CodecReadStream(snd_stream_t *stream, int bytes, void *buffer);
 
-// Ogg Vorbis codec
+// ogg Vorbis codec
 #ifdef FEATURE_OGG_VORBIS
 extern snd_codec_t ogg_codec;
 void *S_OGG_CodecLoad(const char *filename, snd_info_t *info);
 snd_stream_t *S_OGG_CodecOpenStream(const char *filename);
 void S_OGG_CodecCloseStream(snd_stream_t *stream);
 int S_OGG_CodecReadStream(snd_stream_t *stream, int bytes, void *buffer);
-#endif // FEATURE_OGG_VORBIS
+#endif // fEATURE_OGG_VORBIS
 
 #endif // #ifndef INCLUDE_SND_CODEC_H

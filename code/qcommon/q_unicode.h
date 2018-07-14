@@ -1,12 +1,12 @@
 /*
  * Wolfenstein: Enemy Territory GPL Source Code
- * Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
+ * Copyright(C) 1999 - 2010 id Software LLC, a ZeniMax Media company.
  *
  * Daemon GPL Source Code
- * Copyright (C) 2012-2013 Unvanquished Developers
+ * Copyright(C) 2012 - 2013 Unvanquished Developers
  *
  * ET: Legacy
- * Copyright (C) 2012-2018 ET:Legacy team <mail@etlegacy.com>
+ * Copyright(C) 2012 - 2018 ET:Legacy team < mail@etlegacy.com > 
  *
  * This file is part of ET: Legacy - http://www.etlegacy.com
  *
@@ -21,7 +21,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with ET: Legacy. If not, see <http://www.gnu.org/licenses/>.
+ * along with ET: Legacy. If not, see < http://www.gnu.org/licenses/ > .
  *
  * In addition, Wolfenstein: Enemy Territory GPL Source Code is also
  * subject to certain additional terms. You should have received a copy
@@ -33,7 +33,7 @@
  */
 /**
  * @file q_unicode.h
- * @brief Unicode & UTF-8 handling
+ * @brief Unicode & UTF - 8 handling
  *
  * The whole unicode handling system was published at [cprogramming.com]
  * by Jeff Bezanson and adapted for the id Tech 3 engine by Unvanquished
@@ -45,7 +45,7 @@
 #ifndef INCLUDE_Q_UNICODE_H
 #define INCLUDE_Q_UNICODE_H
 
-// The version in which unicode was added..
+// the version in which unicode was added..
 // FIXME: change this to 273 before release...!!!
 #define UNICODE_SUPPORT_VERSION 273
 
@@ -61,11 +61,11 @@ void Q_UTF8_Insert(char *dest, int size, int offset, int key, qboolean overstrik
 void Q_UTF8_Move(char *data, size_t offset1, size_t offset2, size_t size);
 qboolean Q_UTF8_ContByte(char c);
 unsigned long Q_UTF8_CodePoint(const char *str);
-void Q_UTF8_RegisterFont(const char *fontName, int pointSize, fontHelper_t *font, qboolean extended, void (*font_register)(const char *, int, void *));
+void Q_UTF8_RegisterFont(const char *fontName, int pointSize, fontHelper_t *font, qboolean extended, void(*font_register)(const char *, int, void *));
 void Q_UTF8_FreeFont(fontHelper_t *font);
 char *Q_UTF8_Encode(unsigned long codepoint);
 int Q_UTF8_Store(const char *s);
 char *Q_UTF8_Unstore(int e);
 void Q_UTF8_ToUTF32(char *string, int *charArray, int *outlen);
 
-#endif // INCLUDE_Q_UNICODE_H
+#endif // iNCLUDE_Q_UNICODE_H

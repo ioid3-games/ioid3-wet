@@ -1,9 +1,9 @@
 /*
  * Wolfenstein: Enemy Territory GPL Source Code
- * Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
+ * Copyright(C) 1999 - 2010 id Software LLC, a ZeniMax Media company.
  *
  * ET: Legacy
- * Copyright (C) 2012-2018 ET:Legacy team <mail@etlegacy.com>
+ * Copyright(C) 2012 - 2018 ET:Legacy team < mail@etlegacy.com > 
  *
  * This file is part of ET: Legacy - http://www.etlegacy.com
  *
@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with ET: Legacy. If not, see <http://www.gnu.org/licenses/>.
+ * along with ET: Legacy. If not, see < http://www.gnu.org/licenses/ > .
  *
  * In addition, Wolfenstein: Enemy Territory GPL Source Code is also
  * subject to certain additional terms. You should have received a copy
@@ -41,16 +41,15 @@
  * @struct qkey_s
  * @brief
  */
-typedef struct
-{
+typedef struct {
 	qboolean down;
-	int repeats;                ///< if > 1, it is autorepeating
+	int repeats;                // if > 1, it is autorepeating
 	char *binding;
 	int hash;
 } qkey_t;
 
 extern qboolean key_overstrikeMode;
-extern qkey_t   keys[MAX_KEYS];
+extern qkey_t keys[MAX_KEYS];
 
 // NOTE: the declaration of field_t and Field_Clear is now in qcommon/qcommon.h
 
@@ -59,11 +58,11 @@ void Field_CharEvent(field_t *edit, int ch);
 void Field_Draw(field_t *edit, int x, int y, int width, qboolean showCursor, qboolean noColorEscape);
 void Field_BigDraw(field_t *edit, int x, int y, int width, qboolean showCursor, qboolean noColorEscape);
 
-#define     COMMAND_HISTORY     32
+#define COMMAND_HISTORY     32
 extern field_t historyEditLines[COMMAND_HISTORY];
 
 extern field_t g_consoleField;
-extern int     anykeydown;
+extern int anykeydown;
 
 void Key_WriteBindings(fileHandle_t f);
 void Key_SetBinding(int keynum, const char *binding);

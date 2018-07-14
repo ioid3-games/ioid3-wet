@@ -1,9 +1,9 @@
 /*
  * Wolfenstein: Enemy Territory GPL Source Code
- * Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
+ * Copyright(C) 1999 - 2010 id Software LLC, a ZeniMax Media company.
  *
  * ET: Legacy
- * Copyright (C) 2012-2018 ET:Legacy team <mail@etlegacy.com>
+ * Copyright(C) 2012 - 2018 ET:Legacy team < mail@etlegacy.com > 
  *
  * This file is part of ET: Legacy - http://www.etlegacy.com
  *
@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with ET: Legacy. If not, see <http://www.gnu.org/licenses/>.
+ * along with ET: Legacy. If not, see < http://www.gnu.org/licenses/ > .
  *
  * In addition, Wolfenstein: Enemy Territory GPL Source Code is also
  * subject to certain additional terms. You should have received a copy
@@ -36,9 +36,9 @@
 #define INCLUDE_SND_PUBLIC_H
 
 // background track queuing
-#define QUEUED_PLAY_ONCE    -1
-#define QUEUED_PLAY_LOOPED  -2
-#define QUEUED_PLAY_ONCE_SILENT -3  ///< when done it goes quiet
+#define QUEUED_PLAY_ONCE - 1
+#define QUEUED_PLAY_LOOPED - 2
+#define QUEUED_PLAY_ONCE_SILENT - 3  // when done it goes quiet
 
 void S_Init(void);
 void S_Shutdown(void);
@@ -56,7 +56,7 @@ float S_StartStreamingSound(const char *intro, const char *loop, int entNum, int
 void S_StopEntStreamingSound(int entNum);
 void S_FadeStreamingSound(float targetvol, int time, int stream);
 
-// cinematics and voice-over-network will send raw samples
+// cinematics and voice - over - network will send raw samples
 // 1.0 volume will be direct output of source samples
 void S_RawSamples(int stream, int samples, int rate, int width, int channels,
                   const byte *data, float lvol, float rvol);
@@ -84,7 +84,7 @@ void S_DisableSounds(void);
 
 void S_BeginRegistration(void);
 
-// RegisterSound will allways return a valid sample, even if it
+// registerSound will allways return a valid sample, even if it
 // has to create a placeholder.  This prevents continuous filesystem
 // checks for missing files
 sfxHandle_t S_RegisterSound(const char *name, qboolean compressed);

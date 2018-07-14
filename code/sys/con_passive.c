@@ -1,9 +1,9 @@
 /**
  * Wolfenstein: Enemy Territory GPL Source Code
- * Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
+ * Copyright(C) 1999 - 2010 id Software LLC, a ZeniMax Media company.
  *
  * ET: Legacy
- * Copyright (C) 2012-2018 ET:Legacy team <mail@etlegacy.com>
+ * Copyright(C) 2012 - 2018 ET:Legacy team < mail@etlegacy.com > 
  *
  * This file is part of ET: Legacy - http://www.etlegacy.com
  *
@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with ET: Legacy. If not, see <http://www.gnu.org/licenses/>.
+ * along with ET: Legacy. If not, see < http://www.gnu.org/licenses/ > .
  *
  * In addition, Wolfenstein: Enemy Territory GPL Source Code is also
  * subject to certain additional terms. You should have received a copy
@@ -38,46 +38,39 @@
 #include <stdio.h>
 
 /*
-==================
+ ================== 
 CON_Shutdown
-==================
+ ================== 
 */
-void CON_Shutdown(void)
-{
+void CON_Shutdown(void) {
 }
 
 /*
-==================
+ ================== 
 CON_Init
-==================
+ ================== 
 */
-void CON_Init(void)
-{
+void CON_Init(void) {
 }
 
 /*
-==================
+ ================== 
 CON_Input
-==================
+ ================== 
 */
-char *CON_Input(void)
-{
+char *CON_Input(void) {
 	return NULL;
 }
 
 /*
-==================
+ ================== 
 CON_Print
-==================
+ ================== 
 */
-void CON_Print(const char *msg)
-{
-	if (com_ansiColor && com_ansiColor->integer)
-	{
+void CON_Print(const char *msg) {
+	if (com_ansiColor && com_ansiColor->integer) {
 		Sys_AnsiColorPrint(msg);
-	}
-	else
-	{
+	} else {
 		fputs(msg, stderr);
 	}
 }

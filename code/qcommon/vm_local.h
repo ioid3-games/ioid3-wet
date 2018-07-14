@@ -1,9 +1,9 @@
 /*
  * Wolfenstein: Enemy Territory GPL Source Code
- * Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
+ * Copyright(C) 1999 - 2010 id Software LLC, a ZeniMax Media company.
  *
  * ET: Legacy
- * Copyright (C) 2012-2018 ET:Legacy team <mail@etlegacy.com>
+ * Copyright(C) 2012 - 2018 ET:Legacy team < mail@etlegacy.com > 
  *
  * This file is part of ET: Legacy - http://www.etlegacy.com
  *
@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with ET: Legacy. If not, see <http://www.gnu.org/licenses/>.
+ * along with ET: Legacy. If not, see < http://www.gnu.org/licenses/ > .
  *
  * In addition, Wolfenstein: Enemy Territory GPL Source Code is also
  * subject to certain additional terms. You should have received a copy
@@ -41,8 +41,7 @@
 /**
  * @enum opcode_t
  */
-typedef enum
-{
+typedef enum {
 	OP_UNDEF,
 
 	OP_IGNORE,
@@ -60,7 +59,7 @@ typedef enum
 
 	OP_JUMP,
 
-	//-------------------
+	//------------------ - 
 
 	OP_EQ,
 	OP_NE,
@@ -83,19 +82,19 @@ typedef enum
 	OP_GTF,
 	OP_GEF,
 
-	//-------------------
+	//------------------ - 
 
 	OP_LOAD1,
 	OP_LOAD2,
 	OP_LOAD4,
 	OP_STORE1,
 	OP_STORE2,
-	OP_STORE4,              ///< *(stack[top-1]) = stack[top]
+	OP_STORE4, // * (stack[top - 1]) = stack[top]
 	OP_ARG,
 
 	OP_BLOCK_COPY,
 
-	//-------------------
+	//------------------ - 
 
 	OP_SEX8,
 	OP_SEX16,
@@ -136,12 +135,11 @@ typedef intptr_t vmptr_t;
  * @typedef vmSymbol_t
  * @brief
  */
-typedef struct vmSymbol_s
-{
+typedef struct vmSymbol_s {
 	struct vmSymbol_s *next;
 	int symValue;
 	int profileCount;
-	char symName[1];        ///< variable sized
+	char symName[1];        // variable sized
 } vmSymbol_t;
 
 #define VM_OFFSET_PROGRAM_STACK     0
@@ -153,18 +151,17 @@ typedef struct vmSymbol_s
  * @struct vm_s
  * @brief
  */
-struct vm_s
-{
-	// DO NOT MOVE OR CHANGE THESE WITHOUT CHANGING THE VM_OFFSET_* DEFINES
-	// USED BY THE ASM CODE
-	int programStack;               ///< the vm may be recursively entered
-	intptr_t (*systemCall)(intptr_t *parms);
+struct vm_s {
+	// dO NOT MOVE OR CHANGE THESE WITHOUT CHANGING THE VM_OFFSET_* DEFINES
+	// uSED BY THE ASM CODE
+	int programStack;               // the vm may be recursively entered
+	intptr_t(*systemCall)(intptr_t *parms);
 
-	//------------------------------------
+	//------------------------------------ 
 
 	char name[MAX_QPATH];
 
-	char fqpath[MAX_QPATH + 1] ;
+	char fqpath[MAX_QPATH + 1];
 
 	// for dynamic linked modules
 	void *dllHandle;
@@ -176,26 +173,23 @@ struct vm_s
 	qboolean compiled;
 	byte *codeBase;
 	int codeLength;
-
 	int *instructionPointers;
 	int instructionPointersLength;
 
 	byte *dataBase;
 	int dataMask;
-
-	int stackBottom;                ///< if programStack < stackBottom, error
+	int stackBottom;                // if programStack < stackBottom, error
 
 	int numSymbols;
 	struct vmSymbol_s *symbols;
-
-	int callLevel;                  ///< for debug indenting
-	int breakFunction;              ///< increment breakCount on function entry to this
+	int callLevel;                  // for debug indenting
+	int breakFunction;              // increment breakCount on function entry to this
 	int breakCount;
 	qboolean extract;
 };
 
 extern vm_t *currentVM;
-extern int  vm_debugLevel;
+extern int vm_debugLevel;
 
 void VM_Compile(vm_t *vm, vmHeader_t *header);
 int VM_CallCompiled(vm_t *vm, int *args);

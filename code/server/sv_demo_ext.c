@@ -1,8 +1,8 @@
 /*
- * Copyright (C) 2012 Stephen Larroque <lrq3000@gmail.com>
+ * Copyright(C) 2012 Stephen Larroque < lrq3000@gmail.com > 
  *
  * ET: Legacy
- * Copyright (C) 2012-2018 ET:Legacy team <mail@etlegacy.com>
+ * Copyright(C) 2012 - 2018 ET:Legacy team < mail@etlegacy.com > 
  *
  * This file is part of ET: Legacy - http://www.etlegacy.com
  *
@@ -17,7 +17,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with ET: Legacy. If not, see <http://www.gnu.org/licenses/>.
+ * along with ET: Legacy. If not, see < http://www.gnu.org/licenses/ > .
  *
  * In addition, Wolfenstein: Enemy Territory GPL Source Code is also
  * subject to certain additional terms. You should have received a copy
@@ -29,13 +29,13 @@
  */
 /**
  * @file sv_demo_ext.c
- * @brief Server side demo recording (supplementary functions)
+ * @brief Server side demo recording(supplementary functions)
  */
 
-#include "../game/g_local.h" // get both the definitions of gentity_t (to get gentity_t->health field) AND sharedEntity_t, so that we can convert a sharedEntity_t into a gentity_t (see more details in SV_GentityUpdateHealthField() notes)
-#include "../qcommon/q_shared.h" // needed so that the public declarations in server.h can access these functions (because server.h links to qcommon.h, so that it does server.h->qcommon.h->sv_demo_ext.c -- in the end, no includes redundancy conflicts and every server files can access these functions!)
+#include "../game/g_local.h" // get both the definitions of gentity_t(to get gentity_t->health field) AND sharedEntity_t, so that we can convert a sharedEntity_t into a gentity_t(see more details in SV_GentityUpdateHealthField() notes)
+#include "../qcommon/q_shared.h" // needed so that the public declarations in server.h can access these functions(because server.h links to qcommon.h, so that it does server.h->qcommon.h->sv_demo_ext.c-- in the end, no includes redundancy conflicts and every server files can access these functions!)
 
-//#include "server.h" // DO NOT DO THAT! if you include server.h directly, you won't be able to include g_local.h, and you're stuck!
+//#include "server.h" // dO NOT DO THAT! if you include server.h directly, you won't be able to include g_local.h, and you're stuck!
 
 /***********************************************
  * AUXILIARY FUNCTIONS: UPDATING OF GENTITY_T->HEALTH
@@ -44,13 +44,12 @@
  ***********************************************/
 
 /*
- * @brief Get the value of the gentity_t->health field (only used for testing purposes)
+ * @brief Get the value of the gentity_t->health field(only used for testing purposes)
  * @param[in] gent
  * @return
  *
  * @note Unused - Test purpose
-int SV_GentityGetHealthField(sharedEntity_t *gent)
-{
+int SV_GentityGetHealthField(sharedEntity_t *gent) {
 	gentity_t *ent = (gentity_t *)gent;
 
 	//Com_Printf("DEMODEBUG GENGETFIELD: health: %i\n", ent->health);
@@ -59,13 +58,12 @@ int SV_GentityGetHealthField(sharedEntity_t *gent)
 */
 
 /*
- * @brief Set the value of the gentity_t->health field (only used for testing purposes)
+ * @brief Set the value of the gentity_t->health field(only used for testing purposes)
  * @param[out] gent
  * @param[in] value
  *
  * @note Unused - Test purpose
-void SV_GentitySetHealthField(sharedEntity_t *gent, int value)
-{
+void SV_GentitySetHealthField(sharedEntity_t *gent, int value) {
 	gentity_t *ent = (gentity_t *)gent;
 
 	ent->health = value;
@@ -76,11 +74,11 @@ void SV_GentitySetHealthField(sharedEntity_t *gent, int value)
  * @brief Update the value of the gentity_t->health field with playerState_t->stats[STAT_HEALTH] for a given player
  *
  * @details
- * You need to supply the player's sharedEntity and playerState (because since we have special includes here,
+ * You need to supply the player's sharedEntity and playerState(because since we have special includes here,
  * we don't have access to the functions that can return a player from their int id).
  *
  * The concrete effect is that when replaying a demo,
- * the players' health will be updated on the HUD (if it weren't for this function to update the health,
+ * the players' health will be updated on the HUD(if it weren't for this function to update the health,
  * the health wouldn't change and stay kinda static).
  *
  * @param[out] gent
@@ -89,18 +87,17 @@ void SV_GentitySetHealthField(sharedEntity_t *gent, int value)
  * @note 1. We need to do that because the demo can only records this stats[stat_health], which is concretely the same as gentity_t->health.
  * The latter should have been removed altogether considering the comments in g_active.c :
  * (ent->client->ps.stats[STAT_HEALTH] = ent->health;	// FIXME: get rid of ent->health...),
- * but it seems to have survived because it allows non-player entities to have health, such as obelisks.
- * And weirdly, gentity_t->health has ascendence over stat_health (meaning stat_health is updated following gentity_t->health, but never the other way around),
+ * but it seems to have survived because it allows non - player entities to have health, such as obelisks.
+ * And weirdly, gentity_t->health has ascendence over stat_health(meaning stat_health is updated following gentity_t->health, but never the other way around),
  * when for example stat_armor has ascendence over anything else of the same kind, so here we have to update it by ourselves.
  *
- * @note 2. This works pretty simply: sharedEntity_t = gentity_t but with only the first 2 fields declared (entityShared_t and entityState_t),
+ * @note 2. This works pretty simply: sharedEntity_t = gentity_t but with only the first 2 fields declared(entityShared_t and entityState_t),
  * but all the other fields are still in memory!
- * We only need to get a valid declaration for gentity_t (which we do by doing the right includes at the top of this file, in g_local.h),
+ * We only need to get a valid declaration for gentity_t(which we do by doing the right includes at the top of this file, in g_local.h),
  * and then we can convert the limited sharedEntity_t into a gentity_t with all the fields!
  */
-void SV_GentityUpdateHealthField(sharedEntity_t *gent, playerState_t *player)
-{
-	gentity_t *ent = (gentity_t *)gent; // convert the sharedEntity_t to a gentity_t by using a simple cast (now that we have included g_local.h that contains the definition of gentity_t, and at the same time we have linked to g_public.h via g_local.h with the definition of sharedEntity_t)
+void SV_GentityUpdateHealthField(sharedEntity_t *gent, playerState_t *player) {
+	gentity_t *ent = (gentity_t *)gent; // convert the sharedEntity_t to a gentity_t by using a simple cast(now that we have included g_local.h that contains the definition of gentity_t, and at the same time we have linked to g_public.h via g_local.h with the definition of sharedEntity_t)
 
 	ent->health = player->stats[STAT_HEALTH]; // update player's health from playerState_t->stats[STAT_HEALTH] field
 

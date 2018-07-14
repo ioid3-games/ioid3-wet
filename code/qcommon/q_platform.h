@@ -1,9 +1,9 @@
 /*
  * Wolfenstein: Enemy Territory GPL Source Code
- * Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
+ * Copyright(C) 1999 - 2010 id Software LLC, a ZeniMax Media company.
  *
  * ET: Legacy
- * Copyright (C) 2012-2018 ET:Legacy team <mail@etlegacy.com>
+ * Copyright(C) 2012 - 2018 ET:Legacy team < mail@etlegacy.com > 
  *
  * This file is part of ET: Legacy - http://www.etlegacy.com
  *
@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with ET: Legacy. If not, see <http://www.gnu.org/licenses/>.
+ * along with ET: Legacy. If not, see < http://www.gnu.org/licenses/ > .
  *
  * In addition, Wolfenstein: Enemy Territory GPL Source Code is also
  * subject to certain additional terms. You should have received a copy
@@ -48,24 +48,24 @@
 
 #else
 
-#if (defined _M_IX86 || defined __i386__) && !defined(C_ONLY)
+#if(defined _M_IX86 || defined __i386__) && !defined(C_ONLY)
 #define id386 1
 #else
 #define id386 0
 #endif
 
-#if (defined(powerc) || defined(powerpc) || defined(ppc) || \
+#if(defined(powerc) || defined(powerpc) || defined(ppc) || \
     defined(__ppc) || defined(__ppc__) || defined(__PPC__) || \
     defined(__POWERPC__)) && !defined(C_ONLY)
 #define idppc 1
 #if defined(__VEC__) || defined(__ALTIVEC__) || defined(__APPLE_ALTIVEC__)
 #define idppc_altivec 1
-#ifdef __APPLE__  // Apple's GCC does this differently than the FSF.
+#ifdef __APPLE__  // apple's GCC does this differently than the FSF.
 #define VECCONST_UINT8(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p) \
-	(vector unsigned char) (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p)
+	(vector unsigned char)(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p)
 #else
 #define VECCONST_UINT8(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p) \
-	(vector unsigned char) { a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p }
+	(vector unsigned char) {a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p}
 #endif
 #else
 #define idppc_altivec 0
@@ -89,7 +89,7 @@
 #define QDECL
 #define QCALL
 
-//================================================================= WIN64/32 ===
+//=================================================================WIN64/32 == = 
 
 #if defined(_WIN64) || defined(__WIN64__)
 
@@ -150,8 +150,7 @@
 
 #endif
 
-
-//============================================================== MAC OS X ===
+//============================================================== MAC OS X == = 
 
 #if defined(__APPLE__) || defined(__APPLE_CC__)
 
@@ -176,7 +175,7 @@
 
 #endif
 
-//================================================================= LINUX ===
+//=================================================================LINUX == = 
 
 #if defined(__linux__) || defined(__FreeBSD_kernel__)
 
@@ -233,7 +232,7 @@
 
 #endif
 
-//=================================================================== BSD ===
+//===================================================================BSD == = 
 
 #if defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__)
 
@@ -275,7 +274,7 @@
 
 #endif
 
-//================================================================= SUNOS ===
+//=================================================================SUNOS == = 
 
 #ifdef __sun
 
@@ -302,7 +301,7 @@
 
 #endif
 
-//================================================================== IRIX ===
+//================================================================== IRIX == = 
 
 #ifdef __sgi
 
@@ -312,13 +311,13 @@
 
 #define ARCH_STRING "mips"
 
-#define Q3_BIG_ENDIAN // SGI's MIPS are always big endian
+#define Q3_BIG_ENDIAN // sGI's MIPS are always big endian
 
 #define DLL_EXT ".so"
 
 #endif
 
-//================================================================== Q3VM ===
+//================================================================== Q3VM == = 
 
 #ifdef Q3_VM
 
@@ -354,7 +353,6 @@
 #ifndef DLL_EXT
 #error "DLL_EXT not defined"
 #endif
-
 
 //endianness
 short ShortSwap(short l);
@@ -393,7 +391,6 @@ float FloatSwap(const float *f);
 #else
 #error "Endianness not defined"
 #endif
-
 
 //platform string
 #ifndef LEGACY_DEBUG

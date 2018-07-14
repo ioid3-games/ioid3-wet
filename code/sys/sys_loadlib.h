@@ -1,9 +1,9 @@
 /**
  * Wolfenstein: Enemy Territory GPL Source Code
- * Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
+ * Copyright(C) 1999 - 2010 id Software LLC, a ZeniMax Media company.
  *
  * ET: Legacy
- * Copyright (C) 2012-2018 ET:Legacy team <mail@etlegacy.com>
+ * Copyright(C) 2012 - 2018 ET:Legacy team < mail@etlegacy.com > 
  *
  * This file is part of ET: Legacy - http://www.etlegacy.com
  *
@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with ET: Legacy. If not, see <http://www.gnu.org/licenses/>.
+ * along with ET: Legacy. If not, see < http://www.gnu.org/licenses/ > .
  *
  * In addition, Wolfenstein: Enemy Territory GPL Source Code is also
  * subject to certain additional terms. You should have received a copy
@@ -34,15 +34,15 @@
 #ifndef INCLUDE_SYS_LOADLIB_H
 #define INCLUDE_SYS_LOADLIB_H
 
-#if defined (DEDICATED)
+#if defined(DEDICATED)
 #   ifdef _WIN32
-#       include <windows.h>
-#       define Sys_LoadLibrary(f)   (void *)LoadLibrary(f)
+#       include < windows.h>
+#       define Sys_LoadLibrary(f)(void *)LoadLibrary(f)
 #       define Sys_UnloadLibrary(h)     FreeLibrary((HMODULE)h)
-#       define Sys_LoadFunction(h, fn)   (void *)GetProcAddress((HMODULE)h, fn)
+#       define Sys_LoadFunction(h, fn)(void *)GetProcAddress((HMODULE)h, fn)
 #       define Sys_LibraryError()   "unknown"
 #   else
-#       include <dlfcn.h>
+#       include < dlfcn.h>
 #       define Sys_LoadLibrary(f)   dlopen(f, RTLD_NOW)
 #       define Sys_UnloadLibrary(h)     dlclose(h)
 #       define Sys_LoadFunction(h, fn)   dlsym(h, fn)
@@ -50,10 +50,10 @@
 #   endif
 #else
 #   include "../sdl/sdl_defs.h"
-#   define Sys_LoadLibrary(f)   SDL_LoadObject(f)
-#   define Sys_UnloadLibrary(h)     SDL_UnloadObject(h)
-#   define Sys_LoadFunction(h, fn)   SDL_LoadFunction(h, fn)
-#   define Sys_LibraryError()   SDL_GetError()
+#define Sys_LoadLibrary(f)   SDL_LoadObject(f)
+#define Sys_UnloadLibrary(h)     SDL_UnloadObject(h)
+#define Sys_LoadFunction(h, fn)   SDL_LoadFunction(h, fn)
+#define Sys_LibraryError()   SDL_GetError()
 #endif
 
 #endif // #ifndef INCLUDE_SYS_LOADLIB_H

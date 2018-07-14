@@ -1,9 +1,9 @@
 /*
  * Wolfenstein: Enemy Territory GPL Source Code
- * Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
+ * Copyright(C) 1999 - 2010 id Software LLC, a ZeniMax Media company.
  *
  * ET: Legacy
- * Copyright (C) 2012-2018 ET:Legacy team <mail@etlegacy.com>
+ * Copyright(C) 2012 - 2018 ET:Legacy team < mail@etlegacy.com > 
  *
  * This file is part of ET: Legacy - http://www.etlegacy.com
  *
@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with ET: Legacy. If not, see <http://www.gnu.org/licenses/>.
+ * along with ET: Legacy. If not, see < http://www.gnu.org/licenses/ > .
  *
  * In addition, Wolfenstein: Enemy Territory GPL Source Code is also
  * subject to certain additional terms. You should have received a copy
@@ -32,7 +32,7 @@
  * @file dl_main_curl.c
  *
  * @todo Additional features that would be nice for this code:
- *           Only display \<gamepath\>/\<file\>, e.g., etpro/etpro-3_0_1.pk3 in the UI.
+ *           Only display \ < gamepath\ > /\ < file\ > , e.g., etpro/etpro - 3_0_1.pk3 in the UI.
  *           Add server as referring URL
  */
 
@@ -53,15 +53,14 @@
  */
 static int dl_initialized = 0;
 
-static CURLM *dl_multi   = NULL;
+static CURLM *dl_multi = NULL;
 static CURL  *dl_request = NULL;
-static FILE  *dl_file    = NULL;
+static FILE *dl_file = NULL;
 
 /**
  * @struct write_result_s
  */
-typedef struct write_result_s
-{
+typedef struct write_result_s {
 	char *data;
 	int pos;
 } write_result_t;
@@ -74,8 +73,7 @@ typedef struct write_result_s
  * @param[in] stream
  * @return
  */
-static size_t DL_cb_FWriteFile(void *ptr, size_t size, size_t nmemb, void *stream)
-{
+static size_t DL_cb_FWriteFile(void *ptr, size_t size, size_t nmemb, void *stream) {
 	FILE *file = (FILE *)stream;
 	return fwrite(ptr, size, nmemb, file);
 }
@@ -86,14 +84,13 @@ static size_t DL_cb_FWriteFile(void *ptr, size_t size, size_t nmemb, void *strea
  * @param dltotal - unused
  * @param[in] dlnow
  * @param ultotal - unused
- * @param ulnow   - unused
+ * @param ulnow - unused
  * @return
  *
  * @note cl_downloadSize and cl_downloadTime are set by the Q3 protocol...
  * and it would probably be expensive to verify them here.
  */
-static int DL_cb_Progress(void *clientp, double dltotal, double dlnow, double ultotal, double ulnow)
-{
+static int DL_cb_Progress(void *clientp, double dltotal, double dlnow, double ultotal, double ulnow) {
 	Cvar_SetValue("cl_downloadCount", (float)dlnow);
 	return 0;
 }
@@ -106,12 +103,10 @@ static int DL_cb_Progress(void *clientp, double dltotal, double dlnow, double ul
  * @param[out] stream
  * @return
  */
-size_t DL_write_function(void *ptr, size_t size, size_t nmemb, void *stream)
-{
+size_t DL_write_function(void *ptr, size_t size, size_t nmemb, void *stream) {
 	write_result_t *result = (write_result_t *)stream;
 
-	if (result->pos + size * nmemb >= GET_BUFFER_SIZE - 1)
-	{
+	if (result->pos + size * nmemb >= GET_BUFFER_SIZE - 1) {
 		Com_Printf(S_COLOR_RED  "DL_write_function: Error - buffer is too small");
 		return 0;
 	}
@@ -125,10 +120,8 @@ size_t DL_write_function(void *ptr, size_t size, size_t nmemb, void *stream)
 /**
  * @brief DL_InitDownload
  */
-void DL_InitDownload(void)
-{
-	if (dl_initialized)
-	{
+void DL_InitDownload(void) {
+	if (dl_initialized) {
 		return;
 	}
 
@@ -144,10 +137,8 @@ void DL_InitDownload(void)
 /**
  * @brief DL_Shutdown
  */
-void DL_Shutdown(void)
-{
-	if (!dl_initialized)
-	{
+void DL_Shutdown(void) {
+	if (!dl_initialized) {
 		return;
 	}
 
@@ -167,31 +158,27 @@ void DL_Shutdown(void)
  * @param remoteName
  * @return
  */
-int DL_BeginDownload(char *localName, const char *remoteName)
-{
+int DL_BeginDownload(char *localName, const char *remoteName) {
 	char referer[MAX_STRING_CHARS + 5 /*"ET://"*/];
 
-	if (dl_request)
-	{
+	if (dl_request) {
 		Com_Printf(S_COLOR_RED "DL_BeginDownload: Error - called with a download request already active\n");
 		return 0;
 	}
 
-	if (!localName[0] || !remoteName[0])
-	{
+	if (!localName[0] || !remoteName[0]) {
 		Com_Printf(S_COLOR_RED "DL_BeginDownload: Error - empty download URL or empty local file name\n");
 		return 0;
 	}
 
-	if (FS_CreatePath(localName))
-	{
-		Com_Printf(S_COLOR_RED "DL_BeginDownload: Error - unable to create directory (%s).\n", localName);
+	if (FS_CreatePath(localName)) {
+		Com_Printf(S_COLOR_RED "DL_BeginDownload: Error - unable to create directory(%s).\n", localName);
 		return 0;
 	}
 
-	dl_file = fopen(localName, "wb+");
-	if (!dl_file)
-	{
+	dl_file = fopen(localName, "wb + ");
+
+	if (!dl_file) {
 		Com_Printf(S_COLOR_RED  "DL_BeginDownload: Error - unable to open '%s' for writing\n", localName);
 		return 0;
 	}
@@ -223,8 +210,7 @@ int DL_BeginDownload(char *localName, const char *remoteName)
 #endif
 #endif
 
-	if (curl_multi_add_handle(dl_multi, dl_request) != CURLM_OK)
-	{
+	if (curl_multi_add_handle(dl_multi, dl_request) != CURLM_OK) {
 		Com_Printf(S_COLOR_RED  "DL_BeginDownload: Error - invalid handle.\n");
 	}
 
@@ -240,17 +226,15 @@ int DL_BeginDownload(char *localName, const char *remoteName)
  *
  * @note Unused
  */
-char *DL_GetString(const char *url)
-{
+char *DL_GetString(const char *url) {
 	CURL     *curl = NULL;
 	CURLcode status;
-	char     *data = NULL;
+	char *data = NULL;
 	long     code;
 
-	write_result_t write_result = { NULL, 0 };
+	write_result_t write_result = {NULL, 0};
 
-	if (!url)
-	{
+	if (!url) {
 		Com_Printf(S_COLOR_RED "DL_GetString: Error - empty download URL\n");
 		return NULL;
 	}
@@ -260,12 +244,10 @@ char *DL_GetString(const char *url)
 	curl = curl_easy_init();
 
 	data = (char *)Com_Allocate(GET_BUFFER_SIZE);
-	if (!data)
-	{
+
+	if (!data) {
 		goto error_get;
-	}
-	else
-	{
+	} else {
 		write_result.data = data;
 	}
 
@@ -285,16 +267,16 @@ char *DL_GetString(const char *url)
 #endif
 
 	status = curl_easy_perform(curl);
-	if (status != 0)
-	{
+
+	if (status != 0) {
 		Com_Printf(S_COLOR_RED "DL_GetString: Error - unable to request data from %s\n", url);
 		Com_Printf(S_COLOR_RED "DL_GetString: Error - %s\n", curl_easy_strerror(status));
 		goto error_get;
 	}
 
 	curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &code);
-	if (code != 200)
-	{
+
+	if (code != 200) {
 		Com_Printf(S_COLOR_RED "DL_GetString: Error - server responded with code %ld\n", code);
 		goto error_get;
 	}
@@ -306,13 +288,11 @@ char *DL_GetString(const char *url)
 
 error_get:
 
-	if (curl)
-	{
+	if (curl) {
 		curl_easy_cleanup(curl);
 	}
 
-	if (data)
-	{
+	if (data) {
 		Com_Dealloc(data);
 	}
 
@@ -325,38 +305,31 @@ error_get:
  *
  * @note maybe this should be CL_DL_DownloadLoop
  */
-dlStatus_t DL_DownloadLoop(void)
-{
+dlStatus_t DL_DownloadLoop(void) {
 	CURLMcode  status;
 	CURLMsg    *msg;
-	int        dls  = 0;
+	int dls = 0;
 	const char *err = NULL;
 
-	if (!dl_request)
-	{
+	if (!dl_request) {
 		Com_DPrintf("DL_DownloadLoop: Error - unexpected call with dl_request == NULL\n");
 		return DL_DONE;
 	}
 
-	if ((status = curl_multi_perform(dl_multi, &dls)) == CURLM_CALL_MULTI_PERFORM && dls)
-	{
+	if ((status = curl_multi_perform(dl_multi, &dls)) == CURLM_CALL_MULTI_PERFORM && dls) {
 		return DL_CONTINUE;
 	}
 
 	while ((msg = curl_multi_info_read(dl_multi, &dls)) && msg->easy_handle != dl_request)
 		;
 
-	if (!msg || msg->msg != CURLMSG_DONE)
-	{
+	if (!msg || msg->msg != CURLMSG_DONE) {
 		return DL_CONTINUE;
 	}
 
-	if (msg->data.result != CURLE_OK)
-	{
+	if (msg->data.result != CURLE_OK) {
 		err = curl_easy_strerror(msg->data.result);
-	}
-	else
-	{
+	} else {
 		err = NULL;
 	}
 
@@ -370,8 +343,7 @@ dlStatus_t DL_DownloadLoop(void)
 
 	Cvar_Set("ui_dl_running", "0");
 
-	if (err)
-	{
+	if (err) {
 		Com_Printf(S_COLOR_RED "DL_DownloadLoop: Error - request terminated with failure status '%s'\n", err);
 		return DL_FAILED;
 	}

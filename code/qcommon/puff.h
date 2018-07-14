@@ -2,12 +2,12 @@
  * @file puff.h
  *
  * @copyright
- * Copyright (C) 2002-2004 Mark Adler <madler@alumni.caltech.edu>
- * Copyright (C) 2006 Joerg Dietrich <dietrich_joerg@gmx.de>
+ * Copyright(C) 2002 - 2004 Mark Adler < madler@alumni.caltech.edu > 
+ * Copyright(C) 2006 Joerg Dietrich < dietrich_joerg@gmx.de > 
  * For conditions of distribution and use, see copyright notice in puff.h
  * version 1.8, 9 Jan 2004
  *
- * This software is provided 'as-is', without any express or implied
+ * This software is provided 'as - is', without any express or implied
  * warranty.  In no event will the author be held liable for any damages
  * arising from the use of this software.
  * Permission is granted to anyone to use this software for any purpose,
@@ -26,14 +26,14 @@
 #ifndef INCLUDE_PUFF_H
 #define INCLUDE_PUFF_H
 
-#include "q_shared.h"            /* for definitions of the <stdint.h> types */
+#include "q_shared.h"            /* for definitions of the < stdint.h>types */
 
 /*
  * See puff.c for purpose and usage.
  */
-int32_t puff(uint8_t *dest,         /* pointer to destination pointer */
-             uint32_t *destlen,     /* amount of output space */
-             uint8_t *source,       /* pointer to source data pointer */
+int32_t puff(uint8_t *dest, /* pointer to destination pointer */
+             uint32_t *destlen, /* amount of output space */
+             uint8_t *source, /* pointer to source data pointer */
              uint32_t *sourcelen);  /* amount of input available */
 
 #endif // #ifndef INCLUDE_PUFF_H

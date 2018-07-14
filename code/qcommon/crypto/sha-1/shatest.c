@@ -1,17 +1,17 @@
 /*
  *  shatest.c
  *
- *	Copyright (C) 1998
- *	Paul E. Jones <paulej@arid.us>
+ *	Copyright(C) 1998
+ *	Paul E. Jones < paulej@arid.us > 
  *	All Rights Reserved
  *
  *****************************************************************************
- *	$Id: shatest.c,v 1.2 2004/03/27 18:00:33 paulej Exp $
+ *	$Id: shatest.c, v 1.2 2004/03/27 18:00:33 paulej Exp $
  *****************************************************************************
  *
  *  Description:
  *      This file will exercise the SHA1 class and perform the three
- *      tests documented in FIPS PUB 180-1.
+ *      tests documented in FIPS PUB 180 - 1.
  *
  *  Portability Issues:
  *      None.
@@ -31,8 +31,7 @@
 #define TESTB   TESTB_1 TESTB_2
 #define TESTC   "a"
 
-int main()
-{
+int main() {
     SHA1Context sha;
     int i;
 
@@ -42,23 +41,23 @@ int main()
     printf("\nTest A: 'abc'\n");
 
     SHA1Reset(&sha);
-    SHA1Input(&sha, (const unsigned char *) TESTA, strlen(TESTA));
+    SHA1Input(&sha, (const unsigned char *)TESTA, strlen(TESTA));
 
     if (!SHA1Result(&sha))
     {
-        fprintf(stderr, "ERROR-- could not compute message digest\n");
-    }
+        fprintf(stderr, "ERROR--could not compute message digest\n");
+}
     else
     {
         printf("\t");
-        for(i = 0; i < 5 ; i++)
+        for(i = 0; i < 5; i++)
         {
             printf("%X ", sha.Message_Digest[i]);
-        }
+}
         printf("\n");
         printf("Should match:\n");
         printf("\tA9993E36 4706816A BA3E2571 7850C26C 9CD0D89D\n");
-    }
+}
 
     /*
      *  Perform test B
@@ -66,23 +65,23 @@ int main()
     printf("\nTest B:\n");
 
     SHA1Reset(&sha);
-    SHA1Input(&sha, (const unsigned char *) TESTB, strlen(TESTB));
+    SHA1Input(&sha, (const unsigned char *)TESTB, strlen(TESTB));
 
     if (!SHA1Result(&sha))
     {
-        fprintf(stderr, "ERROR-- could not compute message digest\n");
-    }
+        fprintf(stderr, "ERROR--could not compute message digest\n");
+}
     else
     {
         printf("\t");
-        for(i = 0; i < 5 ; i++)
+        for(i = 0; i < 5; i++)
         {
             printf("%X ", sha.Message_Digest[i]);
-        }
+}
         printf("\n");
         printf("Should match:\n");
         printf("\t84983E44 1C3BD26E BAAE4AA1 F95129E5 E54670F1\n");
-    }
+}
 
     /*
      *  Perform test C
@@ -91,24 +90,24 @@ int main()
 
     SHA1Reset(&sha);
     for(i = 1; i <= 1000000; i++) {
-        SHA1Input(&sha, (const unsigned char *) TESTC, 1);
-    }
+        SHA1Input(&sha, (const unsigned char *)TESTC, 1);
+}
 
     if (!SHA1Result(&sha))
     {
-        fprintf(stderr, "ERROR-- could not compute message digest\n");
-    }
+        fprintf(stderr, "ERROR--could not compute message digest\n");
+}
     else
     {
         printf("\t");
-        for(i = 0; i < 5 ; i++)
+        for(i = 0; i < 5; i++)
         {
             printf("%X ", sha.Message_Digest[i]);
-        }
+}
         printf("\n");
         printf("Should match:\n");
         printf("\t34AA973C D4C4DAA4 F61EEB2B DBAD2731 6534016F\n");
-    }
+}
 
     return 0;
 }

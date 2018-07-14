@@ -1,9 +1,9 @@
 /*
  * Wolfenstein: Enemy Territory GPL Source Code
- * Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
+ * Copyright(C) 1999 - 2010 id Software LLC, a ZeniMax Media company.
  *
  * ET: Legacy
- * Copyright (C) 2012-2018 ET:Legacy team <mail@etlegacy.com>
+ * Copyright(C) 2012 - 2018 ET:Legacy team < mail@etlegacy.com > 
  *
  * This file is part of ET: Legacy - http://www.etlegacy.com
  *
@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with ET: Legacy. If not, see <http://www.gnu.org/licenses/>.
+ * along with ET: Legacy. If not, see < http://www.gnu.org/licenses/ > .
  *
  * In addition, Wolfenstein: Enemy Territory GPL Source Code is also
  * subject to certain additional terms. You should have received a copy
@@ -52,143 +52,140 @@ static soundInterface_t si;
  * @param[in] si
  * @return
  */
-static qboolean S_ValidSoundInterface(soundInterface_t *si)
-{
-	if (!si->Shutdown)
-	{
+static qboolean S_ValidSoundInterface(soundInterface_t *si) {
+	if (!si->Shutdown) {
 		return qfalse;
 	}
-	if (!si->Reload)
-	{
+
+	if (!si->Reload) {
 		return qfalse;
 	}
-	if (!si->StartSound)
-	{
+
+	if (!si->StartSound) {
 		return qfalse;
 	}
-	if (!si->StartSoundEx)
-	{
+
+	if (!si->StartSoundEx) {
 		return qfalse;
 	}
-	if (!si->StartLocalSound)
-	{
+
+	if (!si->StartLocalSound) {
 		return qfalse;
 	}
-	if (!si->StartBackgroundTrack)
-	{
+
+	if (!si->StartBackgroundTrack) {
 		return qfalse;
 	}
-	if (!si->StopBackgroundTrack)
-	{
+
+	if (!si->StopBackgroundTrack) {
 		return qfalse;
 	}
-	if (!si->StartStreamingSound)
-	{
+
+	if (!si->StartStreamingSound) {
 		return qfalse;
 	}
-	if (!si->StopEntStreamingSound)
-	{
+
+	if (!si->StopEntStreamingSound) {
 		return qfalse;
 	}
-	if (!si->FadeStreamingSound)
-	{
+
+	if (!si->FadeStreamingSound) {
 		return qfalse;
 	}
-	if (!si->RawSamples)
-	{
+
+	if (!si->RawSamples) {
 		return qfalse;
 	}
-	if (!si->ClearSounds)
-	{
+
+	if (!si->ClearSounds) {
 		return qfalse;
 	}
-	if (!si->StopAllSounds)
-	{
+
+	if (!si->StopAllSounds) {
 		return qfalse;
 	}
-	if (!si->FadeAllSounds)
-	{
+
+	if (!si->FadeAllSounds) {
 		return qfalse;
 	}
-	if (!si->ClearLoopingSounds)
-	{
+
+	if (!si->ClearLoopingSounds) {
 		return qfalse;
 	}
-	if (!si->AddLoopingSound)
-	{
+
+	if (!si->AddLoopingSound) {
 		return qfalse;
 	}
-	if (!si->AddRealLoopingSound)
-	{
+
+	if (!si->AddRealLoopingSound) {
 		return qfalse;
 	}
-	if (!si->Respatialize)
-	{
+
+	if (!si->Respatialize) {
 		return qfalse;
 	}
-	if (!si->UpdateEntityPosition)
-	{
+
+	if (!si->UpdateEntityPosition) {
 		return qfalse;
 	}
-	if (!si->Update)
-	{
+
+	if (!si->Update) {
 		return qfalse;
 	}
-	if (!si->DisableSounds)
-	{
+
+	if (!si->DisableSounds) {
 		return qfalse;
 	}
-	if (!si->BeginRegistration)
-	{
+
+	if (!si->BeginRegistration) {
 		return qfalse;
 	}
-	if (!si->RegisterSound)
-	{
+
+	if (!si->RegisterSound) {
 		return qfalse;
 	}
-	if (!si->ClearSoundBuffer)
-	{
+
+	if (!si->ClearSoundBuffer) {
 		return qfalse;
 	}
-	if (!si->SoundInfo)
-	{
+
+	if (!si->SoundInfo) {
 		return qfalse;
 	}
-	if (!si->SoundList)
-	{
+
+	if (!si->SoundList) {
 		return qfalse;
 	}
-	if (!si->GetVoiceAmplitude)
-	{
+
+	if (!si->GetVoiceAmplitude) {
 		return qfalse;
 	}
-	if (!si->GetSoundLength)
-	{
+
+	if (!si->GetSoundLength) {
 		return qfalse;
 	}
-	if (!si->GetCurrentSoundTime)
-	{
+
+	if (!si->GetCurrentSoundTime) {
 		return qfalse;
 	}
 #ifdef USE_VOIP
-	if (!si->StartCapture)
-	{
+	if (!si->StartCapture) {
 		return qfalse;
 	}
-	if (!si->AvailableCaptureSamples)
-	{
+
+	if (!si->AvailableCaptureSamples) {
 		return qfalse;
 	}
-	if (!si->Capture)
-	{
+
+	if (!si->Capture) {
 		return qfalse;
 	}
-	if (!si->StopCapture)
-	{
+
+	if (!si->StopCapture) {
 		return qfalse;
 	}
-	if (!si->MasterGain)
-	{
+
+	if (!si->MasterGain) {
 		return qfalse;
 	}
 #endif
@@ -204,10 +201,8 @@ static qboolean S_ValidSoundInterface(soundInterface_t *si)
  * @param[in] volume
  */
 void S_StartSound(vec3_t origin, int entNum, int entchannel,
-                  sfxHandle_t sfxHandle, int volume)
-{
-	if (si.StartSound)
-	{
+                  sfxHandle_t sfxHandle, int volume) {
+	if (si.StartSound) {
 		si.StartSound(origin, entNum, entchannel, sfxHandle, volume);
 	}
 }
@@ -222,10 +217,8 @@ void S_StartSound(vec3_t origin, int entNum, int entchannel,
  * @param[in] volume
  */
 void S_StartSoundEx(vec3_t origin, int entNum, int entchannel,
-                    sfxHandle_t sfxHandle, int flags, int volume)
-{
-	if (si.StartSoundEx)
-	{
+                    sfxHandle_t sfxHandle, int flags, int volume) {
+	if (si.StartSoundEx) {
 		si.StartSoundEx(origin, entNum, entchannel, sfxHandle, flags, volume);
 	}
 }
@@ -236,10 +229,8 @@ void S_StartSoundEx(vec3_t origin, int entNum, int entchannel,
  * @param[in] channelNum
  * @param[in] volume
  */
-void S_StartLocalSound(sfxHandle_t sfxHandle, int channelNum, int volume)
-{
-	if (si.StartLocalSound)
-	{
+void S_StartLocalSound(sfxHandle_t sfxHandle, int channelNum, int volume) {
+	if (si.StartLocalSound) {
 		si.StartLocalSound(sfxHandle, channelNum, volume);
 	}
 }
@@ -251,10 +242,8 @@ void S_StartLocalSound(sfxHandle_t sfxHandle, int channelNum, int volume)
  * @param[in] fadeUpTime
  */
 void S_StartBackgroundTrack(const char *intro, const char *loop,
-                            int fadeUpTime)
-{
-	if (si.StartBackgroundTrack)
-	{
+                            int fadeUpTime) {
+	if (si.StartBackgroundTrack) {
 		si.StartBackgroundTrack(intro, loop, fadeUpTime);
 	}
 }
@@ -262,10 +251,8 @@ void S_StartBackgroundTrack(const char *intro, const char *loop,
 /**
  * @brief S_StopBackgroundTrack
  */
-void S_StopBackgroundTrack(void)
-{
-	if (si.StopBackgroundTrack)
-	{
+void S_StopBackgroundTrack(void) {
+	if (si.StopBackgroundTrack) {
 		si.StopBackgroundTrack();
 	}
 }
@@ -280,14 +267,10 @@ void S_StopBackgroundTrack(void)
  * @return
  */
 float S_StartStreamingSound(const char *intro, const char *loop,
-                            int entNum, int channel, int attenuation)
-{
-	if (si.StartStreamingSound)
-	{
+                            int entNum, int channel, int attenuation) {
+	if (si.StartStreamingSound) {
 		return si.StartStreamingSound(intro, loop, entNum, channel, attenuation);
-	}
-	else
-	{
+	} else {
 		return 0.0f;
 	}
 }
@@ -296,10 +279,8 @@ float S_StartStreamingSound(const char *intro, const char *loop,
  * @brief S_StopEntStreamingSound
  * @param[in] entNum
  */
-void S_StopEntStreamingSound(int entNum)
-{
-	if (si.StopEntStreamingSound)
-	{
+void S_StopEntStreamingSound(int entNum) {
+	if (si.StopEntStreamingSound) {
 		si.StopEntStreamingSound(entNum);
 	}
 }
@@ -310,10 +291,8 @@ void S_StopEntStreamingSound(int entNum)
  * @param[in] time
  * @param[in] stream
  */
-void S_FadeStreamingSound(float targetvol, int time, int stream)
-{
-	if (si.FadeStreamingSound)
-	{
+void S_FadeStreamingSound(float targetvol, int time, int stream) {
+	if (si.FadeStreamingSound) {
 		si.FadeStreamingSound(targetvol, time, stream);
 	}
 }
@@ -330,10 +309,8 @@ void S_FadeStreamingSound(float targetvol, int time, int stream)
  * @param[in] rvol
  */
 void S_RawSamples(int stream, int samples, int rate, int width, int channels,
-                  const byte *data, float lvol, float rvol)
-{
-	if (si.RawSamples)
-	{
+                  const byte *data, float lvol, float rvol) {
+	if (si.RawSamples) {
 		si.RawSamples(stream, samples, rate, width, channels, data, lvol, rvol);
 	}
 }
@@ -343,10 +320,8 @@ void S_RawSamples(int stream, int samples, int rate, int width, int channels,
  * @param[in] clearStreaming
  * @param[in] clearMusic
  */
-void S_ClearSounds(qboolean clearStreaming, qboolean clearMusic)
-{
-	if (si.ClearSounds)
-	{
+void S_ClearSounds(qboolean clearStreaming, qboolean clearMusic) {
+	if (si.ClearSounds) {
 		si.ClearSounds(clearStreaming, clearMusic);
 	}
 }
@@ -354,10 +329,8 @@ void S_ClearSounds(qboolean clearStreaming, qboolean clearMusic)
 /**
  * @brief S_StopAllSounds
  */
-void S_StopAllSounds(void)
-{
-	if (si.StopAllSounds)
-	{
+void S_StopAllSounds(void) {
+	if (si.StopAllSounds) {
 		si.StopAllSounds();
 	}
 }
@@ -368,10 +341,8 @@ void S_StopAllSounds(void)
  * @param[in] time
  * @param[in] stopSounds
  */
-void S_FadeAllSounds(float targetVol, int time, qboolean stopSounds)
-{
-	if (si.FadeAllSounds)
-	{
+void S_FadeAllSounds(float targetVol, int time, qboolean stopSounds) {
+	if (si.FadeAllSounds) {
 		si.FadeAllSounds(targetVol, time, stopSounds);
 	}
 }
@@ -379,10 +350,8 @@ void S_FadeAllSounds(float targetVol, int time, qboolean stopSounds)
 /**
  * @brief S_ClearLoopingSounds
  */
-void S_ClearLoopingSounds(void)
-{
-	if (si.ClearLoopingSounds)
-	{
+void S_ClearLoopingSounds(void) {
+	if (si.ClearLoopingSounds) {
 		si.ClearLoopingSounds();
 	}
 }
@@ -398,10 +367,8 @@ void S_ClearLoopingSounds(void)
  */
 void S_AddLoopingSound(const vec3_t origin, const vec3_t velocity,
                        int range, sfxHandle_t sfxHandle,
-                       int volume, int soundTime)
-{
-	if (si.AddLoopingSound)
-	{
+                       int volume, int soundTime) {
+	if (si.AddLoopingSound) {
 		si.AddLoopingSound(origin, velocity, range, sfxHandle, volume, soundTime);
 	}
 }
@@ -417,10 +384,8 @@ void S_AddLoopingSound(const vec3_t origin, const vec3_t velocity,
  */
 void S_AddRealLoopingSound(const vec3_t origin, const vec3_t velocity,
                            int range, sfxHandle_t sfxHandle,
-                           int volume, int soundTime)
-{
-	if (si.AddRealLoopingSound)
-	{
+                           int volume, int soundTime) {
+	if (si.AddRealLoopingSound) {
 		si.AddRealLoopingSound(origin, velocity, range, sfxHandle, volume, soundTime);
 	}
 }
@@ -433,10 +398,8 @@ void S_AddRealLoopingSound(const vec3_t origin, const vec3_t velocity,
  * @param[in] inwater
  */
 void S_Respatialize(int entNum, const vec3_t origin,
-                    vec3_t axis[3], int inwater)
-{
-	if (si.Respatialize)
-	{
+                    vec3_t axis[3], int inwater) {
+	if (si.Respatialize) {
 		si.Respatialize(entNum, origin, axis, inwater);
 	}
 }
@@ -446,10 +409,8 @@ void S_Respatialize(int entNum, const vec3_t origin,
  * @param[in] entNum
  * @param[in] origin
  */
-void S_UpdateEntityPosition(int entNum, const vec3_t origin)
-{
-	if (si.UpdateEntityPosition)
-	{
+void S_UpdateEntityPosition(int entNum, const vec3_t origin) {
+	if (si.UpdateEntityPosition) {
 		si.UpdateEntityPosition(entNum, origin);
 	}
 }
@@ -457,29 +418,21 @@ void S_UpdateEntityPosition(int entNum, const vec3_t origin)
 /**
  * @brief S_Update
  */
-void S_Update(void)
-{
-	if (s_muted->integer)
-	{
+void S_Update(void) {
+	if (s_muted->integer) {
 		if (!(s_muteWhenMinimized->integer && Cvar_VariableIntegerValue("com_minimized")) &&
-		    !(s_muteWhenUnfocused->integer && Cvar_VariableIntegerValue("com_unfocused")))
-		{
-			s_muted->integer  = qfalse;
+		    !(s_muteWhenUnfocused->integer && Cvar_VariableIntegerValue("com_unfocused"))) {
+			s_muted->integer = qfalse;
 			s_muted->modified = qtrue;
 		}
-	}
-	else
-	{
-		if ((s_muteWhenMinimized->integer && Cvar_VariableIntegerValue("com_minimized")) ||
-		    (s_muteWhenUnfocused->integer && Cvar_VariableIntegerValue("com_unfocused")))
-		{
-			s_muted->integer  = qtrue;
+	} else {
+		if ((s_muteWhenMinimized->integer && Cvar_VariableIntegerValue("com_minimized")) || (s_muteWhenUnfocused->integer && Cvar_VariableIntegerValue("com_unfocused"))) {
+			s_muted->integer = qtrue;
 			s_muted->modified = qtrue;
 		}
 	}
 
-	if (si.Update)
-	{
+	if (si.Update) {
 		si.Update();
 	}
 }
@@ -487,10 +440,8 @@ void S_Update(void)
 /**
  * @brief S_DisableSounds
  */
-void S_DisableSounds(void)
-{
-	if (si.DisableSounds)
-	{
+void S_DisableSounds(void) {
+	if (si.DisableSounds) {
 		si.DisableSounds();
 	}
 }
@@ -498,10 +449,8 @@ void S_DisableSounds(void)
 /**
  * @brief S_BeginRegistration
  */
-void S_BeginRegistration(void)
-{
-	if (si.BeginRegistration)
-	{
+void S_BeginRegistration(void) {
+	if (si.BeginRegistration) {
 		si.BeginRegistration();
 	}
 }
@@ -512,14 +461,10 @@ void S_BeginRegistration(void)
  * @param[in] compressed
  * @return
  */
-sfxHandle_t S_RegisterSound(const char *name, qboolean compressed)
-{
-	if (si.RegisterSound)
-	{
+sfxHandle_t S_RegisterSound(const char *name, qboolean compressed) {
+	if (si.RegisterSound) {
 		return si.RegisterSound(name, compressed);
-	}
-	else
-	{
+	} else {
 		return 0;
 	}
 }
@@ -528,10 +473,8 @@ sfxHandle_t S_RegisterSound(const char *name, qboolean compressed)
  * @brief S_ClearSoundBuffer
  * @param[in] killStreaming
  */
-void S_ClearSoundBuffer(qboolean killStreaming)
-{
-	if (si.ClearSoundBuffer)
-	{
+void S_ClearSoundBuffer(qboolean killStreaming) {
+	if (si.ClearSoundBuffer) {
 		si.ClearSoundBuffer(killStreaming);
 	}
 }
@@ -539,10 +482,8 @@ void S_ClearSoundBuffer(qboolean killStreaming)
 /**
  * @brief S_SoundInfo
  */
-void S_SoundInfo(void)
-{
-	if (si.SoundInfo)
-	{
+void S_SoundInfo(void) {
+	if (si.SoundInfo) {
 		si.SoundInfo();
 	}
 }
@@ -550,10 +491,8 @@ void S_SoundInfo(void)
 /**
  * @brief S_SoundList
  */
-void S_SoundList(void)
-{
-	if (si.SoundList)
-	{
+void S_SoundList(void) {
+	if (si.SoundList) {
 		si.SoundList();
 	}
 }
@@ -563,14 +502,10 @@ void S_SoundList(void)
  * @param[in] entNum
  * @return
  */
-int S_GetVoiceAmplitude(int entNum)
-{
-	if (si.GetVoiceAmplitude)
-	{
+int S_GetVoiceAmplitude(int entNum) {
+	if (si.GetVoiceAmplitude) {
 		return si.GetVoiceAmplitude(entNum);
-	}
-	else
-	{
+	} else {
 		return 0;
 	}
 }
@@ -580,14 +515,10 @@ int S_GetVoiceAmplitude(int entNum)
  * @param sfxHandle
  * @return
  */
-int S_GetSoundLength(sfxHandle_t sfxHandle)
-{
-	if (si.GetSoundLength)
-	{
+int S_GetSoundLength(sfxHandle_t sfxHandle) {
+	if (si.GetSoundLength) {
 		return si.GetSoundLength(sfxHandle);
-	}
-	else
-	{
+	} else {
 		return 0;
 	}
 }
@@ -595,14 +526,10 @@ int S_GetSoundLength(sfxHandle_t sfxHandle)
 /**
  * @brief For looped sound synchronisation
  */
-int S_GetCurrentSoundTime(void)
-{
-	if (si.GetCurrentSoundTime)
-	{
+int S_GetCurrentSoundTime(void) {
+	if (si.GetCurrentSoundTime) {
 		return si.GetCurrentSoundTime();
-	}
-	else
-	{
+	} else {
 		return 0;
 	}
 }
@@ -611,10 +538,8 @@ int S_GetCurrentSoundTime(void)
 /**
  * @brief S_StartCapture
  */
-void S_StartCapture(void)
-{
-	if (si.StartCapture)
-	{
+void S_StartCapture(void) {
+	if (si.StartCapture) {
 		si.StartCapture();
 	}
 }
@@ -623,12 +548,11 @@ void S_StartCapture(void)
  * @brief S_AvailableCaptureSamples
  * @return
  */
-int S_AvailableCaptureSamples(void)
-{
-	if (si.AvailableCaptureSamples)
-	{
+int S_AvailableCaptureSamples(void) {
+	if (si.AvailableCaptureSamples) {
 		return si.AvailableCaptureSamples();
 	}
+
 	return 0;
 }
 
@@ -637,10 +561,8 @@ int S_AvailableCaptureSamples(void)
  * @param[in] samples
  * @param[in] data
  */
-void S_Capture(int samples, byte *data)
-{
-	if (si.Capture)
-	{
+void S_Capture(int samples, byte *data) {
+	if (si.Capture) {
 		si.Capture(samples, data);
 	}
 }
@@ -648,10 +570,8 @@ void S_Capture(int samples, byte *data)
 /**
  * @brief S_StopCapture
  */
-void S_StopCapture(void)
-{
-	if (si.StopCapture)
-	{
+void S_StopCapture(void) {
+	if (si.StopCapture) {
 		si.StopCapture();
 	}
 }
@@ -660,52 +580,42 @@ void S_StopCapture(void)
  * @brief S_MasterGain
  * @param[in] gain
  */
-void S_MasterGain(float gain)
-{
-	if (si.MasterGain)
-	{
+void S_MasterGain(float gain) {
+	if (si.MasterGain) {
 		si.MasterGain(gain);
 	}
 }
-#endif // USE_VOIP
+#endif // uSE_VOIP
 
 /**
  * @brief Plays a given sound file in path
  */
-void S_Play_f(void)
-{
+void S_Play_f(void) {
 	static char tempBuffer[MAX_QPATH];
-	int         i;
-	int         c;
+	int i;
+	int c;
 	sfxHandle_t h;
 
-
-	if (!si.RegisterSound || !si.StartLocalSound)
-	{
+	if (!si.RegisterSound || !si.StartLocalSound) {
 		return;
 	}
 
 	c = Cmd_Argc();
 
-	if (c < 2)
-	{
-		Com_Printf("Usage: play <sound filename> [sound filename] [sound filename] ...\n");
+	if (c < 2) {
+		Com_Printf("Usage: play < sound filename > [sound filename] [sound filename] ...\n");
 		return;
 	}
 
-	for (i = 1; i < c; i++)
-	{
+	for (i = 1; i < c; i++) {
 		Q_strncpyz(tempBuffer, Cmd_Argv(i), MAX_QPATH);
 		COM_DefaultExtension(tempBuffer, sizeof(tempBuffer), ".wav");
 
 		h = si.RegisterSound(tempBuffer, qfalse); // TODO: detect compression via extension? ioq uses qfalse by default
 
-		if (h)
-		{
+		if (h) {
 			si.StartLocalSound(h, CHAN_LOCAL_SOUND, 127);
-		}
-		else
-		{
+		} else {
 			Com_Printf("Warning: S_Play_f sound '%s' not played\n", tempBuffer);
 		}
 	}
@@ -714,32 +624,23 @@ void S_Play_f(void)
 /**
  * @brief S_Music_f
  */
-void S_Music_f(void)
-{
+void S_Music_f(void) {
 	int c;
 
-	if (!si.StartBackgroundTrack)
-	{
+	if (!si.StartBackgroundTrack) {
 		return;
 	}
 
 	c = Cmd_Argc();
 
-	if (c == 2)
-	{
+	if (c == 2) {
 		si.StartBackgroundTrack(Cmd_Argv(1), NULL, 0);
-	}
-	else if (c == 3)
-	{
+	} else if (c == 3) {
 		si.StartBackgroundTrack(Cmd_Argv(1), Cmd_Argv(2), 0);
-	}
-	else if (c == 4)
-	{
+	} else if (c == 4) {
 		si.StartBackgroundTrack(Cmd_Argv(1), Cmd_Argv(2), atoi(Cmd_Argv(3)));
-	}
-	else
-	{
-		Com_Printf("Usage: music <musicfile> [loopfile] [fadeupTime]\n");
+	} else {
+		Com_Printf("Usage: music < musicfile > [loopfile] [fadeupTime]\n");
 		return;
 	}
 }
@@ -747,46 +648,33 @@ void S_Music_f(void)
 /**
  * @brief S_Stream_f
  */
-void S_Stream_f(void)
-{
+void S_Stream_f(void) {
 	int c;
 
-	if (!si.StartStreamingSound)
-	{
+	if (!si.StartStreamingSound) {
 		return;
 	}
 
 	c = Cmd_Argc();
 
-	if (c == 2)
-	{
+	if (c == 2) {
 		si.StartStreamingSound(Cmd_Argv(1), NULL, 0, 0, 0);
-	}
-	else if (c == 3)
-	{
+	} else if (c == 3) {
 		si.StartStreamingSound(Cmd_Argv(1), Cmd_Argv(2), 0, 0, 0);
-	}
-	else if (c == 4)
-	{
+	} else if (c == 4) {
 		si.StartStreamingSound(Cmd_Argv(1), Cmd_Argv(2),
 		                       atoi(Cmd_Argv(3)), 0, 0);
-	}
-	else if (c == 5)
-	{
+	} else if (c == 5) {
 		si.StartStreamingSound(Cmd_Argv(1), Cmd_Argv(2),
 		                       atoi(Cmd_Argv(3)),
 		                       atoi(Cmd_Argv(4)), 0);
-	}
-	else if (c == 6)
-	{
+	} else if (c == 6) {
 		si.StartStreamingSound(Cmd_Argv(1), Cmd_Argv(2),
 		                       atoi(Cmd_Argv(3)),
 		                       atoi(Cmd_Argv(4)),
 		                       atoi(Cmd_Argv(5)));
-	}
-	else
-	{
-		Com_Printf("Usage: stream <streamfile> [loopfile] [entNum] [channel] [attenuation]\n");
+	} else {
+		Com_Printf("Usage: stream < streamfile > [loopfile] [entNum] [channel] [attenuation]\n");
 		return;
 	}
 }
@@ -794,10 +682,8 @@ void S_Stream_f(void)
 /**
  * @brief S_StopMusic_f
  */
-void S_StopMusic_f(void)
-{
-	if (!si.StopBackgroundTrack)
-	{
+void S_StopMusic_f(void) {
+	if (!si.StopBackgroundTrack) {
 		return;
 	}
 
@@ -807,26 +693,22 @@ void S_StopMusic_f(void)
 /**
  * @brief Initiates the sound system
  */
-void S_Init(void)
-{
-	cvar_t *cv = Cvar_Get("s_initsound", "1", CVAR_ARCHIVE | CVAR_LATCH | CVAR_UNSAFE);  // 0 = disabled, 1 = SDL2, 2 = OpenAL
+void S_Init(void) {
+	cvar_t *cv = Cvar_Get("s_initsound", "1", CVAR_ARCHIVE|CVAR_LATCH|CVAR_UNSAFE);  // 0 = disabled, 1 = SDL2, 2 = OpenAL
 
-	Com_Printf("------ Initializing Sound (%i)------\n", cv->integer);
+	Com_Printf("------ Initializing Sound(%i)------\n", cv->integer);
 
-	s_volume            = Cvar_Get("s_volume", "0.8", CVAR_ARCHIVE);
-	s_musicVolume       = Cvar_Get("s_musicvolume", "0.25", CVAR_ARCHIVE);
-	s_muted             = Cvar_Get("s_muted", "0", CVAR_ROM);
-	s_doppler           = Cvar_Get("s_doppler", "1", CVAR_ARCHIVE);
-	s_backend           = Cvar_Get("s_backend", "", CVAR_ROM);
+	s_volume = Cvar_Get("s_volume", "0.8", CVAR_ARCHIVE);
+	s_musicVolume = Cvar_Get("s_musicvolume", "0.25", CVAR_ARCHIVE);
+	s_muted = Cvar_Get("s_muted", "0", CVAR_ROM);
+	s_doppler = Cvar_Get("s_doppler", "1", CVAR_ARCHIVE);
+	s_backend = Cvar_Get("s_backend", "", CVAR_ROM);
 	s_muteWhenMinimized = Cvar_Get("s_muteWhenMinimized", "1", CVAR_ARCHIVE);
 	s_muteWhenUnfocused = Cvar_Get("s_muteWhenUnfocused", "0", CVAR_ARCHIVE);
 
-	if (!cv->integer)
-	{
+	if (!cv->integer) {
 		Com_Printf("Sound disabled\n");
-	}
-	else
-	{
+	} else {
 		qboolean started = qfalse;
 
 		S_CodecInit();
@@ -840,22 +722,20 @@ void S_Init(void)
 		Cmd_AddCommand("s_info", S_SoundInfo, "Prints sound info.");
 
 #ifdef FEATURE_OPENAL
-		if (cv->integer == 2)
-		{
-			// OpenAL
+		if (cv->integer == 2) {
+			// openAL
 			started = S_AL_Init(&si);
 			Cvar_Set("s_backend", "OpenAL");
 		}
 
 		if (!started)
-#endif // FEATURE_OPENAL
+#endif // fEATURE_OPENAL
 		{
-			if (cv->integer == 2)
-			{
+			if (cv->integer == 2) {
 #ifdef FEATURE_OPENAL
 				Com_Printf("Can't initialize OpenAL - reverting to SDL2 interface\n");
 #else
-				Com_Printf("Can't initialize OpenAL - disabled on build-time\n");
+				Com_Printf("Can't initialize OpenAL - disabled on build - time\n");
 #endif
 			}
 
@@ -863,18 +743,14 @@ void S_Init(void)
 			Cvar_Set("s_backend", "SDL2");
 		}
 
-		if (started)
-		{
-			if (!S_ValidSoundInterface(&si))
-			{
+		if (started) {
+			if (!S_ValidSoundInterface(&si)) {
 				Com_Error(ERR_FATAL, "Invalid sound interface");
 			}
 
 			S_SoundInfo();
 			Com_Printf("Sound initialization successfully done\ns_backend set to %s\n", s_backend->string);
-		}
-		else
-		{
+		} else {
 			Com_Printf("Sound initialization failed\n");
 		}
 	}
@@ -887,10 +763,8 @@ void S_Init(void)
  *
  * @note Unused
  */
-void S_Reload(void)
-{
-	if (si.Reload)
-	{
+void S_Reload(void) {
+	if (si.Reload) {
 		si.Reload();
 	}
 }
@@ -898,10 +772,8 @@ void S_Reload(void)
 /**
  * @brief Destroys the sound system
  */
-void S_Shutdown(void)
-{
-	if (si.Shutdown)
-	{
+void S_Shutdown(void) {
+	if (si.Shutdown) {
 		si.Shutdown();
 	}
 

@@ -1,9 +1,9 @@
 /*
  * Wolfenstein: Enemy Territory GPL Source Code
- * Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
+ * Copyright(C) 1999 - 2010 id Software LLC, a ZeniMax Media company.
  *
  * ET: Legacy
- * Copyright (C) 2012-2018 ET:Legacy team <mail@etlegacy.com>
+ * Copyright(C) 2012 - 2018 ET:Legacy team < mail@etlegacy.com > 
  *
  * This file is part of ET: Legacy - http://www.etlegacy.com
  *
@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with ET: Legacy. If not, see <http://www.gnu.org/licenses/>.
+ * along with ET: Legacy. If not, see < http://www.gnu.org/licenses/ > .
  *
  * In addition, Wolfenstein: Enemy Territory GPL Source Code is also
  * subject to certain additional terms. You should have received a copy
@@ -42,20 +42,18 @@ static snd_codec_t *codecs;
  * @param[in] fni
  * @return
  */
-static char *S_FileExtension(const char *fni)
-{
+static char *S_FileExtension(const char *fni) {
 	// TODO: We should search from the ending to the last '/'
 
-	char *fn   = (char *) fni + strlen(fni) - 1;
+	char *fn = (char *)fni + strlen(fni) - 1;
 	char *eptr = NULL;
 
-	while (*fn != '/' && fn != fni)
-	{
-		if (*fn == '.')
-		{
+	while (*fn != '/' && fn != fni) {
+		if (*fn == '.') {
 			eptr = fn;
 			break;
 		}
+
 		fn--;
 	}
 
@@ -67,42 +65,34 @@ static char *S_FileExtension(const char *fni)
  * @param[in] filename
  * @return
  */
-static snd_codec_t *S_FindCodecForFile(const char *filename)
-{
-	char        *ext   = S_FileExtension(filename);
+static snd_codec_t *S_FindCodecForFile(const char *filename) {
+	char *ext = S_FileExtension(filename);
 	snd_codec_t *codec = codecs;
 
-	if (!ext)
-	{
-		// No extension - auto-detect
-		while (codec)
-		{
+	if (!ext) {
+		// no extension - auto - detect
+		while (codec) {
 			char fn[MAX_QPATH];
-
 			// there is no extension so we do not need to subtract 4 chars
 			Q_strncpyz(fn, filename, MAX_QPATH);
 			COM_DefaultExtension(fn, MAX_QPATH, codec->ext);
-
-			// Check it exists
-			if (FS_ReadFile(fn, NULL) > 0)
-			{
+			// check it exists
+			if (FS_ReadFile(fn, NULL) > 0) {
 				return codec;
 			}
 
-			// Nope. Next!
+			// nope. Next!
 			codec = codec->next;
 		}
-
-		// Nothin'
+		// nothin'
 		return NULL;
 	}
 
-	while (codec)
-	{
-		if (!Q_stricmp(ext, codec->ext))
-		{
+	while (codec) {
+		if (!Q_stricmp(ext, codec->ext)) {
 			return codec;
 		}
+
 		codec = codec->next;
 	}
 
@@ -112,8 +102,7 @@ static snd_codec_t *S_FindCodecForFile(const char *filename)
 /**
  * @brief S_CodecInit
  */
-void S_CodecInit()
-{
+void S_CodecInit() {
 	codecs = NULL;
 	S_CodecRegister(&wav_codec);
 #ifdef FEATURE_OGG_VORBIS
@@ -124,19 +113,17 @@ void S_CodecInit()
 /**
  * @brief S_CodecShutdown
  */
-void S_CodecShutdown()
-{
+void S_CodecShutdown() {
 	codecs = NULL;
 }
 
 /**
  * @brief S_CodecRegister
- * @param[in,out] codec
+ * @param[in, out] codec
  */
-void S_CodecRegister(snd_codec_t *codec)
-{
+void S_CodecRegister(snd_codec_t *codec) {
 	codec->next = codecs;
-	codecs      = codec;
+	codecs = codec;
 }
 
 /**
@@ -145,14 +132,13 @@ void S_CodecRegister(snd_codec_t *codec)
  * @param[in] info
  * @return
  */
-void *S_CodecLoad(const char *filename, snd_info_t *info)
-{
+void *S_CodecLoad(const char *filename, snd_info_t *info) {
 	snd_codec_t *codec;
-	char        fn[MAX_QPATH];
+	char fn[MAX_QPATH];
 
 	codec = S_FindCodecForFile(filename);
-	if (!codec)
-	{
+
+	if (!codec) {
 		Com_Printf("Unknown extension for %s\n", filename);
 		return NULL;
 	}
@@ -168,14 +154,13 @@ void *S_CodecLoad(const char *filename, snd_info_t *info)
  * @param[in] filename
  * @return
  */
-snd_stream_t *S_CodecOpenStream(const char *filename)
-{
+snd_stream_t *S_CodecOpenStream(const char *filename) {
 	snd_codec_t *codec;
-	char        fn[MAX_QPATH];
+	char fn[MAX_QPATH];
 
 	codec = S_FindCodecForFile(filename);
-	if (!codec)
-	{
+
+	if (!codec) {
 		Com_Printf("Unknown extension for %s\n", filename);
 		return NULL;
 	}
@@ -190,8 +175,7 @@ snd_stream_t *S_CodecOpenStream(const char *filename)
  * @brief S_CodecCloseStream
  * @param[in] stream
  */
-void S_CodecCloseStream(snd_stream_t *stream)
-{
+void S_CodecCloseStream(snd_stream_t *stream) {
 	stream->codec->close(stream);
 }
 
@@ -202,13 +186,12 @@ void S_CodecCloseStream(snd_stream_t *stream)
  * @param[out] buffer
  * @return
  */
-int S_CodecReadStream(snd_stream_t *stream, int bytes, void *buffer)
-{
+int S_CodecReadStream(snd_stream_t *stream, int bytes, void *buffer) {
 	return stream->codec->read(stream, bytes, buffer);
 }
 
 //=======================================================================
-// Util functions (used by codecs)
+// util functions(used by codecs)
 
 /**
  * @brief S_CodecUtilOpen
@@ -216,41 +199,37 @@ int S_CodecReadStream(snd_stream_t *stream, int bytes, void *buffer)
  * @param[in] codec
  * @return
  */
-snd_stream_t *S_CodecUtilOpen(const char *filename, snd_codec_t *codec)
-{
+snd_stream_t *S_CodecUtilOpen(const char *filename, snd_codec_t *codec) {
 	snd_stream_t *stream;
 	fileHandle_t hnd;
-	int          length;
+	int length;
 
-	// Try to open the file
+	// try to open the file
 	length = FS_FOpenFileRead(filename, &hnd, qtrue);
-	if (!hnd)
-	{
+
+	if (!hnd) {
 		Com_Printf("Can't read sound file %s\n", filename);
 		return NULL;
 	}
-
-	// Allocate a stream
+	// allocate a stream
 	stream = Z_Malloc(sizeof(snd_stream_t));
-	if (!stream)
-	{
+
+	if (!stream) {
 		FS_FCloseFile(hnd);
 		return NULL;
 	}
-
-	// Copy over, return
-	stream->codec  = codec;
-	stream->file   = hnd;
+	// copy over, return
+	stream->codec = codec;
+	stream->file = hnd;
 	stream->length = length;
 	return stream;
 }
 
 /**
  * @brief S_CodecUtilClose
- * @param[in,out] stream
+ * @param[in, out] stream
  */
-void S_CodecUtilClose(snd_stream_t **stream)
-{
+void S_CodecUtilClose(snd_stream_t **stream) {
 	FS_FCloseFile((*stream)->file);
 	Z_Free(*stream);
 	*stream = NULL;

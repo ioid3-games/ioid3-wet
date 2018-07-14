@@ -1,9 +1,9 @@
 /*
  * Wolfenstein: Enemy Territory GPL Source Code
- * Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
+ * Copyright(C) 1999 - 2010 id Software LLC, a ZeniMax Media company.
  *
  * ET: Legacy
- * Copyright (C) 2012-2018 ET:Legacy team <mail@etlegacy.com>
+ * Copyright(C) 2012 - 2018 ET:Legacy team < mail@etlegacy.com > 
  *
  * This file is part of ET: Legacy - http://www.etlegacy.com
  *
@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with ET: Legacy. If not, see <http://www.gnu.org/licenses/>.
+ * along with ET: Legacy. If not, see < http://www.gnu.org/licenses/ > .
  *
  * In addition, Wolfenstein: Enemy Territory GPL Source Code is also
  * subject to certain additional terms. You should have received a copy
@@ -68,8 +68,8 @@ byte *CM_ClusterPVS(int cluster);
 
 int CM_PointLeafnum(const vec3_t p);
 
-// only returns non-solid leafs
-// overflow if return listsize and if *lastLeaf != list[listsize-1]
+// only returns non - solid leafs
+// overflow if return listsize and if *lastLeaf != list[listsize - 1]
 int CM_BoxLeafnums(const vec3_t mins, const vec3_t maxs, int *list,
                    int listsize, int *lastLeaf);
 
@@ -82,6 +82,6 @@ qboolean CM_AreasConnected(int area1, int area2);
 int CM_WriteAreaBits(byte *buffer, int area);
 
 // cm_patch.c
-void CM_DrawDebugSurface(void (*drawPoly)(int color, int numPoints, float *points));
+void CM_DrawDebugSurface(void(*drawPoly)(int color, int numPoints, float *points));
 
 #endif // #ifndef INCLUDE_CM_PUBLIC_H

@@ -1,9 +1,9 @@
 /**
  * Wolfenstein: Enemy Territory GPL Source Code
- * Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
+ * Copyright(C) 1999 - 2010 id Software LLC, a ZeniMax Media company.
  *
  * ET: Legacy
- * Copyright (C) 2012-2018 ET:Legacy team <mail@etlegacy.com>
+ * Copyright(C) 2012 - 2018 ET:Legacy team < mail@etlegacy.com > 
  *
  * This file is part of ET: Legacy - http://www.etlegacy.com
  *
@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with ET: Legacy. If not, see <http://www.gnu.org/licenses/>.
+ * along with ET: Legacy. If not, see < http://www.gnu.org/licenses/ > .
  *
  * In addition, Wolfenstein: Enemy Territory GPL Source Code is also
  * subject to certain additional terms. You should have received a copy
@@ -35,8 +35,8 @@
 #define INCLUDE_WIN_RESOURCE_H
 
 //{{NO_DEPENDENCIES}}
-// Microsoft Developer Studio generated include file.
-// Used by winquake.rc
+// microsoft Developer Studio generated include file.
+// used by winquake.rc
 //
 #define IDS_STRING1                     1
 #define IDI_ICON1                       1
@@ -48,7 +48,7 @@
 #define IDB_SPLASH                      132
 #define IDD_SPLASH                      133
 
-// Next default values for new objects
+// next default values for new objects
 //
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
