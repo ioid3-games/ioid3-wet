@@ -44,16 +44,11 @@ typedef enum {
 int DL_BeginDownload(char *localName, const char *remoteName);
 char *DL_GetString(const char *url);
 dlStatus_t DL_DownloadLoop(void);
-
 void DL_Shutdown(void);
 
-/**
- * @enum dlFlags_t
- * @brief bitmask
- */
 typedef enum {
 	DL_FLAG_DISCON = 0,
 	DL_FLAG_URL
 } dlFlags_t;
 
-#endif // #ifndef INCLUDE_DL_PUBLIC_H
+#endif // INCLUDE_DL_PUBLIC_H

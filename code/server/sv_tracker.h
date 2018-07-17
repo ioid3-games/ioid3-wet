@@ -29,15 +29,15 @@
  *
  * id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
  */
+
+
 /**
  * @file sv_tracker.h
  * @brief Sends game statistics to Tracker
  */
 #ifdef FEATURE_TRACKER
-
 #ifndef INCLUDE_TRACKER_H
 #define INCLUDE_TRACKER_H
-
 #include "server.h"
 
 void Tracker_Init(void);
@@ -49,14 +49,10 @@ void Tracker_ClientName(client_t *cl);
 void Tracker_Map(char *mapname);
 void Tracker_MapRestart(void);
 void Tracker_MapEnd(void);
-// void Tracker_TeamSwitch(client_t *cl); // unused
+//void Tracker_TeamSwitch(client_t *cl); // unused
 void Tracker_Frame(int msec);
-
 void Tracker_catchBotConnect(int clientNum);
 qboolean Tracker_catchServerCommand(int clientNum, char *msg);
-
 void Tracker_requestWeaponStats(void);
-
 #endif // #ifndef INCLUDE_TRACKER_H
-
-#endif // fEATURE_TRACKER
+#endif // FEATURE_TRACKER

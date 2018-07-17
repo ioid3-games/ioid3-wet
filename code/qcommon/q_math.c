@@ -36,9 +36,7 @@
 #include "q_shared.h"
 
 vec3_t vec3_origin = {0, 0, 0};
-vec3_t axisDefault[3] = {{1, 0, 0},
-	{0, 1, 0},
-	{0, 0, 1}};
+vec3_t axisDefault[3] = {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
 
 vec4_t colorBlack = {0, 0, 0, 1};
 vec4_t colorRed = {1, 0, 0, 1};
@@ -59,12 +57,10 @@ vec4_t colorMdCyan = {0, 0.5, 0.5, 1};
 vec4_t colorMdYellow = {0.5, 0.5, 0, 1};
 vec4_t colorMdOrange = {0.5, 0.25, 0, 1};
 vec4_t colorMdBlue = {0, 0, 0.5, 1};
-
 vec4_t clrBrown = {0.68f, 0.68f, 0.56f, 1.f};
 vec4_t clrBrownDk = {0.58f * 0.75f, 0.58f * 0.75f, 0.46f * 0.75f, 1.f};
 vec4_t clrBrownLine = {0.0525f, 0.05f, 0.025f, 0.2f};
 vec4_t clrBrownLineFull = {0.0525f, 0.05f, 0.025f, 1.f};
-
 vec4_t clrBrownTextLt2 = {108 * 1.8f / 255.f, 88 * 1.8f / 255.f, 62 * 1.8f / 255.f, 1.f};
 vec4_t clrBrownTextLt = {108 * 1.3f / 255.f, 88 * 1.3f / 255.f, 62 * 1.3f / 255.f, 1.f};
 vec4_t clrBrownText = {108 / 255.f, 88 / 255.f, 62 / 255.f, 1.f};
@@ -72,38 +68,38 @@ vec4_t clrBrownTextDk = {20 / 255.f, 2 / 255.f, 0 / 255.f, 1.f};
 vec4_t clrBrownTextDk2 = {108 * 0.75f / 255.f, 88 * 0.75f / 255.f, 62 * 0.75f / 255.f, 1.f};
 
 vec4_t g_color_table[32] = {
-	{0.0, 0.0, 0.0, 1.0}, // 0 - black        0
-	{1.0, 0.0, 0.0, 1.0}, // 1 - red          1
-	{0.0, 1.0, 0.0, 1.0}, // 2 - green        2
-	{1.0, 1.0, 0.0, 1.0}, // 3 - yellow       3
-	{0.0, 0.0, 1.0, 1.0}, // 4 - blue         4
-	{0.0, 1.0, 1.0, 1.0}, // 5 - cyan         5
-	{1.0, 0.0, 1.0, 1.0}, // 6 - purple       6
-	{1.0, 1.0, 1.0, 1.0}, // 7 - white        7
-	{1.0, 0.5, 0.0, 1.0}, // 8 - orange       8
-	{0.5, 0.5, 0.5, 1.0}, // 9 - md.grey      9
-	{0.75, 0.75, 0.75, 1.0}, // : - lt.grey      10      // lt grey for names
-	{0.75, 0.75, 0.75, 1.0}, //; - lt.grey      11
-	{0.0, 0.5, 0.0, 1.0}, // < -md.green     12
-	{0.5, 0.5, 0.0, 1.0}, //= -md.yellow    13
-	{0.0, 0.0, 0.5, 1.0}, // > - md.blue      14
-	{0.5, 0.0, 0.0, 1.0}, // ? - md.red       15
-	{0.5, 0.25, 0.0, 1.0}, // @ - md.orange    16
-	{1.0, 0.6f, 0.1f, 1.0}, // a - lt.orange    17
-	{0.0, 0.5, 0.5, 1.0}, // b - md.cyan      18
-	{0.5, 0.0, 0.5, 1.0}, // c - md.purple    19
-	{0.0, 0.5, 1.0, 1.0}, // d                20
-	{0.5, 0.0, 1.0, 1.0}, // e                21
-	{0.2f, 0.6f, 0.8f, 1.0}, // f                22
-	{0.8f, 1.0, 0.8f, 1.0}, // g                23
-	{0.0, 0.4f, 0.2f, 1.0}, // h                24
-	{1.0, 0.0, 0.2f, 1.0}, // i                25
-	{0.7f, 0.1f, 0.1f, 1.0}, // j                26
-	{0.6f, 0.2f, 0.0, 1.0}, // k                27
-	{0.8f, 0.6f, 0.2f, 1.0}, // l                28
-	{0.6f, 0.6f, 0.2f, 1.0}, // m                29
-	{1.0, 1.0, 0.75, 1.0}, // n                30
-	{1.0, 1.0, 0.5, 1.0}, // o                31
+	{0.0, 0.0, 0.0, 1.0},		// 0 - black		0
+	{1.0, 0.0, 0.0, 1.0},		// 1 - red			1
+	{0.0, 1.0, 0.0, 1.0},		// 2 - green		2
+	{1.0, 1.0, 0.0, 1.0},		// 3 - yellow		3
+	{0.0, 0.0, 1.0, 1.0},		// 4 - blue			4
+	{0.0, 1.0, 1.0, 1.0},		// 5 - cyan			5
+	{1.0, 0.0, 1.0, 1.0},		// 6 - purple		6
+	{1.0, 1.0, 1.0, 1.0},		// 7 - white		7
+	{1.0, 0.5, 0.0, 1.0},		// 8 - orange		8
+	{0.5, 0.5, 0.5, 1.0},		// 9 - md.grey		9
+	{0.75, 0.75, 0.75, 1.0},	// : - lt.grey		10 // lt grey for names
+	{0.75, 0.75, 0.75, 1.0},	// ; - lt.grey		11
+	{0.0, 0.5, 0.0, 1.0},		// < -md.green		12
+	{0.5, 0.5, 0.0, 1.0},		// = -md.yellow		13
+	{0.0, 0.0, 0.5, 1.0},		// > - md.blue		14
+	{0.5, 0.0, 0.0, 1.0},		// ? - md.red		15
+	{0.5, 0.25, 0.0, 1.0},		// @ - md.orange	16
+	{1.0, 0.6f, 0.1f, 1.0},		// a - lt.orange	17
+	{0.0, 0.5, 0.5, 1.0},		// b - md.cyan		18
+	{0.5, 0.0, 0.5, 1.0},		// c - md.purple	19
+	{0.0, 0.5, 1.0, 1.0},		// d				20
+	{0.5, 0.0, 1.0, 1.0},		// e				21
+	{0.2f, 0.6f, 0.8f, 1.0},	// f				22
+	{0.8f, 1.0, 0.8f, 1.0},		// g				23
+	{0.0, 0.4f, 0.2f, 1.0},		// h				24
+	{1.0, 0.0, 0.2f, 1.0},		// i				25
+	{0.7f, 0.1f, 0.1f, 1.0},	// j				26
+	{0.6f, 0.2f, 0.0, 1.0},		// k				27
+	{0.8f, 0.6f, 0.2f, 1.0},	// l				28
+	{0.6f, 0.6f, 0.2f, 1.0},	// m				29
+	{1.0, 1.0, 0.75, 1.0},		// n				30
+	{1.0, 1.0, 0.5, 1.0},		// o				31
 };
 
 vec3_t bytedirs[NUMVERTEXNORMALS] = {
@@ -271,43 +267,39 @@ vec3_t bytedirs[NUMVERTEXNORMALS] = {
 	{-0.688191f, -0.587785f, -0.425325f}
 };
 
-//============================================================== 
-
-/**
- * @brief Q_rand
- * @param[in, out] seed
- * @return
- */
+/*
+=======================================================================================================================================
+Q_rand
+=======================================================================================================================================
+*/
 int Q_rand(int *seed) {
 	*seed = (69069U * *seed + 1U);
 	return *seed;
 }
 
-/**
- * @brief Q_random
- * @param[in] seed
- * @return
- */
+/*
+=======================================================================================================================================
+Q_random
+=======================================================================================================================================
+*/
 float Q_random(int *seed) {
 	return (Q_rand(seed) & 0xffff) / (float)0x10000;
 }
 
-/**
- * @brief Q_crandom
- * @param[in] seed
- * @return
- */
+/*
+=======================================================================================================================================
+Q_crandom
+=======================================================================================================================================
+*/
 float Q_crandom(int *seed) {
 	return 2.0f * (Q_random(seed) - 0.5f);
 }
 
-//=======================================================
-
-/**
- * @brief ClampChar
- * @param[in] i
- * @return
- */
+/*
+=======================================================================================================================================
+ClampChar
+=======================================================================================================================================
+*/
 signed char ClampChar(int i) {
 
 	if (i < -128) {
@@ -322,29 +314,32 @@ signed char ClampChar(int i) {
 }
 
 /*
- * @brief ClampShort
- * @param i
- * @return
- * @note Unused.
+=======================================================================================================================================
+ClampShort
+=======================================================================================================================================
+*/
+/*
 signed short ClampShort(int i) {
-    if (i < -32768)
-    {
-        return -32768;
-}
-    if (i > 0x7fff)
-    {
-        return 0x7fff;
-}
-    return i;
+
+	if (i < -32768) {
+		return -32768;
+	}
+
+	if (i > 0x7fff) {
+		return 0x7fff;
+	}
+
+	return i;
 }
 */
 
-/**
- * @brief ClampByte
- * @param[in] i
- * @return
- */
+/*
+=======================================================================================================================================
+ClampByte
+=======================================================================================================================================
+*/
 byte ClampByte(int i) {
+
 	if (i < 0) {
 		i = 0;
 	}
@@ -356,10 +351,11 @@ byte ClampByte(int i) {
 	return (byte)i;
 }
 
-/**
- * @brief ClampColor
- * @param[in, out] color
- */
+/*
+=======================================================================================================================================
+ClampColor
+=======================================================================================================================================
+*/
 void ClampColor(vec4_t color) {
 	int i;
 
@@ -374,13 +370,13 @@ void ClampColor(vec4_t color) {
 	}
 }
 
-/**
- * @brief DirToByte
- * @param[in] dir
- * @return
- *
- * @note This isn't a real cheap function to call!
- */
+/*
+=======================================================================================================================================
+DirToByte
+
+NOTE: this isn't a real cheap function to call!
+=======================================================================================================================================
+*/
 int DirToByte(vec3_t dir) {
 	int i, best;
 	float d, bestd;
@@ -404,11 +400,11 @@ int DirToByte(vec3_t dir) {
 	return best;
 }
 
-/**
- * @brief ByteToDir
- * @param[in] b
- * @param[out] dir
- */
+/*
+=======================================================================================================================================
+ByteToDir
+=======================================================================================================================================
+*/
 void ByteToDir(int b, vec3_t dir) {
 
 	if (b < 0 || b >= NUMVERTEXNORMALS) {
@@ -420,30 +416,26 @@ void ByteToDir(int b, vec3_t dir) {
 }
 
 /*
- * @brief ColorBytes3
- * @param[in] r
- * @param[in] g
- * @param[in] b
- *
- * @note Unused.
+=======================================================================================================================================
+ColorBytes3
+=======================================================================================================================================
+*/
+/*
 unsigned ColorBytes3(float r, float g, float b) {
-    unsigned i;
+	unsigned i;
 
-((byte *)&i)[0] = (byte)(r * 255);
-((byte *)&i)[1] = (byte)(g * 255);
-((byte *)&i)[2] = (byte)(b * 255);
+	((byte *)&i)[0] = (byte)(r * 255);
+	((byte *)&i)[1] = (byte)(g * 255);
+	((byte *)&i)[2] = (byte)(b * 255);
 
-    return i;
+	return i;
 }
 */
-
-/**
- * @brief ColorBytes4
- * @param[in] r
- * @param[in] g
- * @param[in] b
- * @param[in] a
- */
+/*
+=======================================================================================================================================
+ColorBytes4
+=======================================================================================================================================
+*/
 unsigned ColorBytes4(float r, float g, float b, float a) {
 	unsigned i;
 
@@ -456,48 +448,42 @@ unsigned ColorBytes4(float r, float g, float b, float a) {
 }
 
 /*
- * @brief NormalizeColor
- * @param[in] in
- * @param[out] out
- * @return
- *
- * @note Unused.
+=======================================================================================================================================
+NormalizeColor
+=======================================================================================================================================
+*/
+/*
 float NormalizeColor(const vec3_t in, vec3_t out) {
-    float max;
+	float max;
 
-    max = in[0];
-    if (in[1] > max)
-    {
-        max = in[1];
-}
-    if (in[2] > max)
-    {
-        max = in[2];
-}
+	max = in[0];
 
-    if (max == 0.f)
-    {
-        VectorClear(out);
-}
-    else
-    {
-        out[0] = in[0] / max;
-        out[1] = in[1] / max;
-        out[2] = in[2] / max;
-}
-    return max;
+	if (in[1] > max) {
+		max = in[1];
+	}
+
+	if (in[2] > max) {
+		max = in[2];
+	}
+
+	if (max == 0.f) {
+		VectorClear(out);
+	} else {
+		out[0] = in[0] / max;
+		out[1] = in[1] / max;
+		out[2] = in[2] / max;
+	}
+
+	return max;
 }
 */
+/*
+=======================================================================================================================================
+PlaneFromPoints
 
-/**
- * @brief PlaneFromPoints
- * @param[in, out] plane
- * @param[in] a
- * @param[in] b
- * @param[in] c
- * @return false if the triangle is degenerate.
- * The normal will point out of the clock for clockwise ordered points
- */
+Return false if the triangle is degenerate. The normal will point out of the clock for clockwise ordered points.
+=======================================================================================================================================
+*/
 qboolean PlaneFromPoints(vec4_t plane, const vec3_t a, const vec3_t b, const vec3_t c) {
 	vec3_t d1, d2;
 
@@ -513,11 +499,11 @@ qboolean PlaneFromPoints(vec4_t plane, const vec3_t a, const vec3_t b, const vec
 	return qtrue;
 }
 
-/**
- * @brief RotatePoint
- * @param[out] point
- * @param[in] matrix
- */
+/*
+=======================================================================================================================================
+RotatePoint
+=======================================================================================================================================
+*/
 void RotatePoint(vec3_t point, vec3_t matrix[3]) {
 	vec3_t tvec;
 
@@ -527,15 +513,13 @@ void RotatePoint(vec3_t point, vec3_t matrix[3]) {
 	point[2] = DotProduct(matrix[2], tvec);
 }
 
-/**
- * @brief RotatePointAroundVector
- * @param[out] dst
- * @param[in] dir
- * @param[in] point
- * @param[in] degrees
- *
- * @note This is not implemented very well...
- */
+/*
+=======================================================================================================================================
+RotatePointAroundVector
+
+NOTE: this is not implemented very well...
+=======================================================================================================================================
+*/
 void RotatePointAroundVector(vec3_t dst, const vec3_t dir, const vec3_t point, float degrees) {
 	float m[3][3];
 	float im[3][3];
@@ -575,6 +559,7 @@ void RotatePointAroundVector(vec3_t dst, const vec3_t dir, const vec3_t point, f
 	im[2][1] = m[1][2];
 
 	Com_Memset(zrot, 0, sizeof(zrot));
+
 	zrot[0][0] = zrot[1][1] = zrot[2][2] = 1.0F;
 
 	rad = DEG2RAD(degrees);
@@ -592,52 +577,47 @@ void RotatePointAroundVector(vec3_t dst, const vec3_t dir, const vec3_t point, f
 }
 
 /*
- * @brief Rotate a point around a vertex.
- * @param[in, out] pnt
- * @param[in] rot_x
- * @param[in] rot_y
- * @param[in] rot_z
- * @param[in] origin
- *
- * @note Unused.
+=======================================================================================================================================
+RotatePointAroundVertex
+
+Rotate a point around a vertex.
+=======================================================================================================================================
+*/
+/*
 void RotatePointAroundVertex(vec3_t pnt, float rot_x, float rot_y, float rot_z, const vec3_t origin) {
-    float tmp[11];
+	float tmp[11];
 
-    // move pnt to rel{0, 0, 0}
-    VectorSubtract(pnt, origin, pnt);
-
-    // init temp values
-    tmp[0] = sin(rot_x);
-    tmp[1] = cos(rot_x);
-    tmp[2] = sin(rot_y);
-    tmp[3] = cos(rot_y);
-    tmp[4] = sin(rot_z);
-    tmp[5] = cos(rot_z);
-    tmp[6] = pnt[1] * tmp[5];
-    tmp[7] = pnt[0] * tmp[4];
-    tmp[8] = pnt[0] * tmp[5];
-    tmp[9] = pnt[1] * tmp[4];
-    tmp[10] = pnt[2] * tmp[3];
-
-    // rotate point
-    pnt[0] = (tmp[3] * (tmp[8] - tmp[9]) + tmp[3] * tmp[2]);
-    pnt[1] = (tmp[0] * (tmp[2] * tmp[8] - tmp[2] * tmp[9] - tmp[10]) + tmp[1] * (tmp[7] + tmp[6]));
-    pnt[2] = (tmp[1] * (-tmp[2] * tmp[8] + tmp[2] * tmp[9] + tmp[10]) + tmp[0] * (tmp[7] + tmp[6]));
-
-    // move pnt back
-    VectorAdd(pnt, origin, pnt);
+	// move pnt to rel {0, 0, 0}
+	VectorSubtract(pnt, origin, pnt);
+	// init temp values
+	tmp[0] = sin(rot_x);
+	tmp[1] = cos(rot_x);
+	tmp[2] = sin(rot_y);
+	tmp[3] = cos(rot_y);
+	tmp[4] = sin(rot_z);
+	tmp[5] = cos(rot_z);
+	tmp[6] = pnt[1] * tmp[5];
+	tmp[7] = pnt[0] * tmp[4];
+	tmp[8] = pnt[0] * tmp[5];
+	tmp[9] = pnt[1] * tmp[4];
+	tmp[10] = pnt[2] * tmp[3];
+	// rotate point
+	pnt[0] = (tmp[3] * (tmp[8] - tmp[9]) + tmp[3] * tmp[2]);
+	pnt[1] = (tmp[0] * (tmp[2] * tmp[8] - tmp[2] * tmp[9] - tmp[10]) + tmp[1] * (tmp[7] + tmp[6]));
+	pnt[2] = (tmp[1] * (-tmp[2] * tmp[8] + tmp[2] * tmp[9] + tmp[10]) + tmp[0] * (tmp[7] + tmp[6]));
+	// move pnt back
+	VectorAdd(pnt, origin, pnt);
 }
 */
-
-/**
- * @brief RotateAroundDirection
- * @param[in, out] axis
- * @param[in] yaw
- */
+/*
+=======================================================================================================================================
+RotateAroundDirection
+=======================================================================================================================================
+*/
 void RotateAroundDirection(vec3_t axis[3], float yaw) {
+
 	// create an arbitrary axis[1]
 	PerpendicularVector(axis[1], axis[0]);
-
 	// rotate it around axis[0] by yaw
 	if (yaw != 0.f) {
 		vec3_t temp;
@@ -649,21 +629,21 @@ void RotateAroundDirection(vec3_t axis[3], float yaw) {
 	vec3_cross(axis[0], axis[1], axis[2]);
 }
 
-/**
- * @brief CreateRotationMatrix
- * @param[in] angles
- * @param[in, out] matrix
- */
+/*
+=======================================================================================================================================
+CreateRotationMatrix
+=======================================================================================================================================
+*/
 void CreateRotationMatrix(const vec3_t angles, vec3_t matrix[3]) {
 	angles_vectors(angles, matrix[0], matrix[1], matrix[2]);
 	vec3_inv(matrix[1]);
 }
 
-/**
- * @brief vec3_to_angles
- * @param[in] value1
- * @param[out] angles
- */
+/*
+=======================================================================================================================================
+vec3_to_angles
+=======================================================================================================================================
+*/
 void vec3_to_angles(const vec3_t value1, vec3_t angles) {
 	float yaw, pitch;
 
@@ -703,11 +683,11 @@ void vec3_to_angles(const vec3_t value1, vec3_t angles) {
 	angles[ROLL] = 0;
 }
 
-/**
- * @brief angles_to_axis
- * @param[in] angles
- * @param[in, out] axis
- */
+/*
+=======================================================================================================================================
+angles_to_axis
+=======================================================================================================================================
+*/
 void angles_to_axis(const vec3_t angles, vec3_t axis[3]) {
 	vec3_t right;
 
@@ -716,10 +696,11 @@ void angles_to_axis(const vec3_t angles, vec3_t axis[3]) {
 	VectorSubtract(vec3_origin, right, axis[1]);
 }
 
-/**
- * @brief axis_clear
- * @param[out] axis
- */
+/*
+=======================================================================================================================================
+axis_clear
+=======================================================================================================================================
+*/
 void axis_clear(axis_t axis) {
 
 	axis[0][0] = 1;
@@ -733,23 +714,23 @@ void axis_clear(axis_t axis) {
 	axis[2][2] = 1;
 }
 
-/**
- * @brief axis_copy
- * @param[in] in
- * @param[out] out
- */
+/*
+=======================================================================================================================================
+axis_copy
+=======================================================================================================================================
+*/
 void axis_copy(axis_t in, axis_t out) {
+
 	VectorCopy(in[0], out[0]);
 	VectorCopy(in[1], out[1]);
 	VectorCopy(in[2], out[2]);
 }
 
-/**
- * @brief ProjectPointOnPlane
- * @param[out] dst
- * @param[in] p
- * @param[in] normal
- */
+/*
+=======================================================================================================================================
+ProjectPointOnPlane
+=======================================================================================================================================
+*/
 void ProjectPointOnPlane(vec3_t dst, const vec3_t p, const vec3_t normal) {
 	float d;
 	vec3_t n;
@@ -768,34 +749,33 @@ void ProjectPointOnPlane(vec3_t dst, const vec3_t p, const vec3_t normal) {
 	dst[2] = p[2] - d * n[2];
 }
 
-/**
- * @brief Given a normalized forward vector, create two
- * other perpendicular vectors
- * @param[in] forward
- * @param[in, out] right
- * @param[out] up
- */
+/*
+=======================================================================================================================================
+MakeNormalVectors
+
+Given a normalized forward vector, create two other perpendicular vectors.
+=======================================================================================================================================
+*/
 void MakeNormalVectors(const vec3_t forward, vec3_t right, vec3_t up) {
 	float d;
 
-	// this rotate and negate guarantees a vector
-	// not colinear with the original
+	// this rotate and negate guarantees a vector not colinear with the original
 	right[1] = -forward[0];
 	right[2] = forward[1];
 	right[0] = forward[2];
 
 	d = DotProduct(right, forward);
+
 	VectorMA(right, -d, forward, right);
 	vec3_norm(right);
 	vec3_cross(right, forward, up);
 }
 
-/**
- * @brief vec3_rotate
- * @param[in] in
- * @param[in] matrix
- * @param[out] out
- */
+/*
+=======================================================================================================================================
+vec3_rotate
+=======================================================================================================================================
+*/
 void vec3_rotate(const vec3_t in, vec3_t matrix[3], vec3_t out) {
 	/*
 	out[0] = DotProduct(in, matrix[0]);
@@ -807,15 +787,12 @@ void vec3_rotate(const vec3_t in, vec3_t matrix[3], vec3_t out) {
 	out[2] = in[0] * matrix[0][2] + in[1] * matrix[1][2] + in[2] * matrix[2][2];
 }
 
-//============================================================================ 
-
 #if !idppc
-
-/**
- * @brief Q_rsqrt
- * @param[in] f
- * @return
- */
+/*
+=======================================================================================================================================
+Q_rsqrt
+=======================================================================================================================================
+*/
 float Q_rsqrt(float f) {
 	floatint_t t;
 	float x2, y;
@@ -823,19 +800,18 @@ float Q_rsqrt(float f) {
 
 	x2 = f * 0.5F;
 	t.f = f;
-	t.i = 0x5f3759df - (t.i >> 1);                  // what the fuck?
+	t.i = 0x5f3759df - (t.i >> 1); // what the fuck?
 	y = t.f;
-	y = y * (threehalfs - (x2 * y * y));      // 1st iteration
-	//y = y * (threehalfs - (x2 * y * y));   // 2nd iteration, this can be removed
-
+	y = y * (threehalfs - (x2 * y * y)); // 1st iteration
+	//y = y * (threehalfs - (x2 * y * y)); // 2nd iteration, this can be removed
 	return y;
 }
 
-/**
- * @brief Q_fabs
- * @param[in] f
- * @return
- */
+/*
+=======================================================================================================================================
+Q_fabs
+=======================================================================================================================================
+*/
 float Q_fabs(float f) {
 	floatint_t fi;
 
@@ -845,15 +821,11 @@ float Q_fabs(float f) {
 }
 #endif
 
-//============================================================ 
-
-/**
- * @brief angle_lerp
- * @param[in] from
- * @param[in] to
- * @param[in] frac
- * @return
- */
+/*
+=======================================================================================================================================
+angle_lerp
+=======================================================================================================================================
+*/
 float angle_lerp(float from, float to, float frac) {
 
 	if (to - from > 180) {
@@ -867,13 +839,11 @@ float angle_lerp(float from, float to, float frac) {
 	return (from + frac * (to - from));
 }
 
-/**
- * @brief vec3_lerp
- * @param[in] start
- * @param[in] end
- * @param[in] frac
- * @param[out] out
- */
+/*
+=======================================================================================================================================
+vec3_lerp
+=======================================================================================================================================
+*/
 void vec3_lerp(vec3_t start, vec3_t end, float frac, vec3_t out) {
 	vec3_t dist;
 
@@ -881,12 +851,13 @@ void vec3_lerp(vec3_t start, vec3_t end, float frac, vec3_t out) {
 	VectorMA(start, frac, dist, out);
 }
 
-/**
- * @brief angle_sub
- * @param[in] a1
- * @param[in] a2
- * @return Always returns a value from - 180 to 180
- */
+/*
+=======================================================================================================================================
+angle_sub
+
+Always returns a value from - 180 to 180.
+=======================================================================================================================================
+*/
 float angle_sub(float a1, float a2) {
 	float a = a1 - a2;
 
@@ -901,12 +872,11 @@ float angle_sub(float a1, float a2) {
 	return a;
 }
 
-/**
- * @brief angles_sub
- * @param[in] v1
- * @param[in] v2
- * @param[out] v3
- */
+/*
+=======================================================================================================================================
+angles_sub
+=======================================================================================================================================
+*/
 void angles_sub(vec3_t v1, vec3_t v2, vec3_t v3) {
 
 	v3[0] = angle_sub(v1[0], v2[0]);
@@ -914,38 +884,45 @@ void angles_sub(vec3_t v1, vec3_t v2, vec3_t v3) {
 	v3[2] = angle_sub(v1[2], v2[2]);
 }
 
-/**
- * @brief angle_mod
- * @param[in] a
- * @return
- */
+/*
+=======================================================================================================================================
+angle_mod
+=======================================================================================================================================
+*/
 float angle_mod(float a) {
 	return ((360.0f / 65536) * ((int)(a * (65536 / 360.0f)) & 65535));
 }
 
 /*
- * @brief Returns angle normalized to the range [0 <= angle < 2*M_PI].
- * @param[in] angle
- * @note Unused.
+=======================================================================================================================================
+angle_norm_pi
+
+Returns angle normalized to the range [0 <= angle < 2 * M_PI].
+=======================================================================================================================================
+*/
+/*
 float angle_norm_pi(float angle) {
-    return DEG2RAD(angle_norm_360(RAD2DEG(angle)));
+	return DEG2RAD(angle_norm_360(RAD2DEG(angle)));
 }
 */
+/*
+=======================================================================================================================================
+angle_norm_360
 
-/**
- * @brief angle_norm_360
- * @param[in] angle
- * @return angle normalized to the range [0 <= angle < 360]
- */
+Returns angle normalized to the range [0 <= angle < 360].
+=======================================================================================================================================
+*/
 float angle_norm_360(float angle) {
 	return (360.0f / 65536) * ((int)(angle * (65536 / 360.0f)) & 65535);
 }
 
-/**
- * @brief angle_norm_180
- * @param[in] angle
- * @return angle normalized to the range [-180 < angle <= 180]
- */
+/*
+=======================================================================================================================================
+angle_norm_180
+
+Returns angle normalized to the range [-180 < angle <= 180].
+=======================================================================================================================================
+*/
 float angle_norm_180(float angle) {
 	angle = angle_norm_360(angle);
 
@@ -956,22 +933,22 @@ float angle_norm_180(float angle) {
 	return angle;
 }
 
-/**
- * @brief angle_delta
- * @param[in] angle1
- * @param[in] angle2
- * @return the normalized delta from angle1 to angle2
- */
+/*
+=======================================================================================================================================
+angle_delta
+
+Returns the normalized delta from angle1 to angle2.
+=======================================================================================================================================
+*/
 float angle_delta(float angle1, float angle2) {
 	return angle_norm_180(angle1 - angle2);
 }
 
-//============================================================ 
-
-/**
- * @brief SetPlaneSignbits
- * @param[in, out] out
- */
+/*
+=======================================================================================================================================
+SetPlaneSignbits
+=======================================================================================================================================
+*/
 void SetPlaneSignbits(struct cplane_s *out) {
 	byte bits = 0, j;
 
@@ -986,54 +963,50 @@ void SetPlaneSignbits(struct cplane_s *out) {
 }
 
 /*
- * @brief BoxOnPlaneSide2
- * @param[in] emins
- * @param[in] emaxs
- * @param[in] p
- * @return 1, 2, or 1 + 2
- *
- * @note This is the slow, general version
- * @note Unused
+=======================================================================================================================================
+BoxOnPlaneSide2
+
+This is the slow, general version. Return 1, 2, or 1 + 2.
+=======================================================================================================================================
+*/
+/*
 int BoxOnPlaneSide2(vec3_t emins, vec3_t emaxs, struct cplane_s *p) {
-    int i;
-    float dist1, dist2;
-    int sides;
-    vec3_t corners[2];
+	int i;
+	float dist1, dist2;
+	int sides;
+	vec3_t corners[2];
 
-    for(i = 0; i < 3; i++)
-    {
-        if (p->normal[i] < 0)
-        {
-            corners[0][i] = emins[i];
-            corners[1][i] = emaxs[i];
-}
-        else
-        {
-            corners[1][i] = emins[i];
-            corners[0][i] = emaxs[i];
-}
-}
-    dist1 = DotProduct(p->normal, corners[0]) - p->dist;
-    dist2 = DotProduct(p->normal, corners[1]) - p->dist;
-    sides = 0;
-    if (dist1 >= 0)
-        sides = 1;
-    if (dist2 < 0)
-        sides |= 2;
+	for(i = 0; i < 3; i++) {
+		if (p->normal[i] < 0) {
+			corners[0][i] = emins[i];
+			corners[1][i] = emaxs[i];
+		} else {
+			corners[1][i] = emins[i];
+			corners[0][i] = emaxs[i];
+		}
+	}
 
-    return sides;
+	dist1 = DotProduct(p->normal, corners[0]) - p->dist;
+	dist2 = DotProduct(p->normal, corners[1]) - p->dist;
+	sides = 0;
+
+	if (dist1 >= 0) {
+		sides = 1;
+	}
+
+	if (dist2 < 0) {
+		sides |= 2;
+	}
+
+	return sides;
 }
 */
-
 #if defined __LCC__ || defined C_ONLY || defined __GNUC__
-
-/**
- * @brief BoxOnPlaneSide
- * @param[in] emins
- * @param[in] emaxs
- * @param[in] p
- * @return
- */
+/*
+=======================================================================================================================================
+BoxOnPlaneSide
+=======================================================================================================================================
+*/
 int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, struct cplane_s *p) {
 	float dist1, dist2;
 	int sides;
@@ -1052,41 +1025,41 @@ int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, struct cplane_s *p) {
 	}
 	// general case
 	switch (p->signbits) {
-	case 0:
-		dist1 = p->normal[0] * emaxs[0] + p->normal[1] * emaxs[1] + p->normal[2] * emaxs[2];
-		dist2 = p->normal[0] * emins[0] + p->normal[1] * emins[1] + p->normal[2] * emins[2];
-		break;
-	case 1:
-		dist1 = p->normal[0] * emins[0] + p->normal[1] * emaxs[1] + p->normal[2] * emaxs[2];
-		dist2 = p->normal[0] * emaxs[0] + p->normal[1] * emins[1] + p->normal[2] * emins[2];
-		break;
-	case 2:
-		dist1 = p->normal[0] * emaxs[0] + p->normal[1] * emins[1] + p->normal[2] * emaxs[2];
-		dist2 = p->normal[0] * emins[0] + p->normal[1] * emaxs[1] + p->normal[2] * emins[2];
-		break;
-	case 3:
-		dist1 = p->normal[0] * emins[0] + p->normal[1] * emins[1] + p->normal[2] * emaxs[2];
-		dist2 = p->normal[0] * emaxs[0] + p->normal[1] * emaxs[1] + p->normal[2] * emins[2];
-		break;
-	case 4:
-		dist1 = p->normal[0] * emaxs[0] + p->normal[1] * emaxs[1] + p->normal[2] * emins[2];
-		dist2 = p->normal[0] * emins[0] + p->normal[1] * emins[1] + p->normal[2] * emaxs[2];
-		break;
-	case 5:
-		dist1 = p->normal[0] * emins[0] + p->normal[1] * emaxs[1] + p->normal[2] * emins[2];
-		dist2 = p->normal[0] * emaxs[0] + p->normal[1] * emins[1] + p->normal[2] * emaxs[2];
-		break;
-	case 6:
-		dist1 = p->normal[0] * emaxs[0] + p->normal[1] * emins[1] + p->normal[2] * emins[2];
-		dist2 = p->normal[0] * emins[0] + p->normal[1] * emaxs[1] + p->normal[2] * emaxs[2];
-		break;
-	case 7:
-		dist1 = p->normal[0] * emins[0] + p->normal[1] * emins[1] + p->normal[2] * emins[2];
-		dist2 = p->normal[0] * emaxs[0] + p->normal[1] * emaxs[1] + p->normal[2] * emaxs[2];
-		break;
-	default:
-		dist1 = dist2 = 0;      // shut up compiler
-		break;
+		case 0:
+			dist1 = p->normal[0] * emaxs[0] + p->normal[1] * emaxs[1] + p->normal[2] * emaxs[2];
+			dist2 = p->normal[0] * emins[0] + p->normal[1] * emins[1] + p->normal[2] * emins[2];
+			break;
+		case 1:
+			dist1 = p->normal[0] * emins[0] + p->normal[1] * emaxs[1] + p->normal[2] * emaxs[2];
+			dist2 = p->normal[0] * emaxs[0] + p->normal[1] * emins[1] + p->normal[2] * emins[2];
+			break;
+		case 2:
+			dist1 = p->normal[0] * emaxs[0] + p->normal[1] * emins[1] + p->normal[2] * emaxs[2];
+			dist2 = p->normal[0] * emins[0] + p->normal[1] * emaxs[1] + p->normal[2] * emins[2];
+			break;
+		case 3:
+			dist1 = p->normal[0] * emins[0] + p->normal[1] * emins[1] + p->normal[2] * emaxs[2];
+			dist2 = p->normal[0] * emaxs[0] + p->normal[1] * emaxs[1] + p->normal[2] * emins[2];
+			break;
+		case 4:
+			dist1 = p->normal[0] * emaxs[0] + p->normal[1] * emaxs[1] + p->normal[2] * emins[2];
+			dist2 = p->normal[0] * emins[0] + p->normal[1] * emins[1] + p->normal[2] * emaxs[2];
+			break;
+		case 5:
+			dist1 = p->normal[0] * emins[0] + p->normal[1] * emaxs[1] + p->normal[2] * emins[2];
+			dist2 = p->normal[0] * emaxs[0] + p->normal[1] * emins[1] + p->normal[2] * emaxs[2];
+			break;
+		case 6:
+			dist1 = p->normal[0] * emaxs[0] + p->normal[1] * emins[1] + p->normal[2] * emins[2];
+			dist2 = p->normal[0] * emins[0] + p->normal[1] * emaxs[1] + p->normal[2] * emaxs[2];
+			break;
+		case 7:
+			dist1 = p->normal[0] * emins[0] + p->normal[1] * emins[1] + p->normal[2] * emins[2];
+			dist2 = p->normal[0] * emaxs[0] + p->normal[1] * emaxs[1] + p->normal[2] * emaxs[2];
+			break;
+		default:
+			dist1 = dist2 = 0; // shut up compiler
+			break;
 	}
 
 	sides = 0;
@@ -1101,10 +1074,13 @@ int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, struct cplane_s *p) {
 
 	return sides;
 }
-
 #else
 #pragma warning(disable: 4035)
-
+/*
+=======================================================================================================================================
+BoxOnPlaneSide_fast
+=======================================================================================================================================
+*/
 __inline __declspec(naked) int BoxOnPlaneSide_fast(vec3_t emins, vec3_t emaxs, struct cplane_s *p) {
 	static int bops_initialized;
 	static int Ljmptab[8];
@@ -1125,9 +1101,7 @@ __inline __declspec(naked) int BoxOnPlaneSide_fast(vec3_t emins, vec3_t emaxs, s
 		mov Ljmptab[5 * 4], offset Lcase5
 		mov Ljmptab[6 * 4], offset Lcase6
 		mov Ljmptab[7 * 4], offset Lcase7
-
 initialized:
-
 		mov edx, dword ptr[4 + 12 + esp]
 		mov ecx, dword ptr[4 + 4 + esp]
 		xor eax, eax
@@ -1334,9 +1308,14 @@ Lerror:
 	}
 }
 
+/*
+=======================================================================================================================================
+BoxOnPlaneSide
+=======================================================================================================================================
+*/
 int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, struct cplane_s *p) {
-	// fast axial cases
 
+	// fast axial cases
 	if (p->type < 3) {
 		if (p->dist <= emins[p->type]) {
 			return 1;
@@ -1353,15 +1332,12 @@ int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, struct cplane_s *p) {
 }
 
 #pragma warning(default: 4035)
-
 #endif
-
-/**
- * @brief RadiusFromBounds
- * @param[in] mins
- * @param[in] maxs
- * @return
- */
+/*
+=======================================================================================================================================
+RadiusFromBounds
+=======================================================================================================================================
+*/
 float RadiusFromBounds(const vec3_t mins, const vec3_t maxs) {
 	int i;
 	vec3_t corner;
@@ -1376,23 +1352,24 @@ float RadiusFromBounds(const vec3_t mins, const vec3_t maxs) {
 	return vec3_length(corner);
 }
 
-/**
- * @brief ClearBounds
- * @param[in, out] mins
- * @param[in, out] maxs
- */
+/*
+=======================================================================================================================================
+ClearBounds
+=======================================================================================================================================
+*/
 void ClearBounds(vec3_t mins, vec3_t maxs) {
+
 	mins[0] = mins[1] = mins[2] = 99999;
 	maxs[0] = maxs[1] = maxs[2] = -99999;
 }
 
-/**
- * @brief AddPointToBounds
- * @param[in] v
- * @param[in, out] mins
- * @param[in, out] maxs
- */
+/*
+=======================================================================================================================================
+AddPointToBounds
+=======================================================================================================================================
+*/
 void AddPointToBounds(const vec3_t v, vec3_t mins, vec3_t maxs) {
+
 	if (v[0] < mins[0]) {
 		mins[0] = v[0];
 	}
@@ -1419,53 +1396,47 @@ void AddPointToBounds(const vec3_t v, vec3_t mins, vec3_t maxs) {
 }
 
 /*
- * @brief PointInBounds
- * @param[in] v
- * @param[in] mins
- * @param[in] maxs
- * @return
- *
- * @note Unused.
+=======================================================================================================================================
+PointInBounds
+=======================================================================================================================================
+*/
+/*
 qboolean PointInBounds(const vec3_t v, const vec3_t mins, const vec3_t maxs) {
-    if (v[0] < mins[0])
-    {
-        return qfalse;
-}
-    if (v[0] > maxs[0])
-    {
-        return qfalse;
-}
 
-    if (v[1] < mins[1])
-    {
-        return qfalse;
-}
-    if (v[1] > maxs[1])
-    {
-        return qfalse;
-}
+	if (v[0] < mins[0]) {
+		return qfalse;
+	}
 
-    if (v[2] < mins[2])
-    {
-        return qfalse;
-}
-    if (v[2] > maxs[2])
-    {
-        return qfalse;
-}
+	if (v[0] > maxs[0]) {
+		return qfalse;
+	}
 
-    return qtrue;
+	if (v[1] < mins[1]) {
+		return qfalse;
+	}
+
+	if (v[1] > maxs[1]) {
+		return qfalse;
+	}
+
+	if (v[2] < mins[2]) {
+		return qfalse;
+	}
+
+	if (v[2] > maxs[2]) {
+		return qfalse;
+	}
+
+	return qtrue;
 }
 */
-
-/**
- * @brief BoundsAdd
- * @param[in, out] mins
- * @param[in, out] maxs
- * @param[in] mins2
- * @param[in] maxs2
- */
+/*
+=======================================================================================================================================
+BoundsAdd
+=======================================================================================================================================
+*/
 void BoundsAdd(vec3_t mins, vec3_t maxs, const vec3_t mins2, const vec3_t maxs2) {
+
 	if (mins2[0] < mins[0]) {
 		mins[0] = mins2[0];
 	}
@@ -1491,13 +1462,13 @@ void BoundsAdd(vec3_t mins, vec3_t maxs, const vec3_t mins2, const vec3_t maxs2)
 	}
 }
 
-/**
- * @brief vec3_compare
- * @param[in] v1
- * @param[in] v2
- * @return
- */
+/*
+=======================================================================================================================================
+vec3_compare
+=======================================================================================================================================
+*/
 qboolean vec3_compare(const vec3_t v1, const vec3_t v2) {
+
 	if (v1[0] != v2[0] || v1[1] != v2[1] || v1[2] != v2[2]) {
 		return qfalse;
 	}
@@ -1505,11 +1476,11 @@ qboolean vec3_compare(const vec3_t v1, const vec3_t v2) {
 	return qtrue;
 }
 
-/**
- * @brief vec3_norm
- * @param[in] v
- * @return
- */
+/*
+=======================================================================================================================================
+vec3_norm
+=======================================================================================================================================
+*/
 vec_t vec3_norm(vec3_t v) {
 	float length = v[0] * v[0] + v[1] * v[1] + v[2] * v[2];
 
@@ -1526,11 +1497,13 @@ vec_t vec3_norm(vec3_t v) {
 	return length;
 }
 
-/**
- * @brief fast vector normalize routine that does not check to make sure
- * that length != 0, nor does it return length
- * @param[in, out] v
- */
+/*
+=======================================================================================================================================
+vec3_norm_fast
+
+Fast vector normalize routine that does not check to make sure that length != 0, nor does it return length.
+=======================================================================================================================================
+*/
 void vec3_norm_fast(vec3_t v) {
 	float ilength;
 
@@ -1541,12 +1514,11 @@ void vec3_norm_fast(vec3_t v) {
 	v[2] *= ilength;
 }
 
-/**
- * @brief vec3_norm2
- * @param[in] v
- * @param[out] out
- * @return
- */
+/*
+=======================================================================================================================================
+vec3_norm2
+=======================================================================================================================================
+*/
 vec_t vec3_norm2(const vec3_t v, vec3_t out) {
 	float length = v[0] * v[0] + v[1] * v[1] + v[2] * v[2];
 
@@ -1566,112 +1538,110 @@ vec_t vec3_norm2(const vec3_t v, vec3_t out) {
 
 }
 
-/**
- * @brief _VectorMA
- * @param[in] veca
- * @param[in] scale
- * @param[in] vecb
- * @param[out] vecc
- */
+/*
+=======================================================================================================================================
+_VectorMA
+=======================================================================================================================================
+*/
 void _VectorMA(const vec3_t veca, float scale, const vec3_t vecb, vec3_t vecc) {
+
 	vecc[0] = veca[0] + scale * vecb[0];
 	vecc[1] = veca[1] + scale * vecb[1];
 	vecc[2] = veca[2] + scale * vecb[2];
 }
 
-/**
- * @brief _DotProduct
- * @param[in] v1
- * @param[in] v2
- * @return
- */
+/*
+=======================================================================================================================================
+_DotProduct
+=======================================================================================================================================
+*/
 vec_t _DotProduct(const vec3_t v1, const vec3_t v2) {
 	return v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2];
 }
 
-/**
- * @brief _VectorSubtract
- * @param[in] veca
- * @param[in] vecb
- * @param[out] out
- */
+/*
+=======================================================================================================================================
+_VectorSubtract
+=======================================================================================================================================
+*/
 void _VectorSubtract(const vec3_t veca, const vec3_t vecb, vec3_t out) {
+
 	out[0] = veca[0] - vecb[0];
 	out[1] = veca[1] - vecb[1];
 	out[2] = veca[2] - vecb[2];
 }
 
-/**
- * @brief _VectorAdd
- * @param[in] veca
- * @param[in] vecb
- * @param[out] out
- */
+/*
+=======================================================================================================================================
+_VectorAdd
+=======================================================================================================================================
+*/
 void _VectorAdd(const vec3_t veca, const vec3_t vecb, vec3_t out) {
+
 	out[0] = veca[0] + vecb[0];
 	out[1] = veca[1] + vecb[1];
 	out[2] = veca[2] + vecb[2];
 }
 
-/**
- * @brief _VectorCopy
- * @param[in] in
- * @param[out] out
- */
+/*
+=======================================================================================================================================
+_VectorCopy
+=======================================================================================================================================
+*/
 void _VectorCopy(const vec3_t in, vec3_t out) {
+
 	out[0] = in[0];
 	out[1] = in[1];
 	out[2] = in[2];
 }
 
-/**
- * @brief _VectorScale
- * @param[in] in
- * @param[in] scale
- * @param[out] out
- */
+/*
+=======================================================================================================================================
+_VectorScale
+=======================================================================================================================================
+*/
 void _VectorScale(const vec3_t in, vec_t scale, vec3_t out) {
+
 	out[0] = in[0] * scale;
 	out[1] = in[1] * scale;
 	out[2] = in[2] * scale;
 }
 
-/**
- * @brief vec3_cross
- * @param[in] v1
- * @param[in] v2
- * @param[out] cross
- */
+/*
+=======================================================================================================================================
+vec3_cross
+=======================================================================================================================================
+*/
 void vec3_cross(const vec3_t v1, const vec3_t v2, vec3_t cross) {
+
 	cross[0] = v1[1] * v2[2] - v1[2] * v2[1];
 	cross[1] = v1[2] * v2[0] - v1[0] * v2[2];
 	cross[2] = v1[0] * v2[1] - v1[1] * v2[0];
 }
 
-/**
- * @brief vec3_length
- * @param[in] v
- * @return
- */
+/*
+=======================================================================================================================================
+vec3_length
+=======================================================================================================================================
+*/
 vec_t vec3_length(const vec3_t v) {
 	return (float)sqrt((double)(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]));
 }
 
-/**
- * @brief vec3_length_squared
- * @param[in] v
- * @return
- */
+/*
+=======================================================================================================================================
+vec3_length_squared
+=======================================================================================================================================
+*/
 vec_t vec3_length_squared(const vec3_t v) {
 	return (v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
 }
 
-/**
- * @brief vec3_distance
- * @param[in] p1
- * @param[in] p2
- * @return
- */
+/*
+=======================================================================================================================================
+vec3_distance
+=======================================================================================================================================
+*/
 vec_t vec3_distance(const vec3_t p1, const vec3_t p2) {
 	vec3_t v;
 
@@ -1679,12 +1649,11 @@ vec_t vec3_distance(const vec3_t p1, const vec3_t p2) {
 	return vec3_length(v);
 }
 
-/**
- * @brief vec3_distance_squared
- * @param[in] p1
- * @param[in] p2
- * @return
- */
+/*
+=======================================================================================================================================
+vec3_distance_squared
+=======================================================================================================================================
+*/
 vec_t vec3_distance_squared(const vec3_t p1, const vec3_t p2) {
 	vec3_t v;
 
@@ -1692,55 +1661,62 @@ vec_t vec3_distance_squared(const vec3_t p1, const vec3_t p2) {
 	return v[0] * v[0] + v[1] * v[1] + v[2] * v[2];
 }
 
-/**
- * @brief vec3_inv
- * @param[in, out] v
- */
+/*
+=======================================================================================================================================
+vec3_inv
+=======================================================================================================================================
+*/
 void vec3_inv(vec3_t v) {
+
 	v[0] = -v[0];
 	v[1] = -v[1];
 	v[2] = -v[2];
 }
 
 /*
- * @brief Q_log2
- * @param val
- * @return
- * @note Unused.
+=======================================================================================================================================
+Q_log2
+=======================================================================================================================================
+*/
+/*
 int Q_log2(int val) {
-    int answer = 0;
+	int answer = 0;
 
-    while((val >>= 1) != 0)
-    {
-        answer++;
+	while ((val >>= 1) != 0) {
+		answer++;
+	}
+
+	return answer;
 }
-    return answer;
+*/
+/*
+=======================================================================================================================================
+PlaneTypeForNormal
+=======================================================================================================================================
+*/
+/*
+int PlaneTypeForNormal(vec3_t normal) {
+	if (normal[0] == 1.0) {
+		return PLANE_X;
+	}
+
+	if (normal[1] == 1.0) {
+		return PLANE_Y;
+	}
+
+	if (normal[2] == 1.0) {
+		return PLANE_Z;
+	}
+
+	return PLANE_NON_AXIAL;
 }
 */
 
 /*
- * @brief PlaneTypeForNormal
- * @param[in] normal
- * @return
- * @note Unused
-int PlaneTypeForNormal(vec3_t normal) {
-    if (normal[0] == 1.0)
-        return PLANE_X;
-    if (normal[1] == 1.0)
-        return PLANE_Y;
-    if (normal[2] == 1.0)
-        return PLANE_Z;
-
-    return PLANE_NON_AXIAL;
-}
+=======================================================================================================================================
+_MatrixMultiply
+=======================================================================================================================================
 */
-
-/**
- * @brief _MatrixMultiply
- * @param[in] in1
- * @param[in] in2
- * @param[out] out
- */
 void _MatrixMultiply(float in1[3][3], float in2[3][3], float out[3][3]) {
 	out[0][0] = in1[0][0] * in2[0][0] + in1[0][1] * in2[1][0] + in1[0][2] * in2[2][0];
 	out[0][1] = in1[0][0] * in2[0][1] + in1[0][1] * in2[1][1] + in1[0][2] * in2[2][1];
@@ -1753,11 +1729,11 @@ void _MatrixMultiply(float in1[3][3], float in2[3][3], float out[3][3]) {
 	out[2][2] = in1[2][0] * in2[0][2] + in1[2][1] * in2[1][2] + in1[2][2] * in2[2][2];
 }
 
-/**
- * @brief mat3_transpose
- * @param[in] matrix
- * @param[out] transpose
- */
+/*
+=======================================================================================================================================
+mat3_transpose
+=======================================================================================================================================
+*/
 void mat3_transpose(vec3_t matrix[3], vec3_t transpose[3]) {
 #if 0
 	int i, j;
@@ -1780,17 +1756,14 @@ void mat3_transpose(vec3_t matrix[3], vec3_t transpose[3]) {
 #endif
 }
 
-/**
- * @brief angles_vectors
- * @param[in] angles
- * @param[out] forward
- * @param[out] right
- * @param[out] up
- */
+/*
+=======================================================================================================================================
+angles_vectors
+=======================================================================================================================================
+*/
 void angles_vectors(const vec3_t angles, vec3_t forward, vec3_t right, vec3_t up) {
 	float angle;
-	static float sr, sp, sy, cr, cp, cy;
-	// static to help MS compiler fp bugs
+	static float sr, sp, sy, cr, cp, cy; // static to help MS compiler fp bugs
 
 	angle = (float)((double)angles[YAW] * (M_PI * 2 / 360));
 	sy = (float)sin((double)angle);
@@ -1811,23 +1784,25 @@ void angles_vectors(const vec3_t angles, vec3_t forward, vec3_t right, vec3_t up
 	}
 
 	if (right) {
-		right[0] = (-1 * sr * sp * cy + - 1 * cr * - sy);
-		right[1] = (-1 * sr * sp * sy + - 1 * cr * cy);
+		right[0] = (-1 * sr * sp * cy + -1 * cr * -sy);
+		right[1] = (-1 * sr * sp * sy + -1 * cr * cy);
 		right[2] = -1 * sr * cp;
 	}
 
 	if (up) {
-		up[0] = (cr * sp * cy + - sr * - sy);
-		up[1] = (cr * sp * sy + - sr * cy);
+		up[0] = (cr * sp * cy + -sr * -sy);
+		up[1] = (cr * sp * sy + -sr * cy);
 		up[2] = cr * cp;
 	}
 }
 
-/**
- * @brief vec3_per
- * @param[in] src assumes is normalized
- * @param[out] dst
- */
+/*
+=======================================================================================================================================
+vec3_per
+
+'src' assumes is normalized.
+=======================================================================================================================================
+*/
 void vec3_per(const vec3_t src, vec3_t dst) {
 	int pos;
 	int i;
@@ -1844,21 +1819,19 @@ void vec3_per(const vec3_t src, vec3_t dst) {
 
 	tempvec[0] = tempvec[1] = tempvec[2] = 0.0F;
 	tempvec[pos] = 1.0F;
-
 	// project the point onto the plane defined by src
 	ProjectPointOnPlane(dst, tempvec, src);
-
 	// normalize the result
 	vec3_norm(dst);
 }
 
-/**
- * @brief Used to find an "up" vector for drawing a sprite so that it always faces the view as best as possible
- * @param[in] point
- * @param[in] p1
- * @param[in] p2
- * @param[out] up
- */
+/*
+=======================================================================================================================================
+GetPerpendicularViewVector
+
+Used to find an "up" vector for drawing a sprite so that it always faces the view as best as possible.
+=======================================================================================================================================
+*/
 void GetPerpendicularViewVector(const vec3_t point, const vec3_t p1, const vec3_t p2, vec3_t up) {
 	vec3_t v1, v2;
 
@@ -1872,13 +1845,11 @@ void GetPerpendicularViewVector(const vec3_t point, const vec3_t p1, const vec3_
 	vec3_norm(up);
 }
 
-/**
- * @brief ProjectPointOntoVector
- * @param[in] point
- * @param[in] vStart
- * @param[in] vEnd
- * @param[out] vProj
- */
+/*
+=======================================================================================================================================
+ProjectPointOntoVector
+=======================================================================================================================================
+*/
 void ProjectPointOntoVector(vec3_t point, vec3_t vStart, vec3_t vEnd, vec3_t vProj) {
 	vec3_t pVec, vec;
 
@@ -1889,16 +1860,11 @@ void ProjectPointOntoVector(vec3_t point, vec3_t vStart, vec3_t vEnd, vec3_t vPr
 	VectorMA(vStart, DotProduct(pVec, vec), vec, vProj);
 }
 
-/**
- * @brief ProjectPointOntoVectorBounded
- * @param[in] point
- * @param[in] vStart
- * @param[in] vEnd
- * @param[out] vProj
- *
- * @note Unused
- *
- */
+/*
+=======================================================================================================================================
+ProjectPointOntoVectorBounded
+=======================================================================================================================================
+*/
 void ProjectPointOntoVectorBounded(vec3_t point, vec3_t vStart, vec3_t vEnd, vec3_t vProj) {
 	vec3_t pVec, vec;
 	int j;
@@ -1923,13 +1889,11 @@ void ProjectPointOntoVectorBounded(vec3_t point, vec3_t vStart, vec3_t vEnd, vec
 	}
 }
 
-/**
- * @brief DistanceFromLineSquared
- * @param[in] p
- * @param[in] lp1
- * @param[in] lp2
- * @return
- */
+/*
+=======================================================================================================================================
+DistanceFromLineSquared
+=======================================================================================================================================
+*/
 float DistanceFromLineSquared(vec3_t p, vec3_t lp1, vec3_t lp2) {
 	vec3_t proj, t;
 	int j;
@@ -1955,15 +1919,11 @@ float DistanceFromLineSquared(vec3_t p, vec3_t lp1, vec3_t lp2) {
 	return vec3_length_squared(t);
 }
 
-/**
- * @brief DistanceFromVectorSquared
- * @param[in] p
- * @param[in] lp1
- * @param[in] lp2
- * @return
- *
- * @note Unused
- */
+/*
+=======================================================================================================================================
+DistanceFromVectorSquared
+=======================================================================================================================================
+*/
 float DistanceFromVectorSquared(vec3_t p, vec3_t lp1, vec3_t lp2) {
 	vec3_t proj, t;
 
@@ -1972,11 +1932,11 @@ float DistanceFromVectorSquared(vec3_t p, vec3_t lp1, vec3_t lp2) {
 	return vec3_length_squared(t);
 }
 
-/**
- * @brief vec3_to_yawn
- * @param[in] vec
- * @return
- */
+/*
+=======================================================================================================================================
+vec3_to_yawn
+=======================================================================================================================================
+*/
 float vec3_to_yawn(const vec3_t vec) {
 	float yaw;
 
@@ -1999,21 +1959,19 @@ float vec3_to_yawn(const vec3_t vec) {
 	return yaw;
 }
 
-/**
- * @brief Used to convert the MD3 tag axis to MDC tag angles, which are much smaller
- *
- * @details This doesn't have to be fast, since it's only used for conversion in utils, try to avoid
- * using this during gameplay
- *
- * @param[in] axis
- * @param[out] angles
- */
+/*
+=======================================================================================================================================
+axis_to_angles
+
+Used to convert the MD3 tag axis to MDC tag angles, which are much smaller.
+This doesn't have to be fast, since it's only used for conversion in utils, try to avoid using this during gameplay.
+=======================================================================================================================================
+*/
 void axis_to_angles(axis_t axis, vec3_t angles) {
 	vec3_t right, roll_angles, tvec;
 
 	// first get the pitch and yaw from the forward vector
 	vec3_to_angles(axis[0], angles);
-
 	// now get the roll from the right vector
 	VectorCopy(axis[1], right);
 	// get the angle difference between the tmpAxis[2] and axis[2] after they have been reverse - rotated
@@ -2034,12 +1992,11 @@ void axis_to_angles(axis_t axis, vec3_t angles) {
 	angles[ROLL] = -roll_angles[PITCH];
 }
 
-/**
- * @brief vec3_dist
- * @param[in] v1
- * @param[in] v2
- * @return
- */
+/*
+=======================================================================================================================================
+vec3_dist
+=======================================================================================================================================
+*/
 float vec3_dist(vec3_t v1, vec3_t v2) {
 	vec3_t dir;
 
@@ -2047,12 +2004,11 @@ float vec3_dist(vec3_t v1, vec3_t v2) {
 	return vec3_length(dir);
 }
 
-/**
- * @brief vec3_dist_squared
- * @param[in] v1
- * @param[in] v2
- * @return
- */
+/*
+=======================================================================================================================================
+vec3_dist_squared
+=======================================================================================================================================
+*/
 float vec3_dist_squared(vec3_t v1, vec3_t v2) {
 	vec3_t dir;
 
@@ -2060,11 +2016,13 @@ float vec3_dist_squared(vec3_t v1, vec3_t v2) {
 	return vec3_length_squared(dir);
 }
 
-/**
- * @brief Don't pass doubles to this
- * @param[in] x
- * @return
- */
+/*
+=======================================================================================================================================
+Q_isnan
+
+Don't pass doubles to this.
+=======================================================================================================================================
+*/
 int Q_isnan(float x) {
 	floatint_t fi;
 
@@ -2076,18 +2034,13 @@ int Q_isnan(float x) {
 }
 
 #ifndef Q3_VM
-/**
- * @brief The msvc acos doesn't always return a value between - PI and PI:
- *
- * < code > 
- * int i;
- * i = 1065353246;
- * acos(*(float*) &i) == -1.\#IND0
- * < /code > 
- *
- * @param[in] c
- * @return
- */
+/*
+=======================================================================================================================================
+Q_acos
+
+The msvc acos doesn't always return a value between -PI and PI.
+=======================================================================================================================================
+*/
 float Q_acos(float c) {
 	float angle;
 
@@ -2105,15 +2058,19 @@ float Q_acos(float c) {
 }
 #endif
 
-/************************************************************************/
-/* Quaternion                                                           */
-/************************************************************************/
+/*
+=======================================================================================================================================
 
-/**
- * @brief quat_from_mat4
- * @param[out] q
- * @param[in] m
- */
+	QUATERNATION
+
+=======================================================================================================================================
+*/
+
+/*
+=======================================================================================================================================
+quat_from_mat4
+=======================================================================================================================================
+*/
 void quat_from_mat4(quat_t q, const mat4_t m) {
 #if 1
 	/*
@@ -2204,13 +2161,12 @@ void quat_from_mat4(quat_t q, const mat4_t m) {
 	quat_norm(q);
 #endif
 }
-
 #ifdef BONE_HITTESTS
-/**
- * @brief quat_from_axis
- * @param[in] m
- * @param[out] q
- */
+/*
+=======================================================================================================================================
+quat_from_axis
+=======================================================================================================================================
+*/
 void quat_from_axis(const axis_t m, quat_t q) {
 	vec_t w4;
 
@@ -2222,16 +2178,11 @@ void quat_from_axis(const axis_t m, quat_t q) {
 	q[2] = (m[0][1] - m[1][0]) / w4;
 }
 #endif
-
-/**
- * @brief quat_from_angles
- * @param[out] q
- * @param[in] pitch
- * @param[in] yaw
- * @param[in] roll
- *
- * @note Unused
- */
+/*
+=======================================================================================================================================
+quat_from_angles
+=======================================================================================================================================
+*/
 void quat_from_angles(quat_t q, vec_t pitch, vec_t yaw, vec_t roll) {
 #if 1
 	mat4_t tmp;
@@ -2258,15 +2209,11 @@ void quat_from_angles(quat_t q, vec_t pitch, vec_t yaw, vec_t roll) {
 #endif
 }
 
-/**
- * @brief quat_to_vec3_FLU
- * @param[in] q
- * @param[out] forward
- * @param[out] left
- * @param[out] up
- *
- * @note Unused
- */
+/*
+=======================================================================================================================================
+quat_to_vec3_FLU
+=======================================================================================================================================
+*/
 void quat_to_vec3_FLU(const quat_t q, vec3_t forward, vec3_t left, vec3_t up) {
 	mat4_t tmp;
 
@@ -2274,13 +2221,11 @@ void quat_to_vec3_FLU(const quat_t q, vec3_t forward, vec3_t left, vec3_t up) {
 	MatrixToVectorsFRU(tmp, forward, left, up);
 }
 
-/**
- * @brief quat_to_vec3_FRU
- * @param[in] q
- * @param[out] forward
- * @param[out] right
- * @param[out] up
- */
+/*
+=======================================================================================================================================
+quat_to_vec3_FRU
+=======================================================================================================================================
+*/
 void quat_to_vec3_FRU(const quat_t q, vec3_t forward, vec3_t right, vec3_t up) {
 	mat4_t tmp;
 
@@ -2288,11 +2233,11 @@ void quat_to_vec3_FRU(const quat_t q, vec3_t forward, vec3_t right, vec3_t up) {
 	MatrixToVectorsFRU(tmp, forward, right, up);
 }
 
-/**
- * @brief quat_to_axis
- * @param[in] q
- * @param[out] axis
- */
+/*
+=======================================================================================================================================
+quat_to_axis
+=======================================================================================================================================
+*/
 void quat_to_axis(const quat_t q, vec3_t axis[3]) {
 	mat4_t tmp;
 
@@ -2300,11 +2245,11 @@ void quat_to_axis(const quat_t q, vec3_t axis[3]) {
 	MatrixToVectorsFLU(tmp, axis[0], axis[1], axis[2]);
 }
 
-/**
- * @brief quat_norm
- * @param[in, out] q
- * @return
- */
+/*
+=======================================================================================================================================
+quat_norm
+=======================================================================================================================================
+*/
 vec_t quat_norm(quat_t q) {
 	float length = q[0] * q[0] + q[1] * q[1] + q[2] * q[2] + q[3] * q[3];
 
@@ -2322,13 +2267,11 @@ vec_t quat_norm(quat_t q) {
 	return length;
 }
 
-/**
- * @brief quat_slerp
- * @param[in] from
- * @param[in] to
- * @param[in] frac
- * @param[out] out
- */
+/*
+=======================================================================================================================================
+quat_slerp
+=======================================================================================================================================
+*/
 void quat_slerp(const quat_t from, const quat_t to, float frac, quat_t out) {
 #if 0
 	quat_t to1;
@@ -2408,25 +2351,28 @@ void quat_slerp(const quat_t from, const quat_t to, float frac, quat_t out) {
 #endif
 }
 
-/************************************************************************/
-/* Matrix 4                                                             */
-/************************************************************************/
+/*
+=======================================================================================================================================
 
-/**
- * @brief mat4_compare
- * @param[in] a
- * @param[in] b
- * @return
- */
+	MATRIX 4
+
+=======================================================================================================================================
+*/
+
+/*
+=======================================================================================================================================
+mat4_compare
+=======================================================================================================================================
+*/
 qboolean mat4_compare(const mat4_t a, const mat4_t b) {
 	return (a[0] == b[0] && a[4] == b[4] && a[8] == b[8] && a[12] == b[12] && a[1] == b[1] && a[5] == b[5] && a[9] == b[9] && a[13] == b[13] && a[2] == b[2] && a[6] == b[6] && a[10] == b[10] && a[14] == b[14] && a[3] == b[3] && a[7] == b[7] && a[11] == b[11] && a[15] == b[15]);
 }
 
-/**
- * @brief mat4_copy
- * @param[in] in
- * @param[out] out
- */
+/*
+=======================================================================================================================================
+mat4_copy
+=======================================================================================================================================
+*/
 void mat4_copy(const mat4_t in, mat4_t out) {
 #if id386_sse && defined __GNUC__ && 0
 	asm volatile
@@ -2490,17 +2436,13 @@ void mat4_copy(const mat4_t in, mat4_t out) {
 #endif
 }
 
-/**
- * @brief replacement for glOrtho
- * see glspec30.pdf chapter 2.12 Coordinate Transformations
- * @param[out] m
- * @param[in] left
- * @param[in] right
- * @param[in] bottom
- * @param[in] top
- * @param[in] nearvec
- * @param[in] farvec
- */
+/*
+=======================================================================================================================================
+MatrixOrthogonalProjection
+
+Replacement for glOrtho, see glspec30.pdf chapter 2.12 Coordinate Transformations.
+=======================================================================================================================================
+*/
 void MatrixOrthogonalProjection(mat4_t m, vec_t left, vec_t right, vec_t bottom, vec_t top, vec_t nearvec, vec_t farvec) {
 
 	m[0] = 2 / (right - left);
@@ -2521,12 +2463,11 @@ void MatrixOrthogonalProjection(mat4_t m, vec_t left, vec_t right, vec_t bottom,
 	m[15] = 1;
 }
 
-/**
- * @brief mat4_transform_vec4
- * @param[in] m
- * @param[in] in
- * @param[out] out
- */
+/*
+=======================================================================================================================================
+mat4_transform_vec4
+=======================================================================================================================================
+*/
 void mat4_transform_vec4(const mat4_t m, const vec4_t in, vec4_t out) {
 #if id386_sse
 	//#error MatrixTransform4
@@ -2563,13 +2504,11 @@ void mat4_transform_vec4(const mat4_t m, const vec4_t in, vec4_t out) {
 #endif
 }
 
-/**
- * @brief mat4_reset_translate
- * @param[out] m
- * @param[in] x
- * @param[in] y
- * @param[in] z
- */
+/*
+=======================================================================================================================================
+mat4_reset_translate
+=======================================================================================================================================
+*/
 void mat4_reset_translate(mat4_t m, vec_t x, vec_t y, vec_t z) {
 
 	m[0] = 1;
@@ -2590,22 +2529,20 @@ void mat4_reset_translate(mat4_t m, vec_t x, vec_t y, vec_t z) {
 	m[15] = 1;
 }
 
-/**
- * @brief mat4_reset_translate_vec3
- * @param[out] m
- * @param[in] position
- */
+/*
+=======================================================================================================================================
+mat4_reset_translate_vec3
+=======================================================================================================================================
+*/
 void mat4_reset_translate_vec3(mat4_t m, vec3_t position) {
 	mat4_reset_translate(m, position[0], position[1], position[2]);
 }
 
-/**
- * @brief mat4_reset_scale
- * @param[out] m
- * @param[in] x
- * @param[in] y
- * @param[in] z
- */
+/*
+=======================================================================================================================================
+mat4_reset_scale
+=======================================================================================================================================
+*/
 void mat4_reset_scale(mat4_t m, vec_t x, vec_t y, vec_t z) {
 
 	m[0] = x;
@@ -2626,12 +2563,11 @@ void mat4_reset_scale(mat4_t m, vec_t x, vec_t y, vec_t z) {
 	m[15] = 1;
 }
 
-/**
- * @brief mat4_mult
- * @param[in] a
- * @param[in] b
- * @param[out] out
- */
+/*
+=======================================================================================================================================
+mat4_mult
+=======================================================================================================================================
+*/
 void mat4_mult(const mat4_t a, const mat4_t b, mat4_t out) {
 #ifdef id386_sse
 	//#error MatrixMultiply
@@ -2685,11 +2621,11 @@ void mat4_mult(const mat4_t a, const mat4_t b, mat4_t out) {
 #endif
 }
 
-/**
- * @brief mat4_mult_self
- * @param[in, out] m
- * @param[in, out] m2
- */
+/*
+=======================================================================================================================================
+mat4_mult_self
+=======================================================================================================================================
+*/
 void mat4_mult_self(mat4_t m, const mat4_t m2) {
 	mat4_t tmp;
 
@@ -2697,10 +2633,11 @@ void mat4_mult_self(mat4_t m, const mat4_t m2) {
 	mat4_mult(tmp, m2, m);
 }
 
-/**
- * @brief mat4_ident
- * @param[in] m
- */
+/*
+=======================================================================================================================================
+mat4_ident
+=======================================================================================================================================
+*/
 void mat4_ident(mat4_t m) {
 
 	m[0] = 1;
@@ -2721,12 +2658,11 @@ void mat4_ident(mat4_t m) {
 	m[15] = 1;
 }
 
-/**
- * @brief mat4_transform_vec3
- * @param[in] m
- * @param[in] in
- * @param[out] out
- */
+/*
+=======================================================================================================================================
+mat4_transform_vec3
+=======================================================================================================================================
+*/
 void mat4_transform_vec3(const mat4_t m, const vec3_t in, vec3_t out) {
 
 	out[0] = m[0] * in[0] + m[4] * in[1] + m[8] * in[2] + m[12];
@@ -2734,13 +2670,11 @@ void mat4_transform_vec3(const mat4_t m, const vec3_t in, vec3_t out) {
 	out[2] = m[2] * in[0] + m[6] * in[1] + m[10] * in[2] + m[14];
 }
 
-/**
- * @brief mat4_transform_vec3_self
- * @param[in] m
- * @param[in, out] inout
- *
- * @note Unused
- */
+/*
+=======================================================================================================================================
+mat4_transform_vec3_self
+=======================================================================================================================================
+*/
 void mat4_transform_vec3_self(const mat4_t m, vec3_t inout) {
 	vec3_t tmp;
 
@@ -2751,11 +2685,11 @@ void mat4_transform_vec3_self(const mat4_t m, vec3_t inout) {
 	VectorCopy(tmp, inout);
 }
 
-/**
- * @brief mat4_transpose
- * @param[in] in
- * @param[out] out
- */
+/*
+=======================================================================================================================================
+mat4_transpose
+=======================================================================================================================================
+*/
 void mat4_transpose(const mat4_t in, mat4_t out) {
 #if id386_sse && defined __GNUC__ && 0
 	// transpose the matrix into the xmm4 - 7
@@ -2791,11 +2725,11 @@ void mat4_transpose(const mat4_t in, mat4_t out) {
 #endif
 }
 
-/**
- * @brief mat4_from_quat
- * @param[out] m
- * @param[in] q
- */
+/*
+=======================================================================================================================================
+mat4_from_quat
+=======================================================================================================================================
+*/
 void mat4_from_quat(mat4_t m, const quat_t q) {
 #if 1
 	/*
@@ -2894,13 +2828,11 @@ void mat4_from_quat(mat4_t m, const quat_t q) {
 #endif
 }
 
-/**
- * @brief MatrixFromVectorsFLU
- * @param[out] m
- * @param[in] forward
- * @param[in] left
- * @param[in] up
- */
+/*
+=======================================================================================================================================
+MatrixFromVectorsFLU
+=======================================================================================================================================
+*/
 void MatrixFromVectorsFLU(mat4_t m, const vec3_t forward, const vec3_t left, const vec3_t up) {
 
 	m[0] = forward[0];
@@ -2921,14 +2853,11 @@ void MatrixFromVectorsFLU(mat4_t m, const vec3_t forward, const vec3_t left, con
 	m[15] = 1;
 }
 
-/**
- * @brief MatrixSetupTransformFromVectorsFLU
- * @param[in] m
- * @param[out] forward
- * @param[out] left
- * @param[out] up
- * @param[out] origin
- */
+/*
+=======================================================================================================================================
+MatrixSetupTransformFromVectorsFLU
+=======================================================================================================================================
+*/
 void MatrixSetupTransformFromVectorsFLU(mat4_t m, const vec3_t forward, const vec3_t left, const vec3_t up, const vec3_t origin) {
 
 	m[0] = forward[0];
@@ -2949,44 +2878,37 @@ void MatrixSetupTransformFromVectorsFLU(mat4_t m, const vec3_t forward, const ve
 	m[15] = 1;
 }
 
-/**
- * @brief MatrixToVectorsFLU
- * @param[in] m
- * @param[out] forward
- * @param[out] left
- * @param[out] up
- */
+/*
+=======================================================================================================================================
+MatrixToVectorsFLU
+=======================================================================================================================================
+*/
 void MatrixToVectorsFLU(const mat4_t m, vec3_t forward, vec3_t left, vec3_t up) {
 
 	if (forward) {
-		forward[0] = m[0];      // cp*cy;
-		forward[1] = m[1];      // cp*sy;
-		forward[2] = m[2];      // - sp;
+		forward[0] = m[0]; // cp * cy;
+		forward[1] = m[1]; // cp * sy;
+		forward[2] = m[2]; // -sp;
 	}
 
 	if (left) {
-		left[0] = m[4];         // sr*sp*cy + cr* - sy;
-		left[1] = m[5];         // sr*sp*sy + cr*cy;
-		left[2] = m[6];         // sr*cp;
+		left[0] = m[4]; // sr * sp * cy + cr * -sy;
+		left[1] = m[5]; // sr * sp * sy + cr * cy;
+		left[2] = m[6]; // sr * cp;
 	}
 
 	if (up) {
-		up[0] = m[8];   // cr*sp*cy + - sr* - sy;
-		up[1] = m[9];   // cr*sp*sy + - sr*cy;
-		up[2] = m[10];  // cr*cp;
+		up[0] = m[8]; // cr * sp * cy + -sr * -sy;
+		up[1] = m[9]; // cr * sp * sy + -sr *cy;
+		up[2] = m[10]; // cr * cp;
 	}
 }
 
-/**
- * @brief MatrixSetupTransformFromVectorsFRU
- * @param[out] m
- * @param[in] forward
- * @param[in] right
- * @param[in] up
- * @param[in] origin
- *
- * @note Unused
- */
+/*
+=======================================================================================================================================
+MatrixSetupTransformFromVectorsFRU
+=======================================================================================================================================
+*/
 void MatrixSetupTransformFromVectorsFRU(mat4_t m, const vec3_t forward, const vec3_t right, const vec3_t up, const vec3_t origin) {
 
 	m[0] = forward[0];
@@ -3007,13 +2929,11 @@ void MatrixSetupTransformFromVectorsFRU(mat4_t m, const vec3_t forward, const ve
 	m[15] = 1;
 }
 
-/**
- * @brief MatrixToVectorsFRU
- * @param[in] m
- * @param[out] forward
- * @param[out] right
- * @param[out] up
- */
+/*
+=======================================================================================================================================
+MatrixToVectorsFRU
+=======================================================================================================================================
+*/
 void MatrixToVectorsFRU(const mat4_t m, vec3_t forward, vec3_t right, vec3_t up) {
 
 	if (forward) {
@@ -3035,12 +2955,13 @@ void MatrixToVectorsFRU(const mat4_t m, vec3_t forward, vec3_t right, vec3_t up)
 	}
 }
 
-/**
- * @brief Based on gluInvertMatrix
- * @param[in] in
- * @param[out] out
- * @return
- */
+/*
+=======================================================================================================================================
+mat4_inverse
+
+Based on gluInvertMatrix.
+=======================================================================================================================================
+*/
 qboolean mat4_inverse(const mat4_t in, mat4_t out) {
 	vec_t inv[16], det;
 	int i;
@@ -3077,22 +2998,20 @@ qboolean mat4_inverse(const mat4_t in, mat4_t out) {
 	return qtrue;
 }
 
-/**
- * @brief mat4_inverse_self
- * @param[in, out] matrix
- * @return
- */
+/*
+=======================================================================================================================================
+mat4_inverse_self
+=======================================================================================================================================
+*/
 qboolean mat4_inverse_self(mat4_t matrix) {
 	return mat4_inverse(matrix, matrix);
 }
 
-/**
- * @brief mat4_from_angles
- * @param[out] m
- * @param[in] pitch
- * @param[in] yaw
- * @param[in] roll
- */
+/*
+=======================================================================================================================================
+mat4_from_angles
+=======================================================================================================================================
+*/
 void mat4_from_angles(mat4_t m, vec_t pitch, vec_t yaw, vec_t roll) {
 	static float sr, sp, sy, cr, cp, cy;
 
@@ -3107,12 +3026,12 @@ void mat4_from_angles(mat4_t m, vec_t pitch, vec_t yaw, vec_t roll) {
 	cr = (float)cos(DEG2RAD((double)roll));
 
 	m[0] = cp * cy;
-	m[4] = (sr * sp * cy + cr * - sy);
-	m[8] = (cr * sp * cy + - sr * - sy);
+	m[4] = (sr * sp * cy + cr * -sy);
+	m[8] = (cr * sp * cy + -sr * -sy);
 	m[12] = 0;
 	m[1] = cp * sy;
 	m[5] = (sr * sp * sy + cr * cy);
-	m[9] = (cr * sp * sy + - sr * cy);
+	m[9] = (cr * sp * sy + -sr * cy);
 	m[13] = 0;
 	m[2] = -sp;
 	m[6] = sr * cp;

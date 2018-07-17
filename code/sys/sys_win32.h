@@ -50,15 +50,14 @@ void Sys_Splash(qboolean show);
 #endif
 
 typedef struct {
-	HINSTANCE reflib_library;           // handle to refresh DLL
+	HINSTANCE reflib_library; // handle to refresh DLL
 	qboolean reflib_active;
 	HWND hWnd;
 	HWND hWndSplash;
 	HINSTANCE hInstance;
 	qboolean activeApp;
 	OSVERSIONINFO osversion;
-	// when we get a windows message, we store the time off so keyboard processing
-	// can know the exact time of an event
+	// when we get a windows message, we store the time off so keyboard processing can know the exact time of an event
 	unsigned sysMsgTime;
 } WinVars_t;
 
@@ -76,5 +75,4 @@ void Sys_PumpConsoleEvents(void);
 #else
 #define Sys_ShowConsoleWindow(x, y) if (x) {Sys_CreateConsoleWindow();}
 #endif
-
-#endif // #ifndef INCLUDE_SYS_WIN_H
+#endif // INCLUDE_SYS_WIN_H

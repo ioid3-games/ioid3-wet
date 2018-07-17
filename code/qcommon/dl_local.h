@@ -34,29 +34,23 @@
 
 #ifndef INCLUDE_DL_LOCAL_H
 #define INCLUDE_DL_LOCAL_H
-
 #ifdef __GNUC__
 #define _attribute(x) __attribute__(x)
 #else
 #define _attribute(x)
 #endif
-
 // system API
 // only the restricted subset we need
-
 int Com_DPrintf(const char *fmt, ...) _attribute((format(printf, 1, 2)));
 int Com_Printf(const char *fmt, ...) _attribute((format(printf, 1, 2)));
-void Com_Error(int code, const char *fmt, ...) _attribute((format(printf, 2, 3)));       // watch out, we don't define ERR_FATAL and stuff
+void Com_Error(int code, const char *fmt, ...) _attribute((format(printf, 2, 3))); // watch out, we don't define ERR_FATAL and stuff
 void Cvar_SetValue(const char *var_name, float value);
 void Cvar_Set(const char *varName, const char *value);
 char *va(char *format, ...) _attribute((format(printf, 1, 2)));
-
 #ifdef _WIN32
-  #define Q_stricmp stricmp
+#define Q_stricmp stricmp
 #else
-  #define Q_stricmp strcasecmp
+#define Q_stricmp strcasecmp
 #endif
-
 extern int com_errorEntered;
-
-#endif // #ifndef INCLUDE_DL_LOCAL_H
+#endif // INCLUDE_DL_LOCAL_H

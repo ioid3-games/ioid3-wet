@@ -34,15 +34,13 @@
  */
 
 #ifndef DEDICATED
-#   include < SDL2/SDL_video.h>
+#include <SDL2/SDL_video.h>
 #endif
-
 #include "../qcommon/q_shared.h"
 #include "../qcommon/qcommon.h"
 #include "win_resource.h"
 #include "sys_local.h"
 #include "sys_win32.h"
-
 #include <windows.h>
 #include <lmerr.h>
 #include <lmcons.h>
@@ -64,19 +62,21 @@ static char homePath[MAX_OSPATH] = {0};
 //static int sys_retcode;
 //static char sys_exitstr[MAX_STRING_CHARS];
 
-/**
- * @return homepath pointing to "My Documents\\ETLegacy"
- */
+/*
+=======================================================================================================================================
+Sys_DefaultHomePath
+
+Returns homepath pointing to "My Documents\\ETLegacy".
+=======================================================================================================================================
+*/
 char *Sys_DefaultHomePath(void) {
-	TCHAR   szPath[MAX_PATH];
+	TCHAR szPath[MAX_PATH];
 	HRESULT found;
 
 	if (!*homePath /*&& !com_homepath*/) {
-		// FIXME: forcing SHGFP_TYPE_CURRENT because file creation fails
-		//        when real CSIDL_PERSONAL is on a mapped drive
+		// FIXME: forcing SHGFP_TYPE_CURRENT because file creation fails when real CSIDL_PERSONAL is on a mapped drive
 		// NOTE: SHGetFolderPath is marked as deprecated
-		found = SHGetFolderPath(NULL, CSIDL_PERSONAL,
-		                        NULL, SHGFP_TYPE_CURRENT, szPath);
+		found = SHGetFolderPath(NULL, CSIDL_PERSONAL, NULL, SHGFP_TYPE_CURRENT, szPath);
 
 		if (found != S_OK) {
 			Com_Printf("Unable to detect CSIDL_PERSONAL\n");
@@ -91,11 +91,11 @@ char *Sys_DefaultHomePath(void) {
 }
 
 int sys_timeBase;
-
-/**
- * @brief Sys_Milliseconds
- * @return
- */
+/*
+=======================================================================================================================================
+Sys_Milliseconds
+=======================================================================================================================================
+*/
 int Sys_Milliseconds(void) {
 	int sys_curtime;
 	static qboolean initialized = qfalse;
@@ -110,27 +110,30 @@ int Sys_Milliseconds(void) {
 	return sys_curtime;
 }
 
-/**
- * @brief Sys_SnapVector
- * @param[in, out] v
- */
+/*
+=======================================================================================================================================
+Sys_SnapVector
+=======================================================================================================================================
+*/
 void Sys_SnapVector(float *v) {
+
 	v[0] = rint(v[0]);
 	v[1] = rint(v[1]);
 	v[2] = rint(v[2]);
 }
 
-/**
- * @brief Sys_RandomBytes
- * @param[in] string
- * @param[in] len
- * @return
- */
+/*
+=======================================================================================================================================
+Sys_RandomBytes
+
+'string' - Place to put random string.
+'len' - How much random data we need?.
+=======================================================================================================================================
+*/
 qboolean Sys_RandomBytes(byte *string, int len) {
 	HCRYPTPROV prov;
 
-	if (!CryptAcquireContext(&prov, NULL, NULL,
-	                         PROV_RSA_FULL, CRYPT_VERIFYCONTEXT)) {
+	if (!CryptAcquireContext(&prov, NULL, NULL, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT)) {
 		return qfalse;
 	}
 
@@ -143,10 +146,13 @@ qboolean Sys_RandomBytes(byte *string, int len) {
 	return qtrue;
 }
 
-/**
- * @brief Sys_GetCurrentUser
- * @return
- */
+/*
+=======================================================================================================================================
+Sys_GetCurrentUser
+
+Get current user username.
+=======================================================================================================================================
+*/
 char *Sys_GetCurrentUser(void) {
 	static char s_userName[1024];
 	unsigned long size = sizeof(s_userName);
@@ -163,22 +169,22 @@ char *Sys_GetCurrentUser(void) {
 }
 
 #define MEM_THRESHOLD 96 * 1024 * 1024
-
-/**
- * @brief Sys_LowPhysicalMemory
- * @return
- */
+/*
+=======================================================================================================================================
+Sys_LowPhysicalMemory
+=======================================================================================================================================
+*/
 qboolean Sys_LowPhysicalMemory(void) {
 	MEMORYSTATUS stat;
 	GlobalMemoryStatus(&stat);
 	return (stat.dwTotalPhys <= MEM_THRESHOLD) ? qtrue : qfalse;
 }
 
-/**
- * @brief Sys_Basename
- * @param path
- * @return
- */
+/*
+=======================================================================================================================================
+Sys_Basename
+=======================================================================================================================================
+*/
 const char *Sys_Basename(char *path) {
 	static char base[MAX_OSPATH] = {0};
 	size_t length;
@@ -188,26 +194,28 @@ const char *Sys_Basename(char *path) {
 	// skip trailing slashes
 	while (length > 0 && path[length] == '\\')
 		length--;
+	}
 
 	while (length > 0 && path[length - 1] != '\\')
 		length--;
+	}
 
 	Q_strncpyz(base, &path[length], sizeof(base));
 
 	length = strlen(base) - 1;
-
 	// strip trailing slashes
 	while (length > 0 && base[length] == '\\')
 		base[length--] = '\0';
+	}
 
 	return base;
 }
 
-/**
- * @brief Sys_Dirname
- * @param path
- * @return
- */
+/*
+=======================================================================================================================================
+Sys_Dirname
+=======================================================================================================================================
+*/
 const char *Sys_Dirname(char *path) {
 	static char dir[MAX_OSPATH] = {0};
 	size_t length;
@@ -215,24 +223,24 @@ const char *Sys_Dirname(char *path) {
 	Q_strncpyz(dir, path, sizeof(dir));
 	length = strlen(dir) - 1;
 
-	while (length > 0 && dir[length] != '\\')
+	while (length > 0 && dir[length] != '\\') {
 		length--;
+	}
 
 	dir[length] = '\0';
 
 	return dir;
 }
 
-/**
- * @brief Sys_FOpen
- * @param[in] ospath
- * @param[in] mode
- * @return
- */
+/*
+=======================================================================================================================================
+Sys_FOpen
+=======================================================================================================================================
+*/
 FILE *Sys_FOpen(const char *ospath, const char *mode) {
 	size_t length;
 
-	// windows API ignores all trailing spaces and periods which can get around Quake 3 file system restrictions.
+	// Windows API ignores all trailing spaces and periods which can get around Quake 3 file system restrictions.
 	length = strlen(ospath);
 
 	if (length == 0 || ospath[length - 1] == ' ' || ospath[length - 1] == '.') {
@@ -242,12 +250,15 @@ FILE *Sys_FOpen(const char *ospath, const char *mode) {
 	return fopen(ospath, mode);
 }
 
-/**
- * @brief Sys_Mkdir
- * @param[in] path
- * @return
- */
+/*
+=======================================================================================================================================
+Sys_Mkdir
+
+Creates directory.
+=======================================================================================================================================
+*/
 qboolean Sys_Mkdir(const char *path) {
+
 	if (!CreateDirectory(path, NULL)) {
 		if (GetLastError() != ERROR_ALREADY_EXISTS) {
 			return qfalse;
@@ -257,10 +268,14 @@ qboolean Sys_Mkdir(const char *path) {
 	return qtrue;
 }
 
-/**
- * @brief Sys_Cwd
- * @return
- */
+/*
+=======================================================================================================================================
+Sys_Cwd
+
+Get current working directory.
+Returns path to current working directory.
+=======================================================================================================================================
+*/
 char *Sys_Cwd(void) {
 	static char cwd[MAX_OSPATH];
 
@@ -271,19 +286,18 @@ char *Sys_Cwd(void) {
 }
 
 /*
-============================================================== 
-DIRECTORY SCANNING
-============================================================== 
+=======================================================================================================================================
+
+	DIRECTORY SCANNING
+
+=======================================================================================================================================
 */
 
-/**
- * @brief Sys_ListFilteredFiles
- * @param[in] basedir
- * @param[in] subdirs
- * @param[in] filter
- * @param[out] list
- * @param[in, out] numfiles
- */
+/*
+=======================================================================================================================================
+Sys_ListFilteredFiles
+=======================================================================================================================================
+*/
 void Sys_ListFilteredFiles(const char *basedir, const char *subdirs, const char *filter, char **list, int *numfiles) {
 	char search[MAX_OSPATH], newsubdirs[MAX_OSPATH];
 	char filename[MAX_OSPATH];
@@ -338,12 +352,11 @@ void Sys_ListFilteredFiles(const char *basedir, const char *subdirs, const char 
 	_findclose(findhandle);
 }
 
-/**
- * @brief strgtr
- * @param[in] s0
- * @param[in] s1
- * @return
- */
+/*
+=======================================================================================================================================
+strgtr
+=======================================================================================================================================
+*/
 static qboolean strgtr(const char *s0, const char *s1) {
 	size_t l0, l1, i;
 
@@ -367,15 +380,21 @@ static qboolean strgtr(const char *s0, const char *s1) {
 	return qfalse;
 }
 
-/**
- * @brief Sys_ListFiles
- * @param[in] directory
- * @param[in] extension
- * @param[in] filter
- * @param[out] numfiles
- * @param[in] wantsubs
- * @return
- */
+/*
+=======================================================================================================================================
+Sys_ListFiles
+
+List files in directory by filter.
+
+'directory' - What we want to list?
+'extension' - Limit files to specified extension.
+'filter' - Filter results.
+'numfiles' - Number of listed files.
+'wantsubs' - Do we want to list subdirectories too?
+
+Returns array of strings with files.
+=======================================================================================================================================
+*/
 char **Sys_ListFiles(const char *directory, const char *extension, const char *filter, int *numfiles, qboolean wantsubs) {
 	char search[MAX_OSPATH];
 	int nfiles;
@@ -424,7 +443,6 @@ char **Sys_ListFiles(const char *directory, const char *extension, const char *f
 	extLen = strlen(extension);
 
 	Com_sprintf(search, sizeof(search), "%s\\*%s", directory, extension);
-
 	// search
 	nfiles = 0;
 
@@ -442,11 +460,9 @@ char **Sys_ListFiles(const char *directory, const char *extension, const char *f
 					continue; // didn't match
 				}
 			}
-
 			// check for bad file names and don't add these
 			invalid = qfalse;
-			// note: this isn't done in Sys_ListFilteredFiles()
-
+			// NOTE: this isn't done in Sys_ListFilteredFiles()
 			for (i = 0; i < strlen(findinfo.name); i++) {
 				if (findinfo.name[i] <= 31 || findinfo.name[i] >= 123) {
 					Com_Printf(S_COLOR_RED "ERROR: invalid char in name of file '%s'.\n", findinfo.name);
@@ -479,7 +495,6 @@ char **Sys_ListFiles(const char *directory, const char *extension, const char *f
 	list[nfiles] = 0;
 
 	_findclose(findhandle);
-
 	// return a copy of the list
 	*numfiles = nfiles;
 
@@ -513,10 +528,11 @@ char **Sys_ListFiles(const char *directory, const char *extension, const char *f
 	return listCopy;
 }
 
-/**
- * @brief Sys_FreeFileList
- * @param[in, out] list
- */
+/*
+=======================================================================================================================================
+Sys_FreeFileList
+=======================================================================================================================================
+*/
 void Sys_FreeFileList(char **list) {
 	int i;
 
@@ -531,10 +547,15 @@ void Sys_FreeFileList(char **list) {
 	Z_Free(list);
 }
 
-/**
- * @brief Block execution for msec or until input is received.
- * @param msec
- */
+/*
+=======================================================================================================================================
+Sys_Sleep
+
+Block execution for msec or until input is recieved.
+
+'msec' - How long we want to block execution?
+=======================================================================================================================================
+*/
 void Sys_Sleep(int msec) {
 	if (msec == 0) {
 		return;
@@ -556,13 +577,13 @@ void Sys_Sleep(int msec) {
 #endif
 }
 
-/**
- * @brief Display an error message
- * @param[in] error
- */
+/*
+=======================================================================================================================================
+Sys_ErrorDialog
+=======================================================================================================================================
+*/
 void Sys_ErrorDialog(const char *error) {
-	if (Sys_Dialog(DT_YES_NO, va("%s. Copy console log to clipboard?", error),
-	               "Error") == DR_YES) {
+	if (Sys_Dialog(DT_YES_NO, va("%s. Copy console log to clipboard?", error), "Error") == DR_YES) {
 		HGLOBAL memoryHandle;
 		char *clipMemory;
 
@@ -591,77 +612,84 @@ void Sys_ErrorDialog(const char *error) {
 	}
 }
 
-/**
- * @brief Display a win32 dialog box
- * @param[in] type
- * @param[in] message
- * @param[in] title
- * @return
- */
+/*
+=======================================================================================================================================
+Sys_Dialog
+
+Display a win32 dialog box.
+
+'message' - Message to show.
+'title' - Message box title.
+=======================================================================================================================================
+*/
 dialogResult_t Sys_Dialog(dialogType_t type, const char *message, const char *title) {
 	UINT uType;
 
 	switch (type) {
-	default:
-	case DT_INFO:
-		uType = MB_ICONINFORMATION|MB_OK;
-		break;
-	case DT_WARNING:
-		uType = MB_ICONWARNING|MB_OK;
-		break;
-	case DT_ERROR:
-		uType = MB_ICONERROR|MB_OK;
-		break;
-	case DT_YES_NO:
-		uType = MB_ICONQUESTION|MB_YESNO;
-		break;
-	case DT_OK_CANCEL:
-		uType = MB_ICONWARNING|MB_OKCANCEL;
-		break;
+		default:
+		case DT_INFO:
+			uType = MB_ICONINFORMATION|MB_OK;
+			break;
+		case DT_WARNING:
+			uType = MB_ICONWARNING|MB_OK;
+			break;
+		case DT_ERROR:
+			uType = MB_ICONERROR|MB_OK;
+			break;
+		case DT_YES_NO:
+			uType = MB_ICONQUESTION|MB_YESNO;
+			break;
+		case DT_OK_CANCEL:
+			uType = MB_ICONWARNING|MB_OKCANCEL;
+			break;
 	}
 
 	switch (MessageBox(NULL, message, title, uType)) {
-	default:
-	case IDOK:
-		return DR_OK;
-	case IDCANCEL:
-		return DR_CANCEL;
-	case IDYES:
-		return DR_YES;
-	case IDNO:
-		return DR_NO;
+		default:
+		case IDOK:
+			return DR_OK;
+		case IDCANCEL:
+			return DR_CANCEL;
+		case IDYES:
+			return DR_YES;
+		case IDNO:
+			return DR_NO;
 	}
 }
 
 #ifndef DEDICATED
 static qboolean SDL_VIDEODRIVER_externallySet = qfalse;
 #endif
+/*
+=======================================================================================================================================
+Sys_GLimpSafeInit
 
-/**
- * @brief Windows specific "safe" GL implementation initialisation
- */
+Windows specific "safe" GL implementation initialisation.
+=======================================================================================================================================
+*/
 void Sys_GLimpSafeInit(void) {
 #ifndef DEDICATED
 	if (!SDL_VIDEODRIVER_externallySet) {
-		// here, we want to let SDL decide what do to unless
-		// explicitly requested otherwise
+		// here, we want to let SDL decide what do to unless explicitly requested otherwise
 		Sys_SetEnv("SDL_VIDEODRIVER", "");
 	}
 #endif
 }
 
-/**
- * @brief Windows specific GL implementation initialisation
- */
+/*
+=======================================================================================================================================
+Sys_GLimpInit
+
+Windows specific GL implementation initialisation.
+=======================================================================================================================================
+*/
 void Sys_GLimpInit(void) {
 #ifndef DEDICATED
 	if (!SDL_VIDEODRIVER_externallySet) {
-		// it's a little bit weird having in_mouse control the
-		// video driver, but from ioq3's point of view they're
+		// it's a little bit weird having in_mouse control the video driver, but from ioq3's point of view they're
 		// virtually the same except for the mouse input anyway
 		if (Cvar_VariableIntegerValue("in_mouse") == -1) {
-			// use the windib SDL backend, which is closest to
-			// the behaviour of idq3 with in_mouse set to - 1
+			// use the windib SDL backend, which is closest to the behaviour of idq3 with in_mouse set to -1
 			Sys_SetEnv("SDL_VIDEODRIVER", "windib");
 		}
 #if 0
@@ -674,40 +702,46 @@ void Sys_GLimpInit(void) {
 #endif
 }
 
-/**
- * @brief Set/unset environment variables(empty value removes it)
- * @param name
- * @param value
- */
+/*
+=======================================================================================================================================
+Sys_SetEnv
+
+Set/unset environment variables.
+New value to set. Empty value removes variable.
+=======================================================================================================================================
+*/
 void Sys_SetEnv(const char *name, const char *value) {
 	_putenv(va("%s = %s", name, value));
 }
 
-/**
- * @brief Sys_PID
- * @return
- */
+/*
+=======================================================================================================================================
+Sys_PID
+
+Return PID of current process.
+=======================================================================================================================================
+*/
 int Sys_PID(void) {
 	return GetCurrentProcessId();
 }
 
-/**
- * @brief Sys_PIDIsRunning
- * @param[in] pid
- * @return
- */
+/*
+=======================================================================================================================================
+Sys_PIDIsRunning
+
+Check if specified PID is running.
+=======================================================================================================================================
+*/
 qboolean Sys_PIDIsRunning(unsigned int pid) {
-	DWORD        processes[1024];
-	DWORD        numBytes, numProcesses;
+	DWORD processes[1024];
+	DWORD numBytes, numProcesses;
 	unsigned int i;
 
 	if (!EnumProcesses(processes, sizeof(processes), &numBytes)) {
 		return qfalse; // assume it's not running
-
 	}
 
 	numProcesses = numBytes / sizeof(DWORD);
-
 	// search for the pid
 	for (i = 0; i < numProcesses; i++) {
 		if (processes[i] == pid) {
@@ -718,17 +752,23 @@ qboolean Sys_PIDIsRunning(unsigned int pid) {
 	return qfalse;
 }
 
-/**
- * @brief Sys_StartProcess
- * @param[in] cmdline
- * @param[in] doexit
- */
+/*
+=======================================================================================================================================
+Sys_StartProcess
+
+Starts process.
+
+cmdline - Execution string.
+doexit - Quit from game after executing command.
+=======================================================================================================================================
+*/
 void Sys_StartProcess(char *cmdline, qboolean doexit) {
-	//TCHAR               szPathOrig[_MAX_PATH];
-	STARTUPINFO         si;
+	//TCHAR szPathOrig[_MAX_PATH];
+	STARTUPINFO si;
 	PROCESS_INFORMATION pi;
 
 	ZeroMemory(&si, sizeof(si));
+
 	si.cb = sizeof(si);
 
 	//GetCurrentDirectory(_MAX_PATH, szPathOrig);
@@ -744,10 +784,11 @@ void Sys_StartProcess(char *cmdline, qboolean doexit) {
 	}
 }
 
-/**
- * @brief Sys_Splash
- * @param[in] show
- */
+/*
+=======================================================================================================================================
+Sys_Splash
+=======================================================================================================================================
+*/
 void Sys_Splash(qboolean show) {
 #ifndef DEDICATED
 	if (show) {
@@ -763,16 +804,19 @@ void Sys_Splash(qboolean show) {
 
 		ShowWindow(g_wv.hWndSplash, SW_HIDE);
 		DestroyWindow(g_wv.hWndSplash);
+
 		g_wv.hWndSplash = NULL;
 	}
 #endif
 }
 
-/**
- * @brief Sys_OpenURL
- * @param[in] url
- * @param[in] doexit
- */
+/*
+=======================================================================================================================================
+Sys_OpenURL
+
+Open URL in system browser. Doexit quit from game after opening URL.
+=======================================================================================================================================
+*/
 void Sys_OpenURL(const char *url, qboolean doexit) {
 #ifndef DEDICATED
 	HWND wnd;
@@ -799,7 +843,7 @@ void Sys_OpenURL(const char *url, qboolean doexit) {
 	}
 
 	if (doexit) {
-		// show_bug.cgi?id = 612
+		// show_bug.cgi?id=612
 		doexit_spamguard = qtrue;
 		Cbuf_ExecuteText(EXEC_APPEND, "quit\n");
 	}
@@ -808,9 +852,11 @@ void Sys_OpenURL(const char *url, qboolean doexit) {
 #endif
 }
 
-/**
- * @brief Sys_CreateConsoleWindow
- */
+/*
+=======================================================================================================================================
+Sys_CreateConsoleWindow
+=======================================================================================================================================
+*/
 void Sys_CreateConsoleWindow(void) {
 #ifndef DEDICATED
 	int hConHandle;
@@ -829,7 +875,6 @@ void Sys_CreateConsoleWindow(void) {
 	}
 	// allocate a console for this app
 	AllocConsole();
-
 	// set the screen buffer to be big enough to let us scroll text
 	if (GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &coninfo)) {
 		coninfo.dwSize.Y = 9999;
@@ -841,7 +886,6 @@ void Sys_CreateConsoleWindow(void) {
 	fp = _fdopen(hConHandle, "w");
 	*stdout = *fp;
 	setvbuf(stdout, NULL, _IONBF, 0);
-
 	// redirect unbuffered STDIN to the console
 	lStdHandle = (long)(GetStdHandle(STD_INPUT_HANDLE));
 	hConHandle = _open_osfhandle(lStdHandle, _O_TEXT);
@@ -849,7 +893,6 @@ void Sys_CreateConsoleWindow(void) {
 	*stdin = *fp;
 
 	setvbuf(stdin, NULL, _IONBF, 0);
-
 	// redirect unbuffered STDERR to the console
 	lStdHandle = (long)(GetStdHandle(STD_ERROR_HANDLE));
 	hConHandle = _open_osfhandle(lStdHandle, _O_TEXT);
@@ -859,34 +902,31 @@ void Sys_CreateConsoleWindow(void) {
 	setvbuf(stderr, NULL, _IONBF, 0);
 
 	//SetConsoleTitle(WINDOWNAME);
-
 	Sys_SetUpConsoleAndSignals();
 #endif
 }
 
 // TODO: This could be enabled in the future
 //#define SET_PROCESS_AFFINITY 1
-
-/**
- * @brief Sys_SetProcessProperties
- */
+/*
+=======================================================================================================================================
+Sys_SetProcessProperties
+=======================================================================================================================================
+*/
 void Sys_SetProcessProperties(void) {
 #ifdef SET_PROCESS_AFFINITY
 	DWORD_PTR processAffinityMask;
 	DWORD_PTR systemAffinityMask;
 	int core, bit, currentCore;
-	BOOL      success;
+	BOOL success;
 #endif
 	HANDLE process = GetCurrentProcess();
-
-	//Set Process priority
+	// set Process priority
 	SetPriorityClass(process, HIGH_PRIORITY_CLASS);
-
 #ifdef SET_PROCESS_AFFINITY
 	if (!GetProcessAffinityMask(process, &processAffinityMask, &systemAffinityMask)) {
 		return;
 	}
-
 	//set this to the core you want your process to run on
 	// probably could catch this from a cvar, but do we want people fucking arround with it
 	core = SET_PROCESS_AFFINITY;
@@ -904,10 +944,10 @@ void Sys_SetProcessProperties(void) {
 	success = SetProcessAffinityMask(process, processAffinityMask);
 
 	if (success) {
-		//Yup great
+		// Yup great
 		Com_DPrintf(S_COLOR_GREEN "Sys_SetProcessProperties succesfully set process affinity");
 	} else {
-		//Fuck!
+		// Fuck!
 		Com_DPrintf(S_COLOR_RED "Sys_SetProcessProperties failed to set process affinity");
 	}
 #endif
@@ -915,41 +955,37 @@ void Sys_SetProcessProperties(void) {
 
 WinVars_t g_wv;
 
-/**
- * @brief Windows specific initialization
- */
+/*
+=======================================================================================================================================
+Sys_PlatformInit
+
+Windows specific initialisation.
+=======================================================================================================================================
+*/
 void Sys_PlatformInit(void) {
 	g_wv.hInstance = GetModuleHandle(NULL);
-
 #ifdef EXCEPTION_HANDLER
 	WinSetExceptionVersion(Q3_VERSION);
 #endif
-
 #ifndef DEDICATED
 	Sys_SetProcessProperties();
-
 	//show the splash screen
 	Sys_Splash(qtrue);
 #endif
-
 #ifdef USE_WINDOWS_CONSOLE
 	// done before Com/Sys_Init since we need this for error output
 	Sys_CreateConsole();
 #endif
-
 #ifdef DEDICATED
 	Sys_ShowConsoleWindow(1, qtrue);
 #endif
-
 	// no abort/retry/fail errors
 	SetErrorMode(SEM_FAILCRITICALERRORS);
-
 #ifndef DEDICATED
 	const char *SDL_VIDEODRIVER = getenv("SDL_VIDEODRIVER");
 
 	if (SDL_VIDEODRIVER) {
-		Com_Printf("SDL_VIDEODRIVER is externally set to \"%s\", "
-		           "in_mouse - 1 will have no effect\n", SDL_VIDEODRIVER);
+		Com_Printf("SDL_VIDEODRIVER is externally set to \"%s\", in_mouse -1 will have no effect\n", SDL_VIDEODRIVER);
 		SDL_VIDEODRIVER_externallySet = qtrue;
 	} else {
 		SDL_VIDEODRIVER_externallySet = qfalse;
@@ -957,10 +993,13 @@ void Sys_PlatformInit(void) {
 #endif
 }
 
-/**
- * @brief Check if filename should be allowed to be loaded as a DLL.
- * @param name
- */
+/*
+=======================================================================================================================================
+Sys_DllExtension
+
+Check if filename should be allowed to be loaded as a DLL.
+=======================================================================================================================================
+*/
 qboolean Sys_DllExtension(const char *name) {
 	return COM_CompareExtension(name, DLL_EXT);
 }

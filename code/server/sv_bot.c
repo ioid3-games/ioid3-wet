@@ -41,19 +41,17 @@
 #endif
 
 static bot_debugpoly_t debugpolygons[MAX_DEBUGPOLYS];
-
 extern botlib_export_t *botlib_export;
 
-/**
- * @brief Attempts to add a bot to the game
- * First player slot is reserved and cannot be used by a bot.
- *
- * If the specified slot is taken or private, the first free
- * slot starting from the public slots will be returned.
- *
- * @param[in] clientNum has to be bigger than 0
- * @returns assigned client slot or - 1 if it fails to allocate one
- */
+/*
+=======================================================================================================================================
+SV_BotAllocateClient
+
+Attempts to add a bot to the game. First player slot is reserved and cannot be used by a bot.
+If the specified slot is taken or private, the first free slot starting from the public slots will be returned.
+ClientNum has to be bigger than 0. Returns assigned client slot or -1 if it fails to allocate one.
+=======================================================================================================================================
+*/
 int SV_BotAllocateClient(int clientNum) {
 	int i;
 	client_t *cl;
@@ -74,7 +72,7 @@ int SV_BotAllocateClient(int clientNum) {
 	} else {
 		// start searching above private slots for a free client slot
 		for (i = sv_privateClients->integer, cl = svs.clients + sv_privateClients->integer; i < sv_maxclients->integer; i++, cl++) {
-			// wolfenstein, never use the first slot, otherwise if a bot connects before the first client on a listen server, game won't start
+			// Wolfenstein, never use the first slot, otherwise if a bot connects before the first client on a listen server, game won't start
 			if (i < 1) {
 				continue;
 			}
@@ -104,11 +102,11 @@ int SV_BotAllocateClient(int clientNum) {
 	return i;
 }
 
-/**
- * @brief SV_BotFreeClient
- *
- * @param[in] clientNum
- */
+/*
+=======================================================================================================================================
+SV_BotFreeClient
+=======================================================================================================================================
+*/
 void SV_BotFreeClient(int clientNum) {
 	client_t *cl;
 
@@ -126,21 +124,10 @@ void SV_BotFreeClient(int clientNum) {
 }
 
 /*
- * @brief BotDrawDebugPolygons
- * @param drawPoly - unused
- * @param value - unused
- *
- * @todo TODO: remove in cm_patch.c
-void BotDrawDebugPolygons(BotPolyFunc drawPoly, int value) {
-    return;
-}
+=======================================================================================================================================
+BotImport_Print
+=======================================================================================================================================
 */
-
-/**
- * @brief BotImport_Print
- * @param[in] type
- * @param[in] fmt
- */
 static __attribute__((format(printf, 2, 3))) void QDECL BotImport_Print(int type, char *fmt, ...) {
 	char str[2048];
 	va_list ap;
@@ -150,103 +137,90 @@ static __attribute__((format(printf, 2, 3))) void QDECL BotImport_Print(int type
 	va_end(ap);
 
 	switch (type) {
-	case PRT_MESSAGE: {
-		Com_Printf("%s", str);
-		break;
-	}
+		case PRT_MESSAGE: {
+			Com_Printf("%s", str);
+			break;
+		}
 
-	case PRT_WARNING: {
-		Com_Printf(S_COLOR_YELLOW "Warning: %s", str);
-		break;
-	}
+		case PRT_WARNING: {
+			Com_Printf(S_COLOR_YELLOW "Warning: %s", str);
+			break;
+		}
 
-	case PRT_ERROR: {
-		Com_Printf(S_COLOR_RED "Error: %s", str);
-		break;
-	}
+		case PRT_ERROR: {
+			Com_Printf(S_COLOR_RED "Error: %s", str);
+			break;
+		}
 
-	case PRT_FATAL: {
-		Com_Printf(S_COLOR_RED "Fatal: %s", str);
-		break;
-	}
+		case PRT_FATAL: {
+			Com_Printf(S_COLOR_RED "Fatal: %s", str);
+			break;
+		}
 
-	case PRT_EXIT: {
-		Com_Error(ERR_DROP, S_COLOR_RED "Exit: %s", str);
-		break;
-	}
+		case PRT_EXIT: {
+			Com_Error(ERR_DROP, S_COLOR_RED "Exit: %s", str);
+			break;
+		}
 
-	default: {
-		Com_Printf("unknown print type\n");
-		break;
-	}
+		default: {
+			Com_Printf("unknown print type\n");
+			break;
+		}
 	}
 }
 
-/**
- * @brief BotImport_Trace
- * @param[in] bsptrace
- * @param[in] start
- * @param[in] mins
- * @param[in] maxs
- * @param[in] end
- * @param[in] passent
- * @param[in] contentmask
- */
+/*
+=======================================================================================================================================
+BotImport_Trace
+=======================================================================================================================================
+*/
 void BotImport_Trace(bsp_trace_t *bsptrace, vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int passent, int contentmask) {
 	// always use bounding box for bot stuff ?
 	SV_Trace(bsptrace, start, mins, maxs, end, passent, contentmask, qfalse);
 }
 
-/**
- * @brief BotImport_EntityTrace
- * @param[in] bsptrace
- * @param[in] start
- * @param[in] mins
- * @param[in] maxs
- * @param[in] end
- * @param[in] entnum
- * @param[in] contentmask
- */
+/*
+=======================================================================================================================================
+BotImport_EntityTrace
+=======================================================================================================================================
+*/
 void BotImport_EntityTrace(bsp_trace_t *bsptrace, vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int entnum, int contentmask) {
 	// TODO: always use bounding box for bot stuff ?
 	SV_ClipToEntity(bsptrace, start, mins, maxs, end, entnum, contentmask, qfalse);
 }
 
-/**
- * @brief BotImport_PointContents
- * @param[in] point
- * @return
- */
+/*
+=======================================================================================================================================
+BotImport_PointContents
+=======================================================================================================================================
+*/
 int BotImport_PointContents(vec3_t point) {
 	return SV_PointContents(point, -1);
 }
 
-/**
- * @brief BotImport_inPVS
- * @param[in] p1
- * @param[in] p2
- * @return
- */
+/*
+=======================================================================================================================================
+otImport_inPVS
+=======================================================================================================================================
+*/
 int BotImport_inPVS(vec3_t p1, vec3_t p2) {
 	return SV_inPVS(p1, p2);
 }
 
-/**
- * @brief BotImport_BSPEntityData
- * @return
- */
+/*
+=======================================================================================================================================
+BotImport_BSPEntityData
+=======================================================================================================================================
+*/
 char *BotImport_BSPEntityData(void) {
 	return CM_EntityString();
 }
 
-/**
- * @brief BotImport_BSPModelMinsMaxsOrigin
- * @param[in] modelnum
- * @param[in] angles
- * @param[in] outmins
- * @param[in] outmaxs
- * @param[in] origin
- */
+/*
+=======================================================================================================================================
+BotImport_BSPModelMinsMaxsOrigin
+=======================================================================================================================================
+*/
 void BotImport_BSPModelMinsMaxsOrigin(int modelnum, vec3_t angles, vec3_t outmins, vec3_t outmaxs, vec3_t origin) {
 	clipHandle_t h = CM_InlineModel(modelnum);
 	vec3_t mins, maxs;
@@ -277,11 +251,11 @@ void BotImport_BSPModelMinsMaxsOrigin(int modelnum, vec3_t angles, vec3_t outmin
 	}
 }
 
-/**
- * @brief BotImport_GetMemory
- * @param size
- * @return
- */
+/*
+=======================================================================================================================================
+BotImport_GetMemory
+=======================================================================================================================================
+*/
 void *BotImport_GetMemory(int size) {
 	void *ptr;
 
@@ -289,27 +263,31 @@ void *BotImport_GetMemory(int size) {
 	return ptr;
 }
 
-/**
- * @brief BotImport_FreeMemory
- * @param[in, out] ptr
- */
+/*
+=======================================================================================================================================
+BotImport_FreeMemory
+=======================================================================================================================================
+*/
 void BotImport_FreeMemory(void *ptr) {
 	Z_Free(ptr);
 }
 
-/**
- * @brief BotImport_FreeZoneMemory
- */
+/*
+=======================================================================================================================================
+BotImport_FreeZoneMemory
+=======================================================================================================================================
+*/
 void BotImport_FreeZoneMemory(void) {
 	Z_FreeTags(TAG_BOTLIB);
 }
 
-/**
- * @brief BotImport_HunkAlloc
- * @param[in] size
- * @return
- */
+/*
+=======================================================================================================================================
+BotImport_HunkAlloc
+=======================================================================================================================================
+*/
 void *BotImport_HunkAlloc(int size) {
+
 	if (Hunk_CheckMark()) {
 		Com_Error(ERR_DROP, "SV_Bot_HunkAlloc: Alloc with marks already set");
 	}
@@ -317,13 +295,11 @@ void *BotImport_HunkAlloc(int size) {
 	return Hunk_Alloc(size, h_high);
 }
 
-/**
- * @brief BotImport_DebugPolygonCreate
- * @param[in] color
- * @param[in] numPoints
- * @param[in] points
- * @return
- */
+/*
+=======================================================================================================================================
+BotImport_DebugPolygonCreate
+=======================================================================================================================================
+*/
 int BotImport_DebugPolygonCreate(int color, int numPoints, vec3_t *points) {
 	bot_debugpoly_t *poly;
 	int i;
@@ -348,10 +324,11 @@ int BotImport_DebugPolygonCreate(int color, int numPoints, vec3_t *points) {
 	return i;
 }
 
-/**
- * @brief BotImport_GetFreeDebugPolygon
- * @return
- */
+/*
+=======================================================================================================================================
+BotImport_GetFreeDebugPolygon
+=======================================================================================================================================
+*/
 bot_debugpoly_t *BotImport_GetFreeDebugPolygon(void) {
 	int i;
 
@@ -364,13 +341,11 @@ bot_debugpoly_t *BotImport_GetFreeDebugPolygon(void) {
 	return NULL;
 }
 
-/**
- * @brief BotImport_DebugPolygonShow
- * @param id
- * @param color
- * @param numPoints
- * @param points
- */
+/*
+=======================================================================================================================================
+BotImport_DebugPolygonShow
+=======================================================================================================================================
+*/
 void BotImport_DebugPolygonShow(int id, int color, int numPoints, vec3_t *points) {
 	bot_debugpoly_t *poly = &debugpolygons[id];
 
@@ -381,46 +356,48 @@ void BotImport_DebugPolygonShow(int id, int color, int numPoints, vec3_t *points
 	Com_Memcpy(poly->points, points, numPoints * sizeof(vec3_t));
 }
 
-/**
- * @brief BotImport_DebugPolygonDelete
- * @param[in] id
- */
+/*
+=======================================================================================================================================
+BotImport_DebugPolygonDelete
+=======================================================================================================================================
+*/
 void BotImport_DebugPolygonDelete(int id) {
 	debugpolygons[id].inuse = qfalse;
 }
 
-/**
- * @brief BotImport_DebugPolygonDeletePointer
- * @param[out] pPoly
- */
+/*
+=======================================================================================================================================
+BotImport_DebugPolygonDeletePointer
+=======================================================================================================================================
+*/
 void BotImport_DebugPolygonDeletePointer(bot_debugpoly_t *pPoly) {
 	pPoly->inuse = qfalse;
 }
 
-/**
- * @brief BotImport_DebugLineCreate
- * @return
- */
+/*
+=======================================================================================================================================
+BotImport_DebugLineCreate
+=======================================================================================================================================
+*/
 int BotImport_DebugLineCreate(void) {
 	vec3_t points[1];
 	return BotImport_DebugPolygonCreate(0, 0, points);
 }
 
-/**
- * @brief BotImport_DebugLineDelete
- * @param[in] line
- */
+/*
+=======================================================================================================================================
+BotImport_DebugLineDelete
+=======================================================================================================================================
+*/
 void BotImport_DebugLineDelete(int line) {
 	BotImport_DebugPolygonDelete(line);
 }
 
-/**
- * @brief BotImport_DebugLineShow
- * @param[in] line
- * @param[in] start
- * @param[in] end
- * @param[in] color
- */
+/*
+=======================================================================================================================================
+BotImport_DebugLineShow
+=======================================================================================================================================
+*/
 void BotImport_DebugLineShow(int line, vec3_t start, vec3_t end, int color) {
 	vec3_t points[4], dir, cross, up = {0, 0, 1};
 	float dot;
@@ -452,11 +429,11 @@ void BotImport_DebugLineShow(int line, vec3_t start, vec3_t end, int color) {
 	BotImport_DebugPolygonShow(line, color, 4, points);
 }
 
-/**
- * @brief BotClientCommand
- * @param[in] client
- * @param[in] command
- */
+/*
+=======================================================================================================================================
+BotClientCommand
+=======================================================================================================================================
+*/
 void BotClientCommand(int client, char *command) {
 	SV_ExecuteClientCommand(&svs.clients[client], command, qtrue, qfalse);
 }
@@ -464,20 +441,20 @@ void BotClientCommand(int client, char *command) {
 #ifndef DEDICATED
 void BotImport_DrawPolygon(int color, int numpoints, float *points);
 #else
-/**
- * @brief BotImport_DrawPolygon
- * @param color - unused
- * @param numpoints - unused
- * @param points - unused
- */
+/*
+=======================================================================================================================================
+BotImport_DrawPolygon
+=======================================================================================================================================
+*/
 void BotImport_DrawPolygon(int color, int numpoints, float *points) {
 	Com_DPrintf("BotImport_DrawPolygon stub\n");
 }
 #endif
-
-/**
- * @brief SV_BotInitBotLib
- */
+/*
+=======================================================================================================================================
+SV_BotInitBotLib
+=======================================================================================================================================
+*/
 void SV_BotInitBotLib(void) {
 	botlib_import_t botlib_import;
 
@@ -521,13 +498,11 @@ void SV_BotInitBotLib(void) {
 
 //  * * * BOT AI CODE IS BELOW THIS POINT * * *
 
-/**
- * @brief SV_BotGetConsoleMessage
- * @param[in] client
- * @param buf - unused
- * @param size - unused
- * @return
- */
+/*
+=======================================================================================================================================
+SV_BotGetConsoleMessage
+=======================================================================================================================================
+*/
 int SV_BotGetConsoleMessage(int client, char *buf, size_t size) {
 	client_t *cl = &svs.clients[client];
 	int index;

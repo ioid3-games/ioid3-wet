@@ -44,11 +44,9 @@
 
 #ifndef INCLUDE_Q_UNICODE_H
 #define INCLUDE_Q_UNICODE_H
-
 // the version in which unicode was added..
 // FIXME: change this to 273 before release...!!!
 #define UNICODE_SUPPORT_VERSION 273
-
 // the cross sign which is used in place of invalid chars
 #define INVALID_CHAR_OFFSET 215
 
@@ -67,5 +65,4 @@ char *Q_UTF8_Encode(unsigned long codepoint);
 int Q_UTF8_Store(const char *s);
 char *Q_UTF8_Unstore(int e);
 void Q_UTF8_ToUTF32(char *string, int *charArray, int *outlen);
-
-#endif // iNCLUDE_Q_UNICODE_H
+#endif // INCLUDE_Q_UNICODE_H

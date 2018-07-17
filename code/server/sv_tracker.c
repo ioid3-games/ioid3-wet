@@ -30,21 +30,22 @@
  * id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
  */
 /**
- * @file sv_tracker.h
- * @brief Sends game statistics to Tracker
- * @author Konrad "morsik" Mosoń
- */
-#ifdef FEATURE_TRACKER
 
+/*
+======================================================================================================================================
+
+	Sends game statistics to Tracker
+
+=======================================================================================================================================
+*/
+#ifdef FEATURE_TRACKER
 #include "sv_tracker.h"
 
 long t;
 int waittime = 15; // seconds
 char expect[16];
 int expectnum;
-
 qboolean maprunning = qfalse;
-
 int querycl = -1;
 
 enum {
@@ -57,15 +58,16 @@ netadr_t addr;
 #ifdef TRACKER_DEBUG
 netadr_t local;
 #endif
-
 char infostring[MAX_INFO_STRING];
-
 char *Tracker_getGUID(client_t *cl);
 
-/**
- * @brief Sends data to Tracker
- * @param[in] format Formatted data to send
- */
+/*
+=======================================================================================================================================
+Tracker_Send
+
+Sends data to Tracker. Formatted data to send.
+=======================================================================================================================================
+*/
 void Tracker_Send(char *format, ...) {
 	va_list argptr;
 	char msg[MAX_MSGLEN];
@@ -80,9 +82,13 @@ void Tracker_Send(char *format, ...) {
 #endif
 }
 
-/**
- * @brief Initialize Tracker support
- */
+/*
+=======================================================================================================================================
+Tracker_Init
+
+Initialize Tracker support.
+=======================================================================================================================================
+*/
 void Tracker_Init(void) {
 	char *tracker;
 
@@ -102,10 +108,15 @@ void Tracker_Init(void) {
 	Com_Printf("Tracker: Server communication enabled.\n");
 }
 
-/**
- * @brief Send info about server startup
- */
+/*
+=======================================================================================================================================
+Tracker_ServerStart
+
+Send info about server startup.
+=======================================================================================================================================
+*/
 void Tracker_ServerStart(void) {
+
 	if (!(sv_advert->integer & SVA_TRACKER)) {
 		return;
 	}
@@ -113,10 +124,15 @@ void Tracker_ServerStart(void) {
 	Tracker_Send("start");
 }
 
-/**
- * @brief Send info about server shutdown
- */
+/*
+=======================================================================================================================================
+Tracker_ServerStop
+
+Send info about server shutdown.
+=======================================================================================================================================
+*/
 void Tracker_ServerStop(void) {
+
 	if (!(sv_advert->integer & SVA_TRACKER)) {
 		return;
 	}
@@ -124,11 +140,15 @@ void Tracker_ServerStop(void) {
 	Tracker_Send("stop");
 }
 
-/**
- * @brief Send info about new client connected
- * @param[in] cl Client
- */
+/*
+=======================================================================================================================================
+Tracker_ClientConnect
+
+Send info about new client connected.
+=======================================================================================================================================
+*/
 void Tracker_ClientConnect(client_t *cl) {
+
 	if (!(sv_advert->integer & SVA_TRACKER)) {
 		return;
 	}
@@ -136,11 +156,15 @@ void Tracker_ClientConnect(client_t *cl) {
 	Tracker_Send("connect %i %s %s", (int)(cl - svs.clients), Tracker_getGUID(cl), cl->name);
 }
 
-/**
- * @brief Send info when client disconnects
- * @param[in] cl Client
- */
+/*
+=======================================================================================================================================
+Tracker_ClientDisconnect
+
+Send info when client disconnects.
+=======================================================================================================================================
+*/
 void Tracker_ClientDisconnect(client_t *cl) {
+
 	if (!(sv_advert->integer & SVA_TRACKER)) {
 		return;
 	}
@@ -148,11 +172,15 @@ void Tracker_ClientDisconnect(client_t *cl) {
 	Tracker_Send("disconnect %i", (int)(cl - svs.clients));
 }
 
-/**
- * @brief Send info when player changes his name
- * @param[in] cl Client
- */
+/*
+=======================================================================================================================================
+Tracker_ClientName
+
+Send info when player changes his name.
+=======================================================================================================================================
+*/
 void Tracker_ClientName(client_t *cl) {
+
 	if (!(sv_advert->integer & SVA_TRACKER)) {
 		return;
 	}
@@ -164,11 +192,15 @@ void Tracker_ClientName(client_t *cl) {
 	Tracker_Send("name %i %s %s", (int)(cl - svs.clients), Tracker_getGUID(cl), Info_ValueForKey(cl->userinfo, "name"));
 }
 
-/**
- * @brief Send info when map has changed
- * @param[in] mapname Current Map
- */
+/*
+=======================================================================================================================================
+Tracker_Map
+
+Send info when map has changed.
+=======================================================================================================================================
+*/
 void Tracker_Map(char *mapname) {
+
 	if (!(sv_advert->integer & SVA_TRACKER)) {
 		return;
 	}
@@ -177,12 +209,15 @@ void Tracker_Map(char *mapname) {
 	maprunning = qtrue;
 }
 
-/**
- * @brief Send info when map restarts
- *
- * Allows counting time from 0 again on TB
- */
+/*
+=======================================================================================================================================
+Tracker_MapRestart
+
+Send info when map restarts. Allows counting time from 0 again on TB.
+=======================================================================================================================================
+*/
 void Tracker_MapRestart(void) {
+
 	if (!(sv_advert->integer & SVA_TRACKER)) {
 		return;
 	}
@@ -191,12 +226,15 @@ void Tracker_MapRestart(void) {
 	maprunning = qtrue;
 }
 
-/**
- * @brief Send info when map has finished
- *
- * Sometimes intermission is very long, so TB can show appropriate info to players
- */
+/*
+=======================================================================================================================================
+Tracker_MapEnd
+
+Send info when map has finished. Sometimes intermission is very long, so TB can show appropriate info to players.
+=======================================================================================================================================
+*/
 void Tracker_MapEnd(void) {
+
 	if (!(sv_advert->integer & SVA_TRACKER)) {
 		return;
 	}
@@ -205,32 +243,40 @@ void Tracker_MapEnd(void) {
 	Tracker_requestWeaponStats();
 	maprunning = qfalse;
 }
-
 #if 0
-/**
- * @brief Send info when player changes his team
- * @param[in] cl Client
- */
+/*
+=======================================================================================================================================
+Tracker_TeamSwitch
+
+Send info when player changes his team.
+=======================================================================================================================================
+*/
 void Tracker_TeamSwitch(client_t *cl) {
 	Tracker_Send("team %i", (int)(cl - svs.clients));
 }
 #endif // 0
+/*
+=======================================================================================================================================
+Tracker_createClientInfo
 
-/**
- * @brief Creates client information for other functions
- * @param clientNum Client ID(from 0 to MAX_CLIENTS)
- * @note Just for internal use
- */
+Creates client information for other functions. clientNum Client ID (from 0 to MAX_CLIENTS).
+NOTE: Just for internal use.
+=======================================================================================================================================
+*/
 char *Tracker_createClientInfo(int clientNum) {
 	playerState_t *ps;
-	ps = SV_GameClientNum(clientNum);
 
+	ps = SV_GameClientNum(clientNum);
 	return va("%i\\%i\\%c\\%i\\%s", svs.clients[clientNum].ping, ps->persistant[PERS_SCORE], Info_ValueForKey(Cvar_InfoString(CVAR_SERVERINFO|CVAR_SERVERINFO_NOUPDATE), "P")[clientNum], ps->stats[STAT_PLAYER_CLASS], svs.clients[clientNum].name);
 }
 
-/**
- * @brief Request weapon stats data from mod
- */
+/*
+=======================================================================================================================================
+Tracker_requestWeaponStats
+
+Request weapon stats data from mod.
+=======================================================================================================================================
+*/
 void Tracker_requestWeaponStats(void) {
 	int i;
 	qboolean onlybots = qtrue;
@@ -241,6 +287,7 @@ void Tracker_requestWeaponStats(void) {
 	}
 
 	strcpy(infostring, Cvar_InfoString(CVAR_SERVERINFO|CVAR_SERVERINFO_NOUPDATE));
+
 	P = Info_ValueForKey(infostring, "P");
 
 	strcpy(expect, "ws");
@@ -274,10 +321,15 @@ void Tracker_requestWeaponStats(void) {
 	}
 }
 
-/**
- * @brief Frame function
- */
+/*
+=======================================================================================================================================
+Tracker_Frame
+
+Frame function.
+=======================================================================================================================================
+*/
 void Tracker_Frame(int msec) {
+
 	if (!(sv_advert->integer & SVA_TRACKER)) {
 		return;
 	}
@@ -294,16 +346,19 @@ void Tracker_Frame(int msec) {
 	Tracker_Send("p"); // send ping to tb to show that server is still alive
 
 	expectnum = 0; // reset before next statsall
+
 	Tracker_requestWeaponStats();
 
 	t = time(0);
 }
 
-/**
- * @brief Catches server command
- * @param     clientNum Client ID(from 0 to MAX_CLIENTS)
- * @param[in] msg       Message sends by backend
- */
+/*
+=======================================================================================================================================
+Tracker_catchServerCommand
+
+Catches server command. clientNum Client ID (from 0 to MAX_CLIENTS). Message sends by backend.
+=======================================================================================================================================
+*/
 qboolean Tracker_catchServerCommand(int clientNum, char *msg) {
 	int slot;
 
@@ -336,6 +391,7 @@ qboolean Tracker_catchServerCommand(int clientNum, char *msg) {
 		}
 
 		slot = 0;
+
 		sscanf(msg, "ws %i", &slot);
 		Tracker_Send("%s\\%s", msg, Tracker_createClientInfo(slot));
 
@@ -345,10 +401,15 @@ qboolean Tracker_catchServerCommand(int clientNum, char *msg) {
 	return qfalse;
 }
 
-/**
- * @brief Catch bot connection
- */
+/*
+=======================================================================================================================================
+Tracker_catchBotConnect
+
+Catch bot connection.
+=======================================================================================================================================
+*/
 void Tracker_catchBotConnect(int clientNum) {
+
 	if (!(sv_advert->integer & SVA_TRACKER)) {
 		return;
 	}
@@ -357,13 +418,15 @@ void Tracker_catchBotConnect(int clientNum) {
 	catchBotNum = clientNum;
 }
 
-/**
- * @brief Get guid for stats
- * @param[in] cl Client
- *
- * We prefer to use original cl_guid, but some mods has their own guid values
- */
+/*
+=======================================================================================================================================
+Tracker_getGUID
+
+We prefer to use original cl_guid, but some mods has their own guid values.
+=======================================================================================================================================
+*/
 char *Tracker_getGUID(client_t *cl) {
+
 	if (*Info_ValueForKey(cl->userinfo, "cl_guid")) {
 		return Info_ValueForKey(cl->userinfo, "cl_guid");
 	} else {
@@ -371,4 +434,4 @@ char *Tracker_getGUID(client_t *cl) {
 	}
 }
 
-#endif // fEATURE_TRACKER
+#endif // FEATURE_TRACKER

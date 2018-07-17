@@ -34,12 +34,11 @@
 
 #include "cm_local.h"
 
-/**
- * @brief CM_PointLeafnum_r
- * @param[in] p
- * @param[in] num
- * @return
- */
+/*
+=======================================================================================================================================
+CM_PointLeafnum_r
+=======================================================================================================================================
+*/
 int CM_PointLeafnum_r(const vec3_t p, int num) {
 	float d;
 	cNode_t *node;
@@ -62,36 +61,38 @@ int CM_PointLeafnum_r(const vec3_t p, int num) {
 		}
 	}
 
-	c_pointcontents++;      // optimize counter
+	c_pointcontents++; // optimize counter
 
 	return -1 - num;
 }
 
-/**
- * @brief CM_PointLeafnum
- * @param[in] p
- * @return
- */
+/*
+=======================================================================================================================================
+CM_PointLeafnum
+=======================================================================================================================================
+*/
 int CM_PointLeafnum(const vec3_t p) {
-	if (!cm.numNodes)       // map not loaded
-	{
+
+	if (!cm.numNodes) { // map not loaded
 		return 0;
 	}
 
 	return CM_PointLeafnum_r(p, 0);
 }
 
-/**
-====================================================================== 
-LEAF LISTING
-====================================================================== 
+/*
+=======================================================================================================================================
+
+	LEAF LISTING
+
+=======================================================================================================================================
 */
 
-/**
- * @brief CM_StoreLeafs
- * @param[in, out] ll
- * @param[in] nodenum
- */
+/*
+=======================================================================================================================================
+CM_StoreLeafs
+=======================================================================================================================================
+*/
 void CM_StoreLeafs(leafList_t *ll, int nodenum) {
 	int leafNum = -1 - nodenum;
 
@@ -108,11 +109,11 @@ void CM_StoreLeafs(leafList_t *ll, int nodenum) {
 	ll->list[ll->count++] = leafNum;
 }
 
-/**
- * @brief CM_StoreBrushes
- * @param[in, out] ll
- * @param[in] nodenum
- */
+/*
+=======================================================================================================================================
+CM_StoreBrushes
+=======================================================================================================================================
+*/
 void CM_StoreBrushes(leafList_t *ll, int nodenum) {
 	int i, k;
 	int leafnum = -1 - nodenum;
@@ -125,7 +126,7 @@ void CM_StoreBrushes(leafList_t *ll, int nodenum) {
 		b = &cm.brushes[brushnum];
 
 		if (b->checkcount == cm.checkcount) {
-			continue;   // already checked this brush in another leaf
+			continue; // already checked this brush in another leaf
 		}
 
 		b->checkcount = cm.checkcount;
@@ -159,12 +160,13 @@ void CM_StoreBrushes(leafList_t *ll, int nodenum) {
 #endif
 }
 
-/**
- * @brief Fills in a list of all the leafs touched
- * @param[in, out] ll
- * @param[in] nodenum
- *
- */
+/*
+=======================================================================================================================================
+CM_BoxLeafnums_r
+
+Fills in a list of all the leafs touched.
+=======================================================================================================================================
+*/
 void CM_BoxLeafnums_r(leafList_t *ll, int nodenum) {
 	cplane_t *plane;
 	cNode_t *node;
@@ -192,15 +194,11 @@ void CM_BoxLeafnums_r(leafList_t *ll, int nodenum) {
 	}
 }
 
-/**
- * @brief CM_BoxLeafnums
- * @param[in] mins
- * @param[in] maxs
- * @param[in] list
- * @param[in] listsize
- * @param[out] lastLeaf
- * @return
- */
+/*
+=======================================================================================================================================
+CM_BoxLeafnums
+=======================================================================================================================================
+*/
 int CM_BoxLeafnums(const vec3_t mins, const vec3_t maxs, int *list, int listsize, int *lastLeaf) {
 	leafList_t ll;
 
@@ -208,6 +206,7 @@ int CM_BoxLeafnums(const vec3_t mins, const vec3_t maxs, int *list, int listsize
 
 	VectorCopy(mins, ll.bounds[0]);
 	VectorCopy(maxs, ll.bounds[1]);
+
 	ll.count = 0;
 	ll.maxcount = listsize;
 	ll.list = list;
@@ -221,16 +220,11 @@ int CM_BoxLeafnums(const vec3_t mins, const vec3_t maxs, int *list, int listsize
 	return ll.count;
 }
 
-/**
- * @brief CM_BoxBrushes
- * @param[in] mins
- * @param[in] maxs
- * @param[in] list
- * @param[in] listsize
- * @return
- *
- * @note Unused
- */
+/*
+=======================================================================================================================================
+CM_BoxBrushes
+=======================================================================================================================================
+*/
 int CM_BoxBrushes(const vec3_t mins, const vec3_t maxs, cbrush_t **list, int listsize) {
 	leafList_t ll;
 
@@ -238,6 +232,7 @@ int CM_BoxBrushes(const vec3_t mins, const vec3_t maxs, cbrush_t **list, int lis
 
 	VectorCopy(mins, ll.bounds[0]);
 	VectorCopy(maxs, ll.bounds[1]);
+
 	ll.count = 0;
 	ll.maxcount = listsize;
 	ll.list = (void *)list;
@@ -250,14 +245,11 @@ int CM_BoxBrushes(const vec3_t mins, const vec3_t maxs, cbrush_t **list, int lis
 	return ll.count;
 }
 
-//==================================================================== 
-
-/**
- * @brief CM_PointContents
- * @param[in] p
- * @param[in] model
- * @return
- */
+/*
+=======================================================================================================================================
+CM_PointContents
+=======================================================================================================================================
+*/
 int CM_PointContents(const vec3_t p, clipHandle_t model) {
 	int leafnum;
 	int i, k;
@@ -268,8 +260,7 @@ int CM_PointContents(const vec3_t p, clipHandle_t model) {
 	float d;
 	cmodel_t *clipm;
 
-	if (!cm.numNodes)     // map not loaded
-	{
+	if (!cm.numNodes) { // map not loaded
 		return 0;
 	}
 
@@ -289,8 +280,7 @@ int CM_PointContents(const vec3_t p, clipHandle_t model) {
 		// see if the point is in the brush
 		for (i = 0; i < b->numsides; i++) {
 			d = DotProduct(p, b->sides[i].plane->normal);
-// fIXME test for Cash
-//          if (d >= b->sides[i].plane->dist) {
+			// FIXME test for Cash
 			if (d > b->sides[i].plane->dist) {
 				break;
 			}
@@ -304,29 +294,25 @@ int CM_PointContents(const vec3_t p, clipHandle_t model) {
 	return contents;
 }
 
-/**
- * @brief Handles offseting and rotation of the end points for moving and
- * rotating entities
- * @param[in] p
- * @param[in] model
- * @param[in] origin
- * @param[in] angles
- * @return
- */
+/*
+=======================================================================================================================================
+CM_TransformedPointContents
+
+Handles offseting and rotation of the end points for moving and rotating entities.
+=======================================================================================================================================
+*/
 int CM_TransformedPointContents(const vec3_t p, clipHandle_t model, const vec3_t origin, const vec3_t angles) {
 	vec3_t p_l;
 
 	// subtract origin offset
 	VectorSubtract(p, origin, p_l);
-
 	// rotate start and end into the models frame of reference
-	if (model != BOX_MODEL_HANDLE &&
-	(angles[0] != 0.f || angles[1] != 0.f || angles[2] != 0.f)) {
+	if (model != BOX_MODEL_HANDLE && (angles[0] != 0.f || angles[1] != 0.f || angles[2] != 0.f)) {
 		vec3_t temp, forward, right, up;
 
 		angles_vectors(angles, forward, right, up);
-
 		VectorCopy(p_l, temp);
+
 		p_l[0] = DotProduct(temp, forward);
 		p_l[1] = -DotProduct(temp, right);
 		p_l[2] = DotProduct(temp, up);
@@ -335,18 +321,21 @@ int CM_TransformedPointContents(const vec3_t p, clipHandle_t model, const vec3_t
 	return CM_PointContents(p_l, model);
 }
 
-/**
-===============================================================================
-PVS
-===============================================================================
+/*
+=======================================================================================================================================
+
+	PVS
+
+=======================================================================================================================================
 */
 
-/**
- * @brief CM_ClusterPVS
- * @param[in] cluster
- * @return
- */
+/*
+=======================================================================================================================================
+CM_ClusterPVS
+=======================================================================================================================================
+*/
 byte *CM_ClusterPVS(int cluster) {
+
 	if (cluster < 0 || cluster >= cm.numClusters || !cm.vised) {
 		return cm.visibility;
 	}
@@ -354,17 +343,19 @@ byte *CM_ClusterPVS(int cluster) {
 	return cm.visibility + cluster * cm.clusterBytes;
 }
 
-/**
-===============================================================================
-AREAPORTALS
-===============================================================================
+/*
+=======================================================================================================================================
+
+	AREAPORTALS
+
+=======================================================================================================================================
 */
 
-/**
- * @brief CM_FloodArea_r
- * @param[in] areaNum
- * @param[in] floodnum
- */
+/*
+=======================================================================================================================================
+CM_FloodArea_r
+=======================================================================================================================================
+*/
 void CM_FloodArea_r(int areaNum, int floodnum) {
 	int i;
 	cArea_t *area = &cm.areas[areaNum];
@@ -389,9 +380,11 @@ void CM_FloodArea_r(int areaNum, int floodnum) {
 	}
 }
 
-/**
- * @brief CM_FloodAreaConnections
- */
+/*
+=======================================================================================================================================
+CM_FloodAreaConnections
+=======================================================================================================================================
+*/
 void CM_FloodAreaConnections(void) {
 	int i;
 	cArea_t *area = cm.areas; // optimization
@@ -402,21 +395,22 @@ void CM_FloodAreaConnections(void) {
 
 	for (i = 0; i < cm.numAreas; i++, area++) {
 		if (area->floodvalid == cm.floodvalid) {
-			continue;       // already flooded into
+			continue; // already flooded into
 		}
 
 		floodnum++;
+
 		CM_FloodArea_r(i, floodnum);
 	}
 }
 
-/**
- * @brief CM_AdjustAreaPortalState
- * @param[in] area1
- * @param[in] area2
- * @param[in] open
- */
+/*
+=======================================================================================================================================
+CM_AdjustAreaPortalState
+=======================================================================================================================================
+*/
 void CM_AdjustAreaPortalState(int area1, int area2, qboolean open) {
+
 	if (area1 < 0 || area2 < 0) {
 		return;
 	}
@@ -428,8 +422,7 @@ void CM_AdjustAreaPortalState(int area1, int area2, qboolean open) {
 	if (open) {
 		cm.areaPortals[area1 * cm.numAreas + area2]++;
 		cm.areaPortals[area2 * cm.numAreas + area1]++;
-	} else if (cm.areaPortals[area2 * cm.numAreas + area1])         // ridah, fixes loadgame issue
-	{
+	} else if (cm.areaPortals[area2 * cm.numAreas + area1]) { // ridah, fixes loadgame issue
 		cm.areaPortals[area1 * cm.numAreas + area2]--;
 		cm.areaPortals[area2 * cm.numAreas + area1]--;
 
@@ -441,13 +434,13 @@ void CM_AdjustAreaPortalState(int area1, int area2, qboolean open) {
 	CM_FloodAreaConnections();
 }
 
-/**
- * @brief CM_AreasConnected
- * @param[in] area1
- * @param[in] area2
- * @return
- */
+/*
+=======================================================================================================================================
+CM_AreasConnected
+=======================================================================================================================================
+*/
 qboolean CM_AreasConnected(int area1, int area2) {
+
 	if (cm_noAreas->integer) {
 		return qtrue;
 	}
@@ -467,24 +460,20 @@ qboolean CM_AreasConnected(int area1, int area2) {
 	return qfalse;
 }
 
-/**
- * @brief Writes a bit vector of all the areas that are in the same flood as the area parameter
- *
- * @details The bits are OR'd in, so you can CM_WriteAreaBits from multiple
- * viewpoints and get the union of all visible areas.
- *
- * This is used to cull non - visible entities from snapshots
- *
- * @param[out] buffer
- * @param[in] area
- *
- * @return The number of bytes needed to hold all the bits.
- */
+/*
+=======================================================================================================================================
+CM_WriteAreaBits
+
+Writes a bit vector of all the areas that are in the same flood as the area parameter.
+Returns the number of bytes needed to hold all the bits.
+The bits are OR'd in, so you can CM_WriteAreaBits from multiple viewpoints and get the union of all visible areas.
+This is used to cull non-visible entities from snapshots.
+=======================================================================================================================================
+*/
 int CM_WriteAreaBits(byte *buffer, int area) {
 	int bytes = (cm.numAreas + 7) >> 3;
 
-	if (cm_noAreas->integer || area == -1) // for debugging, send everything
-	{
+	if (cm_noAreas->integer || area == -1) { // for debugging, send everything
 		Com_Memset(buffer, 255, bytes);
 	} else {
 		int i;
@@ -492,7 +481,7 @@ int CM_WriteAreaBits(byte *buffer, int area) {
 
 		for (i = 0; i < cm.numAreas; i++) {
 			if (cm.areas[i].floodnum == floodnum || area == -1) {
-				buffer[i >> 3] |= 1 << (i & 7);
+				buffer[i >> 3] |= 1 << (i&7);
 			}
 		}
 	}

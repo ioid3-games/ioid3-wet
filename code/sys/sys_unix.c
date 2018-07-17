@@ -36,14 +36,12 @@
 #ifndef DEDICATED
 #include "../sdl/sdl_defs.h"
 #endif
-
 #include "../qcommon/q_shared.h"
 #include "../qcommon/qcommon.h"
 #include "sys_local.h"
 #ifndef DEDICATED
 #include "../renderercommon/tr_common.h"
 #endif
-
 #include <signal.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -59,14 +57,17 @@
 #include <sys/wait.h>
 
 qboolean stdinIsATTY;
-
 // used to determine where to store user - specific files
 static char homePath[MAX_OSPATH] = {0};
 
-/**
- * @brief Get current home path
- * @return path to ET: Legacy directory
- */
+/*
+=======================================================================================================================================
+Sys_DefaultHomePath
+
+Get current home path.
+Returns path to ET: Legacy directory.
+=======================================================================================================================================
+*/
 char *Sys_DefaultHomePath(void) {
 	char *p;
 
@@ -85,11 +86,16 @@ char *Sys_DefaultHomePath(void) {
 	return homePath;
 }
 
-/**
- * @brief Safe function to Chmod a file and preventing TOCTOU attacks
- * @param[in] file Filename
- * @param[in] mode Access Mode
- */
+/*
+=======================================================================================================================================
+Sys_Chmod
+
+Safe function to Chmod a file and preventing TOCTOU attacks.
+
+'file' - Filename.
+'mode' - Access Mode.
+=======================================================================================================================================
+*/
 void Sys_Chmod(const char *file, int mode) {
 	struct stat stat_infoBefore;
 	struct stat fstat_infoAfter;
@@ -103,7 +109,6 @@ void Sys_Chmod(const char *file, int mode) {
 	}
 
 	perm = stat_infoBefore.st_mode|mode;
-
 	// try to get the file descriptor
 	if ((fd = open(file, O_RDONLY, S_IXUSR)) == -1) {
 		Com_Printf("Sys_Chmod: open('%s', %d, %d) failed: errno %d\n", file, O_RDONLY, S_IXUSR, errno);
@@ -111,7 +116,6 @@ void Sys_Chmod(const char *file, int mode) {
 	}
 
 	Com_DPrintf("chmod + %d '%s'\n", mode, file);
-
 	// get the state of the file after opening function
 	if (stat(file, &fstat_infoAfter) == -1) {
 		Com_Printf("Sys_Chmod: second stat('%s')  failed: errno %d\n", file, errno);
@@ -119,8 +123,7 @@ void Sys_Chmod(const char *file, int mode) {
 		return;
 	}
 	// compare the state before and after opening
-	if (stat_infoBefore.st_mode != fstat_infoAfter.st_mode ||
-	    stat_infoBefore.st_ino != fstat_infoAfter.st_ino) {
+	if (stat_infoBefore.st_mode != fstat_infoAfter.st_mode || stat_infoBefore.st_ino != fstat_infoAfter.st_ino) {
 		Com_Printf("Sys_Chmod: stat before and after open are different. The file('%s') may differ(TOCTOU Attacks ?)\n", file);
 		close(fd);
 		return;
@@ -134,24 +137,30 @@ void Sys_Chmod(const char *file, int mode) {
 	Com_DPrintf("chmod + %d '%s'\n", mode, file);
 }
 
-/**
- * @brief Base time in seconds
- *
- * That's our origin timeval:tv_sec is an int:\n
- * assuming this wraps every 0x7fffffff - ~68 years since the Epoch(1970) - we're safe till 2038\n
- * using unsigned long data type to work right with Sys_XTimeToSysTime
- */
-unsigned long sys_timeBase = 0;
+/*
+=======================================================================================================================================
 
-/**
- * @brief Current time in ms, using sys_timeBase as origin
- * @note sys_timeBase * 1000 + curtime ->ms since the Epoch, 0x7fffffff ms - ~24 days
- *
- * although timeval:tv_usec is an int, I'm not sure wether it is actually used as an unsigned int
- * (which would affect the wrap period)
- */
+	Base time in seconds
+
+	That's our origin timeval:tv_sec is an int:
+	Assuming this wraps every 0x7fffffff - ~68 years since the Epoch(1970) - we're safe till 2038.
+	Using unsigned long data type to work right with Sys_XTimeToSysTime.
+
+=======================================================================================================================================
+*/
+unsigned long sys_timeBase = 0;
 int curtime;
 
+/*
+=======================================================================================================================================
+Sys_Milliseconds
+
+Current time in ms, using sys_timeBase as origin.
+
+NOTE: sys_timeBase * 1000 + curtime ->ms since the Epoch, 0x7fffffff ms - ~24 days.
+Although timeval:tv_usec is an int, I'm not sure wether it is actually used as an unsigned int (which would affect the wrap period).
+=======================================================================================================================================
+*/
 int Sys_Milliseconds(void) {
 	struct timeval tp;
 
@@ -167,21 +176,26 @@ int Sys_Milliseconds(void) {
 	return curtime;
 }
 
-/**
- * @param[in, out] v Vector
- */
+/*
+=======================================================================================================================================
+Sys_SnapVector
+=======================================================================================================================================
+*/
 void Sys_SnapVector(float *v) {
+
 	v[0] = rint(v[0]);
 	v[1] = rint(v[1]);
 	v[2] = rint(v[2]);
 }
 
-/**
- * @param[out] string Place to put random string
- * @param      len    How much random data we need?
- * @retval qfalse on failure
- * @retval qtrue  on success
- */
+/*
+=======================================================================================================================================
+Sys_RandomBytes
+
+'string' - Place to put random string.
+'len' - How much random data we need?.
+=======================================================================================================================================
+*/
 qboolean Sys_RandomBytes(byte *string, int len) {
 	FILE *fp;
 
@@ -202,10 +216,13 @@ qboolean Sys_RandomBytes(byte *string, int len) {
 	return qtrue;
 }
 
-/**
- * @brief Get current user username
- * @return username
- */
+/*
+=======================================================================================================================================
+Sys_GetCurrentUser
+
+Get current user username.
+=======================================================================================================================================
+*/
 char *Sys_GetCurrentUser(void) {
 	struct passwd *p;
 
@@ -216,27 +233,42 @@ char *Sys_GetCurrentUser(void) {
 	return p->pw_name;
 }
 
-/**
- * @todo
- */
+/*
+=======================================================================================================================================
+Sys_LowPhysicalMemory
+=======================================================================================================================================
+*/
 qboolean Sys_LowPhysicalMemory(void) {
 	return qfalse;
 }
 
+/*
+=======================================================================================================================================
+Sys_Basename
+=======================================================================================================================================
+*/
 const char *Sys_Basename(char *path) {
 	return basename(path);
 }
 
+/*
+=======================================================================================================================================
+Sys_Dirname
+=======================================================================================================================================
+*/
 const char *Sys_Dirname(char *path) {
 	return dirname(path);
 }
 
-/**
- * @brief Safe function to open a file and preventing TOCTOU attacks
- * @param[in] ospath The file path to open
- * @param[in] mode The mode used to open the file('rb', 'wb', 'ab')
- * @return
- */
+/*
+=======================================================================================================================================
+Sys_FOpen
+
+Safe function to open a file and preventing TOCTOU attacks.
+'ospath' - The file path to open.
+'mode' - The mode used to open the file ('rb', 'wb', 'ab').
+=======================================================================================================================================
+*/
 FILE *Sys_FOpen(const char *ospath, const char *mode) {
 	struct stat stat_infoBefore;
 	struct stat stat_infoAfter;
@@ -279,8 +311,7 @@ FILE *Sys_FOpen(const char *ospath, const char *mode) {
 		return NULL;
 	}
 	// compare the state before and after opening only if the file wasn't created
-	if (*mode != 'w' && (stat_infoBefore.st_mode != stat_infoAfter.st_mode ||
-	                     stat_infoBefore.st_ino != stat_infoAfter.st_ino)) {
+	if (*mode != 'w' && (stat_infoBefore.st_mode != stat_infoAfter.st_mode || stat_infoBefore.st_ino != stat_infoAfter.st_ino)) {
 		Com_Printf("Sys_FOpen: stat before and after chmod are different. The file('%s') may differ(TOCTOU Attacks ?)\n", ospath);
 		close(fd);
 		return NULL;
@@ -296,12 +327,13 @@ FILE *Sys_FOpen(const char *ospath, const char *mode) {
 	return fp;
 }
 
-/**
- * @brief Create directory
- * @param[in] path Path
- * @retval qfalse on failure
- * @retval qtrue  on success
- */
+/*
+=======================================================================================================================================
+Sys_Mkdir
+
+Creates directory.
+=======================================================================================================================================
+*/
 qboolean Sys_Mkdir(const char *path) {
 	int result = mkdir(path, 0750);
 
@@ -312,10 +344,14 @@ qboolean Sys_Mkdir(const char *path) {
 	return qtrue;
 }
 
-/**
- * @brief Get current working directory
- * @return Path to current working directory
- */
+/*
+=======================================================================================================================================
+Sys_Cwd
+
+Get current working directory.
+Returns path to current working directory.
+=======================================================================================================================================
+*/
 char *Sys_Cwd(void) {
 	static char cwd[MAX_OSPATH];
 
@@ -331,17 +367,24 @@ char *Sys_Cwd(void) {
 }
 
 /*
-============================================================== 
-DIRECTORY SCANNING
-============================================================== 
+=======================================================================================================================================
+
+	DIRECTORY SCANNING
+
+=======================================================================================================================================
 */
 
+/*
+=======================================================================================================================================
+Sys_ListFilteredFiles
+=======================================================================================================================================
+*/
 void Sys_ListFilteredFiles(const char *basedir, const char *subdirs, const char *filter, char **list, int *numfiles) {
 	char search[MAX_OSPATH], newsubdirs[MAX_OSPATH];
 	char filename[MAX_OSPATH];
-	DIR           *fdir;
+	DIR *fdir;
 	struct dirent *d;
-	struct stat   st;
+	struct stat st;
 
 	if (*numfiles >= MAX_FOUND_FILES - 1) {
 		return;
@@ -393,25 +436,31 @@ void Sys_ListFilteredFiles(const char *basedir, const char *subdirs, const char 
 	closedir(fdir);
 }
 
-/**
- * @brief List files in directory by filter
- * @param[in]  directory What we want to list?
- * @param[in]  extension Limit files to specified extension
- * @param[in]  filter    Filter results
- * @param[out] numfiles  Number of listed files
- * @param      wantsubs  Do we want to list subdirectories too?
- * @return Array of strings with files
- */
+/*
+=======================================================================================================================================
+Sys_ListFiles
+
+List files in directory by filter.
+
+'directory' - What we want to list?
+'extension' - Limit files to specified extension.
+'filter' - Filter results.
+'numfiles' - Number of listed files.
+'wantsubs' - Do we want to list subdirectories too?
+
+Returns array of strings with files.
+=======================================================================================================================================
+*/
 char **Sys_ListFiles(const char *directory, const char *extension, const char *filter, int *numfiles, qboolean wantsubs) {
 	struct dirent *d;
-	DIR           *fdir;
+	DIR *fdir;
 	qboolean dironly = wantsubs;
 	char search[MAX_OSPATH];
 	int nfiles;
 	char **listCopy;
 	char *list[MAX_FOUND_FILES];
 	int i;
-	struct stat   st;
+	struct stat st;
 	int extLen;
 	qboolean invalid;
 
@@ -447,7 +496,6 @@ char **Sys_ListFiles(const char *directory, const char *extension, const char *f
 	}
 
 	extLen = strlen(extension);
-
 	// search
 	nfiles = 0;
 
@@ -474,8 +522,7 @@ char **Sys_ListFiles(const char *directory, const char *extension, const char *f
 		}
 		// check for bad file names
 		invalid = qfalse;
-		// note: this isn't done in Sys_ListFilteredFiles()
-
+		// NOTE: this isn't done in Sys_ListFilteredFiles()
 		for (i = 0; i < strlen(d->d_name); i++) {
 			if (d->d_name[i] <= 31 || d->d_name[i] >= 123) {
 				Com_Printf(S_COLOR_RED "ERROR: invalid char in name of file '%s'.\n", d->d_name);
@@ -505,7 +552,6 @@ char **Sys_ListFiles(const char *directory, const char *extension, const char *f
 	list[nfiles] = NULL;
 
 	closedir(fdir);
-
 	// return a copy of the list
 	*numfiles = nfiles;
 
@@ -524,6 +570,11 @@ char **Sys_ListFiles(const char *directory, const char *extension, const char *f
 	return listCopy;
 }
 
+/*
+=======================================================================================================================================
+Sys_FreeFileList
+=======================================================================================================================================
+*/
 void Sys_FreeFileList(char **list) {
 	int i;
 
@@ -538,10 +589,15 @@ void Sys_FreeFileList(char **list) {
 	Z_Free(list);
 }
 
-/**
- * @brief Block execution for msec or until input is recieved.
- * @param msec How long we want to block execution?
- */
+/*
+=======================================================================================================================================
+Sys_Sleep
+
+Block execution for msec or until input is recieved.
+
+'msec' - How long we want to block execution?
+=======================================================================================================================================
+*/
 void Sys_Sleep(int msec) {
 	if (msec == 0) {
 		return;
@@ -572,10 +628,13 @@ void Sys_Sleep(int msec) {
 	}
 }
 
-/**
- * @brief Displays an error message and writes the error into crashlog.txt
- * @param[in] error Error String
- */
+/*
+=======================================================================================================================================
+Sys_ErrorDialog
+
+Displays an error message and writes the error into crashlog.txt.
+=======================================================================================================================================
+*/
 void Sys_ErrorDialog(const char *error) {
 	char buffer[1024];
 	unsigned int size;
@@ -587,11 +646,9 @@ void Sys_ErrorDialog(const char *error) {
 	char *ospath = FS_BuildOSPath(homepath, gamedir, fileName);
 
 	Sys_Print(va("%s\n", error));
-
 #ifndef DEDICATED
 	Sys_Dialog(DT_ERROR, va("%s\nSee \"%s\" for details.\n", error, ospath), "Error");
 #endif
-
 	// make sure the write path for the crashlog exists...
 	// check homepath
 	if (!Sys_Mkdir(homepath)) {
@@ -603,9 +660,8 @@ void Sys_ErrorDialog(const char *error) {
 		Com_Printf("ERROR: couldn't create path '%s' to write file '%s'.\n", dirpath, ospath);
 		return;
 	}
-	// we might be crashing because we maxed out the Quake MAX_FILE_HANDLES,
-	// which will come through here, so we don't want to recurse forever by
-	// calling FS_FOpenFileWrite()...use the Unix system APIs instead.
+	// we might be crashing because we maxed out the Quake MAX_FILE_HANDLES, which will come through here, so we don't want to recurse
+	// forever by calling FS_FOpenFileWrite()...use the Unix system APIs instead.
 	f = open(ospath, O_CREAT|O_TRUNC|O_WRONLY, 0640);
 
 	if (f == -1) {
@@ -629,12 +685,23 @@ static char *execBufferPointer;
 static char *execArgv[16];
 static int execArgc;
 
+/*
+=======================================================================================================================================
+Sys_ClearExecBuffer
+=======================================================================================================================================
+*/
 static void Sys_ClearExecBuffer(void) {
+
 	execBufferPointer = execBuffer;
 	Com_Memset(execArgv, 0, sizeof(execArgv));
 	execArgc = 0;
 }
 
+/*
+=======================================================================================================================================
+Sys_AppendToExecBuffer
+=======================================================================================================================================
+*/
 static void Sys_AppendToExecBuffer(const char *text) {
 	size_t size = sizeof(execBuffer) - (execBufferPointer - execBuffer);
 	int length = strlen(text) + 1;
@@ -644,11 +711,16 @@ static void Sys_AppendToExecBuffer(const char *text) {
 	}
 
 	Q_strncpyz(execBufferPointer, text, size);
-	execArgv[execArgc++] = execBufferPointer;
 
+	execArgv[execArgc++] = execBufferPointer;
 	execBufferPointer += length;
 }
 
+/*
+=======================================================================================================================================
+Sys_Exec
+=======================================================================================================================================
+*/
 static int Sys_Exec(void) {
 	pid_t pid = fork();
 
@@ -661,88 +733,106 @@ static int Sys_Exec(void) {
 		int exitCode;
 
 		wait(&exitCode);
-
 		return WEXITSTATUS(exitCode);
 	} else {
 		// child
 		execvp(execArgv[0], execArgv);
 		// failed to execute
 		exit(-1);
-
 		return -1;
 	}
 }
 
+/*
+=======================================================================================================================================
+Sys_ZenityCommand
+=======================================================================================================================================
+*/
 static void Sys_ZenityCommand(dialogType_t type, const char *message, const char *title) {
+
 	Sys_ClearExecBuffer();
 	Sys_AppendToExecBuffer("zenity");
 
 	switch (type) {
-	default:
-	case DT_INFO:
-		Sys_AppendToExecBuffer("--info");
-		break;
-	case DT_WARNING:
-		Sys_AppendToExecBuffer("--warning");
-		break;
-	case DT_ERROR:
-		Sys_AppendToExecBuffer("--error");
-		break;
-	case DT_YES_NO:
-		Sys_AppendToExecBuffer("--question");
-		Sys_AppendToExecBuffer("--ok - label = Yes");
-		Sys_AppendToExecBuffer("--cancel - label = No");
-		break;
-
-	case DT_OK_CANCEL:
-		Sys_AppendToExecBuffer("--question");
-		Sys_AppendToExecBuffer("--ok - label = OK");
-		Sys_AppendToExecBuffer("--cancel - label = Cancel");
-		break;
+		default:
+		case DT_INFO:
+			Sys_AppendToExecBuffer("--info");
+			break;
+		case DT_WARNING:
+			Sys_AppendToExecBuffer("--warning");
+			break;
+		case DT_ERROR:
+			Sys_AppendToExecBuffer("--error");
+			break;
+		case DT_YES_NO:
+			Sys_AppendToExecBuffer("--question");
+			Sys_AppendToExecBuffer("--ok-label = Yes");
+			Sys_AppendToExecBuffer("--cancel - label = No");
+			break;
+		case DT_OK_CANCEL:
+			Sys_AppendToExecBuffer("--question");
+			Sys_AppendToExecBuffer("--ok-label = OK");
+			Sys_AppendToExecBuffer("--cancel-label = Cancel");
+			break;
 	}
 
 	Sys_AppendToExecBuffer(va("--text = %s", message));
 	Sys_AppendToExecBuffer(va("--title = %s", title));
 }
 
+/*
+=======================================================================================================================================
+Sys_KdialogCommand
+=======================================================================================================================================
+*/
 static void Sys_KdialogCommand(dialogType_t type, const char *message, const char *title) {
+
 	Sys_ClearExecBuffer();
 	Sys_AppendToExecBuffer("kdialog");
 
 	switch (type) {
-	default:
-	case DT_INFO:
-		Sys_AppendToExecBuffer("--msgbox");
-		break;
-	case DT_WARNING:
-		Sys_AppendToExecBuffer("--sorry");
-		break;
-	case DT_ERROR:
-		Sys_AppendToExecBuffer("--error");
-		break;
-	case DT_YES_NO:
-		Sys_AppendToExecBuffer("--warningyesno");
-		break;
-	case DT_OK_CANCEL:
-		Sys_AppendToExecBuffer("--warningcontinuecancel");
-		break;
+		default:
+		case DT_INFO:
+			Sys_AppendToExecBuffer("--msgbox");
+			break;
+		case DT_WARNING:
+			Sys_AppendToExecBuffer("--sorry");
+			break;
+		case DT_ERROR:
+			Sys_AppendToExecBuffer("--error");
+			break;
+		case DT_YES_NO:
+			Sys_AppendToExecBuffer("--warningyesno");
+			break;
+		case DT_OK_CANCEL:
+			Sys_AppendToExecBuffer("--warningcontinuecancel");
+			break;
 	}
 
 	Sys_AppendToExecBuffer(message);
 	Sys_AppendToExecBuffer(va("--title = %s", title));
 }
 
+/*
+=======================================================================================================================================
+Sys_XmessageCommand
+=======================================================================================================================================
+*/
 static void Sys_XmessageCommand(dialogType_t type, const char *message, const char *title) {
+
 	Sys_ClearExecBuffer();
 	Sys_AppendToExecBuffer("xmessage");
 	Sys_AppendToExecBuffer("-buttons");
 
 	switch (type) {
-	default:           Sys_AppendToExecBuffer("OK:0");
-		break;
-	case DT_YES_NO:    Sys_AppendToExecBuffer("Yes:0, No:1");
-		break;
-	case DT_OK_CANCEL: Sys_AppendToExecBuffer("OK:0, Cancel:1");
+		default:
+			Sys_AppendToExecBuffer("OK: 0");
+			break;
+		case DT_YES_NO:
+			Sys_AppendToExecBuffer("Yes: 0, No: 1");
+			break;
+		case DT_OK_CANCEL:
+			Sys_AppendToExecBuffer("OK: 0, Cancel: 1");
 		break;
 	}
 
@@ -750,15 +840,18 @@ static void Sys_XmessageCommand(dialogType_t type, const char *message, const ch
 	Sys_AppendToExecBuffer(message);
 }
 
-/**
- * @brief Display a *nix dialog box
- * @param     type    Dialog Type
- * @param[in] message Message to show
- * @param[in] title   Message box title
- */
+/*
+=======================================================================================================================================
+Sys_Dialog
+
+Display a *nix dialog box.
+
+'message' - Message to show.
+'title' - Message box title.
+=======================================================================================================================================
+*/
 dialogResult_t Sys_Dialog(dialogType_t type, const char *message, const char *title) {
-	typedef enum
-	{
+	typedef enum {
 		NONE = 0,
 		ZENITY = 1,
 		KDIALOG,
@@ -777,9 +870,7 @@ dialogResult_t Sys_Dialog(dialogType_t type, const char *message, const char *ti
 		session = getenv("XDG_CURRENT_DESKTOP");
 	}
 
-	if (!Q_stricmpn(session, "gnome", 5)
-	    || !Q_stricmpn(session, "unity", 5)
-	    || !Q_stricmpn(session, "xfce", 4)) {
+	if (!Q_stricmpn(session, "gnome", 5) || !Q_stricmpn(session, "unity", 5) || !Q_stricmpn(session, "xfce", 4)) {
 		preferredCommandType = ZENITY;
 	} else if (!Q_stricmpn(session, "kde", 3)) {
 		preferredCommandType = KDIALOG;
@@ -792,27 +883,27 @@ dialogResult_t Sys_Dialog(dialogType_t type, const char *message, const char *ti
 
 		if (!tried[i]) {
 			switch (i) {
-			case ZENITY:
-				Sys_ZenityCommand(type, message, title);
-				break;
-			case KDIALOG:
-				Sys_KdialogCommand(type, message, title);
-				break;
-			case XMESSAGE:
-				Sys_XmessageCommand(type, message, title);
-				break;
+				case ZENITY:
+					Sys_ZenityCommand(type, message, title);
+					break;
+				case KDIALOG:
+					Sys_KdialogCommand(type, message, title);
+					break;
+				case XMESSAGE:
+					Sys_XmessageCommand(type, message, title);
+					break;
 			}
 
 			exitCode = Sys_Exec();
 
 			if (exitCode >= 0) {
 				switch (type) {
-				case DT_YES_NO:
-					return exitCode ? DR_NO : DR_YES;
-				case DT_OK_CANCEL:
-					return exitCode ? DR_CANCEL : DR_OK;
-				default:
-					return DR_OK;
+					case DT_YES_NO:
+						return exitCode ? DR_NO : DR_YES;
+					case DT_OK_CANCEL:
+						return exitCode ? DR_CANCEL : DR_OK;
+					default:
+						return DR_OK;
 				}
 			}
 
@@ -829,60 +920,73 @@ dialogResult_t Sys_Dialog(dialogType_t type, const char *message, const char *ti
 	return DR_OK;
 }
 #endif
+/*
+=======================================================================================================================================
+Sys_DoStartProcess
 
-/**
- * @brief Actually forks and starts a process
- * @param[in] cmdline Execution string
- *
- * @note
- * UGLY HACK:\n
- * Sys_StartProcess works with a command line only\n
- * If this command line is actually a binary with command line parameters,
- * the only way to do this on unix is to use a system() call
- * but system doesn't replace the current process, which leads to a situation like:\n
- * wolf.x86--spawned_process.x86\n
- * in the case of auto - update for instance, this will cause write access denied on wolf.x86:\n
- * wolf - beta/2002 - March/000079.html\n
- * we hack the implementation here, if there are no space in the command line, assume it's a straight process and use execl
- * otherwise, use system...\n
- * The clean solution would be Sys_StartProcess and Sys_StartProcess_Args..
- */
+Actually forks and starts a process.
+
+cmdline - Execution string.
+
+NOTE: UGLY HACK!
+
+Sys_StartProcess works with a command line only if this command line is actually a binary with command line parameters, the only way to
+do this on unix is to use a system() call, but system doesn't replace the current process, which leads to a situation like:
+	wolf.x86--spawned_process.x86\n
+
+In the case of auto-update for instance, this will cause write access denied on wolf.x86:
+	wolf-beta/2002 - March/000079.html\n
+
+We hack the implementation here, if there are no space in the command line, assume it's a straight process and use execl otherwise,
+use system...
+
+The clean solution would be Sys_StartProcess and Sys_StartProcess_Args...
+=======================================================================================================================================
+*/
 void Sys_DoStartProcess(char *cmdline) {
-	switch (fork()) {
-	case -1:
-		// main thread
-		break;
-	case 0:
-		if (strchr(cmdline, ' ')) {
-			int ret = system(cmdline);
-			// we assume there is a valid command
-			switch (ret) {
-			case -1:
-				printf("execl failed: child process could not be created, or its status could not be retrieved\n");
-				break;
-			default:
-				break;
-			}
-		} else {
-			execl(cmdline, cmdline, NULL);
-			printf("execl failed: %s\n", strerror(errno));
-		}
 
-		_exit(0);
-		break;
+	switch (fork()) {
+		case -1:
+			// main thread
+			break;
+		case 0:
+			if (strchr(cmdline, ' ')) {
+				int ret = system(cmdline);
+				// we assume there is a valid command
+				switch (ret) {
+					case -1:
+						printf("execl failed: child process could not be created, or its status could not be retrieved\n");
+					break;
+					default:
+						break;
+				}
+			} else {
+				execl(cmdline, cmdline, NULL);
+				printf("execl failed: %s\n", strerror(errno));
+			}
+
+			_exit(0);
+			break;
 	}
 }
 
-/**
- * @brief Starts process
- * @param[in] cmdline Execution string
- * @param     doexit  Quit from game after executing command
- * @note might even want to add a small delay?
- *
- * If !doexit then start the process ASAP, otherwise push it for execution at exit
- * (i.e. let complete shutdown of the game and freeing of resources happen)
- */
+/*
+=======================================================================================================================================
+Sys_StartProcess
+
+Starts process.
+
+cmdline - Execution string.
+doexit - Quit from game after executing command.
+
+If !doexit then start the process ASAP, otherwise push it for execution at exit (i.e. let complete shutdown of the game and freeing of
+resources happen).
+
+NOTE: might even want to add a small delay?
+=======================================================================================================================================
+*/
 void Sys_StartProcess(char *cmdline, qboolean doexit) {
+
 	if (doexit) {
 		Com_DPrintf("Sys_StartProcess %s(delaying to final exit)\n", cmdline);
 		Sys_DoStartProcess(cmdline);
@@ -894,11 +998,13 @@ void Sys_StartProcess(char *cmdline, qboolean doexit) {
 	Sys_DoStartProcess(cmdline);
 }
 
-/**
- * @brief Open URL in system browser
- * @param[in] url    URL to open
- * @param     doexit Quit from game after opening URL
- */
+/*
+=======================================================================================================================================
+Sys_OpenURL
+
+Open URL in system browser. Doexit quit from game after opening URL.
+=======================================================================================================================================
+*/
 void Sys_OpenURL(const char *url, qboolean doexit) {
 #ifndef DEDICATED
 	char fn[MAX_OSPATH];
@@ -912,38 +1018,46 @@ void Sys_OpenURL(const char *url, qboolean doexit) {
 	}
 
 	Com_Printf("Open URL: %s\n", url);
-
 	Com_DPrintf("URL script: %s\n", fn);
-
 #ifdef __APPLE__
 	Com_sprintf(cmdline, MAX_CMD, "open '%s' &", url);
 #else
-	Com_sprintf(cmdline, MAX_CMD, "xdg - open '%s' &", url);
+	Com_sprintf(cmdline, MAX_CMD, "xdg-open '%s' &", url);
 #endif
-
 	Sys_StartProcess(cmdline, doexit);
-
 	Cbuf_ExecuteText(EXEC_NOW, "minimize");
 #endif // not DEDICATED
 }
 
-/**
- * @brief Unix specific "safe" GL implementation initialisation
- */
+/*
+=======================================================================================================================================
+Sys_GLimpSafeInit
+
+Unix specific "safe" GL implementation initialisation.
+=======================================================================================================================================
+*/
 void Sys_GLimpSafeInit(void) {
 	// nOP
 }
 
-/**
- * @brief Unix specific GL implementation initialisation
- */
+/*
+=======================================================================================================================================
+Sys_GLimpInit
+
+Unix specific GL implementation initialisation.
+=======================================================================================================================================
+*/
 void Sys_GLimpInit(void) {
 	// nOP
 }
 
-/**
- * @brief Unix specific initialisation
- */
+/*
+=======================================================================================================================================
+Sys_PlatformInit
+
+Unix specific initialisation.
+=======================================================================================================================================
+*/
 void Sys_PlatformInit(void) {
 	const char *term = getenv("TERM");
 
@@ -953,17 +1067,19 @@ void Sys_PlatformInit(void) {
 	signal(SIGABRT, Sys_SigHandler);
 	signal(SIGBUS, Sys_SigHandler);
 
-	stdinIsATTY = isatty(STDIN_FILENO) &&
-	              !(term && (!strcmp(term, "raw") || !strcmp(term, "dumb")));
+	stdinIsATTY = isatty(STDIN_FILENO) && !(term && (!strcmp(term, "raw") || !strcmp(term, "dumb")));
 }
 
-/**
- * @brief Set/Unset environment variables
- * @param[in] name  Environment Variable
- * @param[in] value New value to set
- * @note Empty value removes variable
- */
+/*
+=======================================================================================================================================
+Sys_SetEnv
+
+Set/unset environment variables.
+New value to set. Empty value removes variable.
+=======================================================================================================================================
+*/
 void Sys_SetEnv(const char *name, const char *value) {
+
 	if (value && *value) {
 		setenv(name, value, 1);
 	} else {
@@ -971,27 +1087,35 @@ void Sys_SetEnv(const char *name, const char *value) {
 	}
 }
 
-/**
- * @return PID of current process
+/*
+=======================================================================================================================================
+Sys_PID
+
+Return PID of current process.
+=======================================================================================================================================
 */
 int Sys_PID(void) {
 	return getpid();
 }
 
-/**
- * @brief Check if specified PID is running
- * @param pid PID to check
- * @retval qfalse on failure
- * @retval qtrue  on success
- */
+/*
+=======================================================================================================================================
+Sys_PIDIsRunning
+
+Check if specified PID is running.
+=======================================================================================================================================
+*/
 qboolean Sys_PIDIsRunning(unsigned int pid) {
 	return kill(pid, 0) == 0;
 }
 
-/**
- * @brief Check if filename should be allowed to be loaded as a DLL.
- * @param name
- */
+/*
+=======================================================================================================================================
+Sys_DllExtension
+
+Check if filename should be allowed to be loaded as a DLL.
+=======================================================================================================================================
+*/
 qboolean Sys_DllExtension(const char *name) {
 	const char *p;
 	char c = 0;

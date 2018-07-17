@@ -36,17 +36,16 @@
 #include "../qcommon/qcommon.h"
 #include "server.h"
 
-/**
- * @brief SV_Netchan_Encode
- * @param[in] client
- * @param[in, out] msg
- * @param[in, out] commandString
- *
- * @note first four bytes of the data are always:
- * long reliableAcknowledge;
- */
+/*
+=======================================================================================================================================
+SV_Netchan_Encode
+
+NOTE: first four bytes of the data are always:
+  long reliableAcknowledge;
+=======================================================================================================================================
+*/
 static void SV_Netchan_Encode(client_t *client, msg_t *msg, char *commandString) {
-	long     i, index;
+	long i, index;
 	byte key, *string;
 	int srdc, sbit;
 	qboolean soob;
@@ -85,23 +84,22 @@ static void SV_Netchan_Encode(client_t *client, msg_t *msg, char *commandString)
 		}
 
 		key ^= string[index] << (i & 1);
-
 		index++;
 		// encode the data with this key
 		*(msg->data + i) = *(msg->data + i) ^ key;
 	}
 }
 
-/**
- * @brief SV_Netchan_Decode
- * @param[in] client
- * @param[in, out] msg
- *
- * @note first 12 bytes of the data are always:
- * long serverId;
- * long messageAcknowledge;
- * long reliableAcknowledge;
- */
+/*
+=======================================================================================================================================
+SV_Netchan_Decode
+
+NOTE: first 12 bytes of the data are always:
+  long serverId;
+  long messageAcknowledge;
+  long reliableAcknowledge;
+=======================================================================================================================================
+*/
 static void SV_Netchan_Decode(client_t *client, msg_t *msg) {
 	int serverId, messageAcknowledge, reliableAcknowledge;
 	int i;
@@ -112,7 +110,6 @@ static void SV_Netchan_Decode(client_t *client, msg_t *msg) {
 	byte key, *string;
 
 	msg->oob = qfalse;
-
 	serverId = MSG_ReadLong(msg);
 	messageAcknowledge = MSG_ReadLong(msg);
 	reliableAcknowledge = MSG_ReadLong(msg);
@@ -122,7 +119,6 @@ static void SV_Netchan_Decode(client_t *client, msg_t *msg) {
 	msg->readcount = srdc;
 
 	string = (byte *)client->reliableCommands[reliableAcknowledge &(MAX_RELIABLE_COMMANDS - 1)];
-
 	key = client->challenge ^ serverId ^ messageAcknowledge;
 
 	for (i = msg->readcount + SV_DECODE_START; i < msg->cursize; i++) {
@@ -136,17 +132,17 @@ static void SV_Netchan_Decode(client_t *client, msg_t *msg) {
 		}
 
 		key ^= string[index] << (i & 1);
-
 		index++;
 		// decode the data with this key
 		*(msg->data + i) = *(msg->data + i) ^ key;
 	}
 }
 
-/**
- * @brief SV_Netchan_ClearQueue
- * @param[in, out] client
- */
+/*
+=======================================================================================================================================
+SV_Netchan_ClearQueue
+=======================================================================================================================================
+*/
 void SV_Netchan_ClearQueue(client_t *client) {
 	netchan_buffer_t *netbuf, *next;
 
@@ -159,20 +155,20 @@ void SV_Netchan_ClearQueue(client_t *client) {
 	client->netchan_end_queue = &client->netchan_start_queue;
 }
 
-/**
- * @brief SV_Netchan_TransmitNextInQueue
- * @param[in, out] client
- */
+/*
+=======================================================================================================================================
+SV_Netchan_TransmitNextInQueue
+=======================================================================================================================================
+*/
 void SV_Netchan_TransmitNextInQueue(client_t *client) {
 	netchan_buffer_t *netbuf;
 
 	Com_DPrintf("Netchan_TransmitNextFragment: popping a queued message for transmit\n");
+
 	netbuf = client->netchan_start_queue;
 
 	SV_Netchan_Encode(client, &netbuf->msg, netbuf->lastClientCommandString);
-
 	Netchan_Transmit(&client->netchan, netbuf->msg.cursize, netbuf->msg.data);
-
 	// pop from queue
 	client->netchan_start_queue = netbuf->next;
 
@@ -186,12 +182,13 @@ void SV_Netchan_TransmitNextInQueue(client_t *client) {
 	Z_Free(netbuf);
 }
 
-/**
- * @brief SV_Netchan_TransmitNextFragment
- * @param[in] client
- * @return
- */
+/*
+=======================================================================================================================================
+SV_Netchan_TransmitNextFragment
+=======================================================================================================================================
+*/
 int SV_Netchan_TransmitNextFragment(client_t *client) {
+
 	if (client->netchan.unsentFragments) {
 		Netchan_TransmitNextFragment(&client->netchan);
 		return SV_RateMsec(client);
@@ -203,12 +200,13 @@ int SV_Netchan_TransmitNextFragment(client_t *client) {
 	return -1;
 }
 
-/**
- * @brief SV_WriteBinaryMessage
- * @param[in] msg
- * @param[in, out] cl
- */
+/*
+=======================================================================================================================================
+SV_WriteBinaryMessage
+=======================================================================================================================================
+*/
 static void SV_WriteBinaryMessage(msg_t *msg, client_t *cl) {
+
 	if (!cl->binaryMessageLength) {
 		return;
 	}
@@ -221,27 +219,29 @@ static void SV_WriteBinaryMessage(msg_t *msg, client_t *cl) {
 	}
 
 	MSG_WriteData(msg, cl->binaryMessage, cl->binaryMessageLength);
+
 	cl->binaryMessageLength = 0;
 	cl->binaryMessageOverflowed = qfalse;
 }
 
-/**
- * @brief SV_Netchan_Transmit
- *
- * @details If there are some unsent fragments(which may happen if the snapshots
- * and the gamestate are fragmenting, and collide on send for instance)
- * then buffer them and make sure they get sent in correct order
- *
- * @param[in, out] client
- * @param[in] msg
- */
+/*
+=======================================================================================================================================
+SV_Netchan_Transmit
+
+If there are some unsent fragments (which may happen if the snapshots and the gamestate are fragmenting, and collide on send for
+instance) then buffer them and make sure they get sent in correct order.
+=======================================================================================================================================
+*/
 void SV_Netchan_Transmit(client_t *client, msg_t *msg) {
+
 	MSG_WriteByte(msg, svc_EOF);
 	SV_WriteBinaryMessage(msg, client);
 
 	if (client->netchan.unsentFragments || client->netchan_start_queue) {
 		netchan_buffer_t *netbuf;
+
 		Com_DPrintf("SV_Netchan_Transmit: unsent fragments, stacked\n");
+
 		netbuf = (netchan_buffer_t *)Z_Malloc(sizeof(netchan_buffer_t));
 		// store the msg, we can't store it encoded, as the encoding depends on stuff we still have to finish sending
 		MSG_Copy(&netbuf->msg, netbuf->msgBuffer, sizeof(netbuf->msgBuffer), msg);
@@ -256,12 +256,11 @@ void SV_Netchan_Transmit(client_t *client, msg_t *msg) {
 	}
 }
 
-/**
- * @brief SV_Netchan_Process
- * @param[in] client
- * @param[in] msg
- * @return
- */
+/*
+=======================================================================================================================================
+SV_Netchan_Process
+=======================================================================================================================================
+*/
 qboolean SV_Netchan_Process(client_t *client, msg_t *msg) {
 	int ret = Netchan_Process(&client->netchan, msg);
 

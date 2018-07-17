@@ -37,95 +37,81 @@
  */
 
 #include <curl/curl.h>
-
 #include "q_shared.h"
 #include "qcommon.h"
 #include "dl_public.h"
 
-#define APP_NAME        "ID_DOWNLOAD"
-#define APP_VERSION     "2.0"
-
+#define APP_NAME "ID_DOWNLOAD"
+#define APP_VERSION "2.0"
 #define GET_BUFFER_SIZE 1024 * 256
 
-/**
- * @var dl_initialized
- * @brief Initialize once
- */
+// Initialize once
 static int dl_initialized = 0;
 
 static CURLM *dl_multi = NULL;
 static CURL  *dl_request = NULL;
 static FILE *dl_file = NULL;
 
-/**
- * @struct write_result_s
- */
 typedef struct write_result_s {
 	char *data;
 	int pos;
 } write_result_t;
 
-/**
- * @brief DL_cb_FWriteFile
- * @param[in] ptr
- * @param[in] size
- * @param[in] nmemb
- * @param[in] stream
- * @return
- */
+/*
+=======================================================================================================================================
+DL_cb_FWriteFile
+=======================================================================================================================================
+*/
 static size_t DL_cb_FWriteFile(void *ptr, size_t size, size_t nmemb, void *stream) {
 	FILE *file = (FILE *)stream;
+
 	return fwrite(ptr, size, nmemb, file);
 }
 
-/**
- * @brief DL_cb_Progress
- * @param clientp - unused
- * @param dltotal - unused
- * @param[in] dlnow
- * @param ultotal - unused
- * @param ulnow - unused
- * @return
- *
- * @note cl_downloadSize and cl_downloadTime are set by the Q3 protocol...
- * and it would probably be expensive to verify them here.
- */
+/*
+=======================================================================================================================================
+DL_cb_Progress
+
+cl_downloadSize and cl_downloadTime are set by the Q3 protocol... and it would probably be expensive to verify them here.
+=======================================================================================================================================
+*/
 static int DL_cb_Progress(void *clientp, double dltotal, double dlnow, double ultotal, double ulnow) {
+
 	Cvar_SetValue("cl_downloadCount", (float)dlnow);
 	return 0;
 }
 
-/**
- * @brief DL_write_function
- * @param[in] ptr
- * @param[in] size
- * @param[in] nmemb
- * @param[out] stream
- * @return
- */
+/*
+=======================================================================================================================================
+DL_write_function
+=======================================================================================================================================
+*/
 size_t DL_write_function(void *ptr, size_t size, size_t nmemb, void *stream) {
 	write_result_t *result = (write_result_t *)stream;
 
 	if (result->pos + size * nmemb >= GET_BUFFER_SIZE - 1) {
-		Com_Printf(S_COLOR_RED  "DL_write_function: Error - buffer is too small");
+		Com_Printf(S_COLOR_RED "DL_write_function: Error - buffer is too small");
 		return 0;
 	}
 
 	Com_Memcpy(result->data + result->pos, ptr, size * nmemb);
+
 	result->pos += size * nmemb;
 
 	return size * nmemb;
 }
 
-/**
- * @brief DL_InitDownload
- */
+/*
+=======================================================================================================================================
+DL_InitDownload
+=======================================================================================================================================
+*/
 void DL_InitDownload(void) {
+
 	if (dl_initialized) {
 		return;
 	}
-
-	/* Make sure curl has initialized, so the cleanup doesn't get confused */
+	// make sure curl has initialized, so the cleanup doesn't get confused
 	curl_global_init(CURL_GLOBAL_ALL);
 
 	dl_multi = curl_multi_init();
@@ -134,15 +120,19 @@ void DL_InitDownload(void) {
 	dl_initialized = 1;
 }
 
-/**
- * @brief DL_Shutdown
- */
+/*
+=======================================================================================================================================
+DL_Shutdown
+=======================================================================================================================================
+*/
 void DL_Shutdown(void) {
+
 	if (!dl_initialized) {
 		return;
 	}
 
 	curl_multi_cleanup(dl_multi);
+
 	dl_multi = NULL;
 
 	curl_global_cleanup();
@@ -150,14 +140,13 @@ void DL_Shutdown(void) {
 	dl_initialized = 0;
 }
 
-/**
- * @brief Inspired from http://www.w3.org/Library/Examples/LoadToFile.c
- * setup the download, return once we have a connection
- *
- * @param localName
- * @param remoteName
- * @return
- */
+/*
+=======================================================================================================================================
+DL_BeginDownload
+
+Inspired from http://www.w3.org/Library/Examples/LoadToFile.c, setup the download, return once we have a connection.
+=======================================================================================================================================
+*/
 int DL_BeginDownload(char *localName, const char *remoteName) {
 	char referer[MAX_STRING_CHARS + 5 /*"ET://"*/];
 
@@ -184,8 +173,7 @@ int DL_BeginDownload(char *localName, const char *remoteName) {
 	}
 
 	DL_InitDownload();
-
-	/* ET://ip:port */
+	// ET://ip:port
 	strcpy(referer, "ET://");
 	Q_strncpyz(referer + 5, Cvar_VariableString("cl_currentServerIP"), MAX_STRING_CHARS);
 
@@ -200,7 +188,6 @@ int DL_BeginDownload(char *localName, const char *remoteName) {
 	curl_easy_setopt(dl_request, CURLOPT_FAILONERROR, 1);
 	curl_easy_setopt(dl_request, CURLOPT_FOLLOWLOCATION, 1);
 	curl_easy_setopt(dl_request, CURLOPT_MAXREDIRS, 5);
-
 #ifdef FEATURE_OPENSSL
 #if 0
 	curl_easy_setopt(dl_request, CURLOPT_CAINFO, "./cert.crt");
@@ -209,9 +196,8 @@ int DL_BeginDownload(char *localName, const char *remoteName) {
 	curl_easy_setopt(dl_request, CURLOPT_SSL_VERIFYPEER, 0);
 #endif
 #endif
-
 	if (curl_multi_add_handle(dl_multi, dl_request) != CURLM_OK) {
-		Com_Printf(S_COLOR_RED  "DL_BeginDownload: Error - invalid handle.\n");
+		Com_Printf(S_COLOR_RED "DL_BeginDownload: Error - invalid handle.\n");
 	}
 
 	Cvar_Set("cl_downloadName", remoteName);
@@ -219,18 +205,16 @@ int DL_BeginDownload(char *localName, const char *remoteName) {
 	return 1;
 }
 
-/**
- * @brief DL_GetString
- * @param[in] url
- * @return
- *
- * @note Unused
- */
+/*
+=======================================================================================================================================
+DL_GetString
+=======================================================================================================================================
+*/
 char *DL_GetString(const char *url) {
-	CURL     *curl = NULL;
+	CURL *curl = NULL;
 	CURLcode status;
 	char *data = NULL;
-	long     code;
+	long code;
 
 	write_result_t write_result = {NULL, 0};
 
@@ -242,7 +226,6 @@ char *DL_GetString(const char *url) {
 	DL_InitDownload();
 
 	curl = curl_easy_init();
-
 	data = (char *)Com_Allocate(GET_BUFFER_SIZE);
 
 	if (!data) {
@@ -256,7 +239,6 @@ char *DL_GetString(const char *url) {
 	curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, DL_write_function);
 	curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&write_result);
-
 #ifdef FEATURE_OPENSSL
 #if 0
 	curl_easy_setopt(dl_request, CURLOPT_CAINFO, "./cert.crt");
@@ -265,7 +247,6 @@ char *DL_GetString(const char *url) {
 	curl_easy_setopt(dl_request, CURLOPT_SSL_VERIFYPEER, 0);
 #endif
 #endif
-
 	status = curl_easy_perform(curl);
 
 	if (status != 0) {
@@ -287,7 +268,6 @@ char *DL_GetString(const char *url) {
 	return data;
 
 error_get:
-
 	if (curl) {
 		curl_easy_cleanup(curl);
 	}
@@ -299,15 +279,16 @@ error_get:
 	return NULL;
 }
 
-/**
- * @brief DL_DownloadLoop
- * @return
- *
- * @note maybe this should be CL_DL_DownloadLoop
- */
+/*
+=======================================================================================================================================
+DL_DownloadLoop
+
+Maybe this should be CL_DL_DownloadLoop.
+=======================================================================================================================================
+*/
 dlStatus_t DL_DownloadLoop(void) {
-	CURLMcode  status;
-	CURLMsg    *msg;
+	CURLMcode status;
+	CURLMsg *msg;
 	int dls = 0;
 	const char *err = NULL;
 
@@ -320,8 +301,7 @@ dlStatus_t DL_DownloadLoop(void) {
 		return DL_CONTINUE;
 	}
 
-	while ((msg = curl_multi_info_read(dl_multi, &dls)) && msg->easy_handle != dl_request)
-		;
+	while ((msg = curl_multi_info_read(dl_multi, &dls)) && msg->easy_handle != dl_request);
 
 	if (!msg || msg->msg != CURLMSG_DONE) {
 		return DL_CONTINUE;
@@ -335,10 +315,9 @@ dlStatus_t DL_DownloadLoop(void) {
 
 	curl_multi_remove_handle(dl_multi, dl_request);
 	curl_easy_cleanup(dl_request);
-
 	fclose(dl_file);
-	dl_file = NULL;
 
+	dl_file = NULL;
 	dl_request = NULL;
 
 	Cvar_Set("ui_dl_running", "0");

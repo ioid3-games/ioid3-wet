@@ -39,11 +39,13 @@
 #include "q_shared.h"
 #include "q_unicode.h"
 
-/**
- * @brief Never returns more than 4
- * @param[in] str
- * @return
- */
+/*
+=======================================================================================================================================
+Q_UTF8_Width
+
+Never returns more than 4.
+=======================================================================================================================================
+*/
 int Q_UTF8_Width(const char *str) {
 	int ewidth;
 	const unsigned char *s = (const unsigned char *)str;
@@ -64,18 +66,18 @@ int Q_UTF8_Width(const char *str) {
 		ewidth = 0;
 	}
 
-	for (; *s && ewidth > 0; s++, ewidth--)
-		;
+	for (; *s && ewidth > 0; s++, ewidth--);
 
 	return s - (const unsigned char *)str + 1;
 }
 
-/**
- * @brief Q_UTF8_WidthCP
- * @param[in] ch
- * @return
- */
+/*
+=======================================================================================================================================
+Q_UTF8_WidthCP
+=======================================================================================================================================
+*/
 int Q_UTF8_WidthCP(int ch) {
+
 	if (ch <= 0x007F) {
 		return 1;
 	}
@@ -95,11 +97,11 @@ int Q_UTF8_WidthCP(int ch) {
 	return 0;
 }
 
-/**
- * @brief Q_UTF8_Strlen
- * @param[in] str
- * @return
- */
+/*
+=======================================================================================================================================
+Q_UTF8_Strlen
+=======================================================================================================================================
+*/
 int Q_UTF8_Strlen(const char *str) {
 	int l = 0;
 
@@ -112,11 +114,11 @@ int Q_UTF8_Strlen(const char *str) {
 	return l;
 }
 
-/**
- * @brief Q_UTF8_PrintStrlen
- * @param[in] str
- * @return
- */
+/*
+=======================================================================================================================================
+Q_UTF8_PrintStrlen
+=======================================================================================================================================
+*/
 int Q_UTF8_PrintStrlen(const char *str) {
 	int l = 0;
 
@@ -138,12 +140,11 @@ int Q_UTF8_PrintStrlen(const char *str) {
 	return l;
 }
 
-/**
- * @brief Q_UTF8_ByteOffset
- * @param[in] str
- * @param[in] offset
- * @return
- */
+/*
+=======================================================================================================================================
+Q_UTF8_ByteOffset
+=======================================================================================================================================
+*/
 int Q_UTF8_ByteOffset(const char *str, int offset) {
 	int i = 0, l = 0, m = 0;
 
@@ -166,14 +167,11 @@ int Q_UTF8_ByteOffset(const char *str, int offset) {
 	return i;
 }
 
-/**
- * @brief Q_UTF8_Insert
- * @param[in, out] dest
- * @param[in] size
- * @param[in] offset
- * @param[in] key
- * @param[in] overstrike
- */
+/*
+=======================================================================================================================================
+Q_UTF8_Insert
+=======================================================================================================================================
+*/
 void Q_UTF8_Insert(char *dest, int size, int offset, int key, qboolean overstrike) {
 	int len = 0, i = 0, byteOffset = 0;
 	char *str;
@@ -201,13 +199,11 @@ void Q_UTF8_Insert(char *dest, int size, int offset, int key, qboolean overstrik
 	}
 }
 
-/**
- * @brief Q_UTF8_Move
- * @param[in, out] data
- * @param[in] offset1
- * @param[in] offset2
- * @param[in] size
- */
+/*
+=======================================================================================================================================
+Q_UTF8_Move
+=======================================================================================================================================
+*/
 void Q_UTF8_Move(char *data, size_t offset1, size_t offset2, size_t size) {
 	size_t byteOffset1 = 0, byteOffset2 = 0, byteSize = 0;
 
@@ -228,24 +224,24 @@ void Q_UTF8_Move(char *data, size_t offset1, size_t offset2, size_t size) {
 	}
 
 	memmove(&data[byteOffset1], &data[byteOffset2], byteSize); // + 1
+
 	data[strlen(data) + 1] = '\0';
 }
 
-/**
- * @brief Q_UTF8_ContByte
- * @param[in] c
- * @return
- */
+/*
+=======================================================================================================================================
+Q_UTF8_ContByte
+=======================================================================================================================================
+*/
 qboolean Q_UTF8_ContByte(char c) {
 	return (unsigned char)0x80 <= (unsigned char)c && (unsigned char)c <= (unsigned char)0xBF;
 }
 
-/**
- * @brief getbit
- * @param[in, out] p
- * @param[in] pos
- * @return
- */
+/*
+=======================================================================================================================================
+getbit
+=======================================================================================================================================
+*/
 static qboolean getbit(const unsigned char *p, int pos) {
 	p += pos / 8;
 	pos % = 8;
@@ -253,12 +249,11 @@ static qboolean getbit(const unsigned char *p, int pos) {
 	return (p && (*p &(1 << (7 - pos)))) != 0;
 }
 
-/**
- * @brief setbit
- * @param[in, out] p
- * @param[in] pos
- * @param[in] on
- */
+/*
+=======================================================================================================================================
+setbit
+=======================================================================================================================================
+*/
 static void setbit(unsigned char *p, int pos, qboolean on) {
 	p += pos / 8;
 	pos % = 8;
@@ -270,12 +265,11 @@ static void setbit(unsigned char *p, int pos, qboolean on) {
 	}
 }
 
-/**
- * @brief shiftbitsright
- * @param[in, out] p
- * @param[in] num
- * @param[in] by
- */
+/*
+=======================================================================================================================================
+shiftbitsright
+=======================================================================================================================================
+*/
 static void shiftbitsright(unsigned char *p, unsigned long num, unsigned long by) {
 	int step, off;
 	unsigned char *e;
@@ -304,11 +298,13 @@ static void shiftbitsright(unsigned char *p, unsigned long num, unsigned long by
 	}
 }
 
-/**
- * @brief Calculates codepoint for a single char
- * @param str character to convert
- * @return codepoint of a character
- */
+/*
+=======================================================================================================================================
+Q_UTF8_CodePoint
+
+Calculates codepoint for a single char. Return codepoint of a character.
+=======================================================================================================================================
+*/
 unsigned long Q_UTF8_CodePoint(const char *str) {
 	int i, j;
 	int n = 0;
@@ -331,34 +327,28 @@ unsigned long Q_UTF8_CodePoint(const char *str) {
 			setbit(p, n++, getbit(((const unsigned char *)str) + i, j));
 		}
 	}
-
 	/*
 	if (n > 8 * sizeof(codepoint)) {
-	      Com_Error(ERR_DROP, "Q_UTF8_CodePoint: overflow caught");
-
-	  return 0;
+		Com_Error(ERR_DROP, "Q_UTF8_CodePoint: overflow caught");
+		return 0;
 	}
-
 	*/
-
 	shiftbitsright(p, 8 * sizeof(codepoint), 8 * sizeof(codepoint) - n);
-
 #ifndef Q3_BIG_ENDIAN
 	for (i = 0; i < sizeof(codepoint) / 2; i++) {
-		p[i]                         ^= p[sizeof(codepoint) - 1 - i];
+		p[i] ^= p[sizeof(codepoint) - 1 - i];
 		p[sizeof(codepoint) - 1 - i] ^= p[i];
-		p[i]                         ^= p[sizeof(codepoint) - 1 - i];
+		p[i] ^= p[sizeof(codepoint) - 1 - i];
 	}
 #endif
-
 	return codepoint;
 }
 
-/**
- * @brief Q_UTF8_Encode
- * @param[in] codepoint
- * @return
- */
+/*
+=======================================================================================================================================
+Q_UTF8_Encode
+=======================================================================================================================================
+*/
 char *Q_UTF8_Encode(unsigned long codepoint) {
 	static char sbuf[2][5];
 	static int index = 0;
@@ -389,11 +379,13 @@ char *Q_UTF8_Encode(unsigned long codepoint) {
 	return buf;
 }
 
-/**
- * @brief Stores a single UTF8 char inside an int
- * @param[in] s
- * @return
- */
+/*
+=======================================================================================================================================
+Q_UTF8_Store
+
+Stores a single UTF8 char inside an int.
+=======================================================================================================================================
+*/
 int Q_UTF8_Store(const char *s) {
 	int r = 0;
 	const uint8_t *us = (const uint8_t *)s;
@@ -402,20 +394,17 @@ int Q_UTF8_Store(const char *s) {
 		return 0;
 	}
 
-	if (!(us[0] & 0x80))       // 0xxxxxxx
-	{
+	if (!(us[0] & 0x80)) { // 0xxxxxxx
 		r = us[0];
-	} else if ((us[0] & 0xE0) == 0xC0)       // 110xxxxx
-	{
+	} else if ((us[0] & 0xE0) == 0xC0) { // 110xxxxx
 		r = us[0];
 		r |= (uint32_t) us[1] << 8;
-	} else if ((us[0] & 0xF0) == 0xE0)       // 1110xxxx
-	{
+	} else if ((us[0] & 0xF0) == 0xE0) { // 1110xxxx
 		r = us[0];
 		r |= (uint32_t) us[1] << 8;
 		r |= (uint32_t) us[2] << 16;
-	} else if ((us[0] & 0xF8) == 0xF0)       // 11110xxx
-	{
+	} else if ((us[0] & 0xF8) == 0xF0) { // 11110xxx
+	
 		r = us[0];
 		r |= (uint32_t) us[1] << 8;
 		r |= (uint32_t) us[2] << 16;
@@ -425,14 +414,13 @@ int Q_UTF8_Store(const char *s) {
 	return r;
 }
 
-/**
+/*
+=======================================================================================================================================
+Q_UTF8_Unstore
 
- */
-/**
- * @brief Converts a single UTF8 char stored as an int into a byte array
- * @param[in] e
- * @return
- */
+Converts a single UTF8 char stored as an int into a byte array.
+=======================================================================================================================================
+*/
 char *Q_UTF8_Unstore(int e) {
 	static unsigned char sbuf[2][5];
 	static int index = 0;
@@ -450,13 +438,13 @@ char *Q_UTF8_Unstore(int e) {
 	return (char *)buf;
 }
 
-/**
- * @brief Q_UTF8_GetGlyphExtended
- * @param[in] fontdata
- * @param[in] codepoint
- * @return
- */
+/*
+=======================================================================================================================================
+Q_UTF8_GetGlyphExtended
+=======================================================================================================================================
+*/
 glyphInfo_t *Q_UTF8_GetGlyphExtended(void *fontdata, unsigned long codepoint) {
+
 	if (codepoint > GLYPH_UTF_END) {
 		codepoint = INVALID_CHAR_OFFSET;
 	}
@@ -468,13 +456,13 @@ glyphInfo_t *Q_UTF8_GetGlyphExtended(void *fontdata, unsigned long codepoint) {
 	}
 }
 
-/**
- * @brief Q_UTF8_GetGlyphVanilla
- * @param[in] fontdata
- * @param[in] codepoint
- * @return
- */
+/*
+=======================================================================================================================================
+Q_UTF8_GetGlyphVanilla
+=======================================================================================================================================
+*/
 glyphInfo_t *Q_UTF8_GetGlyphVanilla(void *fontdata, unsigned long codepoint) {
+
 	if (codepoint > GLYPH_ASCII_END) {
 		codepoint = INVALID_CHAR_OFFSET;
 	}
@@ -482,14 +470,11 @@ glyphInfo_t *Q_UTF8_GetGlyphVanilla(void *fontdata, unsigned long codepoint) {
 	return &((fontInfo_t *)fontdata)->glyphs[codepoint];
 }
 
-/**
- * @brief Q_UTF8_RegisterFont
- * @param[in] fontName
- * @param[in] pointSize
- * @param[in, out] font
- * @param[in] extended
- * @param font_register
- */
+/*
+=======================================================================================================================================
+Q_UTF8_RegisterFont
+=======================================================================================================================================
+*/
 void Q_UTF8_RegisterFont(const char *fontName, int pointSize, fontHelper_t *font, qboolean extended, void(*font_register)(const char *, int, void *)) {
 	if (!font) {
 		return;
@@ -508,11 +493,13 @@ void Q_UTF8_RegisterFont(const char *fontName, int pointSize, fontHelper_t *font
 	font_register(fontName, pointSize, font->fontData);
 }
 
-/**
- * @brief Q_UTF8_FreeFont
- * @param[in, out] font
- */
+/*
+=======================================================================================================================================
+Q_UTF8_FreeFont
+=======================================================================================================================================
+*/
 void Q_UTF8_FreeFont(fontHelper_t *font) {
+
 	if (font) {
 		if (font->fontData) {
 			Com_Dealloc(font->fontData);
@@ -522,33 +509,29 @@ void Q_UTF8_FreeFont(fontHelper_t *font) {
 	}
 }
 
-/**
- * @brief Q_UTF8_ToUTF32
- * @param[in, out] string
- * @param[in] charArray
- * @param[out] outlen
- */
+/*
+=======================================================================================================================================
+Q_UTF8_ToUTF32
+=======================================================================================================================================
+*/
 void Q_UTF8_ToUTF32(char *string, int *charArray, int *outlen) {
 	int i = 0;
 	char *c = string;
 
-	// quick and dirty UTF - 8 to UTF - 32 conversion
+	// quick and dirty UTF-8 to UTF-32 conversion
 	while (*c) {
 		int utf32 = 0;
 
 		if ((*c & 0x80) == 0) {
 			utf32 = *c++;
-		} else if ((*c & 0xE0) == 0xC0)    // 110x xxxx
-		{
+		} else if ((*c & 0xE0) == 0xC0) {   // 110x xxxx
 			utf32 |= (*c++& 0x1F) << 6;
 			utf32 |= (*c++& 0x3F);
-		} else if ((*c & 0xF0) == 0xE0)    // 1110 xxxx
-		{
+		} else if ((*c & 0xF0) == 0xE0) {   // 1110 xxxx
 			utf32 |= (*c++& 0x0F) << 12;
 			utf32 |= (*c++& 0x3F) << 6;
 			utf32 |= (*c++& 0x3F);
-		} else if ((*c & 0xF8) == 0xF0)    // 1111 0xxx
-		{
+		} else if ((*c & 0xF8) == 0xF0) {   // 1111 0xxx
 			utf32 |= (*c++& 0x07) << 18;
 			utf32 |= (*c++& 0x3F) << 12;
 			utf32 |= (*c++& 0x3F) << 6;

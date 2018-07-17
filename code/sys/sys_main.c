@@ -42,59 +42,59 @@
 #include <string.h>
 #include <ctype.h>
 #include <errno.h>
-
 #include "sys_local.h"
 #include "sys_loadlib.h"
-
 #include "../qcommon/q_shared.h"
 #include "../qcommon/qcommon.h"
-
 #ifdef _WIN32
 #include <windows.h>
 #include "sys_win32.h"
 #endif
-
 #ifdef __APPLE__
 #include <CoreFoundation/CoreFoundation.h>
 #endif
 
 static char binaryPath[MAX_OSPATH] = {0};
 static char installPath[MAX_OSPATH] = {0};
-
 #ifdef FEATURE_CURSES
 static qboolean nocurses = qfalse;
 void CON_Init_tty(void);
 #endif
 
-/**
- * @brief Sys_SetBinaryPath
- * @param[in] path
- */
+/*
+=======================================================================================================================================
+Sys_SetBinaryPath
+=======================================================================================================================================
+*/
 void Sys_SetBinaryPath(const char *path) {
 	Q_strncpyz(binaryPath, path, sizeof(binaryPath));
 }
 
-/**
- * @brief Sys_BinaryPath
- * @return
- */
+/*
+=======================================================================================================================================
+Sys_BinaryPath
+=======================================================================================================================================
+*/
 char *Sys_BinaryPath(void) {
 	return binaryPath;
 }
 
-/**
- * @brief Sys_SetDefaultInstallPath
- * @param[in] path
- */
+/*
+=======================================================================================================================================
+Sys_SetDefaultInstallPath
+=======================================================================================================================================
+*/
 void Sys_SetDefaultInstallPath(const char *path) {
 	Q_strncpyz(installPath, path, sizeof(installPath));
 }
 
-/**
- * @brief Sys_DefaultInstallPath
- * @return
- */
+/*
+=======================================================================================================================================
+Sys_DefaultInstallPath
+=======================================================================================================================================
+*/
 char *Sys_DefaultInstallPath(void) {
+
 	if (*installPath) {
 		return installPath;
 	} else {
@@ -102,27 +102,35 @@ char *Sys_DefaultInstallPath(void) {
 	}
 }
 
-/**
- * @brief Sys_In_Restart_f
- */
+/*
+=======================================================================================================================================
+Sys_In_Restart_f
+=======================================================================================================================================
+*/
 void Sys_In_Restart_f(void) {
 	IN_Restart();
 }
 
 #ifndef USE_WINDOWS_CONSOLE
-/**
- * @brief Handle new console input
- */
+/*
+=======================================================================================================================================
+Sys_ConsoleInput
+
+Handle new console input.
+=======================================================================================================================================
+*/
 char *Sys_ConsoleInput(void) {
 	return CON_Input();
 }
 #endif
+/*
+=======================================================================================================================================
+Sys_WritePIDFile
 
-/**
- * @brief Writes pid to profile or to the homepath root if running a server
- * @return qtrue  if pid file successfully created
- *         otherwise qfalse if it wasn't possible to create a new pid file
- */
+Writes pid to profile or to the homepath root if running a server. Return qtrue if pid file successfully created.
+Otherwise qfalse if it wasn't possible to create a new pid file.
+=======================================================================================================================================
+*/
 qboolean Sys_WritePIDFile(void) {
 	fileHandle_t f;
 
@@ -133,10 +141,9 @@ qboolean Sys_WritePIDFile(void) {
 		FS_FOpenFileRead(com_pidfile->string, &f, qtrue);
 
 		if (Sys_PIDIsRunning(pid)) {
-		    Com_Printf("WARNING: another instance of ET:L is using this path!\n");
-		    return qfalse;
+			Com_Printf("WARNING: another instance of ET:L is using this path!\n");
+			return qfalse;
 		}
-
 		*/
 		if (FS_Delete(com_pidfile->string) == 0) // stale pid from previous run
 		{
@@ -154,52 +161,41 @@ qboolean Sys_WritePIDFile(void) {
 	}
 
 	FS_Printf(f, "%d", com_pid->integer);
-
 	FS_FCloseFile(f);
-
 	// track profile changes
 	Com_TrackProfile(com_pidfile->string);
-
 	return qtrue;
 }
 
-/**
- * @brief Single exit point(regular exit or in case of error)
- * @param[in] exitCode
- */
+/*
+=======================================================================================================================================
+Sys_Exit
+
+Single exit point (regular exit or in case of error).
+=======================================================================================================================================
+*/
 static __attribute__((noreturn)) void Sys_Exit(int exitCode) {
 	CON_Shutdown();
-
 #ifndef DEDICATED
 	SDL_Quit();
 #endif
-
 	// fail safe: delete PID file on abnormal exit
-	// FIXME: normal exit pid deletion is done in Com_Shutdown
-	//        why do we have 2 locations for this job?
-	//        ... is this Com or Sys code?
+	// FIXME: normal exit pid deletion is done in Com_Shutdown. Why do we have 2 locations for this job? ... is this Com or Sys code?
 	if (exitCode > 0) {
 		// normal exit
 		// com_pidfile does not yet exist on early exit
 		if (Cvar_VariableString("com_pidfile")[0] != '\0') {
 			if (FS_FileExists(Cvar_VariableString("com_pidfile"))) {
 				// FIXME: delete even when outside of homepath
-				if (remove(va("%s%c%s%c%s", Cvar_VariableString("fs_homepath"),
-				              PATH_SEP, Cvar_VariableString("fs_game"),
-				              PATH_SEP, Cvar_VariableString("com_pidfile"))) != 0) {
-					// this is thrown when game game crashes before PID file is created
-					// f.e. when pak files are missing
+				if (remove(va("%s%c%s%c%s", Cvar_VariableString("fs_homepath"), PATH_SEP, Cvar_VariableString("fs_game"), PATH_SEP, Cvar_VariableString("com_pidfile"))) != 0) {
+					// this is thrown when game game crashes before PID file is created, f.e. when pak files are missing
 					// FIXME: try to create PID file earlier
-					Com_Printf("Sys_Exit warning - can't delete PID file %s%c%s%c%s\n", Cvar_VariableString("fs_homepath"),
-					           PATH_SEP, Cvar_VariableString("fs_game"),
-					           PATH_SEP, Cvar_VariableString("com_pidfile"));
+					Com_Printf("Sys_Exit warning - can't delete PID file %s%c%s%c%s\n", Cvar_VariableString("fs_homepath"), PATH_SEP, Cvar_VariableString("fs_game"), PATH_SEP, Cvar_VariableString("com_pidfile"));
 				} else {
 					Com_Printf("PID file removed.\n");
 				}
 			} else {
-				Com_Printf("Sys_Exit warning - PID file doesn't exist %s%c%s%c%s\n", Cvar_VariableString("fs_homepath"),
-				           PATH_SEP, Cvar_VariableString("fs_game"),
-				           PATH_SEP, Cvar_VariableString("com_pidfile"));
+				Com_Printf("Sys_Exit warning - PID file doesn't exist %s%c%s%c%s\n", Cvar_VariableString("fs_homepath"), PATH_SEP, Cvar_VariableString("fs_game"), PATH_SEP, Cvar_VariableString("com_pidfile"));
 			}
 		} else {
 			Com_Printf("Sys_Exit warning no PID file found to remove\n");
@@ -211,10 +207,13 @@ static __attribute__((noreturn)) void Sys_Exit(int exitCode) {
 	exit(exitCode);
 }
 
-/**
- * @brief Sys_Quit
- */
+/*
+=======================================================================================================================================
+Sys_Exit
+=======================================================================================================================================
+*/
 void Sys_Quit(void) {
+
 	Sys_Exit(0);
 #ifdef USE_WINDOWS_CONSOLE
 	Sys_DestroyConsole();
@@ -224,33 +223,35 @@ void Sys_Quit(void) {
 #ifdef USE_WINDOWS_CONSOLE
 extern void Sys_ClearViewlog_f(void);
 #endif
-
-/**
- * @brief Sys_Init
- */
+/*
+=======================================================================================================================================
+Sys_Init
+=======================================================================================================================================
+*/
 void Sys_Init(void) {
+
 	Cmd_AddCommand("in_restart", Sys_In_Restart_f, "Restarts input system.");
 #ifdef USE_WINDOWS_CONSOLE
 	Cmd_AddCommand("clearviewlog", Sys_ClearViewlog_f, "Clears view log.");
 #endif
-
 	Cvar_Set("arch", OS_STRING " " ARCH_STRING);
 	Cvar_Set("username", Sys_GetCurrentUser());
 }
 
-/**
- * @brief Transform Q3 colour codes to ANSI escape sequences
- * @param[in] msg
- */
+/*
+=======================================================================================================================================
+Sys_AnsiColorPrint
+
+Transform Q3 colour codes to ANSI escape sequences.
+=======================================================================================================================================
+*/
 void Sys_AnsiColorPrint(const char *msg) {
 	static char buffer[MAXPRINTMSG];
 	int i, j, _found, length = 0;
 
 	// colors hash from http://wolfwiki.anime.net/index.php/Color_Codes
-	static int etAnsiHash[][6] = 
-	{
-		// here should be black, but it's invisible in terminal
-		// so you see dark grey here. like in 9 color
+	static int etAnsiHash[][6] = {
+		// here should be black, but it's invisible in terminal so you see dark grey here. like in 9 color
 		{1, 30, 0, '0', 'p', 'P'},
 		{1, 31, 0, '1', 'q', 'Q'},
 		{1, 32, 0, '2', 'r', 'R'},
@@ -259,7 +260,6 @@ void Sys_AnsiColorPrint(const char *msg) {
 		{1, 36, 0, '5', 'u', 'U'},
 		{1, 35, 0, '6', 'v', 'V'},
 		{1, 37, 0, '7', 'w', 'W'},
-
 		{38, 5, 208, '8', 'x', 'X'},
 		{1, 30, 0, '9', 'y', 'Y'},
 		{0, 37, 0, 'z', 'Z', ':'}, // the same
@@ -269,7 +269,6 @@ void Sys_AnsiColorPrint(const char *msg) {
 		{0, 34, 0, ' > ', '~', '^'},
 		{0, 31, 0, '?', '_', 0},
 		{38, 5, 94, '@', '`', 0},
-
 		{38, 5, 214, 'a', 'A', '!'},
 		{38, 5, 30, 'b', 'B', '"'},
 		{38, 5, 90, 'c', 'C', '#'},
@@ -278,7 +277,6 @@ void Sys_AnsiColorPrint(const char *msg) {
 		{38, 5, 38, 'f', 'F', '&'},
 		{38, 5, 194, 'g', 'G', '\''},
 		{38, 5, 29, 'h', 'H', '('},
-
 		{38, 5, 197, 'i', 'I', ')'},
 		{38, 5, 124, 'j', 'J', '*'},
 		{38, 5, 130, 'k', 'K', ' + '},
@@ -310,6 +308,7 @@ void Sys_AnsiColorPrint(const char *msg) {
 			} else {
 				// print the color code
 				_found = 0;
+
 				for (i = 0; i < 32; i++) {
 					if (_found) {
 						break;
@@ -354,10 +353,11 @@ void Sys_AnsiColorPrint(const char *msg) {
 	}
 }
 
-/**
- * @brief Sys_Print
- * @param msg
- */
+/*
+=======================================================================================================================================
+Sys_Print
+=======================================================================================================================================
+*/
 void Sys_Print(const char *msg) {
 #ifdef USE_WINDOWS_CONSOLE
 	Conbuf_AppendText(msg);
@@ -365,31 +365,28 @@ void Sys_Print(const char *msg) {
 	CON_LogWrite(msg);
 	CON_Print(msg);
 #endif
-
-#if defined(LEGACY_DEBUG) && defined(_WIN32)
+#if defined (LEGACY_DEBUG) && defined(_WIN32)
 	OutputDebugString(msg);
 #endif
 }
 
-/**
- * @brief Sys_Error
- * @param[in] error
- */
+/*
+=======================================================================================================================================
+Sys_Error
+=======================================================================================================================================
+*/
 void Sys_Error(const char *error, ...) {
 	va_list argptr;
 	char string[1024];
 #ifdef USE_WINDOWS_CONSOLE
 	MSG msg;
 #endif
-
 	va_start(argptr, error);
 	Q_vsnprintf(string, sizeof(string), error, argptr);
 	va_end(argptr);
-
 #ifdef _WIN32
 	Sys_Splash(qfalse);
 #endif
-
 #ifdef USE_WINDOWS_CONSOLE
 	Conbuf_AppendText(string);
 	Conbuf_AppendText("\n");
@@ -398,7 +395,6 @@ void Sys_Error(const char *error, ...) {
 	Sys_ShowConsoleWindow(1, qtrue);
 
 	IN_Shutdown();
-
 	// wait for the user to quit
 	while (1) {
 		if (!GetMessage(&msg, NULL, 0, 0)) {
@@ -411,17 +407,17 @@ void Sys_Error(const char *error, ...) {
 
 	Sys_DestroyConsole();
 #endif
-
 	Sys_ErrorDialog(string);
-
 	Sys_Exit(3);
 }
 
-/**
- * @brief Sys_FileTime
- * @param[in] path
- * @return -1 if not present
- */
+/*
+=======================================================================================================================================
+Sys_FileTime
+
+Return -1 if not present.
+=======================================================================================================================================
+*/
 int Sys_FileTime(char *path) {
 	struct stat buf;
 
@@ -432,11 +428,13 @@ int Sys_FileTime(char *path) {
 	return buf.st_mtime;
 }
 
-/**
- * @brief Sys_UnloadDll
- * @param[in] dllHandle
- */
+/*
+=======================================================================================================================================
+Sys_UnloadDll
+=======================================================================================================================================
+*/
 void Sys_UnloadDll(void *dllHandle) {
+
 	if (!dllHandle) {
 		Com_Printf("Sys_UnloadDll(NULL)\n");
 		return;
@@ -445,13 +443,13 @@ void Sys_UnloadDll(void *dllHandle) {
 	Sys_UnloadLibrary(dllHandle);
 }
 
-/**
- * @brief First try to load library name from system library path,
- * from executable path, then fs_basepath.
- * @param[in] name
- * @param[in] useSystemLib
- * @return
- */
+/*
+=======================================================================================================================================
+Sys_LoadDll
+
+First try to load library name from system library path, from executable path, then fs_basepath.
+=======================================================================================================================================
+*/
 void *Sys_LoadDll(const char *name, qboolean useSystemLib) {
 	void *dllhandle;
 
@@ -502,19 +500,16 @@ void *Sys_LoadDll(const char *name, qboolean useSystemLib) {
 	return dllhandle;
 }
 
-/**
- * @brief Used by Sys_LoadGameDll to get handle on a mod library
- *
- * @param[in] base
- * @param[in] gamedir
- * @param[in] fname
- *
- * @return Handle to a mod library
- */
+/*
+=======================================================================================================================================
+Sys_TryLibraryLoad
+
+Used by Sys_LoadGameDll to get handle on a mod library. Return Handle to a mod library.
+=======================================================================================================================================
+*/
 static void *Sys_TryLibraryLoad(const char *base, const char *gamedir, const char *fname) {
 	void *libHandle;
 	char *fn;
-
 #ifdef __APPLE__
 	Com_Printf("Sys_LoadDll ->Sys_TryLibraryLoad(%s, %s, %s)... \n", base, gamedir, fname);
 	libHandle = NULL;
@@ -537,6 +532,7 @@ static void *Sys_TryLibraryLoad(const char *base, const char *gamedir, const cha
 
 		if (FS_Unzip(fn, qtrue)) {
 			char buffer[MAX_OSPATH];
+
 			Com_sprintf(buffer, sizeof(buffer), "%s.bundle/Contents/MacOS/%s", fname, fname);
 			fn = FS_BuildOSPath(Cvar_VariableString("fs_homepath"), gamedir, buffer);
 
@@ -567,6 +563,7 @@ static void *Sys_TryLibraryLoad(const char *base, const char *gamedir, const cha
 	// 3: The dylib with an extension
 	if (!libHandle) {
 		char buffer[MAX_OSPATH];
+
 		Com_sprintf(buffer, sizeof(buffer), "%s.dylib", fname);
 		fn = FS_BuildOSPath(Cvar_VariableString("fs_homepath"), gamedir, buffer);
 
@@ -579,9 +576,7 @@ static void *Sys_TryLibraryLoad(const char *base, const char *gamedir, const cha
 			Com_Printf("succeeded\n");
 		}
 	}
-
 #else // __APPLE__
-
 	fn = FS_BuildOSPath(base, gamedir, fname);
 	Com_Printf("Sys_LoadDll(%s)... ", fn);
 
@@ -593,25 +588,22 @@ static void *Sys_TryLibraryLoad(const char *base, const char *gamedir, const cha
 	}
 
 	Com_Printf("succeeded\n");
-
 #endif // __APPLE__
-
 	return libHandle;
 }
 
-/**
- * @brief Loads a mod library.
- * #1 look in fs_homepath
- * #2 look in fs_basepath
- * #3 try to revert to the default mod library
- *
- * @param[in] name
- * @param[in] extract
- * @param entryPoint
- * @param systemcalls
- *
- * @return libHandle or NULL
- */
+/*
+=======================================================================================================================================
+Sys_LoadGameDll
+
+Loads a mod library.
+#1 look in fs_homepath.
+#2 look in fs_basepath.
+#3 try to revert to the default mod library.
+
+Return libHandle or NULL.
+=======================================================================================================================================
+*/
 void *Sys_LoadGameDll(const char *name, qboolean extract, intptr_t(**entryPoint)(int, ...), intptr_t(*systemcalls)(intptr_t, ...)) {
 	void *libHandle;
 	void(*dllEntry)(intptr_t(*syscallptr)(intptr_t, ...));
@@ -623,14 +615,13 @@ void *Sys_LoadGameDll(const char *name, qboolean extract, intptr_t(**entryPoint)
 	etl_assert(name);
 
 	Com_sprintf(fname, sizeof(fname), Sys_GetDLLName("%s"), name);
-
 	// TODO: use fs_searchpaths from files.c
 	basepath = Cvar_VariableString("fs_basepath");
 	homepath = Cvar_VariableString("fs_homepath");
 	gamedir = Cvar_VariableString("fs_game");
 
-	// sTORY TIME
-	//When doing an debug build just load the mod lib from the basepath as that will have the debug pointers
+	// STORY TIME
+	// When doing an debug build just load the mod lib from the basepath as that will have the debug pointers
 	// now the code always just unpacks new libraries from the packs on release builds.
 	// so the libraryfiles in the homepath are always refreshed with latest from the packs.
 	// this fixes many issues with clients loading old libraries from the mod paths.
@@ -654,7 +645,6 @@ void *Sys_LoadGameDll(const char *name, qboolean extract, intptr_t(**entryPoint)
 #define SEARCHPATH1 homepath
 #define SEARCHPATH2 basepath
 #endif
-
 #ifndef DEDICATED
 	if (LIB_DO_UNPACK && extract) {
 		if (!FS_CL_ExtractFromPakFile(homepath, gamedir, fname)) {
@@ -665,13 +655,11 @@ void *Sys_LoadGameDll(const char *name, qboolean extract, intptr_t(**entryPoint)
 		}
 	}
 #endif
-
 	libHandle = Sys_TryLibraryLoad(SEARCHPATH1, gamedir, fname);
 
 	if (!libHandle && SEARCHPATH2) {
 		libHandle = Sys_TryLibraryLoad(SEARCHPATH2, gamedir, fname);
 	}
-
 #ifndef DEDICATED
 	if (extract) {
 		if (!libHandle && !LIB_DO_UNPACK) {
@@ -695,7 +683,6 @@ void *Sys_LoadGameDll(const char *name, qboolean extract, intptr_t(**entryPoint)
 		}
 	}
 #endif
-
 	if (!libHandle) {
 		Com_Printf("Sys_LoadDll(%s/%s) failed to load library\n", gamedir, name);
 		return NULL;
@@ -713,20 +700,18 @@ void *Sys_LoadGameDll(const char *name, qboolean extract, intptr_t(**entryPoint)
 
 	Com_Printf("Sys_LoadDll(%s/%s) found vmMain function at %p\n", gamedir, name, *entryPoint);
 	dllEntry(systemcalls);
-
 	return libHandle;
 }
 
-/**
- * @brief Sys_ParseArgs
- * @param[in] argc
- * @param[in] argv
- */
+/*
+=======================================================================================================================================
+Sys_ParseArgs
+=======================================================================================================================================
+*/
 void Sys_ParseArgs(int argc, char **argv) {
 #ifdef FEATURE_CURSES
 	int i;
 #endif
-
 	if (argc == 2) {
 		if (!strcmp(argv[1], "--version") || !strcmp(argv[1], "-v")) {
 #ifdef DEDICATED
@@ -749,15 +734,14 @@ void Sys_ParseArgs(int argc, char **argv) {
 #endif
 }
 
-/**
- * @brief Sys_BuildCommandLine
- * @param[in] argc
- * @param[in] argv
- * @param[out] buffer
- * @param[in] bufferSize
- */
+/*
+=======================================================================================================================================
+Sys_BuildCommandLine
+=======================================================================================================================================
+*/
 void Sys_BuildCommandLine(int argc, char **argv, char *buffer, size_t bufferSize) {
 	int i = 0;
+
 	// concatenate the command line for passing to Com_Init
 	for (i = 1; i < argc; i++) {
 		const qboolean containsSpaces = (qboolean)(strchr(argv[i], ' ') != NULL);
@@ -781,13 +765,13 @@ void Sys_BuildCommandLine(int argc, char **argv, char *buffer, size_t bufferSize
 }
 
 #ifndef DEFAULT_BASEDIR
-#       define DEFAULT_BASEDIR Sys_BinaryPath()
+#define DEFAULT_BASEDIR Sys_BinaryPath()
 #endif
-
-/**
- * @brief Sys_SigHandler
- * @param[in] signal
- */
+/*
+=======================================================================================================================================
+Sys_SigHandler
+=======================================================================================================================================
+*/
 void Sys_SigHandler(int signal) {
 	static qboolean signalcaught = qfalse;
 
@@ -808,9 +792,13 @@ void Sys_SigHandler(int signal) {
 	}
 }
 
-/**
- * @brief Sys_SetUpConsoleAndSignals
- */
+/*
+=======================================================================================================================================
+Sys_SetUpConsoleAndSignals
+
+Sys_SetUpConsoleAndSignals.
+=======================================================================================================================================
+*/
 void Sys_SetUpConsoleAndSignals(void) {
 #ifndef USE_WINDOWS_CONSOLE
 #ifdef FEATURE_CURSES
@@ -823,7 +811,6 @@ void Sys_SetUpConsoleAndSignals(void) {
 	CON_Init();
 #endif
 #endif
-
 	signal(SIGILL, Sys_SigHandler);
 	signal(SIGFPE, Sys_SigHandler);
 	signal(SIGSEGV, Sys_SigHandler);
@@ -831,15 +818,18 @@ void Sys_SetUpConsoleAndSignals(void) {
 	signal(SIGINT, Sys_SigHandler);
 }
 
-/**
- * @brief Main game loop
- */
+/*
+=======================================================================================================================================
+Sys_GameLoop
+
+Main game loop.
+=======================================================================================================================================
+*/
 void Sys_GameLoop(void) {
 #ifdef LEGACY_DEBUG
 	int startTime, endTime, totalMsec, countMsec;
 	totalMsec = countMsec = 0;
 #endif
-
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wmissing - noreturn"
 	while (qtrue) {
@@ -847,18 +837,15 @@ void Sys_GameLoop(void) {
 		// set low precision every frame, because some system calls
 		// reset it arbitrarily
 		_controlfp(_PC_24, _MCW_PC);
-		_controlfp(-1, _MCW_EM);    // no exceptions, even if some crappy
+		_controlfp(-1, _MCW_EM); // no exceptions, even if some crappy
 		// syscall turns them back on!
 #endif
-
 #ifdef LEGACY_DEBUG
 		startTime = Sys_Milliseconds();
 #endif
-
 		// improve input responsiveness by moving sampling to other side of framerate limiter - moved to Com_Frame()
 		//IN_Frame();
 		Com_Frame();
-
 #ifdef LEGACY_DEBUG
 		endTime = Sys_Milliseconds();
 		totalMsec += endTime - startTime;
@@ -872,32 +859,26 @@ void Sys_GameLoop(void) {
 #pragma clang diagnostic pop
 }
 
-/**
- * @brief SDL_main
- * @param[in] argc
- * @param[in] argv
- * @return
- */
+/*
+=======================================================================================================================================
+main
+=======================================================================================================================================
+*/
 int main(int argc, char **argv) {
 	char commandLine[MAX_STRING_CHARS] = {0};
 
 	Sys_PlatformInit();
-
 	// set the initial time base
 	Sys_Milliseconds();
-
 #ifdef __APPLE__
 	// this is passed if we are launched by double - clicking
 	if (argc >= 2 && Q_strncmp(argv[1], "-psn", 4) == 0) {
 		argc = 1;
 	}
 #endif
-
 	Sys_ParseArgs(argc, argv);
-
 #if defined(__APPLE__) && !defined(DEDICATED)
-	// argv[0] would be /Users/seth/etlegacy/etl.app/Contents/MacOS
-	// but on OS X we want to pretend the binary path is the .app's parent
+	// argv[0] would be /Users/seth/etlegacy/etl.app/Contents/MacOS but on OS X we want to pretend the binary path is the .app's parent
 	// so that way the base folder is right next to the .app allowing
 	{
 		char parentdir[1024];
@@ -923,17 +904,12 @@ int main(int argc, char **argv) {
 #else
 	Sys_SetBinaryPath(Sys_Dirname(argv[0]));
 #endif
-
 	Sys_SetDefaultInstallPath(DEFAULT_BASEDIR); // sys_BinaryPath() by default
-
 	// concatenate the command line for passing to Com_Init
 	Sys_BuildCommandLine(argc, argv, commandLine, sizeof(commandLine));
-
 	Com_Init(commandLine);
 	NET_Init();
-
 	Sys_SetUpConsoleAndSignals();
-
 #ifdef _WIN32
 
 #ifndef DEDICATED
@@ -941,7 +917,6 @@ int main(int argc, char **argv) {
 		Sys_ShowConsoleWindow(1, qfalse);
 	}
 #endif
-
 	Sys_Splash(qfalse);
 
 	{
@@ -949,17 +924,13 @@ int main(int argc, char **argv) {
 		_getcwd(cwd, sizeof(cwd));
 		Com_Printf("Working directory: %s\n", cwd);
 	}
-	// hide the early console since we've reached the point where we
-	// have a working graphics subsystems
+	// hide the early console since we've reached the point where we have a working graphics subsystems
 #ifndef LEGACY_DEBUG
 	if (!com_dedicated->integer && !com_viewlog->integer) {
 		Sys_ShowConsoleWindow(0, qfalse);
 	}
 #endif
-
 #endif
-
 	Sys_GameLoop();
-
 	return EXIT_SUCCESS;
 }

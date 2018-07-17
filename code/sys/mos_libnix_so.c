@@ -25,11 +25,10 @@
 #include <proto/exec.h>
 #include <stdlib.h>
 
-struct ExecBase   *SysBase;
+struct ExecBase *SysBase;
 struct DosLibrary *DOSBase;
 
-struct CTDT
-{
+struct CTDT {
 	int(*fp)(void);
 	long priority;
 };
@@ -37,18 +36,17 @@ struct CTDT
 extern const void(*__ctrslist[])(void);
 extern const void(*__dtrslist[])(void);
 extern const struct CTDT __ctdtlist[];
-static struct CTDT       *sort_ctdt(struct CTDT **last);
-static struct CTDT       *ctdt, *last_ctdt;
+static struct CTDT *sort_ctdt(struct CTDT **last);
+static struct CTDT *ctdt, *last_ctdt;
 
-struct FuncSeg
-{
+struct FuncSeg {
 	ULONG size;
 	struct FuncSeg *next;
 };
 
 int __nocommandline;
 char *__commandline;
-unsigned long    __commandlen;
+unsigned long __commandlen;
 int __argc;
 char **__argv;
 struct WBStartup *_WBenchMsg;
@@ -56,7 +54,13 @@ char *_ProgramName = "";
 void *libnix_mempool = 0L;
 int ThisRequiresConstructorHandling = 1;
 
-/* ANSI de/constructor handler */
+/*
+=======================================================================================================================================
+CallFuncArray
+
+ANSI de/constructor handler.
+=======================================================================================================================================
+*/
 static void CallFuncArray(const void(*FuncArray[])(void)) {
 	struct FuncSeg *seg;
 	int i, num;
@@ -71,7 +75,13 @@ static void CallFuncArray(const void(*FuncArray[])(void)) {
 	}
 }
 
+/*
+=======================================================================================================================================
+comp_ctdt
+=======================================================================================================================================
+*/
 static int comp_ctdt(struct CTDT *a, struct CTDT *b) {
+
 	if (a->priority == b->priority) {
 		return (0);
 	}
@@ -83,30 +93,36 @@ static int comp_ctdt(struct CTDT *a, struct CTDT *b) {
 	return (1);
 }
 
+/*
+=======================================================================================================================================
+sort_ctdt
+=======================================================================================================================================
+*/
 static struct CTDT *sort_ctdt(struct CTDT **last) {
 	struct FuncSeg *seg;
-	struct CTDT    *last_ctdt;
+	struct CTDT *last_ctdt;
 
 	seg = (struct FuncSeg *)(((IPTR)__ctdtlist) - sizeof(struct FuncSeg));
 	last_ctdt = (struct CTDT *)(((IPTR)seg) + seg->size);
-
 	qsort((struct CTDT *)__ctdtlist, (IPTR)(last_ctdt - __ctdtlist), sizeof(*__ctdtlist), (int(*)(const void *, const void *))comp_ctdt);
-
 	*last = last_ctdt;
-
 	return ((struct CTDT *)__ctdtlist);
 }
 
+/*
+=======================================================================================================================================
+morphos_so_init
+=======================================================================================================================================
+*/
 int morphos_so_init(void) {
-	SysBase = *(struct ExecBase **)4;
 
+	SysBase = *(struct ExecBase **)4;
 	DOSBase = (struct DosLibrary *)OpenLibrary("dos.library", 0);
 
 	if (DOSBase) {
-		/* Sort SAS/C de/constructor list */
+		// sort SAS/C de/constructor list
 		ctdt = sort_ctdt(&last_ctdt);
-
-		/* Call SAS/C constructors */
+		// call SAS/C constructors
 		while (ctdt < last_ctdt) {
 			if (ctdt->priority >= 0) {
 				if (ctdt->fp() != 0) {
@@ -118,10 +134,9 @@ int morphos_so_init(void) {
 		}
 
 		if (ctdt >= last_ctdt) {
-			/* Preinit memory - system */
+			// preinit memory-system
 			Com_Allocate(0);
-
-			/* Call ANSI constructors */
+			// call ANSI constructors
 			CallFuncArray(__ctrslist);
 
 			return -1;
@@ -133,13 +148,19 @@ int morphos_so_init(void) {
 	return 0;
 }
 
+/*
+=======================================================================================================================================
+morphos_so_deinit
+=======================================================================================================================================
+*/
 void morphos_so_deinit(void) {
-	/* Call ANSI destructors */
+
+	// call ANSI destructors
 	if (ctdt == last_ctdt) {
 		CallFuncArray(__dtrslist);
 	}
 
-	/* Call SAS/C destructors */
+	// call SAS/C destructors
 	ctdt = (struct CTDT *)__ctdtlist;
 
 	while (ctdt < last_ctdt) {
@@ -153,18 +174,41 @@ void morphos_so_deinit(void) {
 	}
 }
 
-/* Disable CTRL - C check in libc routines */
+/*
+=======================================================================================================================================
+__chkabort
+
+Disable CTRL-C check in libc routines.
+=======================================================================================================================================
+*/
 void __chkabort(void) {
+
 }
 
-/* We can't allow abort() or exit()! */
+/*
+=======================================================================================================================================
+abort
+
+We can't allow abort() or exit()!
+=======================================================================================================================================
+*/
 void abort(void) {
-	for (;;)
+
+	for (;;) {
 		Wait(0);
+	}
 }
+
+/*
+=======================================================================================================================================
+exit
+=======================================================================================================================================
+*/
 void exit(int i) {
-	for (;;)
+
+	for (;;) {
 		Wait(0);
+	}
 }
 
 __asm("\n.long __nocommandline\n");

@@ -41,7 +41,6 @@
 #include <unistd.h>
 #include <sys/ioctl.h>
 #endif
-
 #ifdef _WIN32
 #ifndef STDIN_FILENO
 #define STDIN_FILENO 0
@@ -49,8 +48,7 @@
 #define STDERR_FILENO 2
 #endif
 #endif
-
-#define TITLE "^4--- [^3" CLIENT_WINDOW_TITLE " Console ^4]--- "
+#define TITLE "^4--- [^3" CLIENT_WINDOW_TITLE " Console ^4] ---"
 #define PROMPT "^3->"
 #define INPUT_SCROLL 15
 #define LOG_SCROLL 5
@@ -59,17 +57,16 @@
 
 static qboolean curses_on = qfalse;
 static field_t input_field;
-static WINDOW   *borderwin;
-static WINDOW   *logwin;
-static WINDOW   *inputwin;
-static WINDOW   *scrollwin;
-static WINDOW   *clockwin;
+static WINDOW *borderwin;
+static WINDOW *logwin;
+static WINDOW *inputwin;
+static WINDOW *scrollwin;
+static WINDOW *clockwin;
 
 static char logbuf[LOG_BUF_SIZE];
 static char *insert = logbuf;
 static int scrollline = 0;
 static int lastline = 1;
-
 // the special characters look good on the win32 console but suck on other consoles
 #ifdef _WIN32
 #define SCRLBAR_CURSOR ACS_BLOCK
@@ -82,18 +79,18 @@ static int lastline = 1;
 #define SCRLBAR_UP ACS_HLINE
 #define SCRLBAR_DOWN ACS_HLINE
 #endif
-
-#define LOG_LINES(LINES - 4)
-#define LOG_COLS(COLS - 3)
+#define LOG_LINES (LINES - 4)
+#define LOG_COLS (COLS - 3)
 
 /*
- ================== 
+=======================================================================================================================================
 CON_SetColor
 
-Use grey instead of black
- ================== 
+Use grey instead of black.
+=======================================================================================================================================
 */
 static ID_INLINE void CON_SetColor(WINDOW *win, int color) {
+
 	if (com_ansiColor && !com_ansiColor->integer) {
 		color = 7;
 	}
@@ -106,14 +103,14 @@ static ID_INLINE void CON_SetColor(WINDOW *win, int color) {
 }
 
 /*
- ================== 
+=======================================================================================================================================
 CON_UpdateCursor
 
-Update the cursor position
- ================== 
+Update the cursor position.
+=======================================================================================================================================
 */
 static ID_INLINE void CON_UpdateCursor(void) {
-// pdcurses uses a different mechanism to move the cursor than ncurses
+	// pdcurses uses a different mechanism to move the cursor than ncurses
 #ifdef _WIN32
 	move(LINES - 1, Q_PrintStrlen(PROMPT) + 8 + input_field.cursor - input_field.scroll);
 	wnoutrefresh(stdscr);
@@ -124,9 +121,9 @@ static ID_INLINE void CON_UpdateCursor(void) {
 }
 
 /*
- ================== 
+=======================================================================================================================================
 CON_DrawScrollBar
- ================== 
+=======================================================================================================================================
 */
 static void CON_DrawScrollBar(void) {
 	int scroll;
@@ -151,9 +148,9 @@ static void CON_DrawScrollBar(void) {
 }
 
 /*
- ================== 
+=======================================================================================================================================
 CON_ColorPrint
- ================== 
+=======================================================================================================================================
 */
 static void CON_ColorPrint(WINDOW *win, const char *msg, qboolean stripcodes) {
 	static char buffer[MAXPRINTMSG];
@@ -185,6 +182,7 @@ static void CON_ColorPrint(WINDOW *win, const char *msg, qboolean stripcodes) {
 					if (length >= MAXPRINTMSG - 1) {
 						break;
 					}
+
 					buffer[length] = *msg;
 					length++;
 					msg++;
@@ -216,14 +214,15 @@ static void CON_ColorPrint(WINDOW *win, const char *msg, qboolean stripcodes) {
 }
 
 /*
- ================== 
+=======================================================================================================================================
 CON_UpdateClock
 
-Update the clock
- ================== 
+Update the clock.
+=======================================================================================================================================
 */
 static void CON_UpdateClock(void) {
 	qtime_t realtime;
+
 	Com_RealTime(&realtime);
 	werase(clockwin);
 	CON_ColorPrint(clockwin, va("^0[^3%02d%c%02d^0]^7 ", realtime.tm_hour, (realtime.tm_sec & 1) ? ':' : ' ', realtime.tm_min), qtrue);
@@ -231,11 +230,11 @@ static void CON_UpdateClock(void) {
 }
 
 /*
- ================== 
+=======================================================================================================================================
 CON_Resize
 
-The window has just been resized, move everything back into place
- ================== 
+The window has just been resized, move everything back into place.
+=======================================================================================================================================
 */
 static void CON_Resize(void) {
 #ifndef _WIN32
@@ -260,11 +259,12 @@ static void CON_Resize(void) {
 }
 
 /*
- ================== 
+=======================================================================================================================================
 CON_Clear_f
- ================== 
+=======================================================================================================================================
 */
 void CON_Clear_f(void) {
+
 	if (!curses_on) {
 		CON_Clear_f();
 		return;
@@ -273,20 +273,20 @@ void CON_Clear_f(void) {
 	Com_Memset(logbuf, 0, sizeof(logbuf));
 	werase(logwin);
 	pnoutrefresh(logwin, scrollline, 0, 2, 1, LOG_LINES + 1, LOG_COLS + 1);
-
 	// move the cursor back to the input field
 	CON_UpdateCursor();
 	doupdate();
 }
 
 /*
- ================== 
+=======================================================================================================================================
 CON_Shutdown
 
-Never exit without calling this, or your terminal will be left in a pretty bad state
- ================== 
+Never exit without calling this, or your terminal will be left in a pretty bad state.
+=======================================================================================================================================
 */
 void CON_Shutdown(void) {
+
 	if (!curses_on) {
 		CON_Shutdown_tty();
 		return;
@@ -297,22 +297,19 @@ void CON_Shutdown(void) {
 }
 
 /*
- ================== 
+=======================================================================================================================================
 CON_Init
 
-Initialize the console in curses mode, fall back to tty mode on failure
- ================== 
+Initialize the console in curses mode, fall back to tty mode on failure.
+=======================================================================================================================================
 */
 void CON_Init(void) {
 	int col;
-
 #ifndef _WIN32
-	// if the process is backgrounded(running non interactively)
-	// then SIGTTIN or SIGTOU is emitted, if not caught, turns into a SIGSTP
+	// if the process is backgrounded (running non interactively) then SIGTTIN or SIGTOU is emitted, if not caught, turns into a SIGSTP
 	signal(SIGTTIN, SIG_IGN);
 	signal(SIGTTOU, SIG_IGN);
 #endif
-
 	// make sure we're on a tty
 	if (!isatty(STDIN_FILENO) || !isatty(STDOUT_FILENO)) {
 		CON_Init_tty();
@@ -356,12 +353,13 @@ void CON_Init(void) {
 	}
 	// create the border
 	borderwin = newwin(LOG_LINES + 2, LOG_COLS + 2, 1, 0);
+
 	CON_SetColor(borderwin, 2);
 	box(borderwin, 0, 0);
 	wnoutrefresh(borderwin);
-
 	// create the log window
 	logwin = newpad(MAX_LOG_LINES, LOG_COLS);
+
 	scrollok(logwin, TRUE);
 	idlok(logwin, TRUE);
 
@@ -382,14 +380,12 @@ void CON_Init(void) {
 	}
 
 	pnoutrefresh(logwin, scrollline, 0, 2, 1, LOG_LINES + 1, LOG_COLS + 1);
-
 	// create the scroll bar
 	scrollwin = newwin(LOG_LINES, 1, 2, COLS - 1);
 	CON_DrawScrollBar();
 	CON_SetColor(stdscr, 3);
 	mvaddch(1, COLS - 1, SCRLBAR_UP);
 	mvaddch(LINES - 2, COLS - 1, SCRLBAR_DOWN);
-
 	// create the input field
 	inputwin = newwin(1, COLS - Q_PrintStrlen(PROMPT) - 8, LINES - 1, Q_PrintStrlen(PROMPT) + 8);
 	input_field.widthInChars = COLS - Q_PrintStrlen(PROMPT) - 9;
@@ -406,11 +402,9 @@ void CON_Init(void) {
 
 	CON_UpdateCursor();
 	wnoutrefresh(inputwin);
-
 	// create the clock
 	clockwin = newwin(1, 8, LINES - 1, 0);
 	CON_UpdateClock();
-
 	// display the title and input prompt
 	move(0, (COLS - Q_PrintStrlen(TITLE)) / 2);
 	CON_ColorPrint(stdscr, TITLE, qtrue);
@@ -418,19 +412,17 @@ void CON_Init(void) {
 	CON_ColorPrint(stdscr, PROMPT, qtrue);
 	wnoutrefresh(stdscr);
 	doupdate();
-
 #ifndef _WIN32
 	// catch window resizes
 	//signal(SIGWINCH, (void *)CON_Resize);
 #endif
-
 	curses_on = qtrue;
 }
 
 /*
- ================== 
+=======================================================================================================================================
 CON_Input
- ================== 
+=======================================================================================================================================
 */
 char *CON_Input(void) {
 	int chr, num_chars = 0;
@@ -457,153 +449,149 @@ char *CON_Input(void) {
 		num_chars++;
 		// special characters
 		switch (chr) {
-		case ERR:
-			if (num_chars > 1) {
-				werase(inputwin);
+			case ERR:
+				if (num_chars > 1) {
+					werase(inputwin);
 
-				if (input_field.cursor < input_field.scroll) {
-					input_field.scroll = input_field.cursor - INPUT_SCROLL;
+					if (input_field.cursor < input_field.scroll) {
+						input_field.scroll = input_field.cursor - INPUT_SCROLL;
 
-					if (input_field.scroll < 0) {
-						input_field.scroll = 0;
+						if (input_field.scroll < 0) {
+							input_field.scroll = 0;
+						}
+					} else if (input_field.cursor >= input_field.scroll + input_field.widthInChars) {
+						input_field.scroll = input_field.cursor - input_field.widthInChars + INPUT_SCROLL;
 					}
-				} else if (input_field.cursor >= input_field.scroll + input_field.widthInChars) {
-					input_field.scroll = input_field.cursor - input_field.widthInChars + INPUT_SCROLL;
-				}
 
-				CON_ColorPrint(inputwin, input_field.buffer + input_field.scroll, qfalse);
+					CON_ColorPrint(inputwin, input_field.buffer + input_field.scroll, qfalse);
 #ifdef _WIN32
-				wrefresh(inputwin); // if this is not done the cursor moves strangely
+					wrefresh(inputwin); // if this is not done the cursor moves strangely
 #else
-				wnoutrefresh(inputwin);
+					wnoutrefresh(inputwin);
 #endif
-				CON_UpdateCursor();
-				doupdate();
-			}
+					CON_UpdateCursor();
+					doupdate();
+				}
 
-			return NULL;
-		case '\n':
-		case '\r':
-		case KEY_ENTER:
-			if (!input_field.buffer[0]) {
-				continue;
-			}
+				return NULL;
+			case '\n':
+			case '\r':
+			case KEY_ENTER:
+				if (!input_field.buffer[0]) {
+					continue;
+				}
 
-			Q_snprintf(text, sizeof(text), "\\%s", input_field.buffer + (input_field.buffer[0] == '\\' || input_field.buffer[0] == '/'));
-			Hist_Add(text);
-			Field_Clear(&input_field);
-			werase(inputwin);
-			wnoutrefresh(inputwin);
-			CON_UpdateCursor();
-			//doupdate();
-			Com_Printf(PROMPT "^7%s\n", text + 1);
-			return text + 1;
-		case 21: // ctrl - U
-			Field_Clear(&input_field);
-			werase(inputwin);
-			wnoutrefresh(inputwin);
-			CON_UpdateCursor();
-			continue;
-		case '\t':
-		case KEY_STAB:
-			//Field_AutoComplete(&input_field, PROMPT);
-			Field_AutoComplete(&input_field);
-			input_field.cursor = strlen(input_field.buffer);
-			continue;
-		case '\f':
-			CON_Resize();
-			continue;
-		case KEY_LEFT:
-			if (input_field.cursor > 0) {
-				input_field.cursor--;
-			}
-
-			continue;
-		case KEY_RIGHT:
-			if (input_field.cursor < strlen(input_field.buffer)) {
-				input_field.cursor++;
-			}
-
-			continue;
-		case KEY_UP:
-		{
-			const char *field = Hist_Prev();
-
-			if (field) {
-				strcpy(input_field.buffer, field);
-			}
-
-			continue;
-		}
-
-		case KEY_DOWN:
-		{
-			const char *field = Hist_Next();
-
-			if (field) {
-				strcpy(input_field.buffer, field);
-			} else {
+				Q_snprintf(text, sizeof(text), "\\%s", input_field.buffer + (input_field.buffer[0] == '\\' || input_field.buffer[0] == '/'));
+				Hist_Add(text);
 				Field_Clear(&input_field);
-			}
-
-			continue;
-		}
-
-		case KEY_HOME:
-			input_field.cursor = 0;
-			continue;
-		case KEY_END:
-			input_field.cursor = strlen(input_field.buffer);
-			continue;
-		case KEY_NPAGE:
-			if (lastline > scrollline + LOG_LINES) {
-				scrollline += LOG_SCROLL;
-
-				if (scrollline + LOG_LINES > lastline) {
-					scrollline = lastline - LOG_LINES;
+				werase(inputwin);
+				wnoutrefresh(inputwin);
+				CON_UpdateCursor();
+				//doupdate();
+				Com_Printf(PROMPT "^7%s\n", text + 1);
+				return text + 1;
+			case 21: // ctrl - U
+				Field_Clear(&input_field);
+				werase(inputwin);
+				wnoutrefresh(inputwin);
+				CON_UpdateCursor();
+				continue;
+			case '\t':
+			case KEY_STAB:
+				//Field_AutoComplete(&input_field, PROMPT);
+				Field_AutoComplete(&input_field);
+				input_field.cursor = strlen(input_field.buffer);
+				continue;
+			case '\f':
+				CON_Resize();
+				continue;
+			case KEY_LEFT:
+				if (input_field.cursor > 0) {
+					input_field.cursor--;
 				}
 
-				pnoutrefresh(logwin, scrollline, 0, 2, 1, LOG_LINES + 1, LOG_COLS + 1);
-				CON_DrawScrollBar();
-			}
-
-			continue;
-		case KEY_PPAGE:
-			if (scrollline > 0) {
-				scrollline -= LOG_SCROLL;
-
-				if (scrollline < 0) {
-					scrollline = 0;
+				continue;
+			case KEY_RIGHT:
+				if (input_field.cursor < strlen(input_field.buffer)) {
+					input_field.cursor++;
 				}
 
-				pnoutrefresh(logwin, scrollline, 0, 2, 1, LOG_LINES + 1, LOG_COLS + 1);
-				CON_DrawScrollBar();
-			}
+				continue;
+			case KEY_UP:
+			{
+				const char *field = Hist_Prev();
 
-			continue;
-		case '\b':
-		case 127:
-		case KEY_BACKSPACE:
-			if (input_field.cursor <= 0) {
+				if (field) {
+					strcpy(input_field.buffer, field);
+				}
+
 				continue;
 			}
 
-			input_field.cursor--;
-		// fall through
-		case KEY_DC:
-			if (input_field.cursor < strlen(input_field.buffer)) {
-				memmove(input_field.buffer + input_field.cursor,
-				        input_field.buffer + input_field.cursor + 1,
-				        strlen(input_field.buffer) - input_field.cursor);
+			case KEY_DOWN:
+			{
+				const char *field = Hist_Next();
+
+				if (field) {
+					strcpy(input_field.buffer, field);
+				} else {
+					Field_Clear(&input_field);
+				}
+
+				continue;
 			}
 
-			continue;
+			case KEY_HOME:
+				input_field.cursor = 0;
+				continue;
+			case KEY_END:
+				input_field.cursor = strlen(input_field.buffer);
+				continue;
+			case KEY_NPAGE:
+				if (lastline > scrollline + LOG_LINES) {
+					scrollline += LOG_SCROLL;
+
+					if (scrollline + LOG_LINES > lastline) {
+						scrollline = lastline - LOG_LINES;
+					}
+
+					pnoutrefresh(logwin, scrollline, 0, 2, 1, LOG_LINES + 1, LOG_COLS + 1);
+					CON_DrawScrollBar();
+				}
+
+				continue;
+			case KEY_PPAGE:
+				if (scrollline > 0) {
+					scrollline -= LOG_SCROLL;
+
+					if (scrollline < 0) {
+						scrollline = 0;
+					}
+
+					pnoutrefresh(logwin, scrollline, 0, 2, 1, LOG_LINES + 1, LOG_COLS + 1);
+					CON_DrawScrollBar();
+				}
+
+				continue;
+			case '\b':
+			case 127:
+			case KEY_BACKSPACE:
+				if (input_field.cursor <= 0) {
+					continue;
+				}
+
+				input_field.cursor--;
+			// fall through
+			case KEY_DC:
+				if (input_field.cursor < strlen(input_field.buffer)) {
+					memmove(input_field.buffer + input_field.cursor, input_field.buffer + input_field.cursor + 1, strlen(input_field.buffer) - input_field.cursor);
+				}
+
+				continue;
 		}
 		// normal characters
 		if (chr >= ' ' && chr < 256 && strlen(input_field.buffer) + 1 < sizeof(input_field.buffer)) {
-			memmove(input_field.buffer + input_field.cursor + 1,
-			        input_field.buffer + input_field.cursor,
-			        strlen(input_field.buffer) - input_field.cursor);
+			memmove(input_field.buffer + input_field.cursor + 1, input_field.buffer + input_field.cursor, strlen(input_field.buffer) - input_field.cursor);
 			input_field.buffer[input_field.cursor] = chr;
 			input_field.cursor++;
 		}
@@ -611,9 +599,9 @@ char *CON_Input(void) {
 }
 
 /*
- ================== 
+=======================================================================================================================================
 CON_Print
- ================== 
+=======================================================================================================================================
 */
 void CON_Print(const char *msg) {
 	int col;
@@ -625,6 +613,7 @@ void CON_Print(const char *msg) {
 	}
 	// print the message in the log window
 	CON_ColorPrint(logwin, msg, qtrue);
+
 	getyx(logwin, lastline, col);
 
 	if (col) {
@@ -649,13 +638,10 @@ void CON_Print(const char *msg) {
 
 	strcpy(insert, msg);
 	insert += strlen(msg);
-
 	// update the scrollbar
 	CON_DrawScrollBar();
-
 	// move the cursor back to the input field
 	CON_UpdateCursor();
 	doupdate();
 }
-
 #endif

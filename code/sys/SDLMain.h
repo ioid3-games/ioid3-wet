@@ -8,9 +8,8 @@
 #ifndef INCLUDE_SDLMAIN_H
 #define INCLUDE_SDLMAIN_H
 
-#import < Cocoa/Cocoa.h>
+#import <Cocoa/Cocoa.h>
 
 @interface SDLMain : NSObject
 @end
-
 #endif // #ifndef INCLUDE_SDLMAIN_H

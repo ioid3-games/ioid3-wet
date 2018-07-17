@@ -14,7 +14,7 @@
  *
  * ET: Legacy is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
@@ -34,26 +34,25 @@
 #ifndef INCLUDE_SYS_LOADLIB_H
 #define INCLUDE_SYS_LOADLIB_H
 
-#if defined(DEDICATED)
-#   ifdef _WIN32
-#       include < windows.h>
-#       define Sys_LoadLibrary(f)(void *)LoadLibrary(f)
-#       define Sys_UnloadLibrary(h)     FreeLibrary((HMODULE)h)
-#       define Sys_LoadFunction(h, fn)(void *)GetProcAddress((HMODULE)h, fn)
-#       define Sys_LibraryError()   "unknown"
-#   else
-#       include < dlfcn.h>
-#       define Sys_LoadLibrary(f)   dlopen(f, RTLD_NOW)
-#       define Sys_UnloadLibrary(h)     dlclose(h)
-#       define Sys_LoadFunction(h, fn)   dlsym(h, fn)
-#       define Sys_LibraryError()   dlerror()
-#   endif
+#if defined (DEDICATED)
+#ifdef _WIN32
+#include <windows.h>
+#define Sys_LoadLibrary(f) (void *)LoadLibrary(f)
+#define Sys_UnloadLibrary(h) FreeLibrary((HMODULE)h)
+#define Sys_LoadFunction(h, fn) (void *)GetProcAddress((HMODULE)h, fn)
+#define Sys_LibraryError() "unknown"
 #else
-#   include "../sdl/sdl_defs.h"
-#define Sys_LoadLibrary(f)   SDL_LoadObject(f)
-#define Sys_UnloadLibrary(h)     SDL_UnloadObject(h)
-#define Sys_LoadFunction(h, fn)   SDL_LoadFunction(h, fn)
-#define Sys_LibraryError()   SDL_GetError()
+#include <dlfcn.h>
+#define Sys_LoadLibrary(f) dlopen(f, RTLD_NOW)
+#define Sys_UnloadLibrary(h) dlclose(h)
+#define Sys_LoadFunction(h, fn) dlsym(h, fn)
+#define Sys_LibraryError() dlerror()
 #endif
-
-#endif // #ifndef INCLUDE_SYS_LOADLIB_H
+#else
+#include "../sdl/sdl_defs.h"
+#define Sys_LoadLibrary(f) SDL_LoadObject(f)
+#define Sys_UnloadLibrary(h) SDL_UnloadObject(h)
+#define Sys_LoadFunction(h, fn) SDL_LoadFunction(h, fn)
+#define Sys_LibraryError() SDL_GetError()
+#endif
+#endif // INCLUDE_SYS_LOADLIB_H
