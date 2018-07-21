@@ -40,7 +40,7 @@
 =======================================================================================================================================
 SV_Netchan_Encode
 
-NOTE: first four bytes of the data are always:
+First four bytes of the data are always:
   long reliableAcknowledge;
 =======================================================================================================================================
 */
@@ -94,7 +94,7 @@ static void SV_Netchan_Encode(client_t *client, msg_t *msg, char *commandString)
 =======================================================================================================================================
 SV_Netchan_Decode
 
-NOTE: first 12 bytes of the data are always:
+First 12 bytes of the data are always:
   long serverId;
   long messageAcknowledge;
   long reliableAcknowledge;
@@ -110,6 +110,7 @@ static void SV_Netchan_Decode(client_t *client, msg_t *msg) {
 	byte key, *string;
 
 	msg->oob = qfalse;
+
 	serverId = MSG_ReadLong(msg);
 	messageAcknowledge = MSG_ReadLong(msg);
 	reliableAcknowledge = MSG_ReadLong(msg);
@@ -118,7 +119,7 @@ static void SV_Netchan_Decode(client_t *client, msg_t *msg) {
 	msg->bit = sbit;
 	msg->readcount = srdc;
 
-	string = (byte *)client->reliableCommands[reliableAcknowledge &(MAX_RELIABLE_COMMANDS - 1)];
+	string = (byte *)client->reliableCommands[reliableAcknowledge & (MAX_RELIABLE_COMMANDS - 1)];
 	key = client->challenge ^ serverId ^ messageAcknowledge;
 
 	for (i = msg->readcount + SV_DECODE_START; i < msg->cursize; i++) {

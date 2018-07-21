@@ -39,9 +39,9 @@
 #include "qcommon.h"
 #include "cm_polylib.h"
 // originally was 256 and 255 but needs more than that since this includes func_static and func_explosives
-#define MAX_SUBMODELS			512
-#define BOX_MODEL_HANDLE		511
-#define CAPSULE_MODEL_HANDLE	510
+#define MAX_SUBMODELS 512
+#define BOX_MODEL_HANDLE 511
+#define CAPSULE_MODEL_HANDLE 510
 // enable to make the collision detection a bunch faster
 #define MRE_OPTIMIZE
 

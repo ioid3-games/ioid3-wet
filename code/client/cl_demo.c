@@ -33,7 +33,6 @@
  */
 
 #include "client.h"
-
 #ifdef LEGACY_DEBUG
 #define DEMODEBUG(msg, ...) if (Cvar_VariableIntegerValue("demo_debug")) {Com_Printf("^1%s()^2: DEBUG " msg, __FUNCTION__, ## __VA_ARGS__);}
 #define Com_FuncDPrinf(msg, ...) Com_DPrintf("%s(): " msg, __FUNCTION__, ## __VA_ARGS__)
@@ -47,10 +46,8 @@
 #define Com_FuncError(...) Com_Error(ERR_FATAL, __VA_ARGS__)
 #define Com_FuncDrop(...) Com_Error(ERR_DROP, __VA_ARGS__)
 #endif
-
 #define MEGABYTES(x) x / 1024.0 / 1024.0
 #define MAX_REWIND_BACKUPS 20
-
 #define NEW_DEMOFUNC 1
 
 #if NEW_DEMOFUNC
@@ -61,18 +58,14 @@ typedef struct {
 	int gameStartTime;
 	int gameEndTime;
 	//int serverFrameTime;
-
 	//double wantedTime;
 	int snapCount;
 	int demoPos;
 	int snapsInDemo;
-
 	qboolean gotFirstSnap;
 	qboolean skipSnap;
-
 	//qboolean hasWarmup;
 	qboolean seeking;
-
 	double Overf;
 	int firstNonDeltaMessageNumWritten;
 } demoInfo_t;
@@ -85,22 +78,19 @@ typedef struct {
 	clientStatic_t cls;
 	int numSnaps;
 } rewindBackups_t;
-cvar_t *cl_maxRewindBackups;
 
+cvar_t *cl_maxRewindBackups;
 demoInfo_t di;
 rewindBackups_t *rewindBackups = NULL;
 int maxRewindBackups = 0;
 #endif
-
 demoPlayInfo_t dpi = {0, 0};
 
-/**
- * @brief CL_WalkDemoExt
- * @param[in] arg
- * @param[in, out] name
- * @param[in, out] demofile
- * @return
- */
+/*
+=======================================================================================================================================
+CL_WalkDemoExt
+=======================================================================================================================================
+*/
 static int CL_WalkDemoExt(const char *arg, char *name, int *demofile) {
 	int i = 0;
 	*demofile = 0;
@@ -135,16 +125,13 @@ static int CL_WalkDemoExt(const char *arg, char *name, int *demofile) {
 
 	return -1;
 }
-
-// rEWIND AND FASTFORWARD
-
+// REWIND AND FASTFORWARD
 #if NEW_DEMOFUNC
-/**
- * @brief CL_PeekSnapshot
- * @param[in] snapshotNumber
- * @param[out] snapshot
- * @return
- */
+/*
+=======================================================================================================================================
+CL_PeekSnapshot
+=======================================================================================================================================
+*/
 qboolean CL_PeekSnapshot(int snapshotNumber, snapshot_t *snapshot) {
 	clSnapshot_t *clSnap;
 	clSnapshot_t csn;
@@ -269,30 +256,30 @@ qboolean CL_PeekSnapshot(int snapshotNumber, snapshot_t *snapshot) {
 			success = qfalse;
 
 			switch (cmd) {
-			default:
-				Com_FuncDrop("Illegible server message");
-			case svc_nop:
-				break;
-			case svc_serverCommand:
-				MSG_ReadLong(&buf);  // seq
-				//s = MSG_ReadString(&buf);
-				MSG_ReadString(&buf);
-				break;
-			case svc_gamestate:
-				Com_FuncPrinf("FIXME gamestate\n");
-				goto alldone;
-			case svc_snapshot:
-				// TODO: changed this check if it works
-				CL_ParseSnapshot(&buf);
+				default:
+					Com_FuncDrop("Illegible server message");
+				case svc_nop:
+					break;
+				case svc_serverCommand:
+					MSG_ReadLong(&buf); // seq
+					//s = MSG_ReadString(&buf);
+					MSG_ReadString(&buf);
+					break;
+				case svc_gamestate:
+					Com_FuncPrinf("FIXME gamestate\n");
+					goto alldone;
+				case svc_snapshot:
+					// TODO: changed this check if it works
+					CL_ParseSnapshot(&buf);
 
-				if (cl.snap.valid) {
-					success = qtrue;
-				}
+					if (cl.snap.valid) {
+						success = qtrue;
+					}
 
-				break;
-			case svc_download:
-				Com_FuncPrinf("FIXME download\n");
-				goto alldone;
+					break;
+				case svc_download:
+					Com_FuncPrinf("FIXME download\n");
+					goto alldone;
 			}
 		}
 
@@ -305,7 +292,7 @@ alldone:
 			cl.parseEntitiesNum = parseEntitiesNumOrig;
 			return success;
 		}
-		// fIXME other ents not supported yet
+		// FIXME other ents not supported yet
 
 		// if the entities in the frame have fallen out of their
 		// circular buffer, we can't return it
@@ -314,7 +301,7 @@ alldone:
 			(void)FS_Seek(clc.demofile, origPosition, FS_SEEK_SET);
 			clc.lastPacketTime = lastPacketTimeOrig;
 			cl.parseEntitiesNum = parseEntitiesNumOrig;
-			return qtrue;  // fIXME if you fix other ents
+			return qtrue; // FIXME if you fix other ents
 		}
 		// write the snapshot
 		snapshot->snapFlags = clSnap->snapFlags;
@@ -341,14 +328,14 @@ alldone:
 	clc.lastPacketTime = lastPacketTimeOrig;
 	cl.parseEntitiesNum = parseEntitiesNumOrig;
 	// TODO: configstring changes and server commands!!!
-
 	return qtrue;
 }
 
-/**
- * @brief CL_DemoFastForward
- * @param[in] wantedTime
- */
+/*
+=======================================================================================================================================
+CL_DemoFastForward
+=======================================================================================================================================
+*/
 static void CL_DemoFastForward(double wantedTime) {
 	int loopCount;
 
@@ -398,6 +385,7 @@ static void CL_DemoFastForward(double wantedTime) {
 					break;
 				}
 			}
+
 			CL_GetServerCommand(clc.lastExecutedServerCommand + 1);
 		}
 
@@ -418,10 +406,11 @@ static void CL_DemoFastForward(double wantedTime) {
 	di.firstNonDeltaMessageNumWritten = -1;
 }
 
-/**
- * @brief CL_RewindDemo
- * @param[in] wantedTime
- */
+/*
+=======================================================================================================================================
+CL_RewindDemo
+=======================================================================================================================================
+*/
 static void CL_RewindDemo(double wantedTime) {
 	int i;
 	rewindBackups_t *rb;
@@ -461,18 +450,15 @@ static void CL_RewindDemo(double wantedTime) {
 
 	DEMODEBUG("seeking to index %d %d   cl.serverTime:%d  cl.snap.serverTime:%d, new clc.lastExecutedServercommand %d  clc.serverCommandSequence %d\n", i, rb->seekPoint, cl.serverTime, cl.snap.serverTime, rb->clc.lastExecutedServerCommand, rb->clc.serverCommandSequence);
 	(void)FS_Seek(clc.demofile, rb->seekPoint, FS_SEEK_SET);
-
 	// TODO: take a look at these hacks
 	di.numSnaps = rb->numSnaps;
 	di.snapCount = i + 1;
 
 	Com_Memcpy(&cl, &rb->cl, sizeof(clientActive_t));
-
 	Com_Memcpy(&clc, &rb->clc, sizeof(clientConnection_t));
-
 	Com_Memcpy(&cls, &rb->cls, sizeof(clientStatic_t));
-	di.Overf = 0;
 
+	di.Overf = 0;
 	// TODO: this is a hack to set the state to something valid
 	cls.state = CA_ACTIVE;
 	cls.keyCatchers |= KEYCATCH_CGAME;
@@ -480,13 +466,12 @@ static void CL_RewindDemo(double wantedTime) {
 	CL_DemoFastForward(wantedTime);
 }
 
-/**
- * @brief CL_DemoSeekMs
- * @param[in] ms
- * @param[in] exactServerTime
- */
-static void CL_DemoSeekMs(double ms, int exactServerTime)  // server time in milliseconds
-{
+/*
+=======================================================================================================================================
+CL_DemoSeekMs
+=======================================================================================================================================
+*/
+static void CL_DemoSeekMs(double ms, int exactServerTime) { // server time in milliseconds
 	double wantedTime;
 
 	if (!clc.demoplaying) {
@@ -509,10 +494,11 @@ static void CL_DemoSeekMs(double ms, int exactServerTime)  // server time in mil
 	}
 }
 
-/**
- * @brief CL_ParseDemoSnapShotSimple
- * @param[in] msg
- */
+/*
+=======================================================================================================================================
+CL_ParseDemoSnapShotSimple
+=======================================================================================================================================
+*/
 static void CL_ParseDemoSnapShotSimple(msg_t *msg) {
 	int len;
 	clSnapshot_t *old;
@@ -522,6 +508,7 @@ static void CL_ParseDemoSnapShotSimple(msg_t *msg) {
 	int i, packetNum;
 
 	Com_Memset(&newSnap, 0, sizeof(newSnap));
+
 	newSnap.serverCommandNum = clc.serverCommandSequence;
 	newSnap.serverTime = MSG_ReadLong(msg);
 	newSnap.messageNum = clc.serverMessageSequence;
@@ -536,7 +523,7 @@ static void CL_ParseDemoSnapShotSimple(msg_t *msg) {
 	newSnap.snapFlags = MSG_ReadByte(msg);
 
 	if (newSnap.deltaNum <= 0) {
-		newSnap.valid = qtrue;      // uncompressed frame
+		newSnap.valid = qtrue; // uncompressed frame
 		old = NULL;
 	} else {
 		old = &cl.snapshots[newSnap.deltaNum & PACKET_MASK];
@@ -545,13 +532,12 @@ static void CL_ParseDemoSnapShotSimple(msg_t *msg) {
 			// should never happen
 			Com_FuncPrinf("Delta from invalid frame(not supposed to happen!).\n");
 		} else if (old->messageNum != newSnap.deltaNum) {
-			// the frame that the server did the delta from
-			// is too old, so we can't reconstruct it properly.
+			// the frame that the server did the delta from is too old, so we can't reconstruct it properly
 			Com_FuncPrinf("Delta frame too old.\n");
 		} else if (cl.parseEntitiesNum - old->parseEntitiesNum > MAX_PARSE_ENTITIES - 128) {
 			Com_FuncPrinf("Delta parseEntitiesNum too old.\n");
 		} else {
-			newSnap.valid = qtrue;  // valid delta parse
+			newSnap.valid = qtrue; // valid delta parse
 		}
 	}
 	// read areamask
@@ -570,16 +556,12 @@ static void CL_ParseDemoSnapShotSimple(msg_t *msg) {
 	}
 	// read packet entities
 	CL_ParsePacketEntities(msg, old, &newSnap);
-
-	// if not valid, dump the entire thing now that it has
-	// been properly read
+	// if not valid, dump the entire thing now that it has been properly read
 	if (!newSnap.valid) {
 		return;
 	}
-	// clear the valid flags of any snapshots between the last
-	// received and this one, so if there was a dropped packet
-	// it won't look like something valid to delta from next
-	// time we wrap around in the buffer
+	// clear the valid flags of any snapshots between the last received and this one, so if there was a dropped packet
+	// it won't look like something valid to delta from next time we wrap around in the buffer
 	oldMessageNum = cl.snap.messageNum + 1;
 
 	if (newSnap.messageNum - oldMessageNum >= PACKET_BACKUP) {
@@ -606,16 +588,19 @@ static void CL_ParseDemoSnapShotSimple(msg_t *msg) {
 	cl.newSnapshots = qtrue;
 }
 
-/**
- * @brief Do very shallow parse of the demo(could be extended) just to get times and snapshot count
- */
+/*
+=======================================================================================================================================
+CL_ParseDemo
+
+Do very shallow parse of the demo(could be extended) just to get times and snapshot count.
+=======================================================================================================================================
+*/
 static void CL_ParseDemo(void) {
 	int tstart = 0;
 	int demofile = 0;
 
 	// reset our demo data
 	Com_Memset(&di, 0, sizeof(di));
-
 	// parse start
 	di.gameStartTime = -1;
 	di.gameEndTime = -1;
@@ -671,6 +656,7 @@ static void CL_ParseDemo(void) {
 		buf.readcount = 0;
 		// parse
 		msg = &buf;
+
 		MSG_Bitstream(msg);
 		// get the reliable sequence acknowledge number
 		clc.reliableAcknowledge = MSG_ReadLong(msg);
@@ -689,50 +675,51 @@ static void CL_ParseDemo(void) {
 			if (cmd == svc_EOF) {
 				break;
 			}
-
 			// other commands
 			switch (cmd) {
-			default:
-				Com_FuncDrop("Illegible server message %d", cmd);
-			case svc_nop:
-				break;
-			case svc_serverCommand:
-				MSG_ReadLong(msg);
-				MSG_ReadString(msg);
-				break;
-			case svc_gamestate:
-				clc.serverCommandSequence = MSG_ReadLong(msg);
-				cl.gameState.dataCount = 1;
-				while (qtrue) {
-					int cmd2 = MSG_ReadByte(msg);
+				default:
+					Com_FuncDrop("Illegible server message %d", cmd);
+				case svc_nop:
+					break;
+				case svc_serverCommand:
+					MSG_ReadLong(msg);
+					MSG_ReadString(msg);
+					break;
+				case svc_gamestate:
+					clc.serverCommandSequence = MSG_ReadLong(msg);
+					cl.gameState.dataCount = 1;
 
-					if (cmd2 == svc_EOF) {
-						break;
+					while (qtrue) {
+						int cmd2 = MSG_ReadByte(msg);
+
+						if (cmd2 == svc_EOF) {
+							break;
+						}
+
+						if (cmd2 == svc_configstring) {
+							MSG_ReadShort(msg);
+							MSG_ReadBigString(msg);
+						} else if (cmd2 == svc_baseline) {
+							entityState_t s1, s2;
+							Com_Memset(&s1, 0, sizeof(s1));
+							Com_Memset(&s2, 0, sizeof(s2));
+							MSG_ReadBits(msg, GENTITYNUM_BITS);
+							MSG_ReadDeltaEntity(msg, &s1, &s2, 0);
+						} else {
+							Com_FuncDrop("bad command byte");
+						}
 					}
 
-					if (cmd2 == svc_configstring) {
-						MSG_ReadShort(msg);
-						MSG_ReadBigString(msg);
-					} else if (cmd2 == svc_baseline) {
-						entityState_t s1, s2;
-						Com_Memset(&s1, 0, sizeof(s1));
-						Com_Memset(&s2, 0, sizeof(s2));
-						MSG_ReadBits(msg, GENTITYNUM_BITS);
-						MSG_ReadDeltaEntity(msg, &s1, &s2, 0);
-					} else {
-						Com_FuncDrop("bad command byte");
-					}
-				}
-				MSG_ReadLong(msg);
-				MSG_ReadLong(msg);
-				break;
-			case svc_snapshot:
-				CL_ParseDemoSnapShotSimple(msg);
-				break;
-			case svc_download:
-				MSG_ReadShort(msg);
+					MSG_ReadLong(msg);
+					MSG_ReadLong(msg);
+					break;
+				case svc_snapshot:
+					CL_ParseDemoSnapShotSimple(msg);
+					break;
+				case svc_download:
+					MSG_ReadShort(msg);
 
-				break;
+					break;
 			}
 		}
 
@@ -751,7 +738,6 @@ static void CL_ParseDemo(void) {
 			// set the timedelta so we are exactly on this first frame
 			cl.serverTimeDelta = cl.snap.serverTime - cls.realtime;
 			cl.oldServerTime = cl.snap.serverTime;
-
 			clc.timeDemoBaseTime = cl.snap.serverTime;
 		}
 
@@ -774,12 +760,16 @@ static void CL_ParseDemo(void) {
 	Com_FuncPrinf("Snaps in demo: %i\n", di.snapsInDemo);
 	Com_FuncPrinf("last serverTime %d   total %f minutes\n", cl.snap.serverTime, (cl.snap.serverTime - di.firstServerTime) / 1000.0 / 60.0);
 	Com_FuncPrinf("parse time %f seconds\n", (double)(Sys_Milliseconds() - tstart) / 1000.0);
+
 	(void)FS_Seek(clc.demofile, 0, FS_SEEK_SET);
+
 	clc.demoplaying = qfalse;
 	demofile = clc.demofile;
+
 	CL_ClearState();
 	Com_Memset(&clc, 0, sizeof(clc));
 	Com_ClearDownload();
+
 	clc.demofile = demofile;
 	cls.state = CA_DISCONNECTED;
 	cl_connectedToPureServer = qfalse;
@@ -788,19 +778,24 @@ static void CL_ParseDemo(void) {
 	dpi.lastTime = di.lastServerTime;
 }
 
-/**
- * @brief CL_FreeDemoPoints
- */
+/*
+=======================================================================================================================================
+CL_FreeDemoPoints
+=======================================================================================================================================
+*/
 void CL_FreeDemoPoints(void) {
+
 	if (rewindBackups) {
 		Com_Dealloc(rewindBackups);
 		rewindBackups = NULL;
 	}
 }
 
-/**
- * @brief CL_AllocateDemoPoints
- */
+/*
+=======================================================================================================================================
+CL_AllocateDemoPoints
+=======================================================================================================================================
+*/
 void CL_AllocateDemoPoints(void) {
 	CL_FreeDemoPoints();
 
@@ -819,20 +814,22 @@ void CL_AllocateDemoPoints(void) {
 	Com_FuncPrinf("allocated %.2f MB for rewind backups\n", MEGABYTES(sizeof(rewindBackups_t) * maxRewindBackups));
 	Com_Memset(rewindBackups, 0, sizeof(rewindBackups_t) * maxRewindBackups);
 }
-
 #endif
-
 /*
-=======================================================================
-CLIENT SIDE DEMO RECORDING
-=======================================================================
+=======================================================================================================================================
+
+	CLIENT SIDE DEMO RECORDING
+
+=======================================================================================================================================
 */
 
-/**
- * @brief Dumps the current net message, prefixed by the length
- * @param[in] msg
- * @param[in] headerBytes
- */
+/*
+=======================================================================================================================================
+CL_WriteDemoMessage
+
+Dumps the current net message, prefixed by the length.
+=======================================================================================================================================
+*/
 void CL_WriteDemoMessage(msg_t *msg, int headerBytes) {
 	int len, swlen;
 
@@ -840,7 +837,6 @@ void CL_WriteDemoMessage(msg_t *msg, int headerBytes) {
 	len = clc.serverMessageSequence;
 	swlen = LittleLong(len);
 	(void)FS_Write(&swlen, 4, clc.demofile);
-
 	// skip the packet sequencing information
 	len = msg->cursize - headerBytes;
 	swlen = LittleLong(len);
@@ -848,9 +844,13 @@ void CL_WriteDemoMessage(msg_t *msg, int headerBytes) {
 	(void)FS_Write(msg->data + headerBytes, len, clc.demofile);
 }
 
-/**
- * @brief Stop recording a demo
- */
+/*
+=======================================================================================================================================
+CL_StopRecord_f
+
+Stop recording a demo.
+=======================================================================================================================================
+*/
 void CL_StopRecord_f(void) {
 	int len;
 
@@ -860,24 +860,27 @@ void CL_StopRecord_f(void) {
 	}
 	// finish up
 	len = -1;
+
 	(void)FS_Write(&len, 4, clc.demofile);
 	(void)FS_Write(&len, 4, clc.demofile);
 	FS_FCloseFile(clc.demofile);
-	clc.demofile = 0;
 
+	clc.demofile = 0;
 	clc.demorecording = qfalse;
+
 	Cvar_Set("cl_demorecording", "0");
 	Cvar_Set("cl_demofilename", "");
 	Cvar_Set("cl_demooffset", "0");
 	Com_FuncPrinf("Stopped demo.\n");
 }
 
-/**
- * @brief CL_DemoFilename
- * @param[in] number
- * @param[in] fileName
- */
+/*
+=======================================================================================================================================
+CL_DemoFilename
+=======================================================================================================================================
+*/
 void CL_DemoFilename(int number, char *fileName) {
+
 	if (number < 0 || number > 9999) {
 		Com_sprintf(fileName, MAX_OSPATH, "demo9999");
 		return;
@@ -886,11 +889,14 @@ void CL_DemoFilename(int number, char *fileName) {
 	Com_sprintf(fileName, MAX_OSPATH, "demo%04i", number);
 }
 
-static char demoName[MAX_OSPATH];        // compiler bug workaround
+static char demoName[MAX_OSPATH]; // compiler bug workaround
+/*
+=======================================================================================================================================
+CL_Record_f
 
-/**
- * @brief Begins recording a demo from the current position
- */
+Begins recording a demo from the current position.
+=======================================================================================================================================
+*/
 void CL_Record_f(void) {
 	char name[MAX_OSPATH];
 	char *s;
@@ -924,7 +930,7 @@ void CL_Record_f(void) {
 			len = FS_ReadFile(name, NULL);
 
 			if (len <= 0) {
-				break;  // file doesn't exist
+				break; // file doesn't exist
 			}
 		}
 	}
@@ -932,10 +938,11 @@ void CL_Record_f(void) {
 	CL_Record(name);
 }
 
-/**
- * @brief CL_Record
- * @param[in] name
- */
+/*
+=======================================================================================================================================
+CL_Record
+=======================================================================================================================================
+*/
 void CL_Record(const char *name) {
 	int i;
 	msg_t buf;
@@ -955,24 +962,20 @@ void CL_Record(const char *name) {
 	}
 
 	clc.demorecording = qtrue;
-	Cvar_Set("cl_demorecording", "1");    // fretn
+
+	Cvar_Set("cl_demorecording", "1"); // fretn
 	Q_strncpyz(clc.demoName, demoName, sizeof(clc.demoName));
-	Cvar_Set("cl_demofilename", clc.demoName);    // bani
-	Cvar_Set("cl_demooffset", "0");    // bani
-
-	// don't start saving messages until a non - delta compressed message is received
+	Cvar_Set("cl_demofilename", clc.demoName); // bani
+	Cvar_Set("cl_demooffset", "0"); // bani
+	// don't start saving messages until a non-delta compressed message is received
 	clc.demowaiting = qtrue;
-
 	// write out the gamestate message
 	MSG_Init(&buf, bufData, sizeof(bufData));
 	MSG_Bitstream(&buf);
-
 	// NOTE: all server->client messages now acknowledge
 	MSG_WriteLong(&buf, clc.reliableSequence);
-
 	MSG_WriteByte(&buf, svc_gamestate);
 	MSG_WriteLong(&buf, clc.serverCommandSequence);
-
 	// configstrings
 	for (i = 0; i < MAX_CONFIGSTRINGS; i++) {
 		if (!cl.gameState.stringOffsets[i]) {
@@ -999,17 +1002,14 @@ void CL_Record(const char *name) {
 	}
 
 	MSG_WriteByte(&buf, svc_EOF);
-
 	// finished writing the gamestate stuff
 
 	// write the client num
 	MSG_WriteLong(&buf, clc.clientNum);
 	// write the checksum feed
 	MSG_WriteLong(&buf, clc.checksumFeed);
-
 	// finished writing the client packet
 	MSG_WriteByte(&buf, svc_EOF);
-
 	// write it to the demo file
 	len = LittleLong(clc.serverMessageSequence - 1);
 	(void)FS_Write(&len, 4, clc.demofile);
@@ -1017,46 +1017,49 @@ void CL_Record(const char *name) {
 	len = LittleLong(buf.cursize);
 	(void)FS_Write(&len, 4, clc.demofile);
 	(void)FS_Write(buf.data, buf.cursize, clc.demofile);
-
 	// the rest of the demo file will be copied from net messages
 }
 
 /*
-=======================================================================
-CLIENT SIDE DEMO PLAYBACK
-=======================================================================
+=======================================================================================================================================
+
+	CLIENT SIDE DEMO PLAYBACK
+
+=======================================================================================================================================
 */
 
-/**
- * @brief CL_DemoCleanUp
- */
+/*
+=======================================================================================================================================
+CL_DemoCleanUp
+=======================================================================================================================================
+*/
 void CL_DemoCleanUp(void) {
+
 	if (clc.demofile) {
 		FS_FCloseFile(clc.demofile);
 		clc.demofile = 0;
 	}
-
 #if NEW_DEMOFUNC
 	CL_FreeDemoPoints();
 #endif
 }
 
-/**
- * @brief CL_DemoCompleted
- */
+/*
+=======================================================================================================================================
+CL_DemoCompleted
+=======================================================================================================================================
+*/
 void CL_DemoCompleted(void) {
 #if NEW_DEMOFUNC
 	CL_FreeDemoPoints();
 #endif
-
 	if (cl_timedemo && cl_timedemo->integer) {
 		int time;
 
 		time = Sys_Milliseconds() - clc.timeDemoStart;
 
 		if (time > 0) {
-			Com_FuncPrinf("%i frames, %3.1f seconds: %3.1f fps\n", clc.timeDemoFrames,
-			              time / 1000.0, clc.timeDemoFrames * 1000.0 / time);
+			Com_FuncPrinf("%i frames, %3.1f seconds: %3.1f fps\n", clc.timeDemoFrames, time / 1000.0, clc.timeDemoFrames * 1000.0 / time);
 		}
 	}
 
@@ -1073,24 +1076,21 @@ void CL_DemoCompleted(void) {
 	CL_NextDemo();
 }
 
-/**
- * @brief CL_DemoRun
- */
+/*
+=======================================================================================================================================
+CL_DemoRun
+=======================================================================================================================================
+*/
 void CL_DemoRun(void) {
 #if NEW_DEMOFUNC
 	int loopCount = -1;
 	int startTime;
 	static int lastTime = -1;
 #endif
-
-	// if we are playing a demo back, we can just keep reading
-	// messages from the demo file until the cgame definately
+	// if we are playing a demo back, we can just keep reading messages from the demo file until the cgame definately
 	// has valid snapshots to interpolate between
-
-	// a timedemo will always use a deterministic set of time samples
-	// no matter what speed machine it is run on,
-	// while a normal demo may have different time samples
-	// each time it is played back
+	// a timedemo will always use a deterministic set of time samples no matter what speed machine it is run on,
+	// while a normal demo may have different time samples each time it is played back
 	if (cl_timedemo->integer) {
 		if (!clc.timeDemoStart) {
 			clc.timeDemoStart = Sys_Milliseconds();
@@ -1103,15 +1103,12 @@ void CL_DemoRun(void) {
 	if (cl_freezeDemo->integer) {
 		return;
 	}
-
 #if NEW_DEMOFUNC
 	startTime = cl.snap.serverTime;
-#endif  // nEW_DEMOFUNC
-
+#endif // NEW_DEMOFUNC
 	while (cl.serverTime >= cl.snap.serverTime) {
 		// feed another message, which should change the contents of cl.snap
 		CL_ReadDemoMessage();
-
 #if NEW_DEMOFUNC
 		loopCount++;
 		DEMODEBUG("cl.serverTime >= cl.snap.serverTime   %d  %d  %d\n", cl.serverTime, cl.snap.serverTime, loopCount);
@@ -1132,17 +1129,19 @@ void CL_DemoRun(void) {
 				}
 			}
 		}
-#endif  // nEW_DEMOFUNC
+#endif // NEW_DEMOFUNC
 		if (cls.state != CA_ACTIVE) {
 			Cvar_Set("timescale", "1");
-			return;     // end of demo
+			return; // end of demo
 		}
 	}
 }
 
-/**
- * @brief CL_ReadDemoMessage
- */
+/*
+=======================================================================================================================================
+CL_ReadDemoMessage
+=======================================================================================================================================
+*/
 void CL_ReadDemoMessage(void) {
 	int r;
 	msg_t buf;
@@ -1153,13 +1152,10 @@ void CL_ReadDemoMessage(void) {
 		CL_DemoCompleted();
 		return;
 	}
-
 #if NEW_DEMOFUNC
 	di.numSnaps++;
 
-	if (di.snapCount < maxRewindBackups &&
-	((!di.gotFirstSnap  &&  !(cls.state >= CA_CONNECTED && cls.state < CA_PRIMED))
-	     || (di.gotFirstSnap  &&  di.numSnaps %(di.snapsInDemo / maxRewindBackups) == 0))) {
+	if (di.snapCount < maxRewindBackups && ((!di.gotFirstSnap  &&  !(cls.state >= CA_CONNECTED && cls.state < CA_PRIMED)) || (di.gotFirstSnap && di.numSnaps %(di.snapsInDemo / maxRewindBackups) == 0))) {
 		rewindBackups_t *rb;
 
 		if (!di.skipSnap) {
@@ -1187,7 +1183,6 @@ void CL_ReadDemoMessage(void) {
 keep_reading:
 
 #endif
-
 	// get the sequence number
 	r = FS_Read(&s, 4, clc.demofile);
 
@@ -1197,10 +1192,8 @@ keep_reading:
 	}
 
 	clc.serverMessageSequence = LittleLong(s);
-
 	// init the message
 	MSG_Init(&buf, bufData, sizeof(bufData));
-
 	// get the length
 	r = FS_Read(&buf.cursize, 4, clc.demofile);
 
@@ -1230,14 +1223,15 @@ keep_reading:
 
 	clc.lastPacketTime = cls.realtime;
 	buf.readcount = 0;
+
 	CL_ParseServerMessage(&buf);
 }
 
-/**
- * @brief CL_CompleteDemoName
- * @param args - unused
- * @param[in] argNum
- */
+/*
+=======================================================================================================================================
+CL_CompleteDemoName
+=======================================================================================================================================
+*/
 static void CL_CompleteDemoName(char *args, int argNum) {
 	if (argNum == 2) {
 		char demoExt[16];
@@ -1247,9 +1241,13 @@ static void CL_CompleteDemoName(char *args, int argNum) {
 	}
 }
 
-/**
- * @brief Usage: demo \ < demoname\ > 
- */
+/*
+=======================================================================================================================================
+CL_PlayDemo_f
+
+Usage: demo \ <demoname\>.
+=======================================================================================================================================
+*/
 void CL_PlayDemo_f(void) {
 	char name[MAX_OSPATH], retry[MAX_OSPATH];
 	char *arg, *ext_test;
@@ -1263,7 +1261,6 @@ void CL_PlayDemo_f(void) {
 	Cvar_Set("sv_killserver", "1");
 
 	CL_Disconnect(qtrue);
-
 	// open the demo file
 	arg = Cmd_Argv(1);
 	// check for an extension .DEMOEXT_??(?? is protocol)
@@ -1304,14 +1301,11 @@ void CL_PlayDemo_f(void) {
 	}
 
 	Q_strncpyz(clc.demoName, arg, sizeof(clc.demoName));
-
 	Con_Close();
-
 #if NEW_DEMOFUNC
 	CL_AllocateDemoPoints();
 	CL_ParseDemo();
 #endif
-
 	cls.state = CA_CONNECTED;
 	clc.demoplaying = qtrue;
 
@@ -1320,20 +1314,21 @@ void CL_PlayDemo_f(void) {
 	}
 
 	Q_strncpyz(cls.servername, arg, sizeof(cls.servername));
-
 	// read demo messages until connected
 	while (cls.state >= CA_CONNECTED && cls.state < CA_PRIMED) {
 		CL_ReadDemoMessage();
 	}
-	// don't get the first snapshot this frame, to prevent the long
-	// time from the gamestate load from messing causing a time skip
+	// don't get the first snapshot this frame, to prevent the long time from the gamestate load from messing causing a time skip
 	clc.firstDemoFrameSkipped = qfalse;
 }
 
-/**
- * @brief Called when a demo or cinematic finishes
- * If the "nextdemo" cvar is set, that command will be issued
- */
+/*
+=======================================================================================================================================
+CL_NextDemo
+
+Called when a demo or cinematic finishes. If the "nextdemo" cvar is set, that command will be issued.
+=======================================================================================================================================
+*/
 void CL_NextDemo(void) {
 	char v[MAX_STRING_CHARS];
 
@@ -1350,11 +1345,12 @@ void CL_NextDemo(void) {
 	Cbuf_AddText("\n");
 	Cbuf_Execute();
 }
-
 #if NEW_DEMOFUNC
-/**
- * @brief CL_Rewind_f
- */
+/*
+=======================================================================================================================================
+CL_Rewind_f
+=======================================================================================================================================
+*/
 void CL_Rewind_f(void) {
 	double t;
 
@@ -1383,9 +1379,11 @@ void CL_Rewind_f(void) {
 	CL_RewindDemo((double)cl.serverTime + di.Overf - t);
 }
 
-/**
- * @brief CL_FastForward_f
- */
+/*
+=======================================================================================================================================
+CL_FastForward_f
+=======================================================================================================================================
+*/
 void CL_FastForward_f(void) {
 	double t;
 	double wantedTime;
@@ -1415,9 +1413,11 @@ void CL_FastForward_f(void) {
 	CL_DemoFastForward(wantedTime);
 }
 
-/**
- * @brief CL_SeekServerTime_f
- */
+/*
+=======================================================================================================================================
+CL_SeekServerTime_f
+=======================================================================================================================================
+*/
 void CL_SeekServerTime_f(void) {
 	double f;
 
@@ -1437,9 +1437,11 @@ void CL_SeekServerTime_f(void) {
 	CL_DemoSeekMs(f, -1);
 }
 
-/**
- * @brief CL_Seek_f
- */
+/*
+=======================================================================================================================================
+CL_Seek_f
+=======================================================================================================================================
+*/
 void CL_Seek_f(void) {
 	double t;
 
@@ -1462,9 +1464,11 @@ void CL_Seek_f(void) {
 	CL_DemoSeekMs((double)di.firstServerTime + t, -1);
 }
 
-/**
- * @brief CL_SeekEnd_f
- */
+/*
+=======================================================================================================================================
+CL_SeekEnd_f
+=======================================================================================================================================
+*/
 void CL_SeekEnd_f(void) {
 	double t;
 
@@ -1487,9 +1491,11 @@ void CL_SeekEnd_f(void) {
 	CL_DemoSeekMs((double)di.lastServerTime - t, -1);
 }
 
-/**
- * @brief CL_SeekNext_f
- */
+/*
+=======================================================================================================================================
+CL_SeekNext_f
+=======================================================================================================================================
+*/
 void CL_SeekNext_f(void) {
 	snapshot_t snapshot;
 	qboolean r;
@@ -1525,9 +1531,11 @@ void CL_SeekNext_f(void) {
 	CL_DemoSeekMs(0, snapshot.serverTime);
 }
 
-/**
- * @brief CL_SeekPrev_f
- */
+/*
+=======================================================================================================================================
+CL_SeekPrev_f
+=======================================================================================================================================
+*/
 void CL_SeekPrev_f(void) {
 	clSnapshot_t *clSnap;
 	int i = 0;
@@ -1550,15 +1558,15 @@ void CL_SeekPrev_f(void) {
 	CL_DemoSeekMs(0, clSnap->serverTime);
 }
 #endif
-
-/**
- * @brief CL_PauseDemo_f
- */
+/*
+=======================================================================================================================================
+CL_PauseDemo_f
+=======================================================================================================================================
+*/
 void CL_PauseDemo_f(void) {
 #if NEW_DEMOFUNC
 	static int pauseTime = 0;
 #endif
-
 	if (!clc.demoplaying) {
 		return;
 	}
@@ -1567,7 +1575,6 @@ void CL_PauseDemo_f(void) {
 		Com_FuncPrinf("Demo pausing is only supported on legacy mod, sorry\n");
 		return;
 	}
-
 #if NEW_DEMOFUNC
 	if (!cl_freezeDemo->integer) {
 		pauseTime = cl.serverTime;
@@ -1576,20 +1583,21 @@ void CL_PauseDemo_f(void) {
 		CL_DemoSeekMs(0, pauseTime);
 	}
 #endif
-
 	Cvar_SetValue("cl_freezeDemo", !cl_freezeDemo->integer);
 }
 
-/**
- * @brief CL_DemoInit
- */
+/*
+=======================================================================================================================================
+CL_DemoInit
+=======================================================================================================================================
+*/
 void CL_DemoInit(void) {
+
 	Cmd_AddCommand("record", CL_Record_f);
 	Cmd_AddCommand("stoprecord", CL_StopRecord_f);
 	Cmd_AddCommand("demo", CL_PlayDemo_f);
 	Cmd_SetCommandCompletionFunc("demo", CL_CompleteDemoName);
 	Cmd_AddCommand("pausedemo", CL_PauseDemo_f);
-
 #if NEW_DEMOFUNC
 	Cmd_AddCommand("rewind", CL_Rewind_f);
 	Cmd_AddCommand("fastforward", CL_FastForward_f);

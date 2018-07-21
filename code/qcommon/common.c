@@ -155,7 +155,7 @@ static void (*rd_flush)(char *buffer);
 Com_BeginRedirect
 =======================================================================================================================================
 */
-void Com_BeginRedirect(char *buffer, size_t buffersize, void(*flush)(char *)) {
+void Com_BeginRedirect(char *buffer, size_t buffersize, void (*flush)(char *)) {
 
 	if (!buffer || !buffersize || !flush) {
 		return;
@@ -187,7 +187,7 @@ void Com_EndRedirect(void) {
 =======================================================================================================================================
 Com_Printf
 
-Both client and server can use this, and it will output to the apropriate place.
+Both client and server can use this, and it will output to the appropriate place.
 A raw string should NEVER be passed as fmt, because of "%f" type crashers.
 =======================================================================================================================================
 */
@@ -397,13 +397,13 @@ void Com_Quit_f(void) {
 
 	COMMAND LINE FUNCTIONS
 
-	+ characters seperate the commandLine string into multiple console command lines.
+	+ characters separate the commandLine string into multiple console command lines.
 
 	All of these are valid:
 
-		quake3 +set test blah +map test
-		quake3 set test blah +map test
-		quake3 set test blah +map test
+	quake3 +set test blah +map test
+	quake3 set test blah+map test
+	quake3 set test blah + map test
 
 =======================================================================================================================================
 */
@@ -429,8 +429,8 @@ void Com_ParseCommandLine(char *commandLine) {
 		if (*commandLine == '"') {
 			inq = !inq;
 		}
-		// look for a + seperating character
-		// if commandLine came from a file, we might have real line seperators
+		// look for a + separating character
+		// if commandLine came from a file, we might have real line separators
 		if (*commandLine == '+' || *commandLine == '\n' || *commandLine == '\r') {
 			if (com_numConsoleLines == MAX_CONSOLE_LINES) {
 				return;
@@ -533,7 +533,7 @@ void Com_StartupVariable(const char *match) {
 =======================================================================================================================================
 Com_AddStartupCommands
 
-Adds command line parameters as script statements. Commands are seperated by + signs.
+Adds command line parameters as script statements. Commands are separated by + signs.
 Returns qtrue if any late commands were added, which will keep the demoloop from immediately starting.
 =======================================================================================================================================
 */
@@ -1072,12 +1072,13 @@ void *Z_TagMalloc(int size, int tag) {
 
 	return (void *)((byte *)base + sizeof(memblock_t));
 }
-#ifdef ZONE_DEBUG
+
 /*
 =======================================================================================================================================
 Z_Malloc
 =======================================================================================================================================
 */
+#ifdef ZONE_DEBUG
 void *Z_MallocDebug(int size, char *label, char *file, int line) {
 #else
 void *Z_Malloc(int size) {
@@ -1097,7 +1098,7 @@ void *Z_Malloc(int size) {
 #ifdef ZONE_DEBUG
 /*
 =======================================================================================================================================
-S_Malloc
+S_MallocDebug
 =======================================================================================================================================
 */
 void *S_MallocDebug(int size, char *label, char *file, int line) {
@@ -1780,7 +1781,7 @@ static void Hunk_SwapBanks(void) {
 		hunk_permanent = swap;
 	}
 }
-#ifdef HUNK_DEBUG
+
 /*
 =======================================================================================================================================
 Hunk_Alloc
@@ -1788,6 +1789,7 @@ Hunk_Alloc
 Allocate permanent (until the hunk is cleared) memory.
 =======================================================================================================================================
 */
+#ifdef HUNK_DEBUG
 void *Hunk_AllocDebug(unsigned int size, ha_pref preference, char *label, char *file, int line) {
 #else
 void *Hunk_Alloc(unsigned int size, ha_pref preference) {
@@ -2762,7 +2764,7 @@ Writes key bindings and archived cvars to config file if modified.
 */
 void Com_WriteConfiguration(void) {
 
-	// if we are quiting without fully initializing, make sure we don't write out anything
+	// if we are quitting without fully initializing, make sure we don't write out anything
 	if (!com_fullyInitialized) {
 		return;
 	}

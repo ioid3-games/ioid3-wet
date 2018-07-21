@@ -96,7 +96,7 @@ void Cbuf_Init(void) {
 =======================================================================================================================================
 Cbuf_AddText
 
-Adds command text at the end of the buffer, does NOT add a final \\n.
+Adds command text at the end of the buffer, does NOT add a final \n.
 =======================================================================================================================================
 */
 void Cbuf_AddText(const char *text) {
@@ -118,7 +118,8 @@ void Cbuf_AddText(const char *text) {
 =======================================================================================================================================
 Cbuf_InsertText
 
-Adds command text immediately after the current command. Adds a \\n to the text.
+Adds command text immediately after the current command.
+Adds a \n to the text.
 =======================================================================================================================================
 */
 void Cbuf_InsertText(const char *text) {
@@ -181,6 +182,7 @@ void Cbuf_Execute(void) {
 	char *text;
 	char line[MAX_CMD_LINE];
 	int quotes;
+
 	// this will keep // style comments all on one line by not breaking on a semicolon. It will keep /* ... */ style comments all on
 	// one line by not breaking it for semicolon or newline
 	qboolean in_star_comment = qfalse;
@@ -514,7 +516,8 @@ void Cmd_ArgsBuffer(char *buffer, size_t bufferLength) {
 =======================================================================================================================================
 Cmd_Cmd
 
-Retrieve the unmodified command string. For rcon use when you want to transmit without altering quoting.
+Retrieve the unmodified command string.
+For rcon use when you want to transmit without altering quoting.
 =======================================================================================================================================
 */
 char *Cmd_Cmd(void) {
@@ -549,8 +552,8 @@ void Cmd_Args_Sanitize(void) {
 =======================================================================================================================================
 Cmd_TokenizeString2
 
-Parses the given string into command line tokens. The text is copied to a seperate buffer and 0 characters are inserted in the
-apropriate place. The argv array will point into this temporary buffer.
+Parses the given string into command line tokens. The text is copied to a separate buffer and 0 characters are inserted in the
+appropriate place. The argv array will point into this temporary buffer.
 =======================================================================================================================================
 */
 static void Cmd_TokenizeString2(const char *text_in, qboolean ignoreQuotes) {

@@ -14,7 +14,7 @@
  *
  * ET: Legacy is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
@@ -34,105 +34,99 @@
  */
 
 #ifdef FEATURE_OPENAL
-
 #include "qal.h"
-
 #ifdef FEATURE_OPENAL_DLOPEN
-
 #include "../sys/sys_loadlib.h"
 
-LPALENABLE               qalEnable;
-LPALDISABLE              qalDisable;
-LPALISENABLED            qalIsEnabled;
-LPALGETSTRING            qalGetString;
-LPALGETBOOLEANV          qalGetBooleanv;
-LPALGETINTEGERV          qalGetIntegerv;
-LPALGETFLOATV            qalGetFloatv;
-LPALGETDOUBLEV           qalGetDoublev;
-LPALGETBOOLEAN           qalGetBoolean;
-LPALGETINTEGER           qalGetInteger;
-LPALGETFLOAT             qalGetFloat;
-LPALGETDOUBLE            qalGetDouble;
-LPALGETERROR             qalGetError;
-LPALISEXTENSIONPRESENT   qalIsExtensionPresent;
-LPALGETPROCADDRESS       qalGetProcAddress;
-LPALGETENUMVALUE         qalGetEnumValue;
-LPALLISTENERF            qalListenerf;
-LPALLISTENER3F           qalListener3f;
-LPALLISTENERFV           qalListenerfv;
-LPALLISTENERI            qalListeneri;
-LPALGETLISTENERF         qalGetListenerf;
-LPALGETLISTENER3F        qalGetListener3f;
-LPALGETLISTENERFV        qalGetListenerfv;
-LPALGETLISTENERI         qalGetListeneri;
-LPALGENSOURCES           qalGenSources;
-LPALDELETESOURCES        qalDeleteSources;
-LPALISSOURCE             qalIsSource;
-LPALSOURCEF              qalSourcef;
-LPALSOURCE3F             qalSource3f;
-LPALSOURCEFV             qalSourcefv;
-LPALSOURCEI              qalSourcei;
-LPALSOURCE3I             qalSource3i;
-LPALGETSOURCEF           qalGetSourcef;
-LPALGETSOURCE3F          qalGetSource3f;
-LPALGETSOURCEFV          qalGetSourcefv;
-LPALGETSOURCEI           qalGetSourcei;
-LPALSOURCEPLAYV          qalSourcePlayv;
-LPALSOURCESTOPV          qalSourceStopv;
-LPALSOURCEREWINDV        qalSourceRewindv;
-LPALSOURCEPAUSEV         qalSourcePausev;
-LPALSOURCEPLAY           qalSourcePlay;
-LPALSOURCESTOP           qalSourceStop;
-LPALSOURCEREWIND         qalSourceRewind;
-LPALSOURCEPAUSE          qalSourcePause;
-LPALSOURCEQUEUEBUFFERS   qalSourceQueueBuffers;
+LPALENABLE qalEnable;
+LPALDISABLE qalDisable;
+LPALISENABLED qalIsEnabled;
+LPALGETSTRING qalGetString;
+LPALGETBOOLEANV qalGetBooleanv;
+LPALGETINTEGERV qalGetIntegerv;
+LPALGETFLOATV qalGetFloatv;
+LPALGETDOUBLEV qalGetDoublev;
+LPALGETBOOLEAN qalGetBoolean;
+LPALGETINTEGER qalGetInteger;
+LPALGETFLOAT qalGetFloat;
+LPALGETDOUBLE qalGetDouble;
+LPALGETERROR qalGetError;
+LPALISEXTENSIONPRESENT qalIsExtensionPresent;
+LPALGETPROCADDRESS qalGetProcAddress;
+LPALGETENUMVALUE qalGetEnumValue;
+LPALLISTENERF qalListenerf;
+LPALLISTENER3F qalListener3f;
+LPALLISTENERFV qalListenerfv;
+LPALLISTENERI qalListeneri;
+LPALGETLISTENERF qalGetListenerf;
+LPALGETLISTENER3F qalGetListener3f;
+LPALGETLISTENERFV qalGetListenerfv;
+LPALGETLISTENERI qalGetListeneri;
+LPALGENSOURCES qalGenSources;
+LPALDELETESOURCES qalDeleteSources;
+LPALISSOURCE qalIsSource;
+LPALSOURCEF qalSourcef;
+LPALSOURCE3F qalSource3f;
+LPALSOURCEFV qalSourcefv;
+LPALSOURCEI qalSourcei;
+LPALSOURCE3I qalSource3i;
+LPALGETSOURCEF qalGetSourcef;
+LPALGETSOURCE3F qalGetSource3f;
+LPALGETSOURCEFV qalGetSourcefv;
+LPALGETSOURCEI qalGetSourcei;
+LPALSOURCEPLAYV qalSourcePlayv;
+LPALSOURCESTOPV qalSourceStopv;
+LPALSOURCEREWINDV qalSourceRewindv;
+LPALSOURCEPAUSEV qalSourcePausev;
+LPALSOURCEPLAY qalSourcePlay;
+LPALSOURCESTOP qalSourceStop;
+LPALSOURCEREWIND qalSourceRewind;
+LPALSOURCEPAUSE qalSourcePause;
+LPALSOURCEQUEUEBUFFERS qalSourceQueueBuffers;
 LPALSOURCEUNQUEUEBUFFERS qalSourceUnqueueBuffers;
-LPALGENBUFFERS           qalGenBuffers;
-LPALDELETEBUFFERS        qalDeleteBuffers;
-LPALISBUFFER             qalIsBuffer;
-LPALBUFFERDATA           qalBufferData;
-LPALGETBUFFERF           qalGetBufferf;
-LPALGETBUFFERI           qalGetBufferi;
-LPALDOPPLERFACTOR        qalDopplerFactor;
-LPALDOPPLERVELOCITY      qalDopplerVelocity;
-LPALDISTANCEMODEL        qalDistanceModel;
-
-LPALCCREATECONTEXT      qalcCreateContext;
+LPALGENBUFFERS qalGenBuffers;
+LPALDELETEBUFFERS qalDeleteBuffers;
+LPALISBUFFER qalIsBuffer;
+LPALBUFFERDATA qalBufferData;
+LPALGETBUFFERF qalGetBufferf;
+LPALGETBUFFERI qalGetBufferi;
+LPALDOPPLERFACTOR qalDopplerFactor;
+LPALDOPPLERVELOCITY qalDopplerVelocity;
+LPALDISTANCEMODEL qalDistanceModel;
+LPALCCREATECONTEXT qalcCreateContext;
 LPALCMAKECONTEXTCURRENT qalcMakeContextCurrent;
-LPALCPROCESSCONTEXT     qalcProcessContext;
-LPALCSUSPENDCONTEXT     qalcSuspendContext;
-LPALCDESTROYCONTEXT     qalcDestroyContext;
-LPALCGETCURRENTCONTEXT  qalcGetCurrentContext;
-LPALCGETCONTEXTSDEVICE  qalcGetContextsDevice;
-LPALCOPENDEVICE         qalcOpenDevice;
-LPALCCLOSEDEVICE        qalcCloseDevice;
-LPALCGETERROR           qalcGetError;
+LPALCPROCESSCONTEXT qalcProcessContext;
+LPALCSUSPENDCONTEXT qalcSuspendContext;
+LPALCDESTROYCONTEXT qalcDestroyContext;
+LPALCGETCURRENTCONTEXT qalcGetCurrentContext;
+LPALCGETCONTEXTSDEVICE qalcGetContextsDevice;
+LPALCOPENDEVICE qalcOpenDevice;
+LPALCCLOSEDEVICE qalcCloseDevice;
+LPALCGETERROR qalcGetError;
 LPALCISEXTENSIONPRESENT qalcIsExtensionPresent;
-LPALCGETPROCADDRESS     qalcGetProcAddress;
-LPALCGETENUMVALUE       qalcGetEnumValue;
-LPALCGETSTRING          qalcGetString;
-LPALCGETINTEGERV        qalcGetIntegerv;
-LPALCCAPTUREOPENDEVICE  qalcCaptureOpenDevice;
+LPALCGETPROCADDRESS qalcGetProcAddress;
+LPALCGETENUMVALUE qalcGetEnumValue;
+LPALCGETSTRING qalcGetString;
+LPALCGETINTEGERV qalcGetIntegerv;
+LPALCCAPTUREOPENDEVICE qalcCaptureOpenDevice;
 LPALCCAPTURECLOSEDEVICE qalcCaptureCloseDevice;
-LPALCCAPTURESTART       qalcCaptureStart;
-LPALCCAPTURESTOP        qalcCaptureStop;
-LPALCCAPTURESAMPLES     qalcCaptureSamples;
-
-LPALGENEFFECTS              qalGenEffects;
-LPALEFFECTI                 qalEffecti;
-LPALEFFECTF                 qalEffectf;
+LPALCCAPTURESTART qalcCaptureStart;
+LPALCCAPTURESTOP qalcCaptureStop;
+LPALCCAPTURESAMPLES qalcCaptureSamples;
+LPALGENEFFECTS qalGenEffects;
+LPALEFFECTI qalEffecti;
+LPALEFFECTF qalEffectf;
 LPALGENAUXILIARYEFFECTSLOTS qalGenAuxiliaryEffectSlots;
-LPALAUXILIARYEFFECTSLOTI    qalAuxiliaryEffectSloti;
+LPALAUXILIARYEFFECTSLOTI qalAuxiliaryEffectSloti;
 
 static void *OpenALLib = NULL;
-
 static qboolean alinit_fail = qfalse;
 
-/**
- * @brief GPA
- * @param[in, out] str
- * @return 
- */
+/*
+=======================================================================================================================================
+GPA
+=======================================================================================================================================
+*/
 static void *GPA(char *str) {
 	void *rv;
 
@@ -143,17 +137,18 @@ static void *GPA(char *str) {
 		alinit_fail = qtrue;
 		return NULL;
 	} else {
-		Com_DPrintf(" Loaded symbol %s(%p)\n", str, rv);
+		Com_DPrintf(" Loaded symbol %s (%p)\n", str, rv);
 		return rv;
 	}
 }
 
-/**
- * @brief QAL_Init
- * @param[in] libname
- * @return 
- */
+/*
+=======================================================================================================================================
+QAL_Init
+=======================================================================================================================================
+*/
 qboolean QAL_Init(const char *libname) {
+
 	if (OpenALLib) {
 		return qtrue;
 	}
@@ -232,7 +227,6 @@ qboolean QAL_Init(const char *libname) {
 	qalDopplerFactor = GPA("alDopplerFactor");
 	qalDopplerVelocity = GPA("alDopplerVelocity");
 	qalDistanceModel = GPA("alDistanceModel");
-
 	qalcCreateContext = GPA("alcCreateContext");
 	qalcMakeContextCurrent = GPA("alcMakeContextCurrent");
 	qalcProcessContext = GPA("alcProcessContext");
@@ -253,7 +247,6 @@ qboolean QAL_Init(const char *libname) {
 	qalcCaptureStart = GPA("alcCaptureStart");
 	qalcCaptureStop = GPA("alcCaptureStop");
 	qalcCaptureSamples = GPA("alcCaptureSamples");
-
 	qalGenEffects = GPA("alGenEffects");
 	qalEffecti = GPA("alEffecti");
 	qalEffectf = GPA("alEffectf");
@@ -269,10 +262,13 @@ qboolean QAL_Init(const char *libname) {
 	return qtrue;
 }
 
-/**
- * @brief QAL_Shutdown
- */
+/*
+=======================================================================================================================================
+QAL_Shutdown
+=======================================================================================================================================
+*/
 void QAL_Shutdown(void) {
+
 	if (OpenALLib) {
 		Sys_UnloadLibrary(OpenALLib);
 		OpenALLib = NULL;
@@ -333,7 +329,6 @@ void QAL_Shutdown(void) {
 	qalDopplerFactor = NULL;
 	qalDopplerVelocity = NULL;
 	qalDistanceModel = NULL;
-
 	qalcCreateContext = NULL;
 	qalcMakeContextCurrent = NULL;
 	qalcProcessContext = NULL;
@@ -354,31 +349,32 @@ void QAL_Shutdown(void) {
 	qalcCaptureStart = NULL;
 	qalcCaptureStop = NULL;
 	qalcCaptureSamples = NULL;
-
 	qalGenEffects = NULL;
 	qalEffecti = NULL;
 	qalGenAuxiliaryEffectSlots = NULL;
 	qalAuxiliaryEffectSloti = NULL;
 }
 #else
+/*
+=======================================================================================================================================
+QAL_Init
 
-/**
- * @brief QAL_Init
- * @param libname - unused
- * @return 
- * 
- * @todo TODO: not implemented
- */
+TODO: not implemented.
+=======================================================================================================================================
+*/
 qboolean QAL_Init(const char *libname) {
 	return qtrue;
 }
 
-/**
- * @brief QAL_Shutdown
- * 
- * @todo TODO: not implemented
- */
+/*
+=======================================================================================================================================
+QAL_Shutdown
+
+TODO: not implemented.
+=======================================================================================================================================
+*/
 void QAL_Shutdown(void) {
+
 }
 #endif
 #endif

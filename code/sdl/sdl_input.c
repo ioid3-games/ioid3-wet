@@ -49,6 +49,7 @@ static cvar_t *in_joystick = NULL;
 static cvar_t *in_joystickThreshold = NULL;
 static cvar_t *in_joystickNo = NULL;
 static cvar_t *in_joystickUseAnalog = NULL;
+
 static int vidRestartTime = 0;
 
 SDL_Window *mainScreen = NULL;
@@ -125,9 +126,9 @@ Prints keyboard identifiers in the console.
 static void IN_PrintKey(const SDL_Keysym *keysym, keyNum_t key, qboolean down) {
 
 	if (down) {
-		Com_Printf("+ ");
+		Com_Printf("+");
 	} else {
-		Com_Printf("  ");
+		Com_Printf("");
 	}
 
 	Com_Printf("Scancode: 0x%02x(%s) Sym: 0x%02x(%s)", keysym->scancode, SDL_GetScancodeName(keysym->scancode), keysym->sym, SDL_GetKeyName(keysym->sym));
@@ -184,12 +185,14 @@ static void IN_PrintKey(const SDL_Keysym *keysym, keyNum_t key, qboolean down) {
 }
 
 #define MAX_CONSOLE_KEYS 16
+
 /*
 =======================================================================================================================================
 IN_IsConsoleKey
 =======================================================================================================================================
 */
 static qboolean IN_IsConsoleKey(keyNum_t key, int character) {
+
 	typedef struct consoleKey_s {
 		enum {
 			KEY,
@@ -893,7 +896,7 @@ static void IN_JoyMove(void) {
 
 		if (balldx || balldy) {
 			// !!! FIXME: is this good for stick balls, or just mice?
-			// scale like the mouse input..
+			// scale like the mouse input...
 			if (abs(balldx) > 1) {
 				balldx *= 2;
 			}
@@ -905,7 +908,7 @@ static void IN_JoyMove(void) {
 			Com_QueueEvent(lasttime, SE_MOUSE, balldx, balldy, 0, NULL);
 		}
 	}
-	// now query the stick buttons..
+	// now query the stick buttons...
 	total = SDL_JoystickNumButtons(stick);
 
 	if (total > 0) {
@@ -922,7 +925,7 @@ static void IN_JoyMove(void) {
 			}
 		}
 	}
-	// look at the hats..
+	// look at the hats...
 	total = SDL_JoystickNumHats(stick);
 
 	if (total > 0) {
@@ -1009,7 +1012,7 @@ static void IN_JoyMove(void) {
 	}
 	// save hat state
 	stick_state.oldhats = hats;
-	// finally, look at the axes..
+	// finally, look at the axes...
 	total = SDL_JoystickNumAxes(stick);
 
 	if (total > 0) {
@@ -1209,12 +1212,12 @@ static void IN_ProcessEvents(void) {
 						default:
 							b = K_AUX1 + (e.button.button - SDL_BUTTON_X2 + 1) % 16;
 							break;
+					}
+
+					Com_QueueEvent(lasttime, SE_KEY, b, (e.type == SDL_MOUSEBUTTONDOWN ? qtrue : qfalse), 0, NULL);
 				}
 
-				Com_QueueEvent(lasttime, SE_KEY, b, (e.type == SDL_MOUSEBUTTONDOWN ? qtrue : qfalse), 0, NULL);
-			}
-
-			break;
+				break;
 			case SDL_MOUSEWHEEL:
 				if (e.wheel.y > 0) {
 					Com_QueueEvent(lasttime, SE_KEY, K_MWHEELUP, qtrue, 0, NULL);
@@ -1366,10 +1369,8 @@ void IN_Init(void) {
 
 	Cvar_SetValue("com_unfocused", !((appState & SDL_WINDOW_INPUT_FOCUS) && (appState & SDL_WINDOW_MOUSE_FOCUS)));
 	Cvar_SetValue("com_minimized", appState & SDL_WINDOW_MINIMIZED);
-
 	IN_InitKeyLockStates();
 	IN_InitJoystick();
-
 	//Com_Printf("------------------------------------\n");
 }
 
@@ -1382,7 +1383,6 @@ void IN_Shutdown(void) {
 
 	SDL_StopTextInput();
 	Com_Printf("SDL input devices shut down.\n");
-
 	IN_DeactivateMouse();
 
 	mouseAvailable = qfalse;

@@ -83,7 +83,7 @@ static qboolean winsockInitialized = qfalse;
 #include <sys/types.h>
 #include <sys/time.h>
 #include <unistd.h>
-#if !defined (__sun) && !defined (__sgi)
+#if !defined(__sun) && !defined(__sgi)
 #include <ifaddrs.h>
 #endif
 #ifdef __sun
@@ -114,7 +114,9 @@ static cvar_t *net_mcast6addr;
 static cvar_t *net_mcast6iface;
 #endif
 static cvar_t *net_dropsim;
+
 static struct sockaddr socksRelayAddr;
+
 static SOCKET ip_socket = INVALID_SOCKET;
 static SOCKET socks_socket = INVALID_SOCKET;
 #ifdef FEATURE_IPV6
@@ -539,7 +541,7 @@ qboolean NET_CompareBaseAdrMask(netadr_t a, netadr_t b, int netmask) {
 
 	if (netmask) {
 		cmpmask = (1 << netmask) - 1;
-		cmpmask << = 8 - netmask;
+		cmpmask <<= 8 - netmask;
 
 		if ((addra[curbyte] & cmpmask) == (addrb[curbyte] & cmpmask)) {
 			return qtrue;
@@ -820,7 +822,7 @@ void Sys_SendPacket(int length, const void *data, netadr_t to) {
 	if (usingSocks && to.type == NA_IP) {
 		socksBuf[0] = 0; // reserved
 		socksBuf[1] = 0;
-		socksBuf[2] = 0; // fragment(not fragmented)
+		socksBuf[2] = 0; // fragment (not fragmented)
 		socksBuf[3] = 1; // address type: IPV4
 		*(int *)&socksBuf[4] = ((struct sockaddr_in *)&addr)->sin_addr.s_addr;
 		*(short *)&socksBuf[8] = ((struct sockaddr_in *)&addr)->sin_port;
@@ -841,6 +843,7 @@ void Sys_SendPacket(int length, const void *data, netadr_t to) {
 
 	if (ret == SOCKET_ERROR) {
 		int err = socketError;
+
 		// wouldblock is silent
 		if (err == EAGAIN) {
 			return;
@@ -914,14 +917,13 @@ qboolean Sys_IsLANAddress(netadr_t adr) {
 		default: // drop broadcast & other unwanted types
 			return qfalse;
 	}
-	// now compare against the networks this computer is member of.
+	// now compare against the networks this computer is member of
 	for (index = 0; index < numIP; index++) {
 		if (localIP[index].type == adr.type) {
 			if (adr.type == NA_IP) {
 				compareip = (byte *)&((struct sockaddr_in *)&localIP[index].addr)->sin_addr.s_addr;
 				comparemask = (byte *)&((struct sockaddr_in *)&localIP[index].netmask)->sin_addr.s_addr;
 				compareadr = adr.ip;
-
 				addrsize = sizeof(adr.ip);
 			} else {
 #ifdef FEATURE_IPV6
@@ -929,7 +931,6 @@ qboolean Sys_IsLANAddress(netadr_t adr) {
 				compareip = (byte *)&((struct sockaddr_in6 *)&localIP[index].addr)->sin6_addr;
 				comparemask = (byte *)&((struct sockaddr_in6 *)&localIP[index].netmask)->sin6_addr;
 				compareadr = adr.ip6;
-
 				addrsize = sizeof(adr.ip6);
 #endif
 			}
@@ -1003,7 +1004,7 @@ int NET_IPSocket(const char *net_interface, int port, int *err) {
 		Com_Printf("WARNING: NET_IPSocket - socket: %s\n", NET_ErrorString());
 		return newsocket;
 	}
-	// make it non - blocking
+	// make it non-blocking
 	if (ioctlsocket(newsocket, FIONBIO, &_true) == SOCKET_ERROR) {
 		Com_Printf("WARNING: NET_IPSocket - ioctl FIONBIO: %s\n", NET_ErrorString());
 		*err = socketError;
@@ -1076,7 +1077,7 @@ int NET_IP6Socket(const char *net_interface, int port, struct sockaddr_in6 *bind
 		Com_Printf("WARNING: NET_IP6Socket: socket: %s\n", NET_ErrorString());
 		return newsocket;
 	}
-	// make it non - blocking
+	// make it non-blocking
 	if (ioctlsocket(newsocket, FIONBIO, &_true) == SOCKET_ERROR) {
 		Com_Printf("WARNING: NET_IP6Socket: ioctl FIONBIO: %s\n", NET_ErrorString());
 		*err = socketError;
@@ -1086,6 +1087,7 @@ int NET_IP6Socket(const char *net_interface, int port, struct sockaddr_in6 *bind
 #ifdef IPV6_V6ONLY
 	{
 		int i = 1;
+
 		// ipv4 addresses should not be allowed to connect via this socket.
 		if (setsockopt(newsocket, IPPROTO_IPV6, IPV6_V6ONLY, (char *)&i, sizeof(i)) == SOCKET_ERROR) {
 			// win32 systems don't seem to support this anyways.
@@ -1165,18 +1167,17 @@ void NET_JoinMulticast6(void) {
 	}
 
 	if (IN6_IS_ADDR_MULTICAST(&boundto.sin6_addr) || IN6_IS_ADDR_UNSPECIFIED(&boundto.sin6_addr)) {
-		// the way the socket was bound does not prohibit receiving multi - cast packets. So we don't need to open a new one.
+		// the way the socket was bound does not prohibit receiving multi-cast packets. So we don't need to open a new one
 		multicast6_socket = ip6_socket;
 	} else {
 		if ((multicast6_socket = NET_IP6Socket(net_mcast6addr->string, ntohs(boundto.sin6_port), NULL, &err)) == INVALID_SOCKET) {
-			// if the OS does not support binding to multicast addresses, like WinXP, at least try with the normal file descriptor.
+			// if the OS does not support binding to multicast addresses, like WinXP, at least try with the normal file descriptor
 			multicast6_socket = ip6_socket;
 		}
 	}
 
 	if (curgroup.ipv6mr_interface) {
-		if (setsockopt(multicast6_socket, IPPROTO_IPV6, IPV6_MULTICAST_IF,
-		(char *)&curgroup.ipv6mr_interface, sizeof(curgroup.ipv6mr_interface)) < 0) {
+		if (setsockopt(multicast6_socket, IPPROTO_IPV6, IPV6_MULTICAST_IF, (char *)&curgroup.ipv6mr_interface, sizeof(curgroup.ipv6mr_interface)) < 0) {
 			Com_Printf("NET_JoinMulticast6: Couldn't set scope on multicast socket: %s\n", NET_ErrorString());
 
 			if (multicast6_socket != ip6_socket) {
@@ -1545,8 +1546,7 @@ void NET_OpenIP(void) {
 	int port6 = net_port6->integer;
 #endif
 	NET_GetLocalAddress();
-	// automatically scan for a valid port, so multiple dedicated servers can be started without requiring
-	// a different net_port for each one
+	// automatically scan for a valid port, so multiple dedicated servers can be started without requiring a different net_port for each one
 #ifdef FEATURE_IPV6
 	if (net_enabled->integer & NET_ENABLEV6) {
 		for (i = 0; i < 10; i++) {
@@ -1600,10 +1600,9 @@ NET_GetCvars
 static qboolean NET_GetCvars(void) {
 	int modified;
 #ifdef DEDICATED
-	// i want server owners to explicitly turn on ipv6 support.
+	// I want server owners to explicitly turn on ipv6 support.
 	net_enabled = Cvar_Get("net_enabled", "1", CVAR_LATCH|CVAR_ARCHIVE);
 #else
-
 #ifdef FEATURE_IPV6
 	// end users have it enabled so they can connect to ipv6-only hosts, but ipv4 will be used if available due to ping
 	net_enabled = Cvar_Get("net_enabled", "3", CVAR_LATCH|CVAR_ARCHIVE);
@@ -1768,7 +1767,6 @@ void NET_Init(void) {
 	Com_Printf("Winsock initialized.\n");
 #endif
 	NET_Config(qtrue);
-
 	Cmd_AddCommand("net_restart", NET_Restart_f, "Restarts the network.");
 }
 
@@ -1786,6 +1784,7 @@ void NET_Shutdown(void) {
 	NET_Config(qfalse);
 #ifdef _WIN32
 	WSACleanup();
+
 	winsockInitialized = qfalse;
 #endif
 }
@@ -1864,7 +1863,7 @@ void NET_Sleep(int msec) {
 	}
 #endif
 	timeout.tv_sec = msec / 1000;
-	timeout.tv_usec = (msec % 1000) * 1000;
+	timeout.tv_usec = (msec %1000) * 1000;
 	retval = select(highestfd + 1, &fdset, NULL, NULL, &timeout);
 
 	if (retval == SOCKET_ERROR) {

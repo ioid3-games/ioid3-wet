@@ -40,8 +40,8 @@
 =======================================================================================================================================
 SV_ClipHandleForEntity
 
-Return a headnode that can be used for testing or clipping to a given entity. If the entity is a bsp model, the headnode will be
-returned, otherwise a custom box tree will be constructed.
+Returns a headnode that can be used for testing or clipping to a given entity.
+If the entity is a bsp model, the headnode will be returned, otherwise a custom box tree will be constructed.
 =======================================================================================================================================
 */
 clipHandle_t SV_ClipHandleForEntity(const sharedEntity_t *ent) {
@@ -96,7 +96,6 @@ void SV_SectorList_f(void) {
 
 	for (i = 0; i < AREA_NODES; i++) {
 		sec = &sv_worldSectors[i];
-
 		c = 0;
 
 		for (ent = sec->entities; ent; ent = ent->nextEntityInWorldSector) {
@@ -143,7 +142,6 @@ worldSector_t *SV_CreateworldSector(int depth, vec3_t mins, vec3_t maxs) {
 	VectorCopy(maxs, maxs2);
 
 	maxs1[anode->axis] = mins2[anode->axis] = anode->dist;
-
 	anode->children[0] = SV_CreateworldSector(depth + 1, mins2, maxs2);
 	anode->children[1] = SV_CreateworldSector(depth + 1, mins1, maxs1);
 
@@ -205,7 +203,6 @@ void SV_UnlinkEntity(sharedEntity_t *gEnt) {
 }
 
 #define MAX_TOTAL_ENT_LEAFS 128
-
 /*
 =======================================================================================================================================
 SV_LinkEntity
@@ -306,7 +303,7 @@ void SV_LinkEntity(sharedEntity_t *gEnt) {
 	ent->lastCluster = 0;
 	ent->areanum = -1;
 	ent->areanum2 = -1;
-	//get all leafs, including solids
+	// get all leafs, including solids
 	num_leafs = CM_BoxLeafnums(gEnt->r.absmin, gEnt->r.absmax, leafs, MAX_TOTAL_ENT_LEAFS, &lastLeaf);
 	// if none of the leafs were inside the map, the entity is outside the world and can be considered unlinked
 	if (!num_leafs) {
@@ -369,7 +366,6 @@ void SV_LinkEntity(sharedEntity_t *gEnt) {
 	ent->worldSector = node;
 	ent->nextEntityInWorldSector = node->entities;
 	node->entities = ent;
-
 	gEnt->r.linked = qtrue;
 }
 
@@ -378,8 +374,8 @@ void SV_LinkEntity(sharedEntity_t *gEnt) {
 
 	AREA QUERY
 
-	Fills in a list of all entities who's absmin/absmax intersects the given bounds.
-	This does NOT mean that they actually touch in the case of bmodels.
+	Fills in a list of all entities who's absmin/absmax intersects the given bounds. This does NOT mean that they actually touch in the
+	case of bmodels.
 
 =======================================================================================================================================
 */
@@ -484,7 +480,6 @@ void SV_ClipToEntity(trace_t *trace, const vec3_t start, const vec3_t mins, cons
 	}
 	// might intersect, so do an exact clip
 	clipHandle = SV_ClipHandleForEntity(touch);
-
 	origin = touch->r.currentOrigin;
 	angles = touch->r.currentAngles;
 
@@ -636,7 +631,8 @@ void SV_Trace(trace_t *results, const vec3_t start, const vec3_t mins, const vec
 	clip.passEntityNum = passEntityNum;
 	clip.capsule = capsule;
 	// create the bounding box of the entire move
-	// we can limit it to the part of the move not already clipped off by the world, which can be a significant savings for line of sight and shot traces
+	// we can limit it to the part of the move not already clipped off by the world,
+	// which can be a significant savings for line of sight and shot traces
 	for (i = 0; i < 3; i++) {
 		if (end[i] > start[i]) {
 			clip.boxmins[i] = clip.start[i] + clip.mins[i] - 1;

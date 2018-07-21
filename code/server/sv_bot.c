@@ -141,27 +141,22 @@ static __attribute__((format(printf, 2, 3))) void QDECL BotImport_Print(int type
 			Com_Printf("%s", str);
 			break;
 		}
-
 		case PRT_WARNING: {
 			Com_Printf(S_COLOR_YELLOW "Warning: %s", str);
 			break;
 		}
-
 		case PRT_ERROR: {
 			Com_Printf(S_COLOR_RED "Error: %s", str);
 			break;
 		}
-
 		case PRT_FATAL: {
 			Com_Printf(S_COLOR_RED "Fatal: %s", str);
 			break;
 		}
-
 		case PRT_EXIT: {
 			Com_Error(ERR_DROP, S_COLOR_RED "Exit: %s", str);
 			break;
 		}
-
 		default: {
 			Com_Printf("unknown print type\n");
 			break;
@@ -408,9 +403,9 @@ void BotImport_DebugLineShow(int line, vec3_t start, vec3_t end, int color) {
 	VectorCopy(end, points[2]);
 	//points[2][2] -= 2;
 	VectorCopy(end, points[3]);
-
 	VectorSubtract(end, start, dir);
 	VectorNormalize(dir);
+
 	dot = DotProduct(dir, up);
 
 	if (dot > 0.99f || dot < -0.99f) {
@@ -420,7 +415,6 @@ void BotImport_DebugLineShow(int line, vec3_t start, vec3_t end, int color) {
 	}
 
 	VectorNormalize(cross);
-
 	VectorMA(points[0], 2, cross, points[0]);
 	VectorMA(points[1], -2, cross, points[1]);
 	VectorMA(points[2], -2, cross, points[2]);
@@ -466,37 +460,32 @@ void SV_BotInitBotLib(void) {
 	botlib_import.BSPEntityData = BotImport_BSPEntityData;
 	botlib_import.BSPModelMinsMaxsOrigin = BotImport_BSPModelMinsMaxsOrigin;
 	botlib_import.BotClientCommand = BotClientCommand;
-
-	//memory management
+	// memory management
 	botlib_import.GetMemory = BotImport_GetMemory;
 	botlib_import.FreeMemory = BotImport_FreeMemory;
 	botlib_import.FreeZoneMemory = BotImport_FreeZoneMemory;
 	botlib_import.HunkAlloc = BotImport_HunkAlloc;
-
-	// file system acess
+	// file system access
 	botlib_import.FS_FOpenFile = FS_FOpenFileByMode;
 	botlib_import.FS_Read = FS_Read;
 	botlib_import.FS_Write = FS_Write;
 	botlib_import.FS_FCloseFile = FS_FCloseFile;
 	botlib_import.FS_Seek = FS_Seek;
-
 	// debug lines
 	botlib_import.DebugLineCreate = BotImport_DebugLineCreate;
 	botlib_import.DebugLineDelete = BotImport_DebugLineDelete;
 	botlib_import.DebugLineShow = BotImport_DebugLineShow;
-
 	// debug polygons
 	botlib_import.DebugPolygonCreate = BotImport_DebugPolygonCreate;
 	botlib_import.DebugPolygonGetFree = BotImport_GetFreeDebugPolygon;
 	botlib_import.DebugPolygonDelete = BotImport_DebugPolygonDelete;
 	botlib_import.DebugPolygonDeletePointer = BotImport_DebugPolygonDeletePointer;
-
 	botlib_import.BotDrawPolygon = BotImport_DrawPolygon;
 
 	botlib_export = GetBotLibAPI(BOTLIB_API_VERSION, &botlib_import);
 }
 
-//  * * * BOT AI CODE IS BELOW THIS POINT * * *
+// * * * BOT AI CODE IS BELOW THIS POINT * * *
 
 /*
 =======================================================================================================================================

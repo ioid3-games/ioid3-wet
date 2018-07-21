@@ -107,6 +107,7 @@ typedef struct {
 //int c_totalPatchBlocks;
 //int c_totalPatchSurfaces;
 //int c_totalPatchEdges;
+
 static const patchCollide_t *debugPatchCollide;
 static const facet_t *debugFacet;
 static qboolean debugBlock;
@@ -302,7 +303,7 @@ static void CM_SetGridWrapWidth(cGrid_t *grid) {
 =======================================================================================================================================
 CM_SubdivideGridColumns
 
-Adds columns as necessary to the grid until all the aproximating points are within SUBDIVIDE_DISTANCE from the true curve.
+Adds columns as necessary to the grid until all the approximating points are within SUBDIVIDE_DISTANCE from the true curve.
 =======================================================================================================================================
 */
 static void CM_SubdivideGridColumns(cGrid_t *grid) {
@@ -310,10 +311,10 @@ static void CM_SubdivideGridColumns(cGrid_t *grid) {
 
 	for (i = 0; i < grid->width - 2;) {
 		// grid->points[i][x] is an interpolating control point
-		// grid->points[i + 1][x] is an aproximating control point
+		// grid->points[i + 1][x] is an approximating control point
 		// grid->points[i + 2][x] is an interpolating control point
 
-		// first see if we can collapse the aproximating collumn away
+		// first see if we can collapse the approximating collumn away
 		for (j = 0; j < grid->height; j++) {
 			if (CM_NeedsSubdivision(grid->points[i][j], grid->points[i + 1][j], grid->points[i + 2][j])) {
 				break;
@@ -353,7 +354,7 @@ static void CM_SubdivideGridColumns(cGrid_t *grid) {
 		}
 
 		grid->width += 2;
-		// the new aproximating point at i + 1 may need to be removed or subdivided farther, so don't advance i
+		// the new approximating point at i + 1 may need to be removed or subdivided farther, so don't advance i
 	}
 }
 
@@ -1161,7 +1162,7 @@ static void CM_PatchCollideFromGrid(cGrid_t *grid, patchCollide_t *pf, qboolean 
 					numFacets++;
 				}
 			} else {
-				// two seperate triangles
+				// two separate triangles
 				facet->surfacePlane = gridPlanes[i][j][0];
 				facet->numBorders = 3;
 				facet->borderPlanes[0] = borders[EN_TOP];
@@ -1279,7 +1280,7 @@ struct patchCollide_s *CM_GeneratePatchCollide(int width, int height, vec3_t *po
 	CM_SetGridWrapWidth(&grid);
 	CM_SubdivideGridColumns(&grid);
 	CM_RemoveDegenerateColumns(&grid);
-	// we now have a grid of points exactly on the curve the aproximate surface defined by these points will be collided against
+	// we now have a grid of points exactly on the curve the approximate surface defined by these points will be collided against
 	pf = Hunk_Alloc(sizeof(*pf), h_high);
 
 	ClearBounds(pf->bounds[0], pf->bounds[1]);
@@ -1313,7 +1314,7 @@ struct patchCollide_s *CM_GeneratePatchCollide(int width, int height, vec3_t *po
 
 /*
 =======================================================================================================================================
-CM_TraceThroughPatchCollide(
+CM_TraceThroughPatchCollide
 
 Modifies tr->tr if any of the facets effect the trace.
 =======================================================================================================================================
@@ -1605,7 +1606,7 @@ void CM_TraceThroughPatchCollide(traceWork_t *tw, const struct patchCollide_s *p
 		plane[3] = planes->plane[3];
 
 		if (tw->sphere.use) {
-			// adjust the plane distance apropriately for radius
+			// adjust the plane distance appropriately for radius
 			plane[3] += tw->sphere.radius;
 			// find the closest point on the capsule to the plane
 			t = DotProduct(plane, tw->sphere.offset);
@@ -1644,7 +1645,7 @@ void CM_TraceThroughPatchCollide(traceWork_t *tw, const struct patchCollide_s *p
 			}
 
 			if (tw->sphere.use) {
-				// adjust the plane distance apropriately for radius
+				// adjust the plane distance appropriately for radius
 				plane[3] += tw->sphere.radius;
 				// find the closest point on the capsule to the plane
 				t = DotProduct(plane, tw->sphere.offset);
@@ -1660,6 +1661,7 @@ void CM_TraceThroughPatchCollide(traceWork_t *tw, const struct patchCollide_s *p
 				// NOTE: this works even though the plane might be flipped because the bbox is centered
 				offset = DotProduct(tw->offsets[planes->signbits], plane);
 				plane[3] += Q_fabs(offset);
+
 				VectorCopy(tw->start, startp);
 				VectorCopy(tw->end, endp);
 			}
@@ -1742,7 +1744,7 @@ qboolean CM_PositionTestInPatchCollide(traceWork_t *tw, const struct patchCollid
 		plane[3] = planes->plane[3];
 
 		if (tw->sphere.use) {
-			// adjust the plane distance apropriately for radius
+			// adjust the plane distance appropriately for radius
 			plane[3] += tw->sphere.radius;
 			// find the closest point on the capsule to the plane
 			t = DotProduct(plane, tw->sphere.offset);
@@ -1774,7 +1776,7 @@ qboolean CM_PositionTestInPatchCollide(traceWork_t *tw, const struct patchCollid
 			}
 
 			if (tw->sphere.use) {
-				// adjust the plane distance apropriately for radius
+				// adjust the plane distance appropriately for radius
 				plane[3] += tw->sphere.radius;
 				// find the closest point on the capsule to the plane
 				t = DotProduct(plane, tw->sphere.offset);
@@ -1815,10 +1817,8 @@ qboolean CM_PositionTestInPatchCollide(traceWork_t *tw, const struct patchCollid
 */
 
 typedef void(*BotPolyFunc)(int color, int numPoints, float *points);
-
 // TODO: remove in sv_bot.c
 //void BotDrawDebugPolygons(BotPolyFunc drawPoly, int value);
-
 /*
 =======================================================================================================================================
 CM_DrawDebugSurface
@@ -1889,7 +1889,6 @@ void CM_DrawDebugSurface(void(*drawPoly)(int color, int numPoints, float *points
 			VectorNegate(plane, v2);
 
 			plane[3] += Q_fabs(DotProduct(v1, v2));
-
 			w = BaseWindingForPlane(plane, plane[3]);
 
 			for (j = 0; j < facet->numBorders + 1 && w; j++) {
@@ -1936,6 +1935,7 @@ void CM_DrawDebugSurface(void(*drawPoly)(int color, int numPoints, float *points
 				} else {
 					drawPoly(1, w->numpoints, w->p[0]);
 				}
+
 				FreeWinding(w);
 			} else {
 				Com_Printf("CM_DrawDebugSurface: winding chopped away by border planes\n");

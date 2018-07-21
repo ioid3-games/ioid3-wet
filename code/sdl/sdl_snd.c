@@ -230,8 +230,8 @@ qboolean SNDDMA_Init(void) {
 	}
 
 	desired.format = ((tmp == 16) ? AUDIO_S16SYS : AUDIO_U8);
-	// i dunno if this is the best idea, but I'll give it a try..
-	// should probably check a cvar for this..
+	// I dunno if this is the best idea, but I'll give it a try...
+	// should probably check a cvar for this...
 	if (s_sdlDevSamps->value != 0.f) {
 		desired.samples = s_sdlDevSamps->value;
 	} else {
@@ -243,11 +243,11 @@ qboolean SNDDMA_Init(void) {
 		} else if (desired.freq <= 44100) {
 			desired.samples = 1024;
 		} else {
-			desired.samples = 2048; //(*shrug*)
+			desired.samples = 2048; // (*shrug*)
 		}
 	}
 
-	desired.channels = (int) s_sdlChannels->value;
+	desired.channels = (int)s_sdlChannels->value;
 	desired.callback = SNDDMA_AudioCallback;
 
 	if (s_device->integer >= 0 && s_device->integer < SDL_GetNumAudioDevices(qfalse)) {
@@ -281,11 +281,11 @@ qboolean SNDDMA_Init(void) {
 		tmp = (obtained.samples * obtained.channels) * 10;
 	}
 
-	if (tmp &(tmp - 1)) { // not a power of two? Seems to confuse something
+	if (tmp & (tmp - 1)) { // not a power of two? Seems to confuse something
 		int val = 1;
 
 		while (val < tmp) {
-			val << = 1;
+			val <<= 1;
 		}
 
 		tmp = val;
@@ -308,8 +308,8 @@ qboolean SNDDMA_Init(void) {
 
 	Com_Printf("Starting SDL audio callback...\n");
 	SDL_PauseAudioDevice(device_id, 0); // start callback
-
 	Com_Printf("SDL audio initialized.\n");
+
 	snd_inited = qtrue;
 	return qtrue;
 }
@@ -350,7 +350,7 @@ void SNDDMA_Shutdown(void) {
 =======================================================================================================================================
 SNDDMA_Submit
 
-Send sound to device if buffer isn't really the dma buffer
+Send sound to device if buffer isn't really the dma buffer.
 =======================================================================================================================================
 */
 void SNDDMA_Submit(void) {

@@ -37,14 +37,13 @@
 
 static snd_codec_t *codecs;
 
-/**
- * @brief S_FileExtension
- * @param[in] fni
- * @return
- */
+/*
+=======================================================================================================================================
+S_FileExtension
+=======================================================================================================================================
+*/
 static char *S_FileExtension(const char *fni) {
-	// TODO: We should search from the ending to the last '/'
-
+	// TODO: we should search from the ending to the last '/'
 	char *fn = (char *)fni + strlen(fni) - 1;
 	char *eptr = NULL;
 
@@ -60,11 +59,13 @@ static char *S_FileExtension(const char *fni) {
 	return eptr;
 }
 
-/**
- * @brief Select an appropriate codec for a file based on its extension
- * @param[in] filename
- * @return
- */
+/*
+=======================================================================================================================================
+S_FindCodecForFile
+
+Select an appropriate codec for a file based on its extension.
+=======================================================================================================================================
+*/
 static snd_codec_t *S_FindCodecForFile(const char *filename) {
 	char *ext = S_FileExtension(filename);
 	snd_codec_t *codec = codecs;
@@ -99,39 +100,46 @@ static snd_codec_t *S_FindCodecForFile(const char *filename) {
 	return NULL;
 }
 
-/**
- * @brief S_CodecInit
- */
+/*
+=======================================================================================================================================
+S_CodecInit
+=======================================================================================================================================
+*/
 void S_CodecInit() {
+
 	codecs = NULL;
+
 	S_CodecRegister(&wav_codec);
 #ifdef FEATURE_OGG_VORBIS
 	S_CodecRegister(&ogg_codec);
 #endif
 }
 
-/**
- * @brief S_CodecShutdown
- */
+/*
+=======================================================================================================================================
+S_CodecShutdown
+=======================================================================================================================================
+*/
 void S_CodecShutdown() {
 	codecs = NULL;
 }
 
-/**
- * @brief S_CodecRegister
- * @param[in, out] codec
- */
+/*
+=======================================================================================================================================
+S_CodecRegister
+=======================================================================================================================================
+*/
 void S_CodecRegister(snd_codec_t *codec) {
+
 	codec->next = codecs;
 	codecs = codec;
 }
 
-/**
- * @brief S_CodecLoad
- * @param[in] filename
- * @param[in] info
- * @return
- */
+/*
+=======================================================================================================================================
+S_CodecLoad
+=======================================================================================================================================
+*/
 void *S_CodecLoad(const char *filename, snd_info_t *info) {
 	snd_codec_t *codec;
 	char fn[MAX_QPATH];
@@ -145,15 +153,14 @@ void *S_CodecLoad(const char *filename, snd_info_t *info) {
 
 	Q_strncpyz(fn, filename, sizeof(fn));
 	COM_DefaultExtension(fn, sizeof(fn), codec->ext);
-
 	return codec->load(fn, info);
 }
 
-/**
- * @brief S_CodecOpenStream
- * @param[in] filename
- * @return
- */
+/*
+=======================================================================================================================================
+S_CodecOpenStream
+=======================================================================================================================================
+*/
 snd_stream_t *S_CodecOpenStream(const char *filename) {
 	snd_codec_t *codec;
 	char fn[MAX_QPATH];
@@ -167,38 +174,40 @@ snd_stream_t *S_CodecOpenStream(const char *filename) {
 
 	Q_strncpyz(fn, filename, sizeof(fn));
 	COM_DefaultExtension(fn, sizeof(fn), codec->ext);
-
 	return codec->open(fn);
 }
 
-/**
- * @brief S_CodecCloseStream
- * @param[in] stream
- */
+/*
+=======================================================================================================================================
+S_CodecCloseStream
+=======================================================================================================================================
+*/
 void S_CodecCloseStream(snd_stream_t *stream) {
 	stream->codec->close(stream);
 }
 
-/**
- * @brief S_CodecReadStream
- * @param[in] stream
- * @param[in] bytes
- * @param[out] buffer
- * @return
- */
+/*
+=======================================================================================================================================
+S_CodecReadStream
+=======================================================================================================================================
+*/
 int S_CodecReadStream(snd_stream_t *stream, int bytes, void *buffer) {
 	return stream->codec->read(stream, bytes, buffer);
 }
 
-//=======================================================================
-// util functions(used by codecs)
+/*
+=======================================================================================================================================
 
-/**
- * @brief S_CodecUtilOpen
- * @param[in] filename
- * @param[in] codec
- * @return
- */
+	UTIL FUNCTIONS (used by codecs)
+
+=======================================================================================================================================
+*/
+
+/*
+=======================================================================================================================================
+S_CodecUtilOpen
+=======================================================================================================================================
+*/
 snd_stream_t *S_CodecUtilOpen(const char *filename, snd_codec_t *codec) {
 	snd_stream_t *stream;
 	fileHandle_t hnd;
@@ -225,12 +234,15 @@ snd_stream_t *S_CodecUtilOpen(const char *filename, snd_codec_t *codec) {
 	return stream;
 }
 
-/**
- * @brief S_CodecUtilClose
- * @param[in, out] stream
- */
+/*
+=======================================================================================================================================
+S_CodecUtilClose
+=======================================================================================================================================
+*/
 void S_CodecUtilClose(snd_stream_t **stream) {
+
 	FS_FCloseFile((*stream)->file);
 	Z_Free(*stream);
+
 	*stream = NULL;
 }

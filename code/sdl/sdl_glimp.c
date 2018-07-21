@@ -316,7 +316,7 @@ static void GLimp_DetectAvailableModes(void) {
 		if (windowMode.format != mode.format) {
 			continue;
 		}
-		// sDL can give the same resolution with different refresh rates
+		// SDL can give the same resolution with different refresh rates
 		// only list resolution once
 		for (j = 0; j < numModes; j++) {
 			if (mode.w == modes[j].w && mode.h == modes[j].h) {
@@ -505,13 +505,13 @@ static int GLimp_SetMode(glconfig_t *glConfig, int mode, qboolean fullscreen, qb
 		testDepthBits = depthBits;
 		testStencilBits = stencilBits;
 
-		if ((i % 4) == 3) { // reduce colorbits
+		if ((i % 4) == 3) { // reduce colorBits
 			if (testColorBits == 24) {
 				testColorBits = 16;
 			}
 		}
 
-		if ((i % 4) == 2) { // reduce depthbits
+		if ((i % 4) == 2) { // reduce depthBits
 			if (testDepthBits == 24) {
 				testDepthBits = 16;
 			} else if (testDepthBits == 16) {
@@ -519,8 +519,7 @@ static int GLimp_SetMode(glconfig_t *glConfig, int mode, qboolean fullscreen, qb
 			}
 		}
 
-		if ((i % 4) == 1) { // reduce stencilbits
-		
+		if ((i % 4) == 1) { // reduce stencilBits
 			if (testStencilBits == 24) {
 				testStencilBits = 16;
 			} else if (testStencilBits == 16) {
@@ -538,9 +537,8 @@ static int GLimp_SetMode(glconfig_t *glConfig, int mode, qboolean fullscreen, qb
 #ifdef __sgi // fix for SGIs grabbing too many bits of color
 		if (perChannelColorBits == 4) {
 			perChannelColorBits = 0; // use minimum size for 16-bit color
-
 		}
-		// need alpha or else SGIs choose 36 + bit RGB mode
+		// need alpha or else SGIs choose 36+ bit RGB mode
 		SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 1);
 #endif
 		SDL_GL_SetAttribute(SDL_GL_RED_SIZE, perChannelColorBits);

@@ -41,7 +41,7 @@ serverStatic_t svs; // persistant server info
 server_t sv; // local server
 vm_t *gvm = NULL; // game virtual machine
 
-cvar_t *sv_fps = NULL;		// time rate for running non - clients
+cvar_t *sv_fps = NULL;		// time rate for running non-clients
 cvar_t *sv_timeout;			// seconds without any message
 cvar_t *sv_zombietime;		// seconds to sink messages after disconnect
 cvar_t *sv_rconPassword;	// password for remote server commands
@@ -114,7 +114,7 @@ static void SVC_Status(netadr_t from, qboolean force);
 =======================================================================================================================================
 SV_ExpandNewlines
 
-Converts newlines to "\\n" so a line prints nicer.
+Converts newlines to "\n" so a line prints nicer.
 =======================================================================================================================================
 */
 static char *SV_ExpandNewlines(char *in) {
@@ -159,7 +159,7 @@ void SV_AddServerCommand(client_t *client, const char *cmd) {
 	if (client->reliableSequence - client->reliableAcknowledge == MAX_RELIABLE_COMMANDS + 1) {
 		int i;
 
-		Com_Printf(" ==== = pending server commands ==== = \n");
+		Com_Printf("===== pending server commands =====\n");
 
 		for (i = client->reliableAcknowledge + 1; i <= client->reliableSequence; i++) {
 			Com_Printf("cmd %5d: %s\n", i, client->reliableCommands[i & (MAX_RELIABLE_COMMANDS - 1)]);

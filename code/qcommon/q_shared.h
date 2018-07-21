@@ -106,25 +106,22 @@
 #endif
 #endif
 
-/**********************************************************************
-  VM Considerations
+/**************************************************************************************************************************************
+ VM Considerations
 
-  The VM can not use the standard system headers because we aren't really
-  using the compiler they were meant for.  We use bg_lib.h which contains
-  prototypes for the functions we define for our own use in bg_lib.c.
+ The VM can not use the standard system headers because we aren't really using the compiler they were meant for. We use bg_lib.h which
+ contains prototypes for the functions we define for our own use in bg_lib.c.
 
-  When writing mods, please add needed headers HERE, do not start including
-  stuff like < stdio.h>in the various .c files that make up each of the VMs
-  since you will be including system headers files can will have issues.
+ When writing mods, please add needed headers HERE, do not start including stuff like <stdio.h> in the various .c files that make up
+ each of the VMs since you will be including system headers files can will have issues.
 
-  Remember, if you use a C library function that is not defined in bg_lib.c,
-  you will have to add your own version for support in the VM.
+ Remember, if you use a C library function that is not defined in bg_lib.c, you will have to add your own version for support in the VM.
 
- **********************************************************************/
+**************************************************************************************************************************************/
 
 #ifdef Q3_VM
-
 #include "bg_lib.h"
+
 typedef int intptr_t;
 #else
 #include <assert.h>
@@ -289,7 +286,8 @@ static ID_INLINE float idSqrt(float x) {
 typedef unsigned char byte;
 
 typedef enum {
-	qfalse, qtrue
+	qfalse,
+	qtrue
 } qboolean;
 
 typedef union {
@@ -416,11 +414,12 @@ typedef enum {
 #define PROP_SMALL_SIZE_SCALE 0.75
 #define BLINK_DIVISOR 200
 #define PULSE_DIVISOR 75.0
-
+// horizontal alignment
 #define UI_LEFT				0x00000000 // default
 #define UI_CENTER			0x00000001
 #define UI_RIGHT			0x00000002
 #define UI_FORMATMASK		0x00000007
+// font selection
 #define UI_SMALLFONT		0x00000010
 #define UI_BIGFONT			0x00000020 // default
 //#define UI_GIANTFONT		0x00000040
@@ -520,7 +519,6 @@ typedef struct pc_token_s {
 	int line;
 	int linescrossed;
 } pc_token_t;
-
 // data is an in/out parm, returns a parsed out token
 //void COM_MatchToken(char **buf_p, char *match);
 void SkipBracedSection(char **program);
@@ -725,8 +723,9 @@ typedef struct {
 #define KEYCATCH_UI			0x0002
 //#define KEYCATCH (unused)	0x0004
 #define KEYCATCH_CGAME		0x0008
+// sound channels
 // channel 0 never willingly overrides
-// other channels will allways override a playing sound on that channel
+// other channels will always override a playing sound on that channel
 typedef enum {
 	CHAN_AUTO,
 	CHAN_LOCAL,			// menu sounds, etc.
@@ -817,25 +816,13 @@ typedef enum {
 #define MAX_EVENTS 4 // max events per frame before we drop events
 
 #define PS_PMOVEFRAMECOUNTBITS 6
+// playerState_t is the information needed by both the client and server to predict player motion and actions
+// nothing outside of pmove should modify these, or some degree of prediction error will occur
 
-/**
- * @struct playerState_s
- * @typedef playerState_t
- * @brief playerState_t is the information needed by both the client and server
- * to predict player motion and actions
- * nothing outside of pmove should modify these, or some degree of prediction error
- * will occur
- *
- * you can't add anything to this without modifying the code in msg.c
- * (unless it doesnt need transmitted over the network, in which case it should
- * prolly go in the new pmext struct anyway)
- *
- * playerState_t is a full superset of entityState_t as it is used by players,
- * so if a playerState_t is transmitted, the entityState_t can be fully derived
- * from it.
- *
- * @note All fields in here must be 32 bits(or those within sub - structures)
- */
+// you can't add anything to this without modifying the code in msg.c
+
+// playerState_t is a full superset of entityState_t as it is used by players, so if a playerState_t is transmitted, the entityState_t can be fully derived from it.
+// all fields in here must be 32 bits (or those within sub-structures).
 typedef struct playerState_s {
 	int commandTime;								// cmd->serverTime of last executed command
 	int pm_type;
@@ -856,7 +843,7 @@ typedef struct playerState_s {
 	int legsAnim;									// mask off ANIM_TOGGLEBIT
 	int torsoTimer;									// don't change low priority animations until this runs out
 	int torsoAnim;									// mask off ANIM_TOGGLEBIT
-	int movementDir;								// a number 0 to 7 that represents the reletive angle of movement to the view angle (axial and diagonals) when at rest, the value will remain unchanged used to twist the legs during strafing, copied to entityState_t->eFlags
+	int movementDir;								// a number 0 to 7 that represents the relative angle of movement to the view angle (axial and diagonals) when at rest, the value will remain unchanged used to twist the legs during strafing, copied to entityState_t->eFlags
 	int eventSequence;								// pmove generated events
 	int events[MAX_EVENTS];
 	int eventParms[MAX_EVENTS];
@@ -1007,19 +994,10 @@ typedef struct {
 	vec3_t trBase;
 	vec3_t trDelta;		// velocity, etc.
 } trajectory_t;
-
-/**
- * @enum entityType_t
- *
- * @brief entityState_t is the information conveyed from the server
- * in an update message about entities that the client will
- * need to render in some way
- * Different eTypes may use the information in different ways
- * The messages are delta compressed, so it doesn't really matter if
- * the structure size is fairly large
- *
- * @note All fields in here must be 32 bits(or those within sub - structures)
- */
+// entityState_t is the information conveyed from the server in an update message about entities that the client will need to render in some way
+// different eTypes may use the information in different ways
+// the messages are delta compressed, so it doesn't really matter if the structure size is fairly large
+// all fields in here must be 32 bits (or those within sub-structures)
 typedef enum {
 	ET_GENERAL = 0,
 	ET_PLAYER,
@@ -1089,47 +1067,47 @@ typedef enum {
 } entityType_t;
 
 typedef struct entityState_s {
-	int number;					// entity index
+	int number;			// entity index
 	entityType_t eType;			// entityType_t
 	int eFlags;
-	trajectory_t pos;			// for calculating position
-	trajectory_t apos;			// for calculating angles
+	trajectory_t pos;	// for calculating position
+	trajectory_t apos;	// for calculating angles
 	int time;
 	int time2;
 	vec3_t origin;
 	vec3_t origin2;
 	vec3_t angles;
 	vec3_t angles2;
-	int otherEntityNum;			// shotgun sources, etc.
+	int otherEntityNum;	// shotgun sources, etc.
 	int otherEntityNum2;
-	int groundEntityNum;		// -1 = in air
-	int constantLight;			// r + (g << 8) + (b << 16) + (intensity << 24)
-	int dl_intensity;			// used for coronas
-	int loopSound;				// constantly loop this sound
+	int groundEntityNum;// -1 = in air
+	int constantLight;	// r + (g << 8) + (b << 16) + (intensity << 24)
+	int dl_intensity;	// used for coronas
+	int loopSound;		// constantly loop this sound
 	int modelindex;
 	int modelindex2;
-	int clientNum;				// 0 to(MAX_CLIENTS - 1), for players and corpses
+	int clientNum;		// 0 to (MAX_CLIENTS - 1), for players and corpses
 	int frame;
-	int solid;					// for client side prediction, trap_linkentity sets this properly
+	int solid;			// for client side prediction, trap_linkentity sets this properly
 	// old style events, in for compatibility only
 	int event;
 	int eventParm;
-	int eventSequence;			// pmove generated events
+	int eventSequence;	// pmove generated events
 	int events[MAX_EVENTS];
 	int eventParms[MAX_EVENTS];
 	// for players
-	int powerups;				// bit flags. Used to store entState_t for non-player entities (so we know to draw them translucent clientsided)
-	int weapon;					// determines weapon and flash model, etc. OR fps to animate with (misc_gamemodel ents) which is the time in ms the model is updated(20 fps = default)
-	int legsAnim;				// mask off ANIM_TOGGLEBIT
-	int torsoAnim;				// mask off ANIM_TOGGLEBIT
-	int density;				// for particle effects
-	int dmgFlags;				// to pass along additional information for damage effects for players/ Also used for cursorhints for non-player entities
+	int powerups;		// bit flags. Used to store entState_t for non-player entities (so we know to draw them translucent clientsided)
+	int weapon;			// determines weapon and flash model, etc. OR fps to animate with (misc_gamemodel ents) which is the time in ms the model is updated(20 fps = default)
+	int legsAnim;		// mask off ANIM_TOGGLEBIT
+	int torsoAnim;		// mask off ANIM_TOGGLEBIT
+	int density;		// for particle effects
+	int dmgFlags;		// to pass along additional information for damage effects for players/ Also used for cursorhints for non-player entities
 	int onFireStart, onFireEnd;
 	int nextWeapon;
 	int teamNum;
 	int effect1Time, effect2Time, effect3Time;
 	aistateEnum_t aiState;
-	int animMovetype;		// clients can't derive movetype of other clients for anim scripting system
+	int animMovetype;	// clients can't derive movetype of other clients for anim scripting system
 } entityState_t;
 
 typedef enum {

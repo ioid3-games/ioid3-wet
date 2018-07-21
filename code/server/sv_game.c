@@ -42,10 +42,8 @@
 
 botlib_export_t *botlib_export;
 
-/**
-* @todo TODO: These functions must be used instead of pointer arithmetic, because
-* the game allocates gentities with private information after the server shared part
-*/
+// these functions must be used instead of pointer arithmetic, because the game allocates gentities with private information after the
+// server shared part
 
 /*
 =======================================================================================================================================
@@ -210,7 +208,7 @@ qboolean SV_inPVS(const vec3_t p1, const vec3_t p2) {
 	cluster = CM_LeafCluster(leafnum);
 	area2 = CM_LeafArea(leafnum);
 
-	if (mask && (!(mask[cluster >> 3] &(1 << (cluster & 7))))) {
+	if (mask && (!(mask[cluster >> 3] & (1 << (cluster&7))))) {
 		return qfalse;
 	}
 
@@ -239,7 +237,7 @@ qboolean SV_inPVSIgnorePortals(const vec3_t p1, const vec3_t p2) {
 	leafnum = CM_PointLeafnum(p2);
 	cluster = CM_LeafCluster(leafnum);
 
-	if (mask && (!(mask[cluster >> 3] &(1 << (cluster & 7))))) {
+	if (mask && (!(mask[cluster >> 3] & (1 << (cluster&7))))) {
 		return qfalse;
 	}
 
@@ -477,14 +475,14 @@ intptr_t SV_GameSystemCalls(intptr_t *args) {
 		case G_ENTITIES_IN_BOX:
 			return SV_AreaEntities(VMA(1), VMA(2), VMA(3), args[4]);
 		case G_ENTITY_CONTACT:
-			return SV_EntityContact(VMA(1), VMA(2), VMA(3), /* int capsule */ qfalse);
+			return SV_EntityContact(VMA(1), VMA(2), VMA(3), /*int capsule*/ qfalse);
 		case G_ENTITY_CONTACTCAPSULE:
-			return SV_EntityContact(VMA(1), VMA(2), VMA(3), /* int capsule */ qtrue);
+			return SV_EntityContact(VMA(1), VMA(2), VMA(3), /*int capsule*/ qtrue);
 		case G_TRACE:
-			SV_Trace(VMA(1), VMA(2), VMA(3), VMA(4), VMA(5), args[6], args[7], /* int capsule */ qfalse);
+			SV_Trace(VMA(1), VMA(2), VMA(3), VMA(4), VMA(5), args[6], args[7], /*int capsule*/ qfalse);
 			return 0;
 		case G_TRACECAPSULE:
-			SV_Trace(VMA(1), VMA(2), VMA(3), VMA(4), VMA(5), args[6], args[7], /* int capsule */ qtrue);
+			SV_Trace(VMA(1), VMA(2), VMA(3), VMA(4), VMA(5), args[6], args[7], /*int capsule*/ qtrue);
 			return 0;
 		case G_POINT_CONTENTS:
 			return SV_PointContents(VMA(1), args[2]);
@@ -521,26 +519,24 @@ intptr_t SV_GameSystemCalls(intptr_t *args) {
 			return 0;
 		case G_AREAS_CONNECTED:
 			return CM_AreasConnected(args[1], args[2]);
-
 		case G_BOT_ALLOCATE_CLIENT:
 			return SV_BotAllocateClient(args[1]);
 		case G_GET_USERCMD:
 			SV_GetUsercmd(args[1], VMA(2));
 			return 0;
 		case G_GET_ENTITY_TOKEN:
-		{
-			const char *s;
+			{
+				const char *s;
 
-			s = COM_Parse(&sv.entityParsePoint);
-			Q_strncpyz(VMA(1), s, args[2]);
+				s = COM_Parse(&sv.entityParsePoint);
+				Q_strncpyz(VMA(1), s, args[2]);
 
-			if (!sv.entityParsePoint && !s[0]) {
-				return qfalse;
-			} else {
-				return qtrue;
+				if (!sv.entityParsePoint && !s[0]) {
+					return qfalse;
+				} else {
+					return qtrue;
+				}
 			}
-		}
-
 		case G_DEBUG_POLYGON_CREATE:
 			return BotImport_DebugPolygonCreate(args[1], args[2], VMA(3));
 		case G_DEBUG_POLYGON_DELETE:
@@ -676,7 +672,7 @@ static void SV_InitGameVM(qboolean restart) {
 
 	// start the entity parsing at the beginning
 	sv.entityParsePoint = CM_EntityString();
-	// clear all gentity pointers that might still be set from´a previous level
+	// clear all gentity pointers that might still be set from a previous level
 	for (i = 0; i < sv_maxclients->integer; i++) {
 		svs.clients[i].gentity = NULL;
 	}

@@ -116,7 +116,7 @@ typedef struct {
 
 typedef struct {
 	char name[MAX_QPATH];
-	int shaderIndex;	// for in - game use
+	int shaderIndex; // for in-game use
 } md3Shader_t;
 
 typedef struct {
@@ -656,8 +656,8 @@ typedef struct {
 #define MAX_KEY 32
 #define MAX_VALUE 1024
 // the editor uses these predefined yaw angles to orient entities up or down
-#define ANGLE_UP -1
-#define ANGLE_DOWN -2
+#define ANGLE_UP	-1
+#define ANGLE_DOWN	-2
 
 #define LIGHTMAP_WIDTH 128
 #define LIGHTMAP_HEIGHT 128
@@ -671,16 +671,16 @@ typedef struct {
 	unsigned int filelen;
 } lump_t;
 
-#define LUMP_ENTITIES		0
-#define LUMP_SHADERS		1
-#define LUMP_PLANES			2
-#define LUMP_NODES			3
-#define LUMP_LEAFS			4
-#define LUMP_LEAFSURFACES	5
-#define LUMP_LEAFBRUSHES	6
-#define LUMP_MODELS			7
-#define LUMP_BRUSHES		8
-#define LUMP_BRUSHSIDES		9
+#define LUMP_ENTITIES		 0
+#define LUMP_SHADERS		 1
+#define LUMP_PLANES			 2
+#define LUMP_NODES			 3
+#define LUMP_LEAFS			 4
+#define LUMP_LEAFSURFACES	 5
+#define LUMP_LEAFBRUSHES	 6
+#define LUMP_MODELS			 7
+#define LUMP_BRUSHES		 8
+#define LUMP_BRUSHSIDES		 9
 #define LUMP_DRAWVERTS		10
 #define LUMP_DRAWINDEXES	11
 #define LUMP_FOGS			12
@@ -707,7 +707,7 @@ typedef struct {
 	int surfaceFlags;
 	int contentFlags;
 } dshader_t;
-// planes x^1 is allways the opposite of plane x
+// planes x^1 is always the opposite of plane x
 typedef struct {
 	float normal[3];
 	float dist;
@@ -715,7 +715,7 @@ typedef struct {
 
 typedef struct {
 	int planeNum;
-	int children[2];	// negative numbers are - (leafs + 1), not nodes
+	int children[2];	// negative numbers are -(leafs + 1), not nodes
 	int mins[3];		// for frustom culling
 	int maxs[3];
 } dnode_t;
@@ -745,7 +745,7 @@ typedef struct {
 typedef struct {
 	char shader[MAX_QPATH];
 	int brushNum;
-	int visibleSide;	// the brush side that ray tests need to clip against(-1 == none)
+	int visibleSide;	// the brush side that ray tests need to clip against (-1 == none)
 } dfog_t;
 
 typedef struct {

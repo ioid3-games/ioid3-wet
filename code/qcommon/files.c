@@ -96,7 +96,7 @@ automatically restricts where game media can come from to prevent add-ons from w
 File search order: when FS_FOpenFileRead gets called it will go through the fs_searchpaths structure and stop on the first successful
 hit. fs_searchpaths is built with successive calls to FS_AddGameDirectory.
 
-Additionaly, we search in several subdirectories:
+Additionally, we search in several subdirectories:
 - current game is the current mode
 - base game is a variable to allow mods based on other mods (such as etmain + missionpack content combination in a mod for instance).
 - BASEGAME is the hardcoded base game ("etmain").
@@ -176,7 +176,7 @@ When building a pak file, make sure a config.cfg isn't present in it, or configs
 #define MAX_FILEHASH_SIZE 1024
 
 typedef struct fileInPack_s {
-	char *name;				// name of the file
+	char *name;					// name of the file
 	unsigned long pos;			// file info position in zip
 	unsigned long len;			// uncompress file size
 	struct fileInPack_s *next;	// next file in the hash
@@ -292,7 +292,7 @@ qboolean FS_PakIsPure(pack_t *pack) {
 		for (i = 0; i < fs_numServerPaks; i++) {
 			// FIXME: also use hashed file names
 			// NOTE TTimo: a pk3 with same checksum but different name would be validated too
-			// I don't see this as allowing for any exploit, it would only happen if the client does manips of it's file names 'not a bug'
+			// I don't see this as allowing for any exploit, it would only happen if the client does manips of its file names 'not a bug'
 			if (pack->checksum == fs_serverPaks[i]) {
 				return qtrue; // on the approved list
 			}
@@ -699,9 +699,8 @@ qboolean FS_FileInPathExists(const char *testpath) {
 =======================================================================================================================================
 FS_FileExists
 
-Tests if the file exists in the current gamedir of fs_homepath.
-DOES NOT search the paths. This is to determine if opening a file to write (which always goes into the current gamedir) will cause any
-overwrites.
+Tests if the file exists in the current gamedir of fs_homepath, this DOES NOT search the paths.
+This is to determine if opening a file to write (which always goes into the current gamedir) will cause any overwrites.
 NOTE: this goes with FS_FOpenFileWrite for opening the file afterwards.
 =======================================================================================================================================
 */
@@ -860,7 +859,7 @@ void FS_SV_Rename(const char *from, const char *to) {
 	to_ospath[strlen(to_ospath) - 1] = '\0';
 
 	if (fs_debug->integer) {
-		Com_Printf("FS_SV_Rename: %s-->%s\n", from_ospath, to_ospath);
+		Com_Printf("FS_SV_Rename: %s --> %s\n", from_ospath, to_ospath);
 	}
 
 	FS_CheckFilenameIsNotExecutable(to_ospath, __func__);
@@ -889,7 +888,7 @@ void FS_Rename(const char *from, const char *to) {
 	to_ospath = FS_BuildOSPath(fs_homepath->string, fs_gamedir, to);
 
 	if (fs_debug->integer) {
-		Com_Printf("FS_Rename: %s-->%s\n", from_ospath, to_ospath);
+		Com_Printf("FS_Rename: %s --> %s\n", from_ospath, to_ospath);
 	}
 
 	FS_CheckFilenameIsMutable(to_ospath, __func__);
@@ -1302,6 +1301,7 @@ long FS_FOpenFileReadDir(const char *fileName, searchpath_t *search, fileHandle_
 					}
 
 					Q_strncpyz(fsh[*file].name, fileName, sizeof(fsh[*file].name));
+
 					fsh[*file].zipFile = qtrue;
 					// set the file position in the zip file (also sets the current file info)
 					unzSetOffset(fsh[*file].handleFiles.file.z, pakFile->pos);
@@ -3325,7 +3325,7 @@ qboolean FS_VerifyOfficialPaks(void) {
 =======================================================================================================================================
 FS_CheckDirTraversal
 
-Check whether the string contains stuff like "../" to prevent directory traversal bugs. Return qtrue if it does.
+Check whether the string contains stuff like "../" to prevent directory traversal bugs and return qtrue if it does.
 =======================================================================================================================================
 */
 qboolean FS_CheckDirTraversal(const char *checkdir) {
@@ -3341,7 +3341,7 @@ qboolean FS_CheckDirTraversal(const char *checkdir) {
 =======================================================================================================================================
 FS_InvalidGameDir
 
-Returns qtrue if path is a reference to current directory or directory traversal or a sub-directory.
+Return true if path is a reference to current directory or directory traversal or a sub-directory.
 =======================================================================================================================================
 */
 qboolean FS_InvalidGameDir(const char *gamedir) {
@@ -3522,7 +3522,7 @@ void FS_Shutdown(qboolean closemfp) {
 =======================================================================================================================================
 FS_ReorderPurePaks
 
-The reordering that happens here is not reflected in the cvars (\\cvarlist *pak*). This can lead to misleading situations.
+NOTE: the reordering that happens here is not reflected in the cvars (\cvarlist *pak*). This can lead to misleading situations.
 =======================================================================================================================================
 */
 static void FS_ReorderPurePaks(void) {

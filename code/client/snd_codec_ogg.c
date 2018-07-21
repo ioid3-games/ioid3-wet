@@ -32,22 +32,17 @@
  * @file snd_codec_ogg.c
  */
 
-// oGG support is enabled by this define
+// OGG support is enabled by this define
 #ifdef FEATURE_OGG_VORBIS
-
 // includes for the Q3 sound system
 #include "client.h"
 #include "snd_codec.h"
-
 // includes for the OGG codec
 #include <errno.h>
 #include <vorbis/vorbisfile.h>
-
-// the OGG codec can return the samples in a number of different formats,
-// we use the standard signed short format.
+// the OGG codec can return the samples in a number of different formats, we use the standard signed short format.
 #define OGG_SAMPLEWIDTH 2
-
-// q3 OGG codec
+// Q3 OGG codec
 snd_codec_t ogg_codec = {
 	".ogg",
 	S_OGG_CodecLoad,
@@ -57,18 +52,21 @@ snd_codec_t ogg_codec = {
 	NULL
 };
 
-// callbacks for vobisfile
+/*
+=======================================================================================================================================
 
-/**
- * @brief S_OGG_Callback_read
- * @param[in] ptr
- * @param[in] size
- * @param[in] nmemb
- * @param[in, out] datasource
- * @return
- *
- * @note fread() replacement
- */
+	CALLBACKS FOR VORBISFILE
+
+=======================================================================================================================================
+*/
+
+/*
+=======================================================================================================================================
+S_OGG_Callback_read
+
+fread() replacement.
+=======================================================================================================================================
+*/
 size_t S_OGG_Callback_read(void *ptr, size_t size, size_t nmemb, void *datasource) {
 	snd_stream_t *stream;
 	int byteSize = 0;
@@ -93,21 +91,15 @@ size_t S_OGG_Callback_read(void *ptr, size_t size, size_t nmemb, void *datasourc
 	}
 	// we use a snd_stream_t in the generic pointer to pass around
 	stream = (snd_stream_t *)datasource;
-
-	// fS_Read does not support multi - byte elements
+	// FS_Read does not support multi-byte elements
 	byteSize = nmemb * size;
-
 	// read it with the Q3 function FS_Read()
 	bytesRead = FS_Read(ptr, byteSize, stream->file);
-
 	// update the file position
 	stream->pos += bytesRead;
-
 	// this function returns the number of elements read not the number of bytes
 	nMembRead = bytesRead / size;
-
-	// even if the last member is only read partially
-	// it is counted as a whole in the return value
+	// even if the last member is only read partially it is counted as a whole in the return value
 	if (bytesRead % size) {
 		nMembRead++;
 	}
@@ -115,15 +107,13 @@ size_t S_OGG_Callback_read(void *ptr, size_t size, size_t nmemb, void *datasourc
 	return nMembRead;
 }
 
-/**
- * @brief S_OGG_Callback_seek
- * @param[in, out] datasource
- * @param[in] offset
- * @param[in] whence
- * @return
- *
- * @note fseek() replacement
- */
+/*
+=======================================================================================================================================
+S_OGG_Callback_seek
+
+fseek() replacement.
+=======================================================================================================================================
+*/
 int S_OGG_Callback_seek(void *datasource, ogg_int64_t offset, int whence) {
 	snd_stream_t *stream;
 	int retVal = 0;
@@ -135,54 +125,50 @@ int S_OGG_Callback_seek(void *datasource, ogg_int64_t offset, int whence) {
 	}
 	// snd_stream_t in the generic pointer
 	stream = (snd_stream_t *)datasource;
-
 	// we must map the whence to its Q3 counterpart
 	switch (whence) {
-	case SEEK_SET:
-	{
-		// set the file position in the actual file with the Q3 function
-		retVal = FS_Seek(stream->file, (long) offset, FS_SEEK_SET);
-		// something has gone wrong, so we return here
-		if (retVal < 0) {
-			return retVal;
+		case SEEK_SET:
+		{
+			// set the file position in the actual file with the Q3 function
+			retVal = FS_Seek(stream->file, (long)offset, FS_SEEK_SET);
+			// something has gone wrong, so we return here
+			if (retVal < 0) {
+				return retVal;
+			}
+			// keep track of file position
+			stream->pos = (int)offset;
+			break;
 		}
-		// keep track of file position
-		stream->pos = (int) offset;
-		break;
-	}
-
-	case SEEK_CUR:
-	{
-		// set the file position in the actual file with the Q3 function
-		retVal = FS_Seek(stream->file, (long) offset, FS_SEEK_CUR);
-		// something has gone wrong, so we return here
-		if (retVal < 0) {
-			return retVal;
+		case SEEK_CUR:
+		{
+			// set the file position in the actual file with the Q3 function
+			retVal = FS_Seek(stream->file, (long)offset, FS_SEEK_CUR);
+			// something has gone wrong, so we return here
+			if (retVal < 0) {
+				return retVal;
+			}
+			// keep track of file position
+			stream->pos += (int)offset;
+			break;
 		}
-		// keep track of file position
-		stream->pos += (int) offset;
-		break;
-	}
-
-	case SEEK_END:
-	{
-		// set the file position in the actual file with the Q3 function
-		retVal = FS_Seek(stream->file, (long) offset, FS_SEEK_END);
-		// something has gone wrong, so we return here
-		if (retVal < 0) {
-			return retVal;
+		case SEEK_END:
+		{
+			// set the file position in the actual file with the Q3 function
+			retVal = FS_Seek(stream->file, (long)offset, FS_SEEK_END);
+			// something has gone wrong, so we return here
+			if (retVal < 0) {
+				return retVal;
+			}
+			// keep track of file position
+			stream->pos = stream->length + (int)offset;
+			break;
 		}
-		// keep track of file position
-		stream->pos = stream->length + (int) offset;
-		break;
-	}
-
-	default:
-	{
-		// unknown whence, so we return an error
-		errno = EINVAL;
-		return -1;
-	}
+		default:
+		{
+			// unknown whence, so we return an error
+			errno = EINVAL;
+			return -1;
+		}
 	}
 	// stream->pos shouldn't be smaller than zero or bigger than the filesize
 	stream->pos = (stream->pos < 0) ? 0 : stream->pos;
@@ -191,25 +177,25 @@ int S_OGG_Callback_seek(void *datasource, ogg_int64_t offset, int whence) {
 	return 0;
 }
 
-/**
- * @brief S_OGG_Callback_close
- * @param datasource - unused
- * @return
- *
- * @note fclose() replacement
- */
+/*
+=======================================================================================================================================
+S_OGG_Callback_close
+
+fclose() replacement.
+=======================================================================================================================================
+*/
 int S_OGG_Callback_close(void *datasource) {
 	// we do nothing here and close all things manually in S_OGG_CodecCloseStream()
 	return 0;
 }
 
-/**
- * @brief S_OGG_Callback_tell
- * @param[in] datasource
- * @return
- *
- * @note ftell() replacement
- */
+/*
+=======================================================================================================================================
+S_OGG_Callback_tell
+
+ftell() replacement.
+=======================================================================================================================================
+*/
 long S_OGG_Callback_tell(void *datasource) {
 	snd_stream_t *stream;
 
@@ -221,7 +207,7 @@ long S_OGG_Callback_tell(void *datasource) {
 	// snd_stream_t in the generic pointer
 	stream = (snd_stream_t *)datasource;
 
-	return (long) FS_FTell(stream->file);
+	return (long)FS_FTell(stream->file);
 }
 
 // the callback structure
@@ -232,17 +218,15 @@ const ov_callbacks S_OGG_Callbacks = {
 	&S_OGG_Callback_tell
 };
 
-/**
- * @brief S_OGG_CodecOpenStream
- * @param[in] filename
- * @return
- */
+/*
+=======================================================================================================================================
+S_OGG_CodecOpenStream
+=======================================================================================================================================
+*/
 snd_stream_t *S_OGG_CodecOpenStream(const char *filename) {
 	snd_stream_t *stream;
-
-	// oGG codec control structure
+	// OGG codec control structure
 	OggVorbis_File *vf;
-
 	// some variables used to get informations about the OGG
 	vorbis_info *OGGInfo;
 	ogg_int64_t numSamples;
@@ -262,35 +246,26 @@ snd_stream_t *S_OGG_CodecOpenStream(const char *filename) {
 
 	if (!vf) {
 		S_CodecUtilClose(&stream);
-
 		return NULL;
 	}
 	// open the codec with our callbacks and stream as the generic pointer
 	if (ov_open_callbacks(stream, vf, NULL, 0, S_OGG_Callbacks) != 0) {
 		Z_Free(vf);
-
 		S_CodecUtilClose(&stream);
-
 		return NULL;
 	}
 	// the stream must be seekable
 	if (!ov_seekable(vf)) {
 		ov_clear(vf);
-
 		Z_Free(vf);
-
 		S_CodecUtilClose(&stream);
-
 		return NULL;
 	}
 	// we only support OGGs with one substream
 	if (ov_streams(vf) != 1) {
 		ov_clear(vf);
-
 		Z_Free(vf);
-
 		S_CodecUtilClose(&stream);
-
 		return NULL;
 	}
 	// get the info about channels and rate
@@ -298,59 +273,51 @@ snd_stream_t *S_OGG_CodecOpenStream(const char *filename) {
 
 	if (!OGGInfo) {
 		ov_clear(vf);
-
 		Z_Free(vf);
-
 		S_CodecUtilClose(&stream);
-
 		return NULL;
 	}
-	// get the number of sample - frames in the OGG
+	// get the number of sample-frames in the OGG
 	numSamples = ov_pcm_total(vf, 0);
-
-	// fill in the info - structure in the stream
+	// fill in the info-structure in the stream
 	stream->info.rate = OGGInfo->rate;
 	stream->info.width = OGG_SAMPLEWIDTH;
 	stream->info.channels = OGGInfo->channels;
 	stream->info.samples = numSamples;
 	stream->info.size = stream->info.samples * stream->info.channels * stream->info.width;
 	stream->info.dataofs = 0;
-
 	// we use stream->pos for the file pointer in the compressed ogg file
 	stream->pos = 0;
-
 	// we use the generic pointer in stream for the OGG codec control structure
 	stream->ptr = vf;
 
 	return stream;
 }
 
-/**
- * @brief S_OGG_CodecCloseStream
- * @param[in, out] stream
- */
+/*
+=======================================================================================================================================
+S_OGG_CodecCloseStream
+=======================================================================================================================================
+*/
 void S_OGG_CodecCloseStream(snd_stream_t *stream) {
+
 	// check if input is valid
 	if (!stream) {
 		return;
 	}
 	// let the OGG codec cleanup its stuff
 	ov_clear((OggVorbis_File *)stream->ptr);
-
 	// free the OGG codec control struct
 	Z_Free(stream->ptr);
-
 	// close the stream
 	S_CodecUtilClose(&stream);
 }
 
-/**
- * @brief S_OGG_CodecReadStream
- * @param[in] stream
- * @param[in] bytes
- * @param[out] buffer
- * @return
- */
+/*
+=======================================================================================================================================
+S_OGG_CodecReadStream
+=======================================================================================================================================
+*/
 int S_OGG_CodecReadStream(snd_stream_t *stream, int bytes, void *buffer) {
 	// buffer handling
 	int bytesRead, bytesLeft, c;
@@ -358,14 +325,11 @@ int S_OGG_CodecReadStream(snd_stream_t *stream, int bytes, void *buffer) {
 
 	// bitstream for the decoder
 	int BS = 0;
-
 	// big endian machines want their samples in big endian order
 	int IsBigEndian = 0;
-
-#   ifdef Q3_BIG_ENDIAN
+#ifdef Q3_BIG_ENDIAN
 	IsBigEndian = 1;
-#   endif // q3_BIG_ENDIAN
-
+#endif // Q3_BIG_ENDIAN
 	// check if input is valid
 	if (!(stream && buffer)) {
 		return 0;
@@ -378,7 +342,6 @@ int S_OGG_CodecReadStream(snd_stream_t *stream, int bytes, void *buffer) {
 	bytesRead = 0;
 	bytesLeft = bytes;
 	bufPtr = buffer;
-
 	// cycle until we have the requested or all available bytes read
 	while (-1) {
 		// read some bytes from the OGG codec
@@ -400,13 +363,13 @@ int S_OGG_CodecReadStream(snd_stream_t *stream, int bytes, void *buffer) {
 	return bytesRead;
 }
 
-/**
- * @brief We handle S_OGG_CodecLoad as a special case of the streaming functions
- * where we read the whole stream at once.
- * @param[in] filename
- * @param[in, out] info
- * @return
- */
+/*
+=======================================================================================================================================
+S_OGG_CodecLoad
+
+We handle S_OGG_CodecLoad as a special case of the streaming functions where we read the whole stream at once.
+=======================================================================================================================================
+*/
 void *S_OGG_CodecLoad(const char *filename, snd_info_t *info) {
 	snd_stream_t *stream;
 	byte *buffer;
@@ -429,24 +392,20 @@ void *S_OGG_CodecLoad(const char *filename, snd_info_t *info) {
 	info->samples = stream->info.samples;
 	info->size = stream->info.size;
 	info->dataofs = stream->info.dataofs;
-
 	// allocate a buffer
-	// this buffer must be free - ed by the caller of this function
+	// this buffer must be free-ed by the caller of this function
 	buffer = Hunk_AllocateTempMemory(info->size);
 
 	if (!buffer) {
 		S_OGG_CodecCloseStream(stream);
-
 		return NULL;
 	}
 	// fill the buffer
 	bytesRead = S_OGG_CodecReadStream(stream, info->size, buffer);
-
 	// we don't even have read a single byte
 	if (bytesRead <= 0) {
 		Hunk_FreeTempMemory(buffer);
 		S_OGG_CodecCloseStream(stream);
-
 		return NULL;
 	}
 
@@ -454,5 +413,4 @@ void *S_OGG_CodecLoad(const char *filename, snd_info_t *info) {
 
 	return buffer;
 }
-
-#endif // fEATURE_OGG_VORBIS
+#endif // FEATURE_OGG_VORBIS

@@ -37,50 +37,41 @@
  */
 
 #include "client.h"
-
 #if defined(FEATURE_THEORA)
-
 #include <ogg/ogg.h>
 #include <vorbis/codec.h>
-
 #include <theora/theora.h>
 
-#define OGG_BUFFER_SIZE 8 * 1024  //4096
+#define OGG_BUFFER_SIZE 8 * 1024 //4096
 #define OGG_SAMPLEWIDTH 2
-
 #define SIZEOF_RAWBUFF 4 * 1024
-#define MIN_AUDIO_PRELOAD 400   // in ms
-#define MAX_AUDIO_PRELOAD 500   // in ms
+#define MIN_AUDIO_PRELOAD 400 // in ms
+#define MAX_AUDIO_PRELOAD 500 // in ms
 
 typedef struct {
-	ogg_sync_state oy;          /* sync and verify incoming physical bitstream */
+	ogg_sync_state oy;					// sync and verify incoming physical bitstream
 	ogg_stream_state os_audio;
 	ogg_stream_state os_video;
-
-	vorbis_dsp_state vd;        /* central working state for the packet->PCM decoder */
-	vorbis_info vi;             /* struct that stores all the static vorbis bitstream settings */
-	vorbis_comment vc;          /* struct that stores all the bitstream user comments */
-
-	theora_info th_info;        // dump_video.c(example decoder): ti
-	theora_comment th_comment;  // dump_video.c(example decoder): tc
-	theora_state th_state;      // dump_video.c(example decoder): td
-
+	vorbis_dsp_state vd;				// central working state for the packet->PCM decoder
+	vorbis_info vi;						// struct that stores all the static vorbis bitstream settings
+	vorbis_comment vc;					// struct that stores all the bitstream user comments
+	theora_info th_info;				// dump_video.c (example decoder): ti
+	theora_comment th_comment;			// dump_video.c (example decoder): tc
+	theora_state th_state;				// dump_video.c (example decoder): td
 	yuv_buffer th_yuvbuffer;
-
-	ogg_int64_t VFrameCount;        // output video - stream
+	ogg_int64_t VFrameCount;			// output video - stream
 	ogg_int64_t Vtime_unit;
-	int currentTime;                // input from Run - function
-
-	byte audioBuffer[SIZEOF_RAWBUFF];            // audio buffer
+	int currentTime;					// input from run-function
+	byte audioBuffer[SIZEOF_RAWBUFF];	// audio buffer
 } cin_ogv_t;
 
-#define g_ogm((cin_ogv_t *)cin->data)
+#define g_ogm ((cin_ogv_t *)cin->data)
 
-/**
- * @brief OGV_LoadBlockToSync
- * @param[in, out] cin
- * @return !0 ->no data transferred
- */
+/*
+=======================================================================================================================================
+OGV_LoadBlockToSync
+=======================================================================================================================================
+*/
 static int OGV_LoadBlockToSync(cinematic_t *cin) {
 	int r = -1;
 	char *buffer;
@@ -91,24 +82,25 @@ static int OGV_LoadBlockToSync(cinematic_t *cin) {
 		bytes = FS_Read(buffer, OGG_BUFFER_SIZE, cin->file);
 		cin->offset += OGG_BUFFER_SIZE;
 		ogg_sync_wrote(&g_ogm->oy, bytes);
-
 		r = (bytes == 0);
 	}
 
 	return r;
 }
 
-/**
- * @brief OGV_LoadPagesToStreams
- * @param cin - unused
- * @return !0 ->no data transferred(or not for all Streams)
- */
+/*
+=======================================================================================================================================
+OGV_LoadPagesToStreams
+
+Return !0 ->no data transferred (or not for all Streams).
+=======================================================================================================================================
+*/
 static int OGV_LoadPagesToStreams(cinematic_t *cin) {
 	int r = -1;
 	int AudioPages = 0;
 	int VideoPages = 0;
 	ogg_stream_state *osptr = NULL;
-	ogg_page         og;
+	ogg_page og;
 
 	while (!AudioPages || !VideoPages) {
 		if (ogg_sync_pageout(&g_ogm->oy, &og) != 1) {
@@ -137,22 +129,25 @@ static int OGV_LoadPagesToStreams(cinematic_t *cin) {
 	return r;
 }
 
-/**
- * @brief OGV_LoadAudio
- * @param[in] cin
- * @return audio wants more packets ?
- */
+/*
+=======================================================================================================================================
+OGV_LoadAudio
+
+Audio wants more packets?
+=======================================================================================================================================
+*/
 static qboolean OGV_LoadAudio(cinematic_t *cin) {
 	qboolean anyDataTransferred = qtrue;
 	float **pcm;
 	int frames, frameNeeded;
 	int i, j;
-	short        *ptr;
-	ogg_packet   op;
+	short *ptr;
+	ogg_packet op;
 	vorbis_block vb;
 
 	Com_Memset(&op, 0, sizeof(op));
 	Com_Memset(&vb, 0, sizeof(vb));
+
 	vorbis_block_init(&g_ogm->vd, &vb);
 
 	while (anyDataTransferred && g_ogm->currentTime + MAX_AUDIO_PRELOAD > (int)(g_ogm->vd.granulepos * 1000 / g_ogm->vi.rate)) {
@@ -161,7 +156,6 @@ static qboolean OGV_LoadAudio(cinematic_t *cin) {
 		if ((frames = vorbis_synthesis_pcmout(&g_ogm->vd, &pcm)) > 0) {
 			// vorbis ->raw
 			ptr = (short *)g_ogm->audioBuffer;
-
 			frameNeeded = (SIZEOF_RAWBUFF) / (OGG_SAMPLEWIDTH * g_ogm->vi.channels);
 
 			if (frames < frameNeeded) {
@@ -173,7 +167,6 @@ static qboolean OGV_LoadAudio(cinematic_t *cin) {
 					*(ptr++) = (short)((pcm[j][i] >= -1.0f && pcm[j][i] <= 1.0f) ? pcm[j][i] * 32767.f : 32767 * ((pcm[j][i] > 0.0f) - (pcm[j][i] < 0.0f)));
 				}
 			}
-
 			// tell libvorbis how many samples we actually consumed(we ate them all!)
 			vorbis_synthesis_read(&g_ogm->vd, frameNeeded);
 
@@ -202,60 +195,51 @@ static qboolean OGV_LoadAudio(cinematic_t *cin) {
 }
 
 /*
- * @brief OGV_FindSizeShift
- * @param[in] x
- * @param[in] y
- * @return
- *
- * @note Unused
-static int OGV_FindSizeShift(int x, int y) {
-    int i;
-
-    for(i = 0;(y >> i); ++i)
-    {
-        if (x == (y >> i))
-        {
-            return i;
-}
-}
-
-    return -1;
-}
+=======================================================================================================================================
+OGV_FindSizeShift
+=======================================================================================================================================
 */
-
 /*
- * @brief OGV_CheckFrame
- * @param[in] yuv
- * @param[in] info
- * @return
- *
- * @note Unused
-static qboolean OGV_CheckFrame(yuv_buffer *yuv, theora_info *info) {
-    int yWShift, uvWShift;
-    int yHShift, uvHShift;
+static int OGV_FindSizeShift(int x, int y) {
+	int i;
 
-    yWShift = OGV_FindSizeShift(yuv->y_width, info->width);
-    uvWShift = OGV_FindSizeShift(yuv->uv_width, info->width);
-    yHShift = OGV_FindSizeShift(yuv->y_height, info->height);
-    uvHShift = OGV_FindSizeShift(yuv->uv_height, info->height);
+	for(i = 0;(y >> i); ++i) {
+		if (x == (y >> i)) {
+			return i;
+		}
+	}
 
-    if (yWShift < 0 || uvWShift < 0 || yHShift < 0 || uvHShift < 0)
-    {
-        Com_Error(ERR_DROP, "Theora unexpected resolution in a yuv - Frame\n");
-        return qfalse;
-}
-
-    return qtrue;
+	return -1;
 }
 */
+/*
+=======================================================================================================================================
+OGV_yuv_to_rgb24
+=======================================================================================================================================
+*/
+/*
+static qboolean OGV_CheckFrame(yuv_buffer *yuv, theora_info *info) {
+	int yWShift, uvWShift;
+	int yHShift, uvHShift;
 
-/**
- * @brief OGV_yuv_to_rgb24
- * @param[in] yuv
- * @param[in] info
- * @param[out] output
- * @return
- */
+	yWShift = OGV_FindSizeShift(yuv->y_width, info->width);
+	uvWShift = OGV_FindSizeShift(yuv->uv_width, info->width);
+	yHShift = OGV_FindSizeShift(yuv->y_height, info->height);
+	uvHShift = OGV_FindSizeShift(yuv->uv_height, info->height);
+
+	if (yWShift < 0 || uvWShift < 0 || yHShift < 0 || uvHShift < 0) {
+		Com_Error(ERR_DROP, "Theora unexpected resolution in a yuv - Frame\n");
+		return qfalse;
+	}
+
+	return qtrue;
+}
+*/
+/*
+=======================================================================================================================================
+OGV_yuv_to_rgb24
+=======================================================================================================================================
+*/
 static qboolean OGV_yuv_to_rgb24(yuv_buffer *yuv, theora_info *info, uint32_t *output) {
 	int i, j;
 	int uv_ki = yuv->y_width / yuv->uv_width;
@@ -263,14 +247,11 @@ static qboolean OGV_yuv_to_rgb24(yuv_buffer *yuv, theora_info *info, uint32_t *o
 	int y_offset = info->offset_x + yuv->y_stride * info->offset_y;
 	int uv_offset = info->offset_x / uv_ki + yuv->uv_stride * info->offset_y / uv_kj;
 	int y_p, uv_p;
-
 	/*
 	if (!OGV_CheckFrame(yuv, info)) {
-	    return qfalse;
+		return qfalse;
 	}
-
 	*/
-
 	// FIXME: this is slow as fuck, might want to rewrite and use precalculated tables
 	for (j = 0; j < info->height; j++) {
 		y_p = y_offset + j * yuv->y_stride;
@@ -299,20 +280,20 @@ static qboolean OGV_yuv_to_rgb24(yuv_buffer *yuv, theora_info *info, uint32_t *o
 	return qtrue;
 }
 
-/**
- * @brief OGV_NextNeededVFrame
- * @param cin - unused
- * @return
- */
+/*
+=======================================================================================================================================
+OGV_NextNeededVFrame
+=======================================================================================================================================
+*/
 static int OGV_NextNeededVFrame(cinematic_t *cin) {
 	return (int)(g_ogm->currentTime * (ogg_int64_t) 10000 / g_ogm->Vtime_unit);
 }
 
-/**
- * @brief OGV_LoadVideoFrame
- * @param[in, out] cin
- * @return
- */
+/*
+=======================================================================================================================================
+OGV_LoadVideoFrame
+=======================================================================================================================================
+*/
 static int OGV_LoadVideoFrame(cinematic_t *cin) {
 	int r = 0;
 	ogg_packet op;
@@ -338,16 +319,13 @@ static int OGV_LoadVideoFrame(cinematic_t *cin) {
 			}
 
 			if (cin->frameBufferSize < g_ogm->th_info.width * g_ogm->th_info.height) {
-
 				cin->frameBufferSize = g_ogm->th_info.width * g_ogm->th_info.height;
-
-				/* Free old output buffer */
+				// free old output buffer
 				if (cin->frameBuffer[0]) {
 					Com_Dealloc(cin->frameBuffer[0]);
 					cin->frameBuffer[0] = NULL;
 				}
-
-				/* Allocate the new buffer */
+				// allocate the new buffer
 				cin->frameBuffer[0] = (unsigned char *)Com_Allocate(cin->frameBufferSize * 4);
 
 				if (cin->frameBuffer[0] == NULL) {
@@ -369,11 +347,11 @@ static int OGV_LoadVideoFrame(cinematic_t *cin) {
 	return r;
 }
 
-/**
- * @brief OGV_LoadFrame
- * @param[in] cin
- * @return
- */
+/*
+=======================================================================================================================================
+OGV_LoadFrame
+=======================================================================================================================================
+*/
 static qboolean OGV_LoadFrame(cinematic_t *cin) {
 	qboolean anyDataTransferred = qtrue;
 	qboolean needVOutputData = qtrue;
@@ -404,7 +382,6 @@ static qboolean OGV_LoadFrame(cinematic_t *cin) {
 					anyDataTransferred = qtrue;
 				}
 			}
-
 			// load all Audio after loading new pages ...
 			if (g_ogm->VFrameCount > 1)  // wait some videoframes(it's better to have some delay, than a lagy sound) {
 				audioWantsMoreData = OGV_LoadAudio(cin);
@@ -415,20 +392,18 @@ static qboolean OGV_LoadFrame(cinematic_t *cin) {
 	return (qboolean) !!anyDataTransferred;
 }
 
-/**
- * @brief OGV_UpdateCinematic
- * @param[in, out] cin
- * @param[in] time
- */
+/*
+=======================================================================================================================================
+OGV_UpdateCinematic
+=======================================================================================================================================
+*/
 void OGV_UpdateCinematic(cinematic_t *cin, int time) {
 	if (!cin->startTime) {
 		cin->startTime = time;
 	}
 
 	g_ogm->currentTime = time - cin->startTime;
-
 	time = time - cin->startTime + 20;
-
 	cin->currentData.dirty = qfalse;
 
 	while (!g_ogm->VFrameCount || time >= (int)(g_ogm->VFrameCount * g_ogm->Vtime_unit / 10000)) {
@@ -448,23 +423,22 @@ void OGV_UpdateCinematic(cinematic_t *cin, int time) {
 	return;
 }
 
-/**
- * @brief OGV_StartRead
- * @param[in, out] cin
- * @return
- */
+/*
+=======================================================================================================================================
+OGV_StartRead
+=======================================================================================================================================
+*/
 qboolean OGV_StartRead(cinematic_t *cin) {
 	int status;
-	ogg_page   og;
+	ogg_page og;
 	ogg_packet op;
 	int i;
 
 	cin->data = Com_Allocate(sizeof(cin_ogv_t));
 	Com_Memset(cin->data, 0, sizeof(cin_ogv_t));
 
-	ogg_sync_init(&g_ogm->oy);  /* Now we can read pages */
-
-	// FIXME? can serialno be 0 in ogg?(better way to check inited?)
+	ogg_sync_init(&g_ogm->oy); // now we can read pages
+	// FIXME? can serialno be 0 in ogg? (better way to check inited?)
 	// TODO: support for more than one audio stream? / detect files with one stream(or without correct ones)
 	while (!g_ogm->os_audio.serialno || !g_ogm->os_video.serialno) {
 		if (ogg_sync_pageout(&g_ogm->oy, &og) == 1) {
@@ -500,8 +474,7 @@ qboolean OGV_StartRead(cinematic_t *cin) {
 		Com_Printf(S_COLOR_YELLOW "WARNING: Haven't found a video stream in ogm - file(%s)\n", cin->name);
 		return qfalse;
 	}
-
-	//load vorbis header
+	// load vorbis header
 	vorbis_info_init(&g_ogm->vi);
 	vorbis_comment_init(&g_ogm->vc);
 	i = 0;
@@ -521,6 +494,7 @@ qboolean OGV_StartRead(cinematic_t *cin) {
 				Com_Printf(S_COLOR_YELLOW "WARNING: This Ogg bitstream does not contain Vorbis audio data, ogm - file(%s)\n", cin->name);
 				return qfalse;
 			}
+
 			++i;
 		} else if (OGV_LoadPagesToStreams(cin)) {
 			if (OGV_LoadBlockToSync(cin)) {
@@ -531,7 +505,6 @@ qboolean OGV_StartRead(cinematic_t *cin) {
 	}
 
 	vorbis_synthesis_init(&g_ogm->vd, &g_ogm->vi);
-
 	// do init
 	{
 		theora_info_init(&g_ogm->th_info);
@@ -552,6 +525,7 @@ qboolean OGV_StartRead(cinematic_t *cin) {
 					Com_Printf(S_COLOR_YELLOW "WARNING: This Ogg bitstream does not contain theora data, ogm - file(%s)\n", cin->name);
 					return qfalse;
 				}
+
 				++i;
 			} else if (OGV_LoadPagesToStreams(cin)) {
 				if (OGV_LoadBlockToSync(cin)) {
@@ -570,11 +544,13 @@ qboolean OGV_StartRead(cinematic_t *cin) {
 	return qtrue;
 }
 
-/**
- * @brief OGV_StopVideo
- * @param[in, out] cin
- */
+/*
+=======================================================================================================================================
+OGV_StopVideo
+=======================================================================================================================================
+*/
 void OGV_StopVideo(cinematic_t *cin) {
+
 	if (cin->data) {
 		theora_clear(&g_ogm->th_state);
 		theora_comment_clear(&g_ogm->th_comment);
@@ -582,7 +558,7 @@ void OGV_StopVideo(cinematic_t *cin) {
 
 		vorbis_dsp_clear(&g_ogm->vd);
 		vorbis_comment_clear(&g_ogm->vc);
-		vorbis_info_clear(&g_ogm->vi);  /* must be called last(comment from vorbis example code) */
+		vorbis_info_clear(&g_ogm->vi); // must be called last (comment from vorbis example code)
 
 		ogg_stream_clear(&g_ogm->os_audio);
 		ogg_stream_clear(&g_ogm->os_video);

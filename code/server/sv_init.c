@@ -242,7 +242,7 @@ void SV_GetUserinfo(int index, char *buffer, unsigned int bufferSize) {
 =======================================================================================================================================
 SV_CreateBaseline
 
-Entity baselines are used to compress non - delta messages to the clients -- only the fields that differ from the baseline will be
+Entity baselines are used to compress non-delta messages to the clients -- only the fields that differ from the baseline will be
 transmitted.
 =======================================================================================================================================
 */
@@ -303,8 +303,8 @@ static void SV_SetNumSnapshotEntities(void) {
 =======================================================================================================================================
 SV_Startup
 
-Called when a host starts a map when it wasn't running one before. Successive map or map_restart commands will NOT cause this to be
-called, unless the game is exited to the menu system first.
+Called when a host starts a map when it wasn't running one before.
+Successive map or map_restart commands will NOT cause this to be called, unless the game is exited to the menu system first.
 =======================================================================================================================================
 */
 void SV_Startup(void) {
@@ -333,7 +333,7 @@ void SV_Startup(void) {
 
 /*
 =======================================================================================================================================
-
+SV_ChangeMaxClients
 =======================================================================================================================================
 */
 void SV_ChangeMaxClients(void) {
@@ -549,7 +549,7 @@ void SV_DemoChangeMaxClients(void) {
 
 /*
 =======================================================================================================================================
-
+SV_ClearServer
 =======================================================================================================================================
 */
 static void SV_ClearServer(void) {
@@ -576,6 +576,7 @@ void SV_TouchCGameDLL(void) {
 	char *filename;
 
 	filename = Sys_GetDLLName("cgame");
+
 	FS_FOpenFileRead_Filtered(filename, &f, qfalse, FS_EXCLUDE_DIR);
 
 	if (f) {
@@ -605,14 +606,14 @@ void SV_SpawnServer(const char *server) {
 	// shut down the existing game if it is running
 	SV_ShutdownGameProgs();
 
-	Com_Printf("------ Server Initialization------\n");
+	Com_Printf("------ Server Initialization ------\n");
 	Com_Printf("Server: %s\n", server);
 	// if not running a dedicated server CL_MapLoading will connect the client to the server
 	// also print some status stuff
 	CL_MapLoading();
 	// make sure all the client stuff is unloaded
 	CL_ShutdownAll();
-	// clear the whole hunk because we're(re)loading the server
+	// clear the whole hunk because we're (re)loading the server
 	Hunk_Clear();
 	// clear collision map data
 	CM_ClearMap();
@@ -658,10 +659,9 @@ void SV_SpawnServer(const char *server) {
 	srand(Sys_Milliseconds());
 	sv.checksumFeed = (((unsigned int)rand() << 16) ^ (unsigned int)rand()) ^ Sys_Milliseconds();
 	// only comment out when you need a new pure checksum string and it's associated random feed
-	// com_DPrintf("SV_SpawnServer checksum feed: %p\n", sv.checksumFeed);
+	//Com_DPrintf("SV_SpawnServer checksum feed: %p\n", sv.checksumFeed);
 
 	FS_Restart(sv.checksumFeed);
-
 	CM_LoadMap(va("maps/%s.bsp", server), qfalse, &checksum);
 	// set serverinfo visible name
 	Cvar_Set("mapname", server);
@@ -674,8 +674,7 @@ void SV_SpawnServer(const char *server) {
 	Cvar_Set("sv_serverid", va("%i", sv.serverId));
 	// clear physics interaction links
 	SV_ClearWorld();
-	// media configstring setting should be done during the loading stage, so connected clients don't have
-	// to load during actual gameplay
+	// media configstring setting should be done during the loading stage, so connected clients don't have to load during actual gameplay
 	sv.state = SS_LOADING;
 	// load and spawn all other entities
 	SV_InitGameProgs();
@@ -713,11 +712,13 @@ void SV_SpawnServer(const char *server) {
 
 					client = &svs.clients[i];
 					client->state = CS_ACTIVE;
+
 					ent = SV_GentityNum(i);
 					ent->s.number = i;
+
 					client->gentity = ent;
 					client->deltaMessage = -1;
-					client->lastSnapshotTime = 0;   // generate a snapshot immediately
+					client->lastSnapshotTime = 0; // generate a snapshot immediately
 
 					VM_Call(gvm, GAME_CLIENT_BEGIN, i);
 				}
@@ -732,7 +733,6 @@ void SV_SpawnServer(const char *server) {
 	if (sv_pure->integer) {
 		// the server sends these to the clients so they will only load pk3s also loaded at the server
 		p = FS_LoadedPakChecksums();
-
 		Cvar_Set("sv_paks", p);
 
 		if (strlen(p) == 0) {
@@ -752,16 +752,18 @@ void SV_SpawnServer(const char *server) {
 
 	p = FS_ReferencedPakChecksums();
 	Cvar_Set("sv_referencedPaks", p);
+
 	p = FS_ReferencedPakNames();
 	Cvar_Set("sv_referencedPakNames", p);
 	// save systeminfo and serverinfo strings
 	cvar_modifiedFlags &= ~CVAR_SYSTEMINFO;
 	SV_SetConfigstring(CS_SYSTEMINFO, Cvar_InfoString_Big(CVAR_SYSTEMINFO));
-
 	SV_SetConfigstring(CS_SERVERINFO, Cvar_InfoString(CVAR_SERVERINFO|CVAR_SERVERINFO_NOUPDATE));
+
 	cvar_modifiedFlags &= ~CVAR_SERVERINFO;
 
 	SV_SetConfigstring(CS_WOLFINFO, Cvar_InfoString(CVAR_WOLFINFO));
+
 	cvar_modifiedFlags &= ~CVAR_WOLFINFO;
 	// any media configstring setting now should issue a warning and any configstring changes should be reliably transmitted
 	// to all clients
@@ -888,11 +890,10 @@ void SV_Init(void) {
 	Cvar_Get("sv_referencedPaks", "", CVAR_SYSTEMINFO|CVAR_ROM);
 	Cvar_Get("sv_referencedPakNames", "", CVAR_SYSTEMINFO|CVAR_ROM);
 #ifdef FEATURE_ANTICHEAT
-	// note:
+	// NOTE:
 	// we might add CVAR_LATCH flag to wh_active saving SV_InitWallhack() call when not needed
 	// but it may be helpfully(see sound issue) when wh_active isn't active all the time - we should give that a try
 	// just enable sv_wh_active by random intervals ...(would also save CPU usage too)
-
 	sv_wh_active = Cvar_Get("sv_wh_active", "0", CVAR_ARCHIVE);
 	// Note on bounding box dimensions:
 	// the default values are considerably larger than the normal values (36 and 72) used by ET.
@@ -1025,6 +1026,7 @@ void SV_FinalCommand(const char *cmd, qboolean disconnect) {
 				}
 				// force a snapshot to be sent
 				cl->lastSnapshotTime = 0;
+
 				SV_SendClientSnapshot(cl);
 			}
 		}
@@ -1055,7 +1057,7 @@ void SV_Shutdown(const char *finalmsg) {
 
 	IRC_WaitShutdown();
 #endif
-	Com_Printf("----- Server Shutdown-----\n");
+	Com_Printf("----- Server Shutdown -----\n");
 
 	if (svs.clients && !com_errorEntered) {
 		SV_FinalCommand(va("print \"%s\"", finalmsg), qtrue);

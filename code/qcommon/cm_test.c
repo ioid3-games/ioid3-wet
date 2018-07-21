@@ -422,7 +422,7 @@ void CM_AdjustAreaPortalState(int area1, int area2, qboolean open) {
 	if (open) {
 		cm.areaPortals[area1 * cm.numAreas + area2]++;
 		cm.areaPortals[area2 * cm.numAreas + area1]++;
-	} else if (cm.areaPortals[area2 * cm.numAreas + area1]) { // ridah, fixes loadgame issue
+	} else if (cm.areaPortals[area2 * cm.numAreas + area1]) { // Ridah, fixes loadgame issue
 		cm.areaPortals[area1 * cm.numAreas + area2]--;
 		cm.areaPortals[area2 * cm.numAreas + area1]--;
 

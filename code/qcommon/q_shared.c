@@ -160,7 +160,7 @@ void COM_StripFilename(const char *in, char *out) {
 =======================================================================================================================================
 COM_DefaultExtension
 
-If path doesn't have an extension, then append the specified one(which should include the .).
+If path doesn't have an extension, then append the specified one (which should include the .).
 =======================================================================================================================================
 */
 void COM_DefaultExtension(char *path, size_t maxSize, const char *extension) {
@@ -401,7 +401,6 @@ void COM_ParseError(const char *format, ...) {
 	va_start(argptr, format);
 	Q_vsnprintf(string, sizeof(string), format, argptr);
 	va_end(argptr);
-
 	Com_Printf("ERROR COM_ParseError: %s, line %d: %s\n", com_parsename, com_lines, string);
 }
 
@@ -425,8 +424,8 @@ void COM_ParseWarning(const char *format, ...) {
 =======================================================================================================================================
 SkipWhitespace
 
-Parse a token out of a string. Will never return NULL, just empty strings. If "allowLineBreaks" is qtrue then an empty string will be
-returned if the next token is a newline.
+Parse a token out of a string. Will never return NULL, just empty strings.
+If "allowLineBreaks" is qtrue then an empty string will be returned if the next token is a newline.
 =======================================================================================================================================
 */
 static char *SkipWhitespace(char *data, qboolean *hasNewLines) {
@@ -468,7 +467,7 @@ int COM_Compress(char *data_p) {
 				while (*in && *in != '\n') {
 					in++;
 				}
-				// skip /* */ comments
+			// skip /* */ comments
 			} else if (c == '/' && in[1] == '*') {
 				while (*in && (*in != '*' || in[1] != '/')) {
 					in++;
@@ -505,6 +504,7 @@ int COM_Compress(char *data_p) {
 
 					while (1) {
 						c = *in;
+
 						if (c && c != '"') {
 							*out++ = c;
 							in++;
@@ -869,7 +869,6 @@ char *COM_ParseExt2(char **data_p, qboolean allowLineBreaks) {
 	com_token[1] = 0;
 	data++;
 	*data_p = (char *)data;
-
 	return com_token;
 }
 
@@ -915,7 +914,8 @@ void SkipBracedSection_Depth(char **program, int depth) {
 =======================================================================================================================================
 SkipBracedSection
 
-The next token should be an open brace. Skips until a matching close brace is found. Internal brace depths are properly skipped..
+The next token should be an open brace.
+Skips until a matching close brace is found. Internal brace depths are properly skipped.
 =======================================================================================================================================
 */
 void SkipBracedSection(char **program) {
@@ -932,9 +932,7 @@ void SkipBracedSection(char **program) {
 				depth--;
 			}
 		}
-	}
-
-	while (depth && *program);
+	} while (depth && *program);
 }
 
 /*
@@ -1253,9 +1251,9 @@ int Q_vsnprintf(char *str, size_t size, const char *format, va_list args) {
 	retval = _vsnprintf(str, size, format, args);
 
 	if (retval < 0 || retval == size) {
-		// microsoft doesn't adhere to the C99 standard of vsnprintf, which states that the return value must be the number of bytes
-		// written if the output string had sufficient length
-		// obviously we cannot determine that value from Microsoft's implementation, so we have no choice but to return size
+		// Microsoft doesn't adhere to the C99 standard of vsnprintf, which states that the return value must be the number of
+		// bytes written if the output string had sufficient length.
+		// obviously we cannot determine that value from Microsoft's implementation, so we have no choice but to return size.
 		str[size - 1] = '\0';
 		return size;
 	}
@@ -1285,6 +1283,7 @@ void Q_strncpyz(char *dest, const char *src, size_t destsize) {
 	}
 
 	strncpy(dest, src, destsize - 1);
+
 	dest[destsize - 1] = 0;
 }
 
@@ -1329,9 +1328,7 @@ int Q_stricmpn(const char *s1, const char *s2, size_t n) {
 				return c1 < c2 ? -1 : 1;
 			}
 		}
-	}
-
-	while (c1);
+	} while (c1);
 
 	return 0; // strings are equal
 }
@@ -1351,15 +1348,13 @@ int Q_strncmp(const char *s1, const char *s2, size_t n) {
 		c2 = *s2++;
 
 		if (!n--) {
-			return 0;  // strings are equal until end point
+			return 0; // strings are equal until end point
 		}
 
 		if (c1 != c2) {
 			return c1 < c2 ? -1 : 1;
 		}
-	}
-
-	while (c1);
+	} while (c1);
 
 	return 0; // strings are equal
 }
@@ -1413,7 +1408,7 @@ char *Q_strupr(char *s1) {
 =======================================================================================================================================
 Q_strcat
 
-NOTE: never goes past bounds or leaves without a terminating 0.
+Never goes past bounds or leaves without a terminating 0.
 =======================================================================================================================================
 */
 void Q_strcat(char *dest, size_t size, const char *src) {
@@ -1457,12 +1452,9 @@ const char *Q_stristr(const char *s, const char *find) {
 				if (sc >= 'a' && sc <= 'z') {
 					sc -= ('a' - 'A');
 				}
-			}
+			} while (sc != c);
+		} while (Q_stricmpn(s, find, len) != 0);
 
-			while (sc != c);
-		}
-
-		while (Q_stricmpn(s, find, len) != 0);
 		s--;
 	}
 
@@ -1801,8 +1793,7 @@ Searches the string for the given key and returns the associated value, or an em
 */
 char *Info_ValueForKey(const char *s, const char *key) {
 	char pkey[BIG_INFO_KEY];
-	static char value[2][BIG_INFO_VALUE]; // use two buffers so compares
-	// work without stomping on each other
+	static char value[2][BIG_INFO_VALUE]; // use two buffers so compares work without stomping on each other
 	static int valueindex = 0;
 	char *o;
 
@@ -1877,7 +1868,6 @@ qboolean Info_NextPair(const char **head, char *key, char *value) {
 
 	key[0] = 0;
 	value[0] = 0;
-
 	o = key;
 
 	while (*s != '\\') {

@@ -37,20 +37,25 @@
 #include "client.h"
 #include "../qcommon/q_unicode.h"
 
-#define CONSOLE_COLOR  COLOR_WHITE
-#define DEFAULT_CONSOLE_WIDTH   99
+#define CONSOLE_COLOR COLOR_WHITE
+#define DEFAULT_CONSOLE_WIDTH 99
 
 int g_console_field_width = DEFAULT_CONSOLE_WIDTH;
 
 console_t con;
+
 cvar_t *con_openspeed;
 cvar_t *con_autoclear;
 
 vec4_t console_highlightcolor = {0.5f, 0.5f, 0.2f, 0.45f};
 
-/**
- * @brief Toggle console
- */
+/*
+=======================================================================================================================================
+Con_ToggleConsole_f
+
+Toggle console.
+=======================================================================================================================================
+*/
 void Con_ToggleConsole_f(void) {
 	con.highlightOffset = 0;
 
@@ -60,7 +65,6 @@ void Con_ToggleConsole_f(void) {
 	}
 
 	g_consoleField.widthInChars = g_console_field_width;
-
 	// multiple console size support
 	if (cls.keyCatchers & KEYCATCH_CONSOLE) {
 		cls.keyCatchers &= ~KEYCATCH_CONSOLE;
@@ -70,21 +74,23 @@ void Con_ToggleConsole_f(void) {
 		// short console
 		if (keys[K_LCTRL].down || keys[K_RCTRL].down) {
 			con.desiredFrac = (4.0f * SMALLCHAR_HEIGHT) / cls.glconfig.vidHeight;
-		}
 		// full console
-		else if (keys[K_LALT].down || keys[K_RALT].down) {
+		} else if (keys[K_LALT].down || keys[K_RALT].down) {
 			con.desiredFrac = 1.0f;
-		}
 		// normal half - screen console
-		else {
+		} else {
 			con.desiredFrac = 0.5f;
 		}
 	}
 }
 
-/**
- * @brief Clear console
- */
+/*
+=======================================================================================================================================
+Con_Clear_f
+
+Clear console.
+=======================================================================================================================================
+*/
 void Con_Clear_f(void) {
 	int i;
 
@@ -98,9 +104,13 @@ void Con_Clear_f(void) {
 	Con_ScrollBottom();
 }
 
-/**
- * @brief Save content to a file
- */
+/*
+=======================================================================================================================================
+Con_Dump_f
+
+Save the console contents out to a file.
+=======================================================================================================================================
+*/
 void Con_Dump_f(void) {
 	int l, x, i;
 	unsigned int *line;
@@ -110,7 +120,7 @@ void Con_Dump_f(void) {
 	char filename[MAX_QPATH];
 
 	if (Cmd_Argc() != 2) {
-		Com_Printf("usage: condump < filename > \n");
+		Com_Printf("usage: condump <filename>\n");
 		return;
 	}
 
@@ -130,37 +140,35 @@ void Con_Dump_f(void) {
 	}
 
 	Com_Printf("Dumped console text to %s.\n", filename);
-
 	// skip empty lines
 	for (l = con.current - con.maxTotalLines + 1; l <= con.current; l++) {
 		line = con.text + (l % con.maxTotalLines) * con.linewidth;
 
-		for (x = 0; x < con.linewidth; x++)
+		for (x = 0; x < con.linewidth; x++) {
 			if (line[x] != ' ') {
 				break;
 			}
+		}
 
 		if (x != con.linewidth) {
 			break;
 		}
 	}
-
 #ifdef _WIN32
 	bufferlen = con.linewidth + 3 * (int)sizeof(char);
 #else
 	bufferlen = con.linewidth + 2 * sizeof(char);
 #endif
-
 	buffer = Hunk_AllocateTempMemory(bufferlen);
-
 	// write the remaining lines
 	buffer[bufferlen - 1] = 0;
 
 	for (; l <= con.current; l++) {
 		line = con.text + (l % con.maxTotalLines) * con.linewidth;
 
-		for (i = 0; i < con.linewidth; i++)
+		for (i = 0; i < con.linewidth; i++) {
 			buffer[i] = line[i] & 0xff;
+		}
 
 		for (x = con.linewidth - 1; x >= 0; x--) {
 			if (buffer[x] == ' ') {
@@ -181,24 +189,27 @@ void Con_Dump_f(void) {
 	FS_FCloseFile(f);
 }
 
-/**
- * @brief Reformat the buffer if the line width has changed
- */
+/*
+=======================================================================================================================================
+Con_CheckResize
+
+Reformat the buffer if the line width has changed.
+=======================================================================================================================================
+*/
 void Con_CheckResize(void) {
 	int i, width;
 	int tbuf[CON_TEXTSIZE];
 	byte tbuff[CON_TEXTSIZE];
 
 	// wasn't allowing for larger consoles
-	// width = (SCREEN_WIDTH / SMALLCHAR_WIDTH) - 2;
+	//width = (SCREEN_WIDTH / SMALLCHAR_WIDTH) - 2;
 	width = (cls.glconfig.vidWidth / SMALLCHAR_WIDTH) - 2;
 
 	if (width == con.linewidth) {
 		return;
 	}
 
-	if (width < 1)            // video hasn't been initialized yet
-	{
+	if (width < 1) { // video hasn't been initialized yet
 		con.linewidth = DEFAULT_CONSOLE_WIDTH;
 		con.maxTotalLines = CON_TEXTSIZE / con.linewidth;
 
@@ -238,12 +249,8 @@ void Con_CheckResize(void) {
 
 		for (i = 0; i < numlines; i++) {
 			for (j = 0; j < numchars; j++) {
-				con.text[(con.maxTotalLines - 1 - i) * con.linewidth + j] = 
-				    tbuf[((con.current - i + oldtotalLines) %
-				          oldtotalLines) * oldwidth + j];
-				con.textColor[(con.maxTotalLines - 1 - i) * con.linewidth + j] = 
-				    tbuff[((con.current - i + oldtotalLines) %
-				           oldtotalLines) * oldwidth + j];
+				con.text[(con.maxTotalLines - 1 - i) * con.linewidth + j] = tbuf[((con.current - i + oldtotalLines) % oldtotalLines) * oldwidth + j];
+				con.textColor[(con.maxTotalLines - 1 - i) * con.linewidth + j] = tbuff[((con.current - i + oldtotalLines) % oldtotalLines) * oldwidth + j];
 			}
 		}
 	}
@@ -253,20 +260,27 @@ void Con_CheckResize(void) {
 	con.scrollIndex = con.current;
 }
 
-/**
- * @brief Complete file text name
- * @param args - unused
- * @param[in] argNum
- */
+/*
+=======================================================================================================================================
+Cmd_CompleteTxtName
+
+Complete file text name.
+=======================================================================================================================================
+*/
 void Cmd_CompleteTxtName(char *args, int argNum) {
+
 	if (argNum == 2) {
 		Field_CompleteFilename("", "txt", qfalse, qtrue);
 	}
 }
 
-/**
- * @brief Initialize console
- */
+/*
+=======================================================================================================================================
+Con_Init
+
+Initialize console.
+=======================================================================================================================================
+*/
 void Con_Init(void) {
 	int i;
 
@@ -274,6 +288,7 @@ void Con_Init(void) {
 	con_autoclear = Cvar_Get("con_autoclear", "1", CVAR_ARCHIVE);
 
 	Field_Clear(&g_consoleField);
+
 	g_consoleField.widthInChars = g_console_field_width;
 
 	for (i = 0; i < COMMAND_HISTORY; i++) {
@@ -286,18 +301,27 @@ void Con_Init(void) {
 	Cmd_AddCommand("condump", Con_Dump_f, "Dumps console content to disk.", Cmd_CompleteTxtName);
 }
 
-/**
- * @brief Free client console commands before shutdown
- */
+/*
+=======================================================================================================================================
+Con_Shutdown
+
+Free client console commands before shutdown.
+=======================================================================================================================================
+*/
 void Con_Shutdown(void) {
+
 	Cmd_RemoveCommand("toggleconsole");
 	Cmd_RemoveCommand("clear");
 	Cmd_RemoveCommand("condump");
 }
 
-/**
- * @brief Line feed
- */
+/*
+=======================================================================================================================================
+Con_Linefeed
+
+Line feed.
+=======================================================================================================================================
+*/
 void Con_Linefeed(void) {
 	int i;
 	con.x = 0;
@@ -321,12 +345,13 @@ void Con_Linefeed(void) {
 #if defined(_WIN32) && !defined(LEGACY_DEBUG)
 #pragma optimize("g", off) // msvc totally screws this function up with optimize on
 #endif
+/*
+=======================================================================================================================================
+CL_ConsolePrint
 
-/**
- * @brief Handles cursor positioning, line wrapping, etc.
- *
- * @param[in] txt
- */
+Handles cursor positioning, line wrapping, etc.
+=======================================================================================================================================
+*/
 void CL_ConsolePrint(char *txt) {
 	int y;
 	int c, l;
@@ -340,7 +365,9 @@ void CL_ConsolePrint(char *txt) {
 	if (!con.initialized) {
 		con.color[0] = con.color[1] = con.color[2] = con.color[3] = 1.0f;
 		con.linewidth = -1;
+
 		Con_CheckResize();
+
 		con.initialized = qtrue;
 	}
 	// work around for text that shows up in console but not in notify
@@ -375,27 +402,27 @@ void CL_ConsolePrint(char *txt) {
 		c = Q_UTF8_CodePoint(txt);
 
 		switch (c) {
-		case '\n':
-			Con_Linefeed();
-			break;
-		case '\r':
-			con.x = 0;
-			break;
-		default:
-			// display character and advance
-			y = con.current % con.maxTotalLines;
-			// sign extension caused the character to carry over
-			// into the color info for high ascii chars; casting c to unsigned
-			con.text[y * con.linewidth + con.x] = c;
-			con.textColor[y * con.linewidth + con.x] = color;
-			con.x++;
-
-			if (con.x >= con.linewidth) {
+			case '\n':
 				Con_Linefeed();
+				break;
+			case '\r':
 				con.x = 0;
-			}
+				break;
+			default:
+				// display character and advance
+				y = con.current % con.maxTotalLines;
+				// sign extension caused the character to carry over
+				// into the color info for high ascii chars; casting c to unsigned
+				con.text[y * con.linewidth + con.x] = c;
+				con.textColor[y * con.linewidth + con.x] = color;
+				con.x++;
 
-			break;
+				if (con.x >= con.linewidth) {
+					Con_Linefeed();
+					con.x = 0;
+				}
+
+				break;
 		}
 
 		txt += Q_UTF8_Width(txt);
@@ -405,10 +432,13 @@ void CL_ConsolePrint(char *txt) {
 #if defined(_WIN32) && !defined(LEGACY_DEBUG)
 #pragma optimize("g", on) // re-enabled optimization
 #endif
+/*
+=======================================================================================================================================
+Con_DrawVersion
 
-/**
- * @brief Draw version text
- */
+Draw version text.
+=======================================================================================================================================
+*/
 void Con_DrawVersion(void) {
 	int x, i;
 	char version[256] = ET_VERSION;
@@ -425,15 +455,18 @@ void Con_DrawVersion(void) {
 			re.SetColor(g_color_table[ColorIndex(COLOR_GREEN)]);
 		}
 
-		SCR_DrawSmallChar(cls.glconfig.vidWidth - (i - x + 1) * SMALLCHAR_WIDTH,
-		                  con.scanLines - 1.25f * SMALLCHAR_HEIGHT, version[x]);
+		SCR_DrawSmallChar(cls.glconfig.vidWidth - (i - x + 1) * SMALLCHAR_WIDTH, con.scanLines - 1.25f * SMALLCHAR_HEIGHT, version[x]);
 	}
 
 }
 
-/**
- * @brief Draw the editline after a] prompt
- */
+/*
+=======================================================================================================================================
+Con_DrawInput
+
+Draw the editline after a ] prompt.
+=======================================================================================================================================
+*/
 void Con_DrawInput(void) {
 	int y;
 
@@ -442,32 +475,27 @@ void Con_DrawInput(void) {
 	}
 
 	y = con.scanLines - 1.25f * SMALLCHAR_HEIGHT;
-
 	// hightlight the current autocompleted part
 	if (con.highlightOffset) {
 		if (strlen(g_consoleField.buffer) > 0) {
 			re.SetColor(console_highlightcolor);
-			re.DrawStretchPic(con.xadjust + (2 + con.highlightOffset) * SMALLCHAR_WIDTH,
-			                  y + 2,
-			(strlen(g_consoleField.buffer) - con.highlightOffset) * SMALLCHAR_WIDTH,
-			                  SMALLCHAR_HEIGHT - 2, 0, 0, 0, 0, cls.whiteShader);
+			re.DrawStretchPic(con.xadjust + (2 + con.highlightOffset) * SMALLCHAR_WIDTH, y + 2, (strlen(g_consoleField.buffer) - con.highlightOffset) * SMALLCHAR_WIDTH, SMALLCHAR_HEIGHT - 2, 0, 0, 0, 0, cls.whiteShader);
 		}
 	}
 
 	re.SetColor(con.color);
 
-	SCR_DrawSmallChar(con.xadjust + 1 * SMALLCHAR_WIDTH, y, ']');
-
-	Field_Draw(&g_consoleField, con.xadjust + 2 * SMALLCHAR_WIDTH, y,
-	           SCREEN_WIDTH - 3 * SMALLCHAR_WIDTH, qtrue, qtrue);
+	SCR_DrawSmallChar(con.xadjust + SMALLCHAR_WIDTH, y, ']');
+	Field_Draw(&g_consoleField, con.xadjust + 2 * SMALLCHAR_WIDTH, y, SCREEN_WIDTH - 3 * SMALLCHAR_WIDTH, qtrue, qtrue);
 }
 
-/**
- * @brief Draw scrollbar
- * @param[in] length
- * @param[in] x
- * @param[in] y
- */
+/*
+=======================================================================================================================================
+Con_DrawScrollbar
+
+Draw scrollbar.
+=======================================================================================================================================
+*/
 void Con_DrawScrollbar(int length, float x, float y) {
 	vec4_t color = {0.2f, 0.2f, 0.2f, 0.75f};
 	const float width = 1.0f;
@@ -482,21 +510,22 @@ void Con_DrawScrollbar(int length, float x, float y) {
 	color[1] = 0.5f;
 	color[2] = 0.5f;
 	color[3] = 1.0f;
-
 	// draw the handle
 	if (handlePosition >= 0 && handleLength > 0) {
 		SCR_FillRect(x, y + handlePosition, width, handleLength, color);
-	}
 	// this happens when line appending gets us over the top position in a roll - lock situation(scrolling itself won't do that)
-	else if (con.totalLines) {
+	} else if (con.totalLines) {
 		SCR_FillRect(x, y, width, handleLength, color);
 	}
 }
 
-/**
- * @brief Draws the console with the solid background
- * @param[in] frac
- */
+/*
+=======================================================================================================================================
+Con_DrawSolidConsole
+
+Draws the console with the solid background.
+=======================================================================================================================================
+*/
 void Con_DrawSolidConsole(float frac) {
 	int i, x, y;
 	unsigned int *text;
@@ -514,11 +543,10 @@ void Con_DrawSolidConsole(float frac) {
 	}
 
 	con.scanLines = frac * cls.glconfig.vidHeight;
-
 	// on wide screens, we will center the text
 	con.xadjust = 0;
-	SCR_AdjustFrom640(&con.xadjust, NULL, NULL, NULL);
 
+	SCR_AdjustFrom640(&con.xadjust, NULL, NULL, NULL);
 	// draw the background
 	y = frac * SCREEN_HEIGHT;
 
@@ -533,18 +561,16 @@ void Con_DrawSolidConsole(float frac) {
 		} else {
 			SCR_DrawPic(0, 0, SCREEN_WIDTH, y, cls.consoleShader);
 		}
-
 		/*
 		// draw the logo
 		if (frac >= 0.5f) {
-		    color[0] = color[1] = color[2] = frac * 2.0f;
-		    color[3] = 1.0f;
-		    re.SetColor(color);
+			color[0] = color[1] = color[2] = frac * 2.0f;
+			color[3] = 1.0f;
 
-		    SCR_DrawPic(192, 70, 256, 128, cls.consoleShader2);
-		    re.SetColor(NULL);
+			re.SetColor(color);
+			SCR_DrawPic(192, 70, 256, 128, cls.consoleShader2);
+			re.SetColor(NULL);
 		}
-
 		*/
 	}
 	// matching light text
@@ -558,19 +584,16 @@ void Con_DrawSolidConsole(float frac) {
 	}
 
 	re.SetColor(g_color_table[ColorIndex(CONSOLE_COLOR)]);
-
 	// draw the input prompt, user text, and cursor
 	Con_DrawInput();
 	// draw scrollbar
 	Con_DrawScrollbar(y - 1.5f * SMALLCHAR_HEIGHT, SCREEN_WIDTH - 5, 3);
 	// draw the version number
 	Con_DrawVersion();
-
 	// draw text
-	con.visibleLines = (con.scanLines - SMALLCHAR_HEIGHT) / SMALLCHAR_HEIGHT - 1;  // rows of text to draw
+	con.visibleLines = (con.scanLines - SMALLCHAR_HEIGHT) / SMALLCHAR_HEIGHT - 1; // rows of text to draw
 
 	y = con.scanLines - 3 * SMALLCHAR_HEIGHT;
-
 	// draw from the bottom up
 	if (con.scrollIndex < con.current - 1) {
 		// draw arrows to show the buffer is backscrolled
@@ -625,27 +648,34 @@ void Con_DrawSolidConsole(float frac) {
 	re.SetColor(NULL);
 }
 
-/**
- * @brief Draw console
- */
+/*
+=======================================================================================================================================
+Con_DrawConsole
+
+Draw console.
+=======================================================================================================================================
+*/
 void Con_DrawConsole(void) {
+
 	// render console only if opened but also if disconnected
-	if (con.displayFrac == 0.f && !(cls.state == CA_DISCONNECTED &&
-	                                !(cls.keyCatchers &(KEYCATCH_UI|KEYCATCH_CGAME)))) {
+	if (con.displayFrac == 0.f && !(cls.state == CA_DISCONNECTED && !(cls.keyCatchers &(KEYCATCH_UI|KEYCATCH_CGAME)))) {
 		return;
 	}
 	// check for console width changes from a vid mode change
 	Con_CheckResize();
-
 	Con_DrawSolidConsole(con.displayFrac);
 }
 
-/**
- * @brief Scroll console up or down
- */
+/*
+=======================================================================================================================================
+Con_RunConsole
+
+Scroll console up or down.
+=======================================================================================================================================
+*/
 void Con_RunConsole(void) {
-	// decide on the destination height of the console
-	// short console support via shift + ~
+
+	// decide on the destination height of the console short console support via shift + ~
 	if (cls.keyCatchers & KEYCATCH_CONSOLE) {
 		con.finalFrac = con.desiredFrac;
 	} else {
@@ -669,6 +699,7 @@ void Con_RunConsole(void) {
 	if (con.displayFrac > 0) {
 		const float scrolldiff = MAX(0.5f, abs(con.bottomDisplayedLine - con.scrollIndex));
 		int nudgingValue = con_openspeed->value * cls.realFrametime * 0.005f * scrolldiff;
+
 		// nudge might turn out to be 0 so just bump it to 1 so we actually move towards our goal
 		if (nudgingValue <= 0) {
 			nudgingValue = 1;
@@ -692,10 +723,15 @@ void Con_RunConsole(void) {
 	}
 }
 
-/**
- * @brief Check that the console does not go over the buffer limits
- */
+/*
+=======================================================================================================================================
+Con_CheckLimits
+
+Check that the console does not go over the buffer limits.
+=======================================================================================================================================
+*/
 static void Con_CheckLimits(void) {
+
 	// going up
 	if (con.scrollIndex < con.current - con.totalLines + con.visibleLines) {
 		con.scrollIndex = con.current - con.totalLines + con.visibleLines;
@@ -706,56 +742,75 @@ static void Con_CheckLimits(void) {
 	}
 }
 
-/**
- * @brief Page up
- */
+/*
+=======================================================================================================================================
+Con_PageUp
+=======================================================================================================================================
+*/
 void Con_PageUp(void) {
 	Con_ScrollUp(con.visibleLines / 2);
 }
 
-/**
- * @brief Page down
- */
+/*
+=======================================================================================================================================
+Con_PageDown
+=======================================================================================================================================
+*/
 void Con_PageDown(void) {
 	Con_ScrollDown(con.visibleLines / 2);
 }
 
-/**
- * @brief Scroll up
- */
+/*
+=======================================================================================================================================
+Con_ScrollUp
+=======================================================================================================================================
+*/
 void Con_ScrollUp(int lines) {
+
 	con.scrollIndex -= lines;
 	Con_CheckLimits();
 }
 
-/**
- * @brief Scroll down
- */
+/*
+=======================================================================================================================================
+Con_ScrollDown
+=======================================================================================================================================
+*/
 void Con_ScrollDown(int lines) {
+
 	con.scrollIndex += lines;
 	Con_CheckLimits();
 }
 
-/**
- * @brief Scroll to top
- */
+/*
+=======================================================================================================================================
+Con_ScrollTop
+=======================================================================================================================================
+*/
 void Con_ScrollTop(void) {
+
 	con.scrollIndex = con.current - con.totalLines + con.visibleLines;
 	Con_CheckLimits();
 }
 
-/**
- * @brief Scroll to bottom
- */
+/*
+=======================================================================================================================================
+Con_ScrollBottom
+=======================================================================================================================================
+*/
 void Con_ScrollBottom(void) {
+
 	con.scrollIndex = con.current;
 	Con_CheckLimits();
 }
 
-/**
- * @brief Close console
- */
+/*
+=======================================================================================================================================
+Con_Close
+=======================================================================================================================================
+*/
 void Con_Close(void) {
+
 	if (!com_cl_running->integer) {
 		return;
 	}
@@ -765,6 +820,7 @@ void Con_Close(void) {
 	}
 
 	Field_Clear(&g_consoleField);
+
 	cls.keyCatchers &= ~KEYCATCH_CONSOLE;
 	con.finalFrac = 0;
 	con.displayFrac = 0;

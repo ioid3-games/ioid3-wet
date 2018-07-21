@@ -69,27 +69,32 @@ static kbuttons_t dtmapping[] = {
 	KB_BACK, // dT_BACK
 	KB_WBUTTONS4, // dT_LEANLEFT
 	KB_WBUTTONS5, // dT_LEANRIGHT
-	KB_UP               // dT_UP
+	KB_UP // dT_UP
 };
 
-/**
- * @brief IN_MLookDown
- */
+/*
+=======================================================================================================================================
+IN_MLookDown
+=======================================================================================================================================
+*/
 void IN_MLookDown(void) {
 	kb[KB_MLOOK].active = qtrue;
 }
 
-/**
- * @brief IN_MLookUp
- */
+/*
+=======================================================================================================================================
+IN_MLookUp
+=======================================================================================================================================
+*/
 void IN_MLookUp(void) {
 	kb[KB_MLOOK].active = qfalse;
 }
 
-/**
- * @brief IN_KeyDown
- * @param[in, out] b
- */
+/*
+=======================================================================================================================================
+IN_KeyDown
+=======================================================================================================================================
+*/
 void IN_KeyDown(kbutton_t *b) {
 	int k;
 	char *c;
@@ -99,11 +104,11 @@ void IN_KeyDown(kbutton_t *b) {
 	if (c[0]) {
 		k = atoi(c);
 	} else {
-		k = -1;     // typed manually at the console for continuous down
+		k = -1; // typed manually at the console for continuous down
 	}
 
 	if (k == b->down[0] || k == b->down[1]) {
-		return;     // repeating key
+		return; // repeating key
 	}
 
 	if (!b->down[0]) {
@@ -116,20 +121,21 @@ void IN_KeyDown(kbutton_t *b) {
 	}
 
 	if (b->active) {
-		return;     // still down
+		return; // still down
 	}
 	// save timestamp for partial frame summing
 	c = Cmd_Argv(2);
-	b->downtime = atoi(c);
 
+	b->downtime = atoi(c);
 	b->active = qtrue;
 	b->wasPressed = qtrue;
 }
 
-/**
- * @brief IN_KeyUp
- * @param[in, out] b
- */
+/*
+=======================================================================================================================================
+IN_KeyUp
+=======================================================================================================================================
+*/
 void IN_KeyUp(kbutton_t *b) {
 	int k;
 	char *c;
@@ -151,15 +157,14 @@ void IN_KeyUp(kbutton_t *b) {
 	} else if (b->down[1] == k) {
 		b->down[1] = 0;
 	} else {
-		return;     // key up without coresponding down(menu pass through)
+		return; // key up without corresponding down (menu pass through)
 	}
 
 	if (b->down[0] || b->down[1]) {
-		return;     // some other key is still holding it down
+		return; // some other key is still holding it down
 	}
 
 	b->active = qfalse;
-
 	// save timestamp for partial frame summing
 	c = Cmd_Argv(2);
 	uptime = atoi(c);
@@ -173,15 +178,18 @@ void IN_KeyUp(kbutton_t *b) {
 	b->active = qfalse;
 }
 
-/**
- * @brief CL_KeyState
- * @param key
- * @return The fraction of the frame that the key was down
- */
+/*
+=======================================================================================================================================
+CL_KeyState
+
+Returns the fraction of the frame that the key was down.
+=======================================================================================================================================
+*/
 float CL_KeyState(kbutton_t *key) {
 	float val;
-	int msec = key->msec;
+	int msec;
 
+	msec = key->msec;
 	key->msec = 0;
 
 	if (key->active) {
@@ -194,13 +202,11 @@ float CL_KeyState(kbutton_t *key) {
 
 		key->downtime = com_frameTime;
 	}
-
 #if 0
 	if (msec) {
 		Com_Printf("%i ", msec);
 	}
 #endif
-
 	val = (float)msec / frame_msec;
 
 	if (val < 0) {
@@ -214,390 +220,492 @@ float CL_KeyState(kbutton_t *key) {
 	return val;
 }
 
-/**
- * @brief IN_UpDown
- */
+/*
+=======================================================================================================================================
+IN_UpDown
+=======================================================================================================================================
+*/
 void IN_UpDown(void) {
 	IN_KeyDown(&kb[KB_UP]);
 }
 
-/**
- * @brief IN_UpUp
- */
+/*
+=======================================================================================================================================
+IN_UpUp
+=======================================================================================================================================
+*/
 void IN_UpUp(void) {
 	IN_KeyUp(&kb[KB_UP]);
 }
 
-/**
- * @brief IN_DownDown
- */
+/*
+=======================================================================================================================================
+IN_DownDown
+=======================================================================================================================================
+*/
 void IN_DownDown(void) {
 	IN_KeyDown(&kb[KB_DOWN]);
 }
 
-/**
- * @brief IN_DownUp
- */
+/*
+=======================================================================================================================================
+IN_DownUp
+=======================================================================================================================================
+*/
 void IN_DownUp(void) {
 	IN_KeyUp(&kb[KB_DOWN]);
 }
 
-/**
- * @brief IN_LeftDown
- */
+/*
+=======================================================================================================================================
+IN_LeftDown
+=======================================================================================================================================
+*/
 void IN_LeftDown(void) {
 	IN_KeyDown(&kb[KB_LEFT]);
 }
 
-/**
- * @brief IN_LeftUp
- */
+/*
+=======================================================================================================================================
+IN_LeftUp
+=======================================================================================================================================
+*/
 void IN_LeftUp(void) {
 	IN_KeyUp(&kb[KB_LEFT]);
 }
 
-/**
- * @brief IN_RightDown
- */
+/*
+=======================================================================================================================================
+IN_RightDown
+=======================================================================================================================================
+*/
 void IN_RightDown(void) {
 	IN_KeyDown(&kb[KB_RIGHT]);
 }
 
-/**
- * @brief IN_RightUp
- */
+/*
+=======================================================================================================================================
+IN_RightUp
+=======================================================================================================================================
+*/
 void IN_RightUp(void) {
 	IN_KeyUp(&kb[KB_RIGHT]);
 }
 
-/**
- * @brief IN_ForwardDown
- */
+/*
+=======================================================================================================================================
+IN_ForwardDown
+=======================================================================================================================================
+*/
 void IN_ForwardDown(void) {
 	IN_KeyDown(&kb[KB_FORWARD]);
 }
 
-/**
- * @brief IN_ForwardUp
- */
+/*
+=======================================================================================================================================
+IN_ForwardUp
+=======================================================================================================================================
+*/
 void IN_ForwardUp(void) {
 	IN_KeyUp(&kb[KB_FORWARD]);
 }
 
-/**
- * @brief IN_BackDown
- */
+/*
+=======================================================================================================================================
+IN_BackDown
+=======================================================================================================================================
+*/
 void IN_BackDown(void) {
 	IN_KeyDown(&kb[KB_BACK]);
 }
 
-/**
- * @brief IN_BackUp
- */
+/*
+=======================================================================================================================================
+IN_BackUp
+=======================================================================================================================================
+*/
 void IN_BackUp(void) {
 	IN_KeyUp(&kb[KB_BACK]);
 }
 
-/**
- * @brief IN_LookupDown
- */
+/*
+=======================================================================================================================================
+IN_LookupDown
+=======================================================================================================================================
+*/
 void IN_LookupDown(void) {
 	IN_KeyDown(&kb[KB_LOOKUP]);
 }
 
-/**
- * @brief IN_LookupUp
- */
+/*
+=======================================================================================================================================
+IN_LookupUp
+=======================================================================================================================================
+*/
 void IN_LookupUp(void) {
 	IN_KeyUp(&kb[KB_LOOKUP]);
 }
 
-/**
- * @brief IN_LookdownDown
- */
+/*
+=======================================================================================================================================
+IN_LookdownDown
+=======================================================================================================================================
+*/
 void IN_LookdownDown(void) {
 	IN_KeyDown(&kb[KB_LOOKDOWN]);
 }
 
-/**
- * @brief IN_LookdownUp
- */
+/*
+=======================================================================================================================================
+IN_LookdownUp
+=======================================================================================================================================
+*/
 void IN_LookdownUp(void) {
 	IN_KeyUp(&kb[KB_LOOKDOWN]);
 }
 
-/**
- * @brief IN_MoveleftDown
- */
+/*
+=======================================================================================================================================
+IN_MoveleftDown
+=======================================================================================================================================
+*/
 void IN_MoveleftDown(void) {
 	IN_KeyDown(&kb[KB_MOVELEFT]);
 }
 
-/**
- * @brief IN_MoveleftUp
- */
+/*
+=======================================================================================================================================
+IN_MoveleftUp
+=======================================================================================================================================
+*/
 void IN_MoveleftUp(void) {
 	IN_KeyUp(&kb[KB_MOVELEFT]);
 }
 
-/**
- * @brief IN_MoverightDown
- */
+/*
+=======================================================================================================================================
+IN_MoverightDown
+=======================================================================================================================================
+*/
 void IN_MoverightDown(void) {
 	IN_KeyDown(&kb[KB_MOVERIGHT]);
 }
 
-/**
- * @brief IN_MoverightUp
- */
+/*
+=======================================================================================================================================
+IN_MoverightUp
+=======================================================================================================================================
+*/
 void IN_MoverightUp(void) {
 	IN_KeyUp(&kb[KB_MOVERIGHT]);
 }
 
-/**
- * @brief IN_SpeedDown
- */
+/*
+=======================================================================================================================================
+IN_SpeedDown
+=======================================================================================================================================
+*/
 void IN_SpeedDown(void) {
 	IN_KeyDown(&kb[KB_SPEED]);
 }
 
-/**
- * @brief IN_SpeedUp
- */
+/*
+=======================================================================================================================================
+IN_SpeedUp
+=======================================================================================================================================
+*/
 void IN_SpeedUp(void) {
 	IN_KeyUp(&kb[KB_SPEED]);
 }
 
-/**
- * @brief IN_StrafeDown
- */
+/*
+=======================================================================================================================================
+IN_StrafeDown
+=======================================================================================================================================
+*/
 void IN_StrafeDown(void) {
 	IN_KeyDown(&kb[KB_STRAFE]);
 }
 
-/**
- * @brief IN_StrafeUp
- */
+/*
+=======================================================================================================================================
+IN_StrafeUp
+=======================================================================================================================================
+*/
 void IN_StrafeUp(void) {
 	IN_KeyUp(&kb[KB_STRAFE]);
 }
 
-/**
- * @brief IN_Button0Down
- */
+/*
+=======================================================================================================================================
+IN_Button0Down
+=======================================================================================================================================
+*/
 void IN_Button0Down(void) {
 	IN_KeyDown(&kb[KB_BUTTONS0]);
 }
 
-/**
- * @brief IN_Button0Up
- */
+/*
+=======================================================================================================================================
+IN_Button0Up
+=======================================================================================================================================
+*/
 void IN_Button0Up(void) {
 	IN_KeyUp(&kb[KB_BUTTONS0]);
 }
 
-/**
- * @brief IN_Button1Down
- */
+/*
+=======================================================================================================================================
+IN_Button1Down
+=======================================================================================================================================
+*/
 void IN_Button1Down(void) {
 	IN_KeyDown(&kb[KB_BUTTONS1]);
 }
 
-/**
- * @brief IN_Button1Up
- */
+/*
+=======================================================================================================================================
+IN_Button1Up
+=======================================================================================================================================
+*/
 void IN_Button1Up(void) {
 	IN_KeyUp(&kb[KB_BUTTONS1]);
 }
 
-/**
- * @brief IN_UseItemDown
- */
+/*
+=======================================================================================================================================
+IN_UseItemDown
+=======================================================================================================================================
+*/
 void IN_UseItemDown(void) {
 	IN_KeyDown(&kb[KB_BUTTONS2]);
 }
 
-/**
- * @brief IN_UseItemUp
- */
+/*
+=======================================================================================================================================
+IN_UseItemUp
+=======================================================================================================================================
+*/
 void IN_UseItemUp(void) {
 	IN_KeyUp(&kb[KB_BUTTONS2]);
 }
 
-/**
- * @brief IN_Button3Down
- */
+/*
+=======================================================================================================================================
+IN_Button3Down
+=======================================================================================================================================
+*/
 void IN_Button3Down(void) {
 	IN_KeyDown(&kb[KB_BUTTONS3]);
 }
 
-/**
- * @brief IN_Button3Up
- */
+/*
+=======================================================================================================================================
+IN_Button3Up
+=======================================================================================================================================
+*/
 void IN_Button3Up(void) {
 	IN_KeyUp(&kb[KB_BUTTONS3]);
 }
 
 /*
- * @brief IN_Button4Down
- *
- * @note Unused
+=======================================================================================================================================
+IN_Button4Down
+=======================================================================================================================================
+*/
+/*
 void IN_Button4Down(void) {
-    IN_KeyDown(&kb[KB_BUTTONS4]);
+	IN_KeyDown(&kb[KB_BUTTONS4]);
 }
 */
 
 /*
- * @brief IN_Button4Up
- *
- * @note Unused
+=======================================================================================================================================
+IN_Button4Up
+=======================================================================================================================================
+*/
+/*
 void IN_Button4Up(void) {
-    IN_KeyUp(&kb[KB_BUTTONS4]);
+	IN_KeyUp(&kb[KB_BUTTONS4]);
 }
 */
-
-/**
- * @brief IN_ActivateDown
- */
+/*
+=======================================================================================================================================
+IN_ActivateDown
+=======================================================================================================================================
+*/
 void IN_ActivateDown(void) {
 	IN_KeyDown(&kb[KB_BUTTONS6]);
 }
 
-/**
- * @brief IN_ActivateUp
- */
+/*
+=======================================================================================================================================
+IN_ActivateUp
+=======================================================================================================================================
+*/
 void IN_ActivateUp(void) {
 	IN_KeyUp(&kb[KB_BUTTONS6]);
 }
 
-/**
- * @brief IN_SprintDown
- */
+/*
+=======================================================================================================================================
+IN_SprintDown
+=======================================================================================================================================
+*/
 void IN_SprintDown(void) {
 	IN_KeyDown(&kb[KB_BUTTONS5]);
 }
 
-/**
- * @brief IN_SprintUp
- */
+/*
+=======================================================================================================================================
+IN_SprintUp
+=======================================================================================================================================
+*/
 void IN_SprintUp(void) {
 	IN_KeyUp(&kb[KB_BUTTONS5]);
 }
 
-/**
- * @brief wbuttons(wolf buttons)
- */
+/*
+=======================================================================================================================================
+IN_Wbutton0Down
+=======================================================================================================================================
+*/
 void IN_Wbutton0Down(void) {
-	IN_KeyDown(&kb[KB_WBUTTONS0]);         // secondary fire button
+	IN_KeyDown(&kb[KB_WBUTTONS0]); // secondary fire button
 }
 
-/**
- * @brief IN_Wbutton0Up
- */
+/*
+=======================================================================================================================================
+IN_Wbutton0Up
+=======================================================================================================================================
+*/
 void IN_Wbutton0Up(void) {
 	IN_KeyUp(&kb[KB_WBUTTONS0]);
 }
 
-/**
- * @brief IN_ZoomDown
- */
+/*
+=======================================================================================================================================
+IN_ZoomDown
+=======================================================================================================================================
+*/
 void IN_ZoomDown(void) {
-	IN_KeyDown(&kb[KB_WBUTTONS1]);         // zoom key
+	IN_KeyDown(&kb[KB_WBUTTONS1]); // zoom key
 }
 
-/**
- * @brief IN_ZoomUp
- */
+/*
+=======================================================================================================================================
+IN_ZoomUp
+=======================================================================================================================================
+*/
 void IN_ZoomUp(void) {
 	IN_KeyUp(&kb[KB_WBUTTONS1]);
 }
 
-/**
- * @brief IN_ReloadDown
- */
+/*
+=======================================================================================================================================
+IN_ReloadDown
+=======================================================================================================================================
+*/
 void IN_ReloadDown(void) {
-	IN_KeyDown(&kb[KB_WBUTTONS3]);         // manual weapon re - load
+	IN_KeyDown(&kb[KB_WBUTTONS3]); // manual weapon re - load
 }
 
-/**
- * @brief IN_ReloadUp
- */
+/*
+=======================================================================================================================================
+IN_ReloadUp
+=======================================================================================================================================
+*/
 void IN_ReloadUp(void) {
 	IN_KeyUp(&kb[KB_WBUTTONS3]);
 }
 
-/**
- * @brief IN_LeanLeftDown
- */
+/*
+=======================================================================================================================================
+IN_LeanLeftDown
+=======================================================================================================================================
+*/
 void IN_LeanLeftDown(void) {
-	IN_KeyDown(&kb[KB_WBUTTONS4]);         // lean left
+	IN_KeyDown(&kb[KB_WBUTTONS4]); // lean left
 }
 
-/**
- * @brief IN_LeanLeftUp
- */
+/*
+=======================================================================================================================================
+IN_LeanLeftUp
+=======================================================================================================================================
+*/
 void IN_LeanLeftUp(void) {
 	IN_KeyUp(&kb[KB_WBUTTONS4]);
 }
 
-/**
- * @brief IN_LeanRightDown
- */
+/*
+=======================================================================================================================================
+IN_LeanRightDown
+=======================================================================================================================================
+*/
 void IN_LeanRightDown(void) {
-	IN_KeyDown(&kb[KB_WBUTTONS5]);         // lean right
+	IN_KeyDown(&kb[KB_WBUTTONS5]); // lean right
 }
 
-/**
- * @brief IN_LeanRightUp
- */
+/*
+=======================================================================================================================================
+IN_LeanRightUp
+=======================================================================================================================================
+*/
 void IN_LeanRightUp(void) {
 	IN_KeyUp(&kb[KB_WBUTTONS5]);
 }
 
-/**
- * @brief IN_ProneDown
- * Kick
- * now wbutton prone
- */
+/*
+=======================================================================================================================================
+IN_ProneDown
+=======================================================================================================================================
+*/
 void IN_ProneDown(void) {
 	IN_KeyDown(&kb[KB_WBUTTONS7]);
 }
 
-/**
- * @brief IN_ProneUp
- */
+/*
+=======================================================================================================================================
+IN_ProneUp
+=======================================================================================================================================
+*/
 void IN_ProneUp(void) {
 	IN_KeyUp(&kb[KB_WBUTTONS7]);
 }
 
 /*
- * @brief IN_ButtonDown
- *
- * @note Unused
+=======================================================================================================================================
+IN_ButtonDown
+=======================================================================================================================================
+*/
+/*
 void IN_ButtonDown(void) {
-    IN_KeyDown(&kb[KB_BUTTONS1]);
+	IN_KeyDown(&kb[KB_BUTTONS1]);
 }
 */
 
 /*
- * @brief IN_ButtonUp
- *
- * @note Unused
+=======================================================================================================================================
+IN_ButtonUp
+=======================================================================================================================================
+*/
+/*
 void IN_ButtonUp(void) {
-    IN_KeyUp(&kb[KB_BUTTONS1]);
+	IN_KeyUp(&kb[KB_BUTTONS1]);
 }
 */
-
-/**
- * @brief IN_Help
- */
+/*
+=======================================================================================================================================
+IN_Help
+=======================================================================================================================================
+*/
 void IN_Help(void) {
+
 	if (cls.state == CA_ACTIVE && !clc.demoplaying) {
-		VM_Call(uivm, UI_SET_ACTIVE_MENU, UIMENU_HELP);          // startup help system
+		VM_Call(uivm, UI_SET_ACTIVE_MENU, UIMENU_HELP); // startup help system
 	}
 }
 
-//========================================================================== 
 cvar_t *cl_yawspeed;
 cvar_t *cl_pitchspeed;
 cvar_t *cl_run;
@@ -606,9 +714,13 @@ cvar_t *cl_recoilPitch;
 cvar_t *cl_bypassMouseInput;
 cvar_t *cl_doubletapdelay;
 
-/**
- * @brief Moves the local angle positions
- */
+/*
+=======================================================================================================================================
+CL_AdjustAngles
+
+Moves the local angle positions.
+=======================================================================================================================================
+*/
 void CL_AdjustAngles(void) {
 	float speed;
 
@@ -627,18 +739,19 @@ void CL_AdjustAngles(void) {
 	cl.viewangles[PITCH] += speed * cl_pitchspeed->value * CL_KeyState(&kb[KB_LOOKDOWN]);
 }
 
-/**
- * @brief Sets the usercmd_t based on key states
- * @param cmd
- */
+/*
+=======================================================================================================================================
+CL_KeyMove
+
+Sets the usercmd_t based on key states.
+=======================================================================================================================================
+*/
 void CL_KeyMove(usercmd_t *cmd) {
 	int movespeed;
-	int forward = 0, side = 0, up = 0;
+	int forward, side, up;
 
-	// adjust for speed key / running
-	// the walking flag is to keep animations consistant
-	// even during acceleration and develeration
-
+	// adjust for speed key/running
+	// the walking flag is to keep animations consistent even during acceleration and deceleration
 	if (kb[KB_SPEED].active ^ cl_run->integer) {
 		movespeed = 127;
 		cmd->buttons &= ~BUTTON_WALKING;
@@ -646,6 +759,10 @@ void CL_KeyMove(usercmd_t *cmd) {
 		cmd->buttons |= BUTTON_WALKING;
 		movespeed = 64;
 	}
+
+	forward = 0;
+	side = 0;
+	up = 0;
 
 	if (kb[KB_STRAFE].active) {
 		side += movespeed * CL_KeyState(&kb[KB_RIGHT]);
@@ -662,7 +779,7 @@ void CL_KeyMove(usercmd_t *cmd) {
 			cmd->wbuttons |= WBUTTON_LEANLEFT;
 		}
 
-		side = 0;   // disallow the strafe when holding 'activate'
+		side = 0; // disallow the strafe when holding 'activate'
 	}
 
 	up += movespeed * CL_KeyState(&kb[KB_UP]);
@@ -674,11 +791,10 @@ void CL_KeyMove(usercmd_t *cmd) {
 	cmd->forwardmove = ClampChar(forward);
 	cmd->rightmove = ClampChar(side);
 	cmd->upmove = ClampChar(up);
-
 	// double tap
 	cmd->doubleTap = DT_NONE; // reset
-	if (com_frameTime - cl.doubleTap.lastdoubleTap > cl_doubletapdelay->integer + 150 + cls.frametime)       // double tap only once every 500 msecs(add
-	{  // frametime for low(-ish) fps situations)
+
+	if (com_frameTime - cl.doubleTap.lastdoubleTap > cl_doubletapdelay->integer + 150 + cls.frametime) { // double tap only once every 500 msecs (add frametime for low(-ish) fps situations)
 		int i;
 		qboolean key_down;
 
@@ -687,11 +803,9 @@ void CL_KeyMove(usercmd_t *cmd) {
 
 			if (key_down && !cl.doubleTap.pressedTime[i]) {
 				cl.doubleTap.pressedTime[i] = com_frameTime;
-			} else if (!key_down && !cl.doubleTap.releasedTime[i]
-			         && (com_frameTime - cl.doubleTap.pressedTime[i]) < (cl_doubletapdelay->integer + cls.frametime)) {
+			} else if (!key_down && !cl.doubleTap.releasedTime[i] && (com_frameTime - cl.doubleTap.pressedTime[i]) < (cl_doubletapdelay->integer + cls.frametime)) {
 				cl.doubleTap.releasedTime[i] = com_frameTime;
-			} else if (key_down && (com_frameTime - cl.doubleTap.pressedTime[i]) < (cl_doubletapdelay->integer + cls.frametime)
-			         && (com_frameTime - cl.doubleTap.releasedTime[i]) < (cl_doubletapdelay->integer + cls.frametime)) {
+			} else if (key_down && (com_frameTime - cl.doubleTap.pressedTime[i]) < (cl_doubletapdelay->integer + cls.frametime) && (com_frameTime - cl.doubleTap.releasedTime[i]) < (cl_doubletapdelay->integer + cls.frametime)) {
 				cl.doubleTap.pressedTime[i] = cl.doubleTap.releasedTime[i] = 0;
 				cmd->doubleTap = i;
 				cl.doubleTap.lastdoubleTap = com_frameTime;
@@ -704,13 +818,13 @@ void CL_KeyMove(usercmd_t *cmd) {
 	}
 }
 
-/**
- * @brief CL_MouseEvent
- * @param[in] dx
- * @param[in] dy
- * @param time - unused
- */
+/*
+=======================================================================================================================================
+CL_MouseEvent
+=======================================================================================================================================
+*/
 void CL_MouseEvent(int dx, int dy, int time) {
+
 	if (cls.keyCatchers & KEYCATCH_UI) {
 		// if we just want to pass it along to game
 		if (cl_bypassMouseInput->integer == 1) {
@@ -732,13 +846,15 @@ void CL_MouseEvent(int dx, int dy, int time) {
 	}
 }
 
-/**
- * @brief Joystick values stay set until changed
- * @param[in] axis
- * @param[in] value
- * @param time - unused
- */
+/*
+=======================================================================================================================================
+CL_JoystickEvent
+
+Joystick values stay set until changed.
+=======================================================================================================================================
+*/
 void CL_JoystickEvent(int axis, int value, int time) {
+
 	if (axis < 0 || axis >= MAX_JOYSTICK_AXIS) {
 		Com_Error(ERR_DROP, "CL_JoystickEvent: bad axis %i", axis);
 	}
@@ -746,10 +862,11 @@ void CL_JoystickEvent(int axis, int value, int time) {
 	cl.joystickAxis[axis] = value;
 }
 
-/**
- * @brief CL_JoystickMove
- * @param[in, out] cmd
- */
+/*
+=======================================================================================================================================
+CL_JoystickMove
+=======================================================================================================================================
+*/
 void CL_JoystickMove(usercmd_t *cmd) {
 	float anglespeed;
 
@@ -778,10 +895,11 @@ void CL_JoystickMove(usercmd_t *cmd) {
 	cmd->upmove = ClampChar(cmd->upmove + cl.joystickAxis[AXIS_UP]);
 }
 
-/**
- * @brief CL_MouseMove
- * @param[in, out] cmd
- */
+/*
+=======================================================================================================================================
+CL_MouseMove
+=======================================================================================================================================
+*/
 void CL_MouseMove(usercmd_t *cmd) {
 	float mx, my;
 	float accelSensitivity;
@@ -796,13 +914,12 @@ void CL_MouseMove(usercmd_t *cmd) {
 		my = cl.mouseDy[cl.mouseIndex];
 	}
 
-	cl.mouseIndex            ^= 1;
+	cl.mouseIndex ^= 1;
 	cl.mouseDx[cl.mouseIndex] = 0;
 	cl.mouseDy[cl.mouseIndex] = 0;
 
 	rate = (float)(sqrt((double)(mx * mx + my * my)) / frame_msec);
 	accelSensitivity = cl_sensitivity->value + rate * cl_mouseAccel->value;
-
 	// scale by FOV
 	accelSensitivity *= cl.cgameSensitivity;
 
@@ -811,8 +928,8 @@ void CL_MouseMove(usercmd_t *cmd) {
 	}
 	// mg42
 	if (cl.snap.ps.persistant[PERS_HWEAPON_USE]) {
-		mx *= 2.5; //(accelSensitivity * 0.1);
-		my *= 2; //(accelSensitivity * 0.075);
+		mx *= 2.5; // (accelSensitivity * 0.1);
+		my *= 2; // (accelSensitivity * 0.075);
 	} else {
 		mx *= accelSensitivity;
 		my *= accelSensitivity;
@@ -835,17 +952,16 @@ void CL_MouseMove(usercmd_t *cmd) {
 	}
 }
 
-/**
- * @brief CL_CmdButtons
- * @param[in, out] cmd
- */
+/*
+=======================================================================================================================================
+CL_CmdButtons
+=======================================================================================================================================
+*/
 void CL_CmdButtons(usercmd_t *cmd) {
 	int i;
 
 	// figure button bits
-	// send a button bit even if the key was pressed and released in
-	// less than a frame
-
+	// send a button bit even if the key was pressed and released in less than a frame
 	for (i = 0; i < 7; i++) {
 		if (kb[KB_BUTTONS0 + i].active || kb[KB_BUTTONS0 + i].wasPressed) {
 			cmd->buttons |= 1 << i;
@@ -854,8 +970,7 @@ void CL_CmdButtons(usercmd_t *cmd) {
 		kb[KB_BUTTONS0 + i].wasPressed = qfalse;
 	}
 
-	for (i = 0; i < 8; i++)         // this was i < 7, but there are 8 wbuttons
-	{
+	for (i = 0; i < 8; i++) { // this was i < 7, but there are 8 wbuttons
 		if (kb[KB_WBUTTONS0 + i].active || kb[KB_WBUTTONS0 + i].wasPressed) {
 			cmd->wbuttons |= 1 << i;
 		}
@@ -866,8 +981,7 @@ void CL_CmdButtons(usercmd_t *cmd) {
 	if (cls.keyCatchers && !cl_bypassMouseInput->integer) {
 		cmd->buttons |= BUTTON_TALK;
 	}
-	// allow the game to know if any key at all is
-	// currently pressed, even if it isn't bound to anything
+	// allow the game to know if any key at all is currently pressed, even if it isn't bound to anything
 	if (anykeydown && (!cls.keyCatchers || cl_bypassMouseInput->integer)) {
 		cmd->buttons |= BUTTON_ANY;
 	}
@@ -877,22 +991,19 @@ void CL_CmdButtons(usercmd_t *cmd) {
 	}
 }
 
-/**
- * @brief CL_FinishMove
- * @param[out] cmd
- */
+/*
+=======================================================================================================================================
+CL_FinishMove
+=======================================================================================================================================
+*/
 void CL_FinishMove(usercmd_t *cmd) {
 	int i;
 
 	// copy the state that the cgame is currently sending
 	cmd->weapon = cl.cgameUserCmdValue;
-
 	cmd->flags = cl.cgameFlags;
-
 	cmd->identClient = cl.cgameMpIdentClient;
-
-	// send the current server time so the amount of movement
-	// can be determined without allowing cheating
+	// send the current server time so the amount of movement can be determined without allowing cheating
 	cmd->serverTime = cl.serverTime;
 
 	for (i = 0; i < 3; i++) {
@@ -900,33 +1011,29 @@ void CL_FinishMove(usercmd_t *cmd) {
 	}
 }
 
-/**
- * @brief CL_CreateCmd
- * @return
- */
+/*
+=======================================================================================================================================
+CL_CreateCmd
+=======================================================================================================================================
+*/
 usercmd_t CL_CreateCmd(void) {
 	usercmd_t cmd;
 	vec3_t oldAngles;
 	float recoilAdd;
 
 	VectorCopy(cl.viewangles, oldAngles);
-
 	// keyboard angle adjustment
 	CL_AdjustAngles();
 
 	Com_Memset(&cmd, 0, sizeof(cmd));
 
 	CL_CmdButtons(&cmd);
-
 	// get basic movement from keyboard
 	CL_KeyMove(&cmd);
-
 	// get basic movement from mouse
 	CL_MouseMove(&cmd);
-
 	// get basic movement from joystick
 	CL_JoystickMove(&cmd);
-
 	// check to make sure the angles haven't wrapped
 	if (cl.viewangles[PITCH] - oldAngles[PITCH] > 90) {
 		cl.viewangles[PITCH] = oldAngles[PITCH] + 90;
@@ -941,10 +1048,8 @@ usercmd_t CL_CreateCmd(void) {
 	}
 	// the recoilPitch has been used, so clear it out
 	cl_recoilPitch->value = 0;
-
 	// store out the final values
 	CL_FinishMove(&cmd);
-
 	// draw debug graphs of turning for mouse testing
 	if (cl_debugMove->integer) {
 		if (cl_debugMove->integer == 1) {
@@ -959,9 +1064,13 @@ usercmd_t CL_CreateCmd(void) {
 	return cmd;
 }
 
-/**
- * @brief Create a new usercmd_t structure for this frame
- */
+/*
+=======================================================================================================================================
+CL_CreateNewCommands
+
+Create a new usercmd_t structure for this frame.
+=======================================================================================================================================
+*/
 void CL_CreateNewCommands(void) {
 	int cmdNum;
 
@@ -971,37 +1080,31 @@ void CL_CreateNewCommands(void) {
 	}
 
 	frame_msec = com_frameTime - old_com_frameTime;
-
-	// force at least 1 msec frametime to avoid CL_KeyState returning
-	// bogus values resulting in #IND cl.viewangles[]
+	// force at least 1 msec frametime to avoid CL_KeyState returning bogus values resulting in #IND cl.viewangles[]
 	if (frame_msec < 1) {
 		frame_msec = 1;
 	}
-	// if running less than 5fps, truncate the extra time to prevent
-	// unexpected moves after a hitch
+	// if running less than 5fps, truncate the extra time to prevent unexpected moves after a hitch
 	if (frame_msec > 200) {
 		frame_msec = 200;
 	}
 
 	old_com_frameTime = com_frameTime;
-
 	// generate a command for this frame
 	cl.cmdNumber++;
 	cmdNum = cl.cmdNumber & CMD_MASK;
 	cl.cmds[cmdNum] = CL_CreateCmd();
 }
 
-/**
- * @brief CL_ReadyToSendPacket
- *
- * @details Returns qfalse if we are over the maxpackets limit
- * and should choke back the bandwidth a bit by not sending
- * a packet this frame.  All the commands will still get
- * delivered in the next packet, but saving a header and
- * getting more delta compression will reduce total bandwidth.
- *
- * @return
- */
+/*
+=======================================================================================================================================
+CL_ReadyToSendPacket
+
+Returns qfalse if we are over the maxpackets limit and should choke back the bandwidth a bit by not sending a packet this frame.
+All the commands will still get delivered in the next packet, but saving a header and getting more delta compression will reduce total
+bandwidth.
+=======================================================================================================================================
+*/
 qboolean CL_ReadyToSendPacket(void) {
 	int oldPacketNum;
 	int delta;
@@ -1011,16 +1114,11 @@ qboolean CL_ReadyToSendPacket(void) {
 		return qfalse;
 	}
 	// if we are downloading, we send no less than 50ms between packets
-	if (*cls.download.downloadTempName &&
-	    cls.realtime - clc.lastPacketSentTime < 50) {
+	if (*cls.download.downloadTempName && cls.realtime - clc.lastPacketSentTime < 50) {
 		return qfalse;
 	}
-	// if we don't have a valid gamestate yet, only send
-	// one packet a second
-	if (cls.state != CA_ACTIVE &&
-	    cls.state != CA_PRIMED &&
-	    !*cls.download.downloadTempName &&
-	    cls.realtime - clc.lastPacketSentTime < 1000) {
+	// if we don't have a valid gamestate yet, only send one packet a second
+	if (cls.state != CA_ACTIVE && cls.state != CA_PRIMED && !*cls.download.downloadTempName && cls.realtime - clc.lastPacketSentTime < 1000) {
 		return qfalse;
 	}
 	// send every frame for loopbacks
@@ -1039,7 +1137,7 @@ qboolean CL_ReadyToSendPacket(void) {
 	}
 
 	oldPacketNum = (clc.netchan.outgoingSequence - 1) & PACKET_MASK;
-	delta = cls.realtime -  cl.outPackets[oldPacketNum].p_realtime;
+	delta = cls.realtime - cl.outPackets[oldPacketNum].p_realtime;
 
 	if (delta < 1000 / cl_maxpackets->integer) {
 		// the accumulated commands will go out in the next packet
@@ -1049,22 +1147,27 @@ qboolean CL_ReadyToSendPacket(void) {
 	return qtrue;
 }
 
-/**
- * @brief Create and send the command packet to the server
- * Including both the reliable commands and the usercmds
- *
- * @details During normal gameplay, a client packet will contain something like:
- *
- * 4   sequence number
- * 2   qport
- * 4   serverid
- * 4   acknowledged sequence number
- * 4   clc.serverCommandSequence
- * \ < optional reliable commands\ > 
- * 1   clc_move or clc_moveNoDelta
- * 1   command count
- * \ < count * usercmds\ > 
- */
+/*
+=======================================================================================================================================
+CL_WritePacket
+
+Create and send the command packet to the server.
+Including both the reliable commands and the usercmds.
+
+During normal gameplay, a client packet will contain something like:
+
+ 4	sequence number
+ 2	qport
+ 4	serverid
+ 4	acknowledged sequence number
+ 4	clc.serverCommandSequence
+
+	<optional reliable commands>
+ 1	clc_move or clc_moveNoDelta
+ 1	command count
+	<count * usercmds>
+=======================================================================================================================================
+*/
 void CL_WritePacket(void) {
 	msg_t buf;
 	byte data[MAX_MSGLEN];
@@ -1081,33 +1184,26 @@ void CL_WritePacket(void) {
 	}
 
 	Com_Memset(&nullcmd, 0, sizeof(nullcmd));
+
 	oldcmd = &nullcmd;
 
 	MSG_Init(&buf, data, sizeof(data));
-
 	MSG_Bitstream(&buf);
-	// write the current serverId so the server
-	// can tell if this is from the current gameState
+	// write the current serverId so the server can tell if this is from the current gameState
 	MSG_WriteLong(&buf, cl.serverId);
-
-	// write the last message we received, which can
-	// be used for delta compression, and is also used
-	// to tell if we dropped a gamestate
+	// write the last message we received, which can be used for delta compression, and is also used to tell if we dropped a gamestate
 	MSG_WriteLong(&buf, clc.serverMessageSequence);
-
 	// write the last reliable message we received
 	MSG_WriteLong(&buf, clc.serverCommandSequence);
-
 	// write any unacknowledged clientCommands
 	// NOTE: if you verbose this, you will see that there are quite a few duplicates
 	// typically several unacknowledged cp or userinfo commands stacked up
 	for (i = clc.reliableAcknowledge + 1; i <= clc.reliableSequence; i++) {
 		MSG_WriteByte(&buf, clc_clientCommand);
 		MSG_WriteLong(&buf, i);
-		MSG_WriteString(&buf, clc.reliableCommands[i &(MAX_RELIABLE_COMMANDS - 1)]);
+		MSG_WriteString(&buf, clc.reliableCommands[i & (MAX_RELIABLE_COMMANDS - 1)]);
 	}
-	// we want to send all the usercmds that were generated in the last
-	// few packet, so even if a couple packets are dropped in a row,
+	// we want to send all the usercmds that were generated in the last few packet, so even if a couple packets are dropped in a row,
 	// all the cmds will make it to the server
 	if (cl_packetdup->integer < 0) {
 		Cvar_Set("cl_packetdup", "0");
@@ -1128,8 +1224,7 @@ void CL_WritePacket(void) {
 			Com_Printf("(%i)", count);
 		}
 		// begin a client move command
-		if (cl_nodelta->integer || !cl.snap.valid || clc.demowaiting
-		    || clc.serverMessageSequence != cl.snap.messageNum) {
+		if (cl_nodelta->integer || !cl.snap.valid || clc.demowaiting || clc.serverMessageSequence != cl.snap.messageNum) {
 			MSG_WriteByte(&buf, clc_moveNoDelta);
 		} else {
 			MSG_WriteByte(&buf, clc_move);
@@ -1141,7 +1236,7 @@ void CL_WritePacket(void) {
 		// also use the message acknowledge
 		key ^= clc.serverMessageSequence;
 		// also use the last acknowledged server command in the key
-		key ^= MSG_HashKey(clc.serverCommands[clc.serverCommandSequence &(MAX_RELIABLE_COMMANDS - 1)], 32);
+		key ^= MSG_HashKey(clc.serverCommands[clc.serverCommandSequence & (MAX_RELIABLE_COMMANDS - 1)], 32);
 		// write all the commands, including the predicted command
 		for (i = 0; i < count; i++) {
 			j = (cl.cmdNumber - count + i + 1) & CMD_MASK;
@@ -1152,6 +1247,7 @@ void CL_WritePacket(void) {
 	}
 	// deliver the message
 	packetNum = clc.netchan.outgoingSequence & PACKET_MASK;
+
 	cl.outPackets[packetNum].p_realtime = cls.realtime;
 	cl.outPackets[packetNum].p_serverTime = oldcmd->serverTime;
 	cl.outPackets[packetNum].p_cmdNumber = cl.cmdNumber;
@@ -1162,10 +1258,7 @@ void CL_WritePacket(void) {
 	}
 
 	CL_Netchan_Transmit(&clc.netchan, &buf);
-
-	// clients never really should have messages large enough
-	// to fragment, but in case they do, fire them all off
-	// at once
+	// clients never really should have messages large enough to fragment, but in case they do, fire them all off at once
 	// - this causes a packet burst, which is bad karma for winsock
 	// added a WARNING message, we'll see if there are legit situations where this happens
 	while (clc.netchan.unsentFragments) {
@@ -1177,10 +1270,15 @@ void CL_WritePacket(void) {
 	}
 }
 
-/**
- * @brief Called every frame to builds and sends a command packet to the server.
- */
+/*
+=======================================================================================================================================
+CL_SendCmd
+
+Called every frame to builds and sends a command packet to the server.
+=======================================================================================================================================
+*/
 void CL_SendCmd(void) {
+
 	// don't send any message if not connected
 	if (cls.state < CA_CONNECTED) {
 		return;
@@ -1191,7 +1289,6 @@ void CL_SendCmd(void) {
 	}
 	// we create commands even if a demo is playing,
 	CL_CreateNewCommands();
-
 	// don't send a packet if the last packet was sent too recently
 	if (!CL_ReadyToSendPacket()) {
 		if (cl_showSend->integer) {
@@ -1204,82 +1301,75 @@ void CL_SendCmd(void) {
 	CL_WritePacket();
 }
 
-/**
- * @brief CL_InitInput
- */
+/*
+=======================================================================================================================================
+CL_InitInput
+=======================================================================================================================================
+*/
 void CL_InitInput(void) {
-	Cmd_AddCommand(" + moveup", IN_UpDown);
+
+	Cmd_AddCommand("+moveup", IN_UpDown);
 	Cmd_AddCommand("-moveup", IN_UpUp);
-	Cmd_AddCommand(" + movedown", IN_DownDown);
+	Cmd_AddCommand("+movedown", IN_DownDown);
 	Cmd_AddCommand("-movedown", IN_DownUp);
-	Cmd_AddCommand(" + left", IN_LeftDown);
+	Cmd_AddCommand("+left", IN_LeftDown);
 	Cmd_AddCommand("-left", IN_LeftUp);
-	Cmd_AddCommand(" + right", IN_RightDown);
+	Cmd_AddCommand("+right", IN_RightDown);
 	Cmd_AddCommand("-right", IN_RightUp);
-	Cmd_AddCommand(" + forward", IN_ForwardDown);
+	Cmd_AddCommand("+forward", IN_ForwardDown);
 	Cmd_AddCommand("-forward", IN_ForwardUp);
-	Cmd_AddCommand(" + back", IN_BackDown);
+	Cmd_AddCommand("+back", IN_BackDown);
 	Cmd_AddCommand("-back", IN_BackUp);
-	Cmd_AddCommand(" + lookup", IN_LookupDown);
+	Cmd_AddCommand("+lookup", IN_LookupDown);
 	Cmd_AddCommand("-lookup", IN_LookupUp);
-	Cmd_AddCommand(" + lookdown", IN_LookdownDown);
+	Cmd_AddCommand("+lookdown", IN_LookdownDown);
 	Cmd_AddCommand("-lookdown", IN_LookdownUp);
-	Cmd_AddCommand(" + strafe", IN_StrafeDown);
+	Cmd_AddCommand("+strafe", IN_StrafeDown);
 	Cmd_AddCommand("-strafe", IN_StrafeUp);
-	Cmd_AddCommand(" + moveleft", IN_MoveleftDown);
+	Cmd_AddCommand("+moveleft", IN_MoveleftDown);
 	Cmd_AddCommand("-moveleft", IN_MoveleftUp);
-	Cmd_AddCommand(" + moveright", IN_MoverightDown);
+	Cmd_AddCommand("+moveright", IN_MoverightDown);
 	Cmd_AddCommand("-moveright", IN_MoverightUp);
-	Cmd_AddCommand(" + speed", IN_SpeedDown);
+	Cmd_AddCommand("+speed", IN_SpeedDown);
 	Cmd_AddCommand("-speed", IN_SpeedUp);
-
-	Cmd_AddCommand(" + attack", IN_Button0Down);     //--- -  id(primary firing)
+	Cmd_AddCommand("+attack", IN_Button0Down); // primary firing
 	Cmd_AddCommand("-attack", IN_Button0Up);
-
-	Cmd_AddCommand(" + button1", IN_Button1Down);
+	Cmd_AddCommand("+button1", IN_Button1Down);
 	Cmd_AddCommand("-button1", IN_Button1Up);
-
-	Cmd_AddCommand(" + useitem", IN_UseItemDown);
+	Cmd_AddCommand("+useitem", IN_UseItemDown);
 	Cmd_AddCommand("-useitem", IN_UseItemUp);
-
-	Cmd_AddCommand(" + salute", IN_Button3Down);
+	Cmd_AddCommand("+salute", IN_Button3Down);
 	Cmd_AddCommand("-salute", IN_Button3Up);
-
-	Cmd_AddCommand(" + activate", IN_ActivateDown);
+	Cmd_AddCommand("+activate", IN_ActivateDown);
 	Cmd_AddCommand("-activate", IN_ActivateUp);
-
-	Cmd_AddCommand(" + prone", IN_ProneDown);
+	Cmd_AddCommand("+prone", IN_ProneDown);
 	Cmd_AddCommand("-prone", IN_ProneUp);
-
-	Cmd_AddCommand(" + sprint", IN_SprintDown);
+	Cmd_AddCommand("+sprint", IN_SprintDown);
 	Cmd_AddCommand("-sprint", IN_SprintUp);
-
 	// wolf buttons
-	Cmd_AddCommand(" + attack2", IN_Wbutton0Down);          // secondary firing
+	Cmd_AddCommand("+attack2", IN_Wbutton0Down); // secondary firing
 	Cmd_AddCommand("-attack2", IN_Wbutton0Up);
-	Cmd_AddCommand(" + zoom", IN_ZoomDown);
+	Cmd_AddCommand("+zoom", IN_ZoomDown);
 	Cmd_AddCommand("-zoom", IN_ZoomUp);
-	Cmd_AddCommand(" + reload", IN_ReloadDown);
+	Cmd_AddCommand("+reload", IN_ReloadDown);
 	Cmd_AddCommand("-reload", IN_ReloadUp);
-	Cmd_AddCommand(" + leanleft", IN_LeanLeftDown);
+	Cmd_AddCommand("+leanleft", IN_LeanLeftDown);
 	Cmd_AddCommand("-leanleft", IN_LeanLeftUp);
-	Cmd_AddCommand(" + leanright", IN_LeanRightDown);
+	Cmd_AddCommand("+leanright", IN_LeanRightDown);
 	Cmd_AddCommand("-leanright", IN_LeanRightUp);
-
-	Cmd_AddCommand(" + mlook", IN_MLookDown);
+	Cmd_AddCommand("+mlook", IN_MLookDown);
 	Cmd_AddCommand("-mlook", IN_MLookUp);
-
 	Cmd_AddCommand("help", IN_Help);
 
 	cl_nodelta = Cvar_Get("cl_nodelta", "0", 0);
 	cl_debugMove = Cvar_Get("cl_debugMove", "0", 0);
 }
 
-/**
- * @brief CL_ClearKeys
- *
- * @note Unused
- */
+/*
+=======================================================================================================================================
+CL_ClearKeys
+=======================================================================================================================================
+*/
 void CL_ClearKeys(void) {
 	Com_Memset(kb, 0, sizeof(kb));
 }

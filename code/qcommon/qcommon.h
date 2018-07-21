@@ -121,13 +121,12 @@ void MSG_ReportChangeVectors_f(void);
 #define NET_PRIOV6			0x04
 // disables ipv6 multicast support if set.
 #define NET_DISABLEMCAST	0x08
-// number of old messages that must be kept on client and server for delta comrpession and ping estimation
-#define PACKET_BACKUP 32
+
+#define PACKET_BACKUP 32 // number of old messages that must be kept on client and server for delta compression and ping estimation
 #define PACKET_MASK (PACKET_BACKUP - 1)
-// max number of usercmd_t in a packet
-#define MAX_PACKET_USERCMDS 32
+#define MAX_PACKET_USERCMDS 32 // max number of usercmd_t in a packet
 #define PORT_ANY -1
-#define MAX_RELIABLE_COMMANDS 256 // max string commands buffered for restransmit. Increased - seems to keep causing problems when set to 64
+#define MAX_RELIABLE_COMMANDS 256 // max string commands buffered for retransmit. Increased - seems to keep causing problems when set to 64
 
 typedef enum {
 	NA_BAD = 0, // an address lookup failed
@@ -373,19 +372,15 @@ void VM_Debug(int level);
 void *VM_ArgPtr(intptr_t intValue);
 void *VM_ExplicitArgPtr(vm_t *vm, intptr_t intValue);
 #define VMA(x) VM_ArgPtr(args[x])
-
 /*
 =======================================================================================================================================
-
-	_vmf
-
+_vmf
 =======================================================================================================================================
 */
-
 static ID_INLINE float _vmf(intptr_t x) {
 	floatint_t fi;
 
-	fi.i = (int) x;
+	fi.i = (int)x;
 	return fi.f;
 }
 
@@ -717,7 +712,7 @@ qboolean FS_FileInPathExists(const char *testpath);
 /*
 =======================================================================================================================================
 
-	Edit fields and command line history/completion
+	Edit fields and command line history/completion.
 
 =======================================================================================================================================
 */
@@ -851,13 +846,13 @@ temp file loading
 #define Z_TagMalloc(size, tag) Z_TagMallocDebug(size, tag, #size, __FILE__, __LINE__)
 #define Z_Malloc(size) Z_MallocDebug(size, #size, __FILE__, __LINE__)
 #define S_Malloc(size) S_MallocDebug(size, #size, __FILE__, __LINE__)
-void *Z_TagMallocDebug(int size, int tag, char *label, char *file, int line); // nOT 0 filled memory
+void *Z_TagMallocDebug(int size, int tag, char *label, char *file, int line); // NOT 0 filled memory
 void *Z_MallocDebug(int size, char *label, char *file, int line); // returns 0 filled memory
 void *S_MallocDebug(int size, char *label, char *file, int line); // returns 0 filled memory
 #else
-void *Z_TagMalloc(int size, int tag); // nOT 0 filled memory
+void *Z_TagMalloc(int size, int tag); // NOT 0 filled memory
 void *Z_Malloc(int size); // returns 0 filled memory
-void *S_Malloc(int size); // nOT 0 filled memory only for small allocations
+void *S_Malloc(int size); // NOT 0 filled memory only for small allocations
 #endif
 void Z_Free(void *ptr);
 void Z_FreeTags(int tag);
@@ -875,7 +870,7 @@ int Hunk_MemoryRemaining(void);
 void Hunk_SmallLog(void);
 void Hunk_Log(void);
 void Com_TouchMemory(void);
-// commandLine should not include the executable name(argv[0])
+// commandLine should not include the executable name (argv[0])
 void Com_Init(char *commandLine);
 char *Com_GetCommandLine(void);
 void Com_Frame(void);

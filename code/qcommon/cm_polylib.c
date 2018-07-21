@@ -110,8 +110,8 @@ void RemoveColinearPoints(winding_t *w) {
 	vec3_t p[MAX_POINTS_ON_WINDING];
 
 	for (i = 0; i < w->numpoints; i++) {
-		j = (i + 1) % w->numpoints;
-		k = (i + w->numpoints - 1) % w->numpoints;
+		j = (i + 1)%w->numpoints;
+		k = (i + w->numpoints - 1)%w->numpoints;
 		VectorSubtract(w->p[j], w->p[i], v1);
 		VectorSubtract(w->p[i], w->p[k], v2);
 		vec3_norm2(v1, v1);
@@ -490,7 +490,7 @@ void ChopWindingInPlace(winding_t **w, vec3_t normal, vec_t dist, vec_t epsilon)
 			continue;
 		}
 		// generate a split point
-		p2 = in->p[(i + 1) % in->numpoints];
+		p2 = in->p[(i + 1)%in->numpoints];
 		dot = dists[i] / (dists[i] - dists[i + 1]);
 
 		for (j = 0; j < 3; j++) { // avoid round off error when possible

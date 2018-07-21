@@ -129,8 +129,7 @@ static void SV_Map_f(void) {
 	} else {
 		cheat = qfalse;
 	}
-	// save the map name here cause on a map restart we reload the etc.onfig.cfg
-	// and thus nuke the arguments of the map command
+	// save the map name here cause on a map restart we reload the etc.onfig.cfg and thus nuke the arguments of the map command
 	Q_strncpyz(mapname, map, sizeof(mapname));
 	// start up the map
 	SV_SpawnServer(mapname);
@@ -264,7 +263,6 @@ static void SV_MapRestart_f(void) {
 		Com_Printf("sv_maxclients variable change-- restarting.\n");
 		// restart the map the slow way
 		Q_strncpyz(mapname, Cvar_VariableString("mapname"), sizeof(mapname));
-
 		SV_SpawnServer(mapname);
 		return;
 	}
@@ -273,10 +271,10 @@ static void SV_MapRestart_f(void) {
 	// generate a new serverid
 	// don't update restartedserverId there, otherwise we won't deal correctly with multiple map_restart
 	sv.serverId = com_frameTime;
+
 	Cvar_Set("sv_serverid", va("%i", sv.serverId));
 	// reset all the vm data in place without changing memory allocation
-	// note that we do NOT set sv.state = SS_LOADING, so configstrings that
-	// had been changed from their default values will generate broadcast updates
+	// note that we do NOT set sv.state = SS_LOADING, so configstrings that had been changed from their default values will generate broadcast updates
 	sv.state = SS_LOADING;
 	sv.restarting = qtrue;
 
@@ -308,8 +306,7 @@ static void SV_MapRestart_f(void) {
 		denied = VM_ExplicitArgPtr(gvm, VM_Call(gvm, GAME_CLIENT_CONNECT, i, qfalse, isBot));
 
 		if (denied) {
-			// this generally shouldn't happen, because the client
-			// was connected before the level change
+			// this generally shouldn't happen, because the client was connected before the level change
 			SV_DropClient(client, denied);
 
 			if (!isBot) {
@@ -323,9 +320,8 @@ static void SV_MapRestart_f(void) {
 			if (client->state == CS_ACTIVE) {
 				SV_ClientEnterWorld(client, &client->lastUsercmd);
 			} else {
-				// if we don't reset client->lastUsercmd and are restarting during map load,
-				// the client will hang because we'll use the last Usercmd from the previous map,
-				// which is wrong obviously.
+				// if we don't reset client->lastUsercmd and are restarting during map load, the client will hang because we'll use the
+				// last Usercmd from the previous map, which is wrong obviously.
 				SV_ClientEnterWorld(client, NULL);
 			}
 		}
@@ -542,7 +538,7 @@ static void SV_DumpUser_f(void) {
 	}
 
 	if (Cmd_Argc() != 2) {
-		Com_Printf("Usage: dumpuser < userid > \n");
+		Com_Printf("Usage: dumpuser <userid>\n");
 		return;
 	}
 

@@ -36,14 +36,17 @@
 #include "../qcommon/qcommon.h"
 #include "client.h"
 
-/**
- * @brief CL_Netchan_Encode
- * @details First 12 bytes of the data are always:
- * long serverId;
- * long messageAcknowledge;
- * long reliableAcknowledge;
- * @param[in, out] msg
- */
+/*
+=======================================================================================================================================
+CL_Netchan_Encode
+
+First 12 bytes of the data are always:
+
+ long serverId;
+ long messageAcknowledge;
+ long reliableAcknowledge;
+=======================================================================================================================================
+*/
 static void CL_Netchan_Encode(msg_t *msg) {
 	int serverId, messageAcknowledge, reliableAcknowledge;
 	int i, index, srdc, sbit;
@@ -70,9 +73,8 @@ static void CL_Netchan_Encode(msg_t *msg) {
 	msg->bit = sbit;
 	msg->readcount = srdc;
 
-	string = (byte *)clc.serverCommands[reliableAcknowledge &(MAX_RELIABLE_COMMANDS - 1)];
+	string = (byte *)clc.serverCommands[reliableAcknowledge & (MAX_RELIABLE_COMMANDS - 1)];
 	index = 0;
-
 	key = clc.challenge ^ serverId ^ messageAcknowledge;
 
 	for (i = CL_ENCODE_START; i < msg->cursize; i++) {
@@ -93,14 +95,17 @@ static void CL_Netchan_Encode(msg_t *msg) {
 	}
 }
 
-/**
- * @brief CL_Netchan_Decode
- * @details First four bytes of the data are always:
- * long reliableAcknowledge;
- * @param[in, out] msg
- */
+/*
+=======================================================================================================================================
+CL_Netchan_Decode
+
+First four bytes of the data are always:
+
+ long reliableAcknowledge;
+=======================================================================================================================================
+*/
 static void CL_Netchan_Decode(msg_t *msg) {
-	long     reliableAcknowledge, i, index;
+	long reliableAcknowledge, i, index;
 	byte key, *string;
 	int srdc, sbit;
 	qboolean soob;
@@ -117,9 +122,9 @@ static void CL_Netchan_Decode(msg_t *msg) {
 	msg->bit = sbit;
 	msg->readcount = srdc;
 
-	string = (byte *)clc.reliableCommands[reliableAcknowledge &(MAX_RELIABLE_COMMANDS - 1)];
+	string = (byte *)clc.reliableCommands[reliableAcknowledge & (MAX_RELIABLE_COMMANDS - 1)];
 	index = 0;
-	// xor the client challenge with the netchan sequence number(need something that changes every message)
+	// xor the client challenge with the netchan sequence number (need something that changes every message)
 	key = clc.challenge ^ LittleLong(*(unsigned *)msg->data);
 
 	for (i = msg->readcount + CL_DECODE_START; i < msg->cursize; i++) {
@@ -140,19 +145,22 @@ static void CL_Netchan_Decode(msg_t *msg) {
 	}
 }
 
-/**
- * @brief CL_Netchan_TransmitNextFragment
- * @param[in] chan
- */
+/*
+=======================================================================================================================================
+CL_Netchan_TransmitNextFragment
+=======================================================================================================================================
+*/
 void CL_Netchan_TransmitNextFragment(netchan_t *chan) {
 	Netchan_TransmitNextFragment(chan);
 }
 
-/**
- * @brief CL_WriteBinaryMessage
- * @param[in] msg
- */
+/*
+=======================================================================================================================================
+CL_WriteBinaryMessage
+=======================================================================================================================================
+*/
 static void CL_WriteBinaryMessage(msg_t *msg) {
+
 	if (!clc.binaryMessageLength) {
 		return;
 	}
@@ -165,32 +173,30 @@ static void CL_WriteBinaryMessage(msg_t *msg) {
 	}
 
 	MSG_WriteData(msg, clc.binaryMessage, clc.binaryMessageLength);
+
 	clc.binaryMessageLength = 0;
 	clc.binaryMessageOverflowed = qfalse;
 }
 
-/**
- * @brief CL_Netchan_Transmit
- * @param[in] chan
- * @param[in] msg
- */
+/*
+=======================================================================================================================================
+CL_Netchan_Transmit
+=======================================================================================================================================
+*/
 void CL_Netchan_Transmit(netchan_t *chan, msg_t *msg) {
+
 	MSG_WriteByte(msg, clc_EOF);
 	CL_WriteBinaryMessage(msg);
-
 	CL_Netchan_Encode(msg);
-
 	Netchan_Transmit(chan, msg->cursize, msg->data);
 }
 
 int newsize = 0;
-
-/**
- * @brief CL_Netchan_Process
- * @param[in] chan
- * @param[in] msg
- * @return
- */
+/*
+=======================================================================================================================================
+CL_Netchan_Process
+=======================================================================================================================================
+*/
 qboolean CL_Netchan_Process(netchan_t *chan, msg_t *msg) {
 	int ret;
 

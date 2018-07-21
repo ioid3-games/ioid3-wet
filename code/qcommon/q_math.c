@@ -374,7 +374,7 @@ void ClampColor(vec4_t color) {
 =======================================================================================================================================
 DirToByte
 
-NOTE: this isn't a real cheap function to call!
+This isn't a real cheap function to call!
 =======================================================================================================================================
 */
 int DirToByte(vec3_t dir) {
@@ -481,7 +481,7 @@ float NormalizeColor(const vec3_t in, vec3_t out) {
 =======================================================================================================================================
 PlaneFromPoints
 
-Return false if the triangle is degenerate. The normal will point out of the clock for clockwise ordered points.
+Returns false if the triangle is degenerated. The normal will point out of the clock for clockwise ordered points.
 =======================================================================================================================================
 */
 qboolean PlaneFromPoints(vec4_t plane, const vec3_t a, const vec3_t b, const vec3_t c) {
@@ -517,7 +517,7 @@ void RotatePoint(vec3_t point, vec3_t matrix[3]) {
 =======================================================================================================================================
 RotatePointAroundVector
 
-NOTE: this is not implemented very well...
+This is not implemented very well...
 =======================================================================================================================================
 */
 void RotatePointAroundVector(vec3_t dst, const vec3_t dir, const vec3_t point, float degrees) {
@@ -563,6 +563,7 @@ void RotatePointAroundVector(vec3_t dst, const vec3_t dir, const vec3_t point, f
 	zrot[0][0] = zrot[1][1] = zrot[2][2] = 1.0F;
 
 	rad = DEG2RAD(degrees);
+
 	zrot[0][0] = cos(rad);
 	zrot[0][1] = sin(rad);
 	zrot[1][0] = -sin(rad);
@@ -786,7 +787,6 @@ void vec3_rotate(const vec3_t in, vec3_t matrix[3], vec3_t out) {
 	out[1] = in[0] * matrix[0][1] + in[1] * matrix[1][1] + in[2] * matrix[2][1];
 	out[2] = in[0] * matrix[0][2] + in[1] * matrix[1][2] + in[2] * matrix[2][2];
 }
-
 #if !idppc
 /*
 =======================================================================================================================================
@@ -804,6 +804,7 @@ float Q_rsqrt(float f) {
 	y = t.f;
 	y = y * (threehalfs - (x2 * y * y)); // 1st iteration
 	//y = y * (threehalfs - (x2 * y * y)); // 2nd iteration, this can be removed
+
 	return y;
 }
 
@@ -820,7 +821,6 @@ float Q_fabs(float f) {
 	return fi.f;
 }
 #endif
-
 /*
 =======================================================================================================================================
 angle_lerp
@@ -855,7 +855,7 @@ void vec3_lerp(vec3_t start, vec3_t end, float frac, vec3_t out) {
 =======================================================================================================================================
 angle_sub
 
-Always returns a value from - 180 to 180.
+Always returns a value from -180 to 180.
 =======================================================================================================================================
 */
 float angle_sub(float a1, float a2) {
@@ -1535,7 +1535,6 @@ vec_t vec3_norm2(const vec3_t v, vec3_t out) {
 	}
 
 	return length;
-
 }
 
 /*
@@ -1696,6 +1695,7 @@ PlaneTypeForNormal
 */
 /*
 int PlaneTypeForNormal(vec3_t normal) {
+
 	if (normal[0] == 1.0) {
 		return PLANE_X;
 	}
@@ -1711,13 +1711,13 @@ int PlaneTypeForNormal(vec3_t normal) {
 	return PLANE_NON_AXIAL;
 }
 */
-
 /*
 =======================================================================================================================================
 _MatrixMultiply
 =======================================================================================================================================
 */
 void _MatrixMultiply(float in1[3][3], float in2[3][3], float out[3][3]) {
+
 	out[0][0] = in1[0][0] * in2[0][0] + in1[0][1] * in2[1][0] + in1[0][2] * in2[2][0];
 	out[0][1] = in1[0][0] * in2[0][1] + in1[0][1] * in2[1][1] + in1[0][2] * in2[2][1];
 	out[0][2] = in1[0][0] * in2[0][2] + in1[0][1] * in2[1][2] + in1[0][2] * in2[2][2];
@@ -1800,7 +1800,7 @@ void angles_vectors(const vec3_t angles, vec3_t forward, vec3_t right, vec3_t up
 =======================================================================================================================================
 vec3_per
 
-'src' assumes is normalized.
+Assumes "src" is normalized.
 =======================================================================================================================================
 */
 void vec3_per(const vec3_t src, vec3_t dst) {

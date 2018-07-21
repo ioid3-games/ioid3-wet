@@ -92,7 +92,7 @@ static void SV_EmitPacketEntities(clientSnapshot_t *from, clientSnapshot_t *to, 
 		}
 
 		if (newnum == oldnum) {
-			// delta update from old position because the force parm is qfalse, this will not result in any bytes being emited if the entity has not changed at all
+			// delta update from old position because the force parm is qfalse, this will not result in any bytes being emitted if the entity has not changed at all
 			MSG_WriteDeltaEntity(msg, oldent, newent, qfalse);
 			oldindex++;
 			newindex++;
@@ -199,7 +199,7 @@ static void SV_WriteSnapshotToClient(client_t *client, msg_t *msg) {
 =======================================================================================================================================
 SV_UpdateServerCommandsToClient
 
-Send all server commands the client hasn't acknowledged yet.
+(Re)send all server commands the client hasn't acknowledged yet.
 =======================================================================================================================================
 */
 void SV_UpdateServerCommandsToClient(client_t *client, msg_t *msg) {
@@ -392,7 +392,7 @@ static void SV_AddEntitiesVisibleFromPoint(vec3_t origin, clientSnapshot_t *fram
 		for (i = 0; i < svEnt->numClusters; i++) {
 			l = svEnt->clusternums[i];
 
-			if (bitvector[l >> 3] &(1 << (l&7))) {
+			if (bitvector[l >> 3] & (1 << (l&7))) {
 				break;
 			}
 		}
@@ -400,7 +400,7 @@ static void SV_AddEntitiesVisibleFromPoint(vec3_t origin, clientSnapshot_t *fram
 		if (i == svEnt->numClusters) {
 			if (svEnt->lastCluster) {
 				for (; l <= svEnt->lastCluster; l++) {
-					if (bitvector[l >> 3] &(1 << (l&7))) {
+					if (bitvector[l >> 3] & (1 << (l&7))) {
 						break;
 					}
 				}

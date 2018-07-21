@@ -148,7 +148,7 @@ void CM_TestBoxInBrush(traceWork_t *tw, cbrush_t *brush) {
 		for (i = 6; i < brush->numsides; i++) {
 			side = brush->sides + i;
 			plane = side->plane;
-			// adjust the plane distance apropriately for radius
+			// adjust the plane distance appropriately for radius
 			dist = plane->dist + tw->sphere.radius;
 			// find the closest point on the capsule to the plane
 			t = DotProduct(plane->normal, tw->sphere.offset);
@@ -170,7 +170,7 @@ void CM_TestBoxInBrush(traceWork_t *tw, cbrush_t *brush) {
 		for (i = 6; i < brush->numsides; i++) {
 			side = brush->sides + i;
 			plane = side->plane;
-			// adjust the plane distance apropriately for mins/maxs
+			// adjust the plane distance appropriately for mins/maxs
 			dist = plane->dist - DotProduct(tw->offsets[plane->signbits], plane->normal);
 			d1 = DotProduct(tw->start, plane->normal) - dist;
 			// if completely in front of face, no intersection
@@ -558,7 +558,7 @@ static void CM_TraceThroughBrush(traceWork_t *tw, cbrush_t *brush) {
 		for (i = 0; i < brush->numsides; i++) {
 			side = brush->sides + i;
 			plane = side->plane;
-			// adjust the plane distance apropriately for radius
+			// adjust the plane distance appropriately for radius
 			dist = plane->dist + tw->sphere.radius;
 			// find the closest point on the capsule to the plane
 			t = DotProduct(plane->normal, tw->sphere.offset);
@@ -620,7 +620,7 @@ static void CM_TraceThroughBrush(traceWork_t *tw, cbrush_t *brush) {
 		for (i = 0; i < brush->numsides; i++) {
 			side = brush->sides + i;
 			plane = side->plane;
-			// adjust the plane distance apropriately for mins/maxs
+			// adjust the plane distance appropriately for mins/maxs
 			dist = plane->dist - DotProduct(tw->offsets[plane->signbits], plane->normal);
 			d1 = DotProduct(tw->start, plane->normal) - dist;
 			d2 = DotProduct(tw->end, plane->normal) - dist;
@@ -792,6 +792,7 @@ static void CM_TraceThroughSphere(traceWork_t *tw, vec3_t origin, float radius, 
 
 	// if inside the sphere
 	VectorSubtract(start, origin, dir);
+
 	l1 = vec3_length_squared(dir);
 
 	if (l1 < Square(radius)) {
@@ -822,7 +823,7 @@ static void CM_TraceThroughSphere(traceWork_t *tw, vec3_t origin, float radius, 
 		return;
 	}
 
-	//	| origin - (start + t * dir)|= radius
+	//	| origin - (start + t * dir) |= radius
 	//	a = dir[0] ^ 2 + dir[1] ^ 2 + dir[2] ^ 2;
 	//	b = 2 * (dir[0] * (start[0] - origin[0]) + dir[1] * (start[1] - origin[1]) + dir[2] * (start[2] - origin[2]));
 	//	c = (start[0] - origin[0]) ^ 2 + (start[1] - origin[1]) ^ 2 + (start[2] - origin[2]) ^ 2 - radius ^ 2;
@@ -1120,10 +1121,10 @@ static void CM_TraceThroughTree(traceWork_t *tw, int num, float p1f, float p2f, 
 		CM_TraceThroughLeaf(tw, &cm.leafs[-1 - num]);
 		return;
 	}
-	// find the point distances to the seperating plane and the offset for the size of the box
+	// find the point distances to the separating plane and the offset for the size of the box
 	node = cm.nodes + num;
 	plane = node->plane;
-	// adjust the plane distance apropriately for mins/maxs
+	// adjust the plane distance appropriately for mins/maxs
 	if (plane->type < 3) {
 		t1 = p1[plane->type] - plane->dist;
 		t2 = p2[plane->type] - plane->dist;
@@ -1260,7 +1261,7 @@ static void CM_Trace(trace_t *results, const vec3_t start, const vec3_t end, con
 
 	positionTest = (start[0] == end[0] && start[1] == end[1] && start[2] == end[2]);
 	tw.maxOffset = tw.size[1][0] + tw.size[1][1] + tw.size[1][2];
-	// tw.offsets[signbits] = vector to apropriate corner from origin
+	// tw.offsets[signbits] = vector to appropriate corner from origin
 	tw.offsets[0][0] = tw.size[0][0];
 	tw.offsets[0][1] = tw.size[0][1];
 	tw.offsets[0][2] = tw.size[0][2];
