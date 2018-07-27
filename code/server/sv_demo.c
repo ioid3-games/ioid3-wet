@@ -150,6 +150,8 @@ static void SV_DemoCvarsRestore() {
 			Cbuf_AddText(va("g_gametype %i\n", savedGametype)); // force gametype switching (NOTE: must be AFTER game_restart to work!)
 			savedGametype = -1;
 		}
+
+		Com_Printf("Demo changed CVARs restored.\n");
 	}
 }
 
@@ -222,7 +224,7 @@ static qboolean SV_CheckClientCommand(client_t *client, const char *cmd) {
 =======================================================================================================================================
 SV_CheckServerCommand
 
-Check that the serverCommand is OK to save(or if we drop it because already handled somewhere else).
+Check that the serverCommand is OK to save(or if we drop it because already handled somewhere else or it's unwanted to store).
 =======================================================================================================================================
 */
 static qboolean SV_CheckServerCommand(const char *cmd) {
@@ -892,7 +894,7 @@ static void SV_DemoPlaybackError(const char *message) {
 	// FIXME: reset static vars?!
 	SV_DemoStopPlayback();
 
-	Com_Error(ERR_DROP, message);
+	Com_Error(ERR_DROP, "SV_DemoPlaybackError: %s\n", message);
 }
 
 /*
@@ -1167,9 +1169,15 @@ static void SV_DemoStartPlayback(void) {
 	// initialize our stuff
 	Com_Memset(sv.demoEntities, 0, sizeof(sv.demoEntities));
 	Com_Memset(sv.demoPlayerStates, 0, sizeof(sv.demoPlayerStates));
+
 	Cvar_SetValue("sv_democlients", clients); // NOTE: we need SV_Startup() to NOT use SV_ChangeMaxClients for this to work without crashing when changing fs_game
-	// FIXME: omnibot?
-	//Cvar_SetValue("bot_minplayers", 0); // if we have bots that autoconnect, this will make up for a very weird demo!
+	// FIXME: omnibot - this bot stuff isn't tested well (but better than before)
+	// disable bots and ensure they don't connect again
+	if (Cvar_Get("omnibot_enable", "0", 0)->integer > 0) { // FIXME: and/or check for bot player count, omnibot_enable is latched !!!
+		Cbuf_ExecuteText(EXEC_NOW, "bot maxbots 0; bot kickall\n");
+		Cvar_SetValue("omnibot_enable", 0); // FIXME: restore value and bot players after demo play
+		Com_Printf("Bye bye omnibots - you are not allowed to view this demo.\n");
+	}
 	// force all real clients already connected before the demo begins to be set to spectator team
 	for (i = sv_democlients->integer; i < sv_maxclients->integer; i++) {
 		if (svs.clients[i].state >= CS_CONNECTED) {
@@ -1260,7 +1268,8 @@ static void SV_DemoStartRecord(void) {
 
 		if (client->state >= CS_CONNECTED) {
 			// store client's userinfo(should be before clients configstrings since clients configstrings are derived from userinfo)
-			if (client->userinfo[0] != '\0') { // if player is connected and the configstring exists, we store it
+			if (client->userinfo[0] != '\0') {
+				// if player is connected and the configstring exists, we store it
 				SV_DemoWriteClientUserinfo(client, (const char *)client->userinfo);
 			}
 		}
@@ -1291,7 +1300,7 @@ static void SV_DemoStopRecord(void) {
 	// end the demo
 	MSG_Init(&msg, buf, sizeof(buf));
 	MSG_WriteByte(&msg, demo_endDemo);
-	SV_DemoWriteMessage(&msg);
+	SV_DemoWriteMessage(&msg); // this also writes demo_EOF
 	FS_FCloseFile(sv.demoFile);
 
 	sv.demoState = DS_NONE;
@@ -1863,7 +1872,7 @@ read_next_demo_event: // used to read next demo event
 				*/
 				// no more chars in msg FIXME: inspect!
 				case -1:
-					Com_DPrintf((va("SV_DemoReadFrame: no chars [%i %i:%i]", cmd, msg.readcount, msg.cursize)));
+					Com_DPrintf("SV_DemoReadFrame: no chars [%i %i:%i]", cmd, msg.readcount, msg.cursize);
 					return;
 					// end of the frame - players and entities game status update: we commit every demo entity to the server, update the
 					// server time, then release the demo frame reading here to the next server (and demo) frame
